@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull $DOCKER_IMAGE
-            docker stop $CONTAINER_NAME || true
-            docker rm $CONTAINER_NAME || true
-            docker run -d --name $CONTAINER_NAME -p 3000:3000 $DOCKER_IMAGE
+            sudo docker pull ${{ env.DOCKER_IMAGE }}
+            sudo docker stop ${{ env.CONTAINER_NAME }} || true
+            sudo docker rm ${{ env.CONTAINER_NAME }} || true
+            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 3000:3000 ${{ env.DOCKER_IMAGE }}
