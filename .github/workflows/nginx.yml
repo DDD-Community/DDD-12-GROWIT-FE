@@ -1,0 +1,43 @@
+name: Deploy Nginx
+
+on:
+  push:
+    paths:
+      - "nginx/**" # 오직 nginx 디렉토리 안 변경 시만 실행
+    branches:
+      - main
+
+env:
+  DOCKER_IMAGE: wonchang0314/growit-nginx:latest
+  CONTAINER_NAME: growit-nginx
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build & push nginx image
+        run: |
+          docker build -t $DOCKER_IMAGE ./nginx
+          docker push $DOCKER_IMAGE
+
+      - name: SSH to EC2 and deploy nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo docker pull ${{ env.DOCKER_IMAGE }}
+            sudo docker stop ${{ env.CONTAINER_NAME }} || true
+            sudo docker rm ${{ env.CONTAINER_NAME }} || true
+            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.DOCKER_IMAGE }}
