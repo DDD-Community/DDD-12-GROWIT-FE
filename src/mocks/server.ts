@@ -5,6 +5,5 @@ import { handlers } from './handlers';
 export const server = setupServer(...handlers);
 
 export const startMSWServer = async () => {
-  console.log('msw for server started!');
   return server.listen();
 };
