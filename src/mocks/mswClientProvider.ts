@@ -7,12 +7,14 @@ export default function MSWClientProvider({ children }: { children: React.ReactN
 
   useEffect(() => {
     const init = async () => {
-      const { worker } = await import('./browser');
-      await worker.start({
-        serviceWorker: { url: '/mockServiceWorker.js' },
-        onUnhandledRequest: 'bypass',
-      });
-      setReadyToUseMSW(true);
+      if (process.env.NODE_ENV === 'development') {
+        const { worker } = await import('./browser');
+        await worker.start({
+          serviceWorker: { url: '/mockServiceWorker.js' },
+          onUnhandledRequest: 'bypass',
+        });
+        setReadyToUseMSW(true);
+      }
     };
     init();
   }, []);

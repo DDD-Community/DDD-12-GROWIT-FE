@@ -5,5 +5,5 @@ import { handlers } from './handlers';
 export const server = setupServer(...handlers);
 
 export const startMSWServer = async () => {
-  return server.listen();
+  if (process.env.NODE_ENV === 'development') return server.listen();
 };
