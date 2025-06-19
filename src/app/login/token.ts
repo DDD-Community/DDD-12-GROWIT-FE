@@ -22,5 +22,5 @@ export const tokenController = {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
     }
-  }
-}; 
+  },
+};

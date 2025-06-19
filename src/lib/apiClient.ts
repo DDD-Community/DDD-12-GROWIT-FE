@@ -9,14 +9,14 @@ const axiosInstance: AxiosInstance = axios.create({
 
 // Request interceptor
 axiosInstance.interceptors.request.use(
-  (config) => {
+  config => {
     const accessToken = tokenController.getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
@@ -26,7 +26,7 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config;
-    
+
     // 403 errors (unauthorized access)
     if (error.response?.status === 403) {
       tokenController.clearTokens();
@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use(
 
         const response = await axios.post(`${API_BASE_URL}/api/reissue`, { refreshToken });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
-        
+
         // Update tokens
         tokenController.setTokens(accessToken, newRefreshToken);
 
@@ -66,7 +66,8 @@ axiosInstance.interceptors.response.use(
 
 export const apiClient = {
   get: <T>(url: string, config?: AxiosRequestConfig) => axiosInstance.get<T>(url, config),
-  post: <T, U = unknown>(url: string, data?: U, config?: AxiosRequestConfig) => axiosInstance.post<T>(url, data, config),
-  put: <T, U  = unknown>(url: string, data?: U, config?: AxiosRequestConfig) => axiosInstance.put<T>(url, data, config),
+  post: <T, U = unknown>(url: string, data?: U, config?: AxiosRequestConfig) =>
+    axiosInstance.post<T>(url, data, config),
+  put: <T, U = unknown>(url: string, data?: U, config?: AxiosRequestConfig) => axiosInstance.put<T>(url, data, config),
   delete: <T>(url: string, config?: AxiosRequestConfig) => axiosInstance.delete<T>(url, config),
-}; 
+};
