@@ -34,8 +34,13 @@ export default function MainPage() {
 
   return (
     <div>
-      <h1>Main Page</h1>
-      <p>Welcome to the main page!</p>
+      <h1 className="text-3xl font-bold mb-4">Pretendard 폰트 테스트</h1>
+      <p className="text-lg mb-2">안녕하세요! 이것은 Pretendard 폰트입니다.</p>
+      <p className="font-medium">Medium 굵기 텍스트</p>
+      <p className="font-semibold">SemiBold 굵기 텍스트</p>
+      <p className="font-bold">Bold 굵기 텍스트</p>
+      <p className="font-extrabold">ExtraBold 굵기 텍스트</p>
+
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

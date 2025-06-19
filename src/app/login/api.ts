@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/apiClient';
+import { apiClient } from '@/shared/lib/apiClient';
 import { tokenController } from '@/app/login/token';
 import { AxiosRequestConfig } from 'axios';
 
