@@ -2,34 +2,43 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { InputField } from '@/shared/components/InputField';
 
+// 회원가입 시 필요한 데이터타입
+interface SignupFormData {
+  email: string;
+  password: string;
+  name: string;
+  jobRoleId: string;
+  careerYear: string;
+  privacyPolicy: boolean; // 개인정보수집동의 관련해서 백엔드 저장이 필요할듯?
+  termsOfService: boolean; // 개인정보수집동의 관련해서 백엔드 저장이 필요할듯?
+}
+
 export default function SignupPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    role: '',
-    experience: '',
+  const {
+    watch,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<SignupFormData>({
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+      name: '',
+      jobRoleId: '',
+      careerYear: '',
+    },
   });
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-    name: '',
-  });
+  const jobRoleId = watch('jobRoleId');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: 실제 회원가입 API 호출
-    try {
-      // 임시 회원가입 성공 처리
-      router.push('/login');
-    } catch (error) {
-      console.error('Signup failed:', error);
-    }
+  const onSubmit = async (data: SignupFormData) => {
+    console.log('Form submitted:', data);
   };
 
   return (
@@ -55,29 +64,48 @@ export default function SignupPage() {
         </div>
 
         <div className="flex flex-col flex-grow justify-center max-w-md mx-auto w-full pb-[24px]">
-          <form onSubmit={handleSubmit} className="space-y-6 w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
             <InputField
               label="Email"
               type="email"
               placeholder="기업용 이메일을 입력해주세요."
-              value={formData.email}
-              onChange={e => setFormData({ ...formData, email: e.target.value })}
-              errorMessage={'이메일 형식에 맞게 입력해주세요.'}
-              isError={true}
+              {...register('email', {
+                required: '이메일을 입력해주세요.',
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: '이메일 형식이 올바르지 않습니다.',
+                },
+              })}
+              isError={!!errors.email}
+              errorMessage={errors.email?.message as string}
             />
             <InputField
               label="PW"
               type="password"
               placeholder="비밀번호를 입력해주세요."
-              value={formData.password}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
+              {...register('password', {
+                required: '비밀번호를 입력해주세요.',
+                minLength: {
+                  value: 8,
+                  message: '비밀번호는 8자 이상이어야 합니다.',
+                },
+              })}
+              isError={!!errors.password}
+              errorMessage={errors.password?.message as string}
             />
             <InputField
-              label="성함"
+              label="이름"
               type="text"
               placeholder="성함을 입력해주세요."
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              {...register('name', {
+                required: '이름을 입력해주세요.',
+                maxLength: {
+                  value: 6,
+                  message: '이름은 6자 이하이어야 합니다.',
+                },
+              })}
+              isError={!!errors.name}
+              errorMessage={errors.name?.message as string}
             />
 
             <div className="space-y-2">
@@ -86,48 +114,48 @@ export default function SignupPage() {
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    formData.role === '기획' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    jobRoleId === 'jobId1' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setFormData({ ...formData, role: '기획' })}
+                  onClick={() => setValue('jobRoleId', 'jobId1', { shouldValidate: true })}
                 >
                   기획
                 </button>
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    formData.role === '디자이너' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    jobRoleId === 'jobId2' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setFormData({ ...formData, role: '디자이너' })}
+                  onClick={() => setValue('jobRoleId', 'jobId2', { shouldValidate: true })}
                 >
                   디자이너
                 </button>
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    formData.role === '개발자' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    jobRoleId === 'jobId3' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setFormData({ ...formData, role: '개발자' })}
+                  onClick={() => setValue('jobRoleId', 'jobId3', { shouldValidate: true })}
                 >
                   개발자
                 </button>
               </div>
+              {errors.jobRoleId && <p className="text-xs text-red-500">{errors.jobRoleId.message as string}</p>}
             </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-300">연차</label>
               <select
-                value={formData.experience}
-                onChange={e => setFormData({ ...formData, experience: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border-none focus:ring-2 focus:ring-[#8C7FF7]"
+                {...register('careerYear', { required: '연차를 선택해주세요.' })}
               >
                 <option value="">선택</option>
-                <option value="신입">신입</option>
-                <option value="1년차">1년차</option>
-                <option value="2년차">2년차</option>
-                <option value="3년차">3년차</option>
-                <option value="4년차">4년차</option>
-                <option value="5년차 이상">5년차 이상</option>
+                <option value="NEWBIE">신입(1년차 미만)</option>
+                <option value="JUNIOR">주니어(1~3년)</option>
+                <option value="MIDDLE">미드레벨(3~6년)</option>
+                <option value="SENIOR">시니어(6~10년)</option>
+                <option value="LEAD">리드/매니저(10년 이상)</option>
               </select>
+              {errors.careerYear && <p className="text-xs text-red-500">{errors.careerYear.message as string}</p>}
             </div>
 
             <div className="space-y-2">
@@ -135,21 +163,30 @@ export default function SignupPage() {
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-[#8C7FF7] rounded border-gray-500 bg-[#2C2C2E]"
+                  {...register('privacyPolicy', { required: '개인정보 수집에 동의해주세요.' })}
                 />
                 <span className="text-gray-400 text-sm">개인정보 수집 동의</span>
               </label>
+              {errors.privacyPolicy && <p className="text-xs text-red-500">{errors.privacyPolicy.message as string}</p>}
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   className="form-checkbox h-4 w-4 text-[#8C7FF7] rounded border-gray-500 bg-[#2C2C2E]"
+                  {...register('termsOfService', { required: '이용 약관에 동의해주세요.' })}
                 />
                 <span className="text-gray-400 text-sm">이용 약관 동의</span>
               </label>
+              {errors.termsOfService && (
+                <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              disabled={!isValid}
+              className={`w-full py-3 rounded-lg font-medium transition-colors ${
+                isValid ? 'bg-white text-black hover:bg-gray-100' : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
+              }`}
             >
               가입하기
             </button>
