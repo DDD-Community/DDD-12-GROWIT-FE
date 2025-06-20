@@ -1,17 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { InputField } from '@/shared/components/InputField';
 
 export default function SignupPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
-  const [experience, setExperience] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+    role: '',
+    experience: '',
+  });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    name: '',
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +36,7 @@ export default function SignupPage() {
     <div className="flex min-h-screen bg-[#1C1C1E]">
       {/* 왼쪽 회원가입 섹션 */}
       <div className="flex flex-col w-full lg:w-1/2 p-10 md:p-[20px]">
-        <div className="flex flex-col items-start gap-2 mb-10 md:mb-20">
+        <div className="flex flex-col items-start gap-[40px] mb-10 md:mb-20">
           <h1 className="text-2xl font-bold text-white pl-[4px]">GROWIT</h1>
           <Link href="/login" className="text-white">
             <span className="inline-flex items-center">
@@ -47,49 +55,30 @@ export default function SignupPage() {
         </div>
 
         <div className="flex flex-col flex-grow justify-center max-w-md mx-auto w-full pb-[24px]">
-          <h2 className="text-3xl font-bold mb-2 text-white">회원가입</h2>
-          <p className="text-gray-400 mb-8">
-            목표는 쉽게, 성장은 확실하게
-            <br />
-            GROWIT과 함께 매일 성장하세요.
-          </p>
-
           <form onSubmit={handleSubmit} className="space-y-6 w-full">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="기업용 이메일을 입력해주세요."
-                className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 focus:ring-[#8C7FF7]"
-              />
-              <p className="text-xs text-gray-500">! 이메일 형식에 맞게 입력해주세요.</p>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">PW</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="비밀번호를 입력해주세요."
-                className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 focus:ring-[#8C7FF7]"
-              />
-              <p className="text-xs text-gray-500">영문 대소문자, 숫자 포함 8자 이상</p>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">성함</label>
-              <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="성함을 입력해주세요."
-                className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 focus:ring-[#8C7FF7]"
-              />
-              <p className="text-xs text-gray-500">6자 이하로 입력해주세요</p>
-            </div>
+            <InputField
+              label="Email"
+              type="email"
+              placeholder="기업용 이메일을 입력해주세요."
+              value={formData.email}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              errorMessage={'이메일 형식에 맞게 입력해주세요.'}
+              isError={true}
+            />
+            <InputField
+              label="PW"
+              type="password"
+              placeholder="비밀번호를 입력해주세요."
+              value={formData.password}
+              onChange={e => setFormData({ ...formData, password: e.target.value })}
+            />
+            <InputField
+              label="성함"
+              type="text"
+              placeholder="성함을 입력해주세요."
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+            />
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-300">직무</label>
@@ -97,27 +86,27 @@ export default function SignupPage() {
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    role === '기획' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    formData.role === '기획' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setRole('기획')}
+                  onClick={() => setFormData({ ...formData, role: '기획' })}
                 >
                   기획
                 </button>
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    role === '디자이너' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    formData.role === '디자이너' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setRole('디자이너')}
+                  onClick={() => setFormData({ ...formData, role: '디자이너' })}
                 >
                   디자이너
                 </button>
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg ${
-                    role === '개발자' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
+                    formData.role === '개발자' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
                   }`}
-                  onClick={() => setRole('개발자')}
+                  onClick={() => setFormData({ ...formData, role: '개발자' })}
                 >
                   개발자
                 </button>
@@ -127,8 +116,8 @@ export default function SignupPage() {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-300">연차</label>
               <select
-                value={experience}
-                onChange={e => setExperience(e.target.value)}
+                value={formData.experience}
+                onChange={e => setFormData({ ...formData, experience: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border-none focus:ring-2 focus:ring-[#8C7FF7]"
               >
                 <option value="">선택</option>

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { InputField } from '@/shared/components/InputField';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,29 +39,23 @@ export default function LoginPage() {
             GROWIT과 함께 매일 성장하세요.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6 w-full">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">Email</label>
-              <input
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="flex flex-col gap-[24px] pb-[40px]">
+              <InputField
+                label="Email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="이메일을 입력해주세요"
-                className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 focus:ring-[#8C7FF7]"
               />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-300">PW</label>
-              <input
+              <InputField
+                label="PW"
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="비밀번호를 입력해주세요"
-                className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 focus:ring-[#8C7FF7]"
               />
             </div>
-
             <button
               type="submit"
               className="w-full py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
