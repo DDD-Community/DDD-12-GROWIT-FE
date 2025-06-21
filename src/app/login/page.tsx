@@ -2,24 +2,41 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { InputField } from '@/shared/components/InputField';
+import { useToast } from '@/shared/components/toast';
+import { useFetchLogin } from './useFetchLogin';
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login, loading } = useFetchLogin();
+  const { showToast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: 실제 로그인 API 호출
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    mode: 'onSubmit',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      // 임시 로그인 성공 처리
-      localStorage.setItem('token', 'dummy-token');
+      await login(data.email, data.password);
+      showToast('로그인에 성공했습니다!', 'success');
       router.push('/main');
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (error: any) {
+      showToast(error.message, 'error');
     }
   };
 
@@ -39,28 +56,45 @@ export default function LoginPage() {
             GROWIT과 함께 매일 성장하세요.
           </p>
 
-          <form onSubmit={handleSubmit} className="w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <div className="flex flex-col gap-[24px] pb-[40px]">
               <InputField
                 label="Email"
                 type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
                 placeholder="이메일을 입력해주세요"
+                {...register('email', {
+                  required: '이메일을 입력해주세요.',
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: '이메일 형식이 올바르지 않습니다.',
+                  },
+                })}
+                isError={!!errors.email}
+                errorMessage={errors.email?.message as string}
               />
               <InputField
                 label="PW"
                 type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
                 placeholder="비밀번호를 입력해주세요"
+                {...register('password', {
+                  required: '비밀번호를 입력해주세요.',
+                  minLength: {
+                    value: 6,
+                    message: '비밀번호는 6자 이상이어야 합니다.',
+                  },
+                })}
+                isError={!!errors.password}
+                errorMessage={errors.password?.message as string}
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg font-medium transition-colors ${
+                !loading ? 'bg-white text-black hover:bg-gray-100' : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
+              }`}
             >
-              로그인
+              {loading ? '로그인 중...' : '로그인'}
             </button>
           </form>
 
