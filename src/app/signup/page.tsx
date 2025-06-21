@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { InputField } from '@/shared/components/InputField';
+import { SignupDialogButton } from '@/app/signup/SignupDialogButton';
 
 // 회원가입 시 필요한 데이터타입
 interface SignupFormData {
@@ -181,15 +182,7 @@ export default function SignupPage() {
               )}
             </div>
 
-            <button
-              type="submit"
-              disabled={!isValid}
-              className={`w-full py-3 rounded-lg font-medium transition-colors ${
-                isValid ? 'bg-white text-black hover:bg-gray-100' : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              가입하기
-            </button>
+            <SignupDialogButton isValid={isValid} />
           </form>
         </div>
       </div>
