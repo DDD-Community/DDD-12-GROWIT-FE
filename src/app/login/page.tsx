@@ -4,9 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { InputField } from '@/shared/components/InputField';
 import { useToast } from '@/shared/components/toast';
 import { useFetchLogin } from './useFetchLogin';
+import { tokenController } from '@/shared/lib/token';
 
 interface LoginFormData {
   email: string;
@@ -17,6 +19,16 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, loading } = useFetchLogin();
   const { showToast } = useToast();
+
+  // 이미 로그인된 사용자 체크
+  useEffect(() => {
+    const accessToken = tokenController.getAccessToken();
+    const refreshToken = tokenController.getRefreshToken();
+
+    if (accessToken && refreshToken) {
+      router.push('/main');
+    }
+  }, [router]);
 
   const {
     register,
@@ -110,13 +122,7 @@ export default function LoginPage() {
       {/* 오른쪽 이미지 섹션 - lg 크기 이상에서만 표시 */}
       <div className="hidden md:flex w-1/2 bg-[#8C7FF7] rounded-[16px] m-[20px] p-[20px] items-center justify-center">
         <div className="w-full max-w-2xl">
-          <Image
-            src="/dashboard-preview.png"
-            alt="Dashboard Preview"
-            width={800}
-            height={600}
-            className="rounded-lg shadow-xl"
-          />
+          <Image src="/landing-header-message.svg" alt="Dashboard Preview" width={400} height={300} />
         </div>
       </div>
     </div>
