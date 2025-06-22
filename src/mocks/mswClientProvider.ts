@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 export default function MSWClientProvider({ children }: { children: React.ReactNode }) {
-  const [readyToUseMSW, setReadyToUseMSW] = useState(false);
+  const [readyToUseMSW, setReadyToUseMSW] = useState(process.env.NODE_ENV === 'production');
 
   useEffect(() => {
     const init = async () => {
