@@ -1,25 +1,19 @@
 'use client';
 
+import { useState } from 'react';
+import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { postSignUp } from '@/app/signup/api';
 import { InputField } from '@/shared/components/InputField';
 import { SignupDialogButton } from '@/app/signup/SignupDialogButton';
-
-type CareerYearType = 'NEWBIE' | 'JUNIOR' | 'MID' | 'SENIOR' | 'LEAD';
-
-// 회원가입 시 필요한 데이터타입
-interface SignupFormData {
-  email: string;
-  password: string;
-  name: string;
-  jobRoleId: string;
-  careerYear: '' | CareerYearType;
-  privacyPolicy: boolean; // 개인정보수집동의 관련해서 백엔드 저장이 필요할듯?
-  termsOfService: boolean; // 개인정보수집동의 관련해서 백엔드 저장이 필요할듯?
-}
+import { useToast } from '@/shared/components/toast';
+import { CommonError } from '@/shared/type/response';
+import { SignupFormData } from '@/app/signup/type';
 
 const SignUpForm = () => {
-  const router = useRouter();
+  const { showToast } = useToast();
+  const [isSubmitting, setSubmitting] = useState<boolean>(false);
+  const [isSignupSuccess, setSignupSuccess] = useState<boolean>(false);
   const {
     watch,
     setValue,
@@ -37,13 +31,27 @@ const SignUpForm = () => {
     },
   });
   const jobRoleId = watch('jobRoleId');
-
   const onSubmit = async (data: SignupFormData) => {
-    console.log('Form submitted:', data);
+    try {
+      setSubmitting(true);
+      await postSignUp(data);
+      setSubmitting(false);
+      setSignupSuccess(true);
+    } catch (error) {
+      const axiosError = error as AxiosError<CommonError>;
+      if (axiosError.isAxiosError && axiosError.response?.data.message) {
+        const errorMessage = axiosError.response
+          ? axiosError.response?.data.message
+          : '예상치 못한 문제가 발생했습니다.';
+        showToast(errorMessage);
+      }
+      setSubmitting(false);
+      setSignupSuccess(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
+    <form className="space-y-6 w-full">
       <InputField
         label="Email"
         type="email"
@@ -59,7 +67,7 @@ const SignUpForm = () => {
         errorMessage={errors.email?.message as string}
       />
       <InputField
-        label="PW"
+        label="비밀번호"
         type="password"
         placeholder="비밀번호를 입력해주세요."
         {...register('password', {
@@ -157,7 +165,12 @@ const SignUpForm = () => {
         </label>
         {errors.termsOfService && <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>}
       </div>
-      <SignupDialogButton isValid={isValid} />
+      <SignupDialogButton
+        isValid={isValid}
+        isSubmitting={isSubmitting}
+        isSignupSuccess={isSignupSuccess}
+        onClick={handleSubmit(onSubmit)}
+      />
     </form>
   );
 };
