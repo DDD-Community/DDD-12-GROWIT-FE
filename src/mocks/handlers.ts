@@ -55,5 +55,20 @@ const reissue = http.post('http://localhost:3000/api/reissue', async ({ request 
   }
 });
 
+const getJobRoles = http.get('/resource/jobroles', () => {
+  return HttpResponse.json(
+    {
+      data: {
+        jobRoles: [
+          { id: 'jobId1', name: '디자이너' },
+          { id: 'jobId2', name: '기획자' },
+          { id: 'jobId3', name: '개발자' },
+        ],
+      },
+    },
+    { status: 200 }
+  );
+});
+
 // 이 배열에 api 함수들을 넣어 작동
-export const handlers = [getUsers, login, reissue];
+export const handlers = [getUsers, login, reissue, getJobRoles];
