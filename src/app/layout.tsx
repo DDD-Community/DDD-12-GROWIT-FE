@@ -6,8 +6,8 @@ import './globals.css';
 import { ToastProvider } from '@/shared/components/toast';
 
 /** 루트 레이아웃 컴포넌트는 서버 컴포넌트이니 서버용 MSW 초기화 코드는 여기 맨위에서 실행하도록 했습니다 */
-import('@/mocks/server').then(() => {
-  startMSWServer();
+import('@/mocks/server').then(async () => {
+  await startMSWServer();
 });
 
 const pretendard = localFont({
@@ -30,9 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pretendard.variable} font-pretendard pretendard`}>
-        <ToastProvider>
-          <MSWClientProvider>{children}</MSWClientProvider>
-        </ToastProvider>
+        <MSWClientProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </MSWClientProvider>
       </body>
     </html>
   );
