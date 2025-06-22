@@ -7,6 +7,11 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
+
+# 빌드 시 환경 변수 전달
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 RUN yarn build
 
 # 2단계: 런타임 스테이지
