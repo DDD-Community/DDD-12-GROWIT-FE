@@ -1,5 +1,10 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { tokenController } from '@/app/login/token';
+import { tokenController } from '@/shared/lib/token';
+import { AuthToken } from '@/shared/type/authToken';
+
+interface TokenResponse {
+  data: AuthToken;
+}
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 const axiosInstance: AxiosInstance = axios.create({
@@ -43,8 +48,8 @@ axiosInstance.interceptors.response.use(
           throw new Error('No refresh token available');
         }
 
-        const response = await axios.post(`${API_BASE_URL}/api/reissue`, { refreshToken });
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        const { data } = await axios.post<TokenResponse>(`${API_BASE_URL}/auth/reissue`, { refreshToken });
+        const { accessToken, refreshToken: newRefreshToken } = data.data;
 
         // Update tokens
         tokenController.setTokens(accessToken, newRefreshToken);

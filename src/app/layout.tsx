@@ -1,22 +1,20 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import MSWClientProvider from '@/mocks/mswClientProvider';
 import { startMSWServer } from '@/mocks/server';
+import localFont from 'next/font/local';
+import MSWClientProvider from '@/mocks/mswClientProvider';
+import './globals.css';
+import { ToastProvider } from '@/shared/components/toast';
 
 /** 루트 레이아웃 컴포넌트는 서버 컴포넌트이니 서버용 MSW 초기화 코드는 여기 맨위에서 실행하도록 했습니다 */
 import('@/mocks/server').then(() => {
   startMSWServer();
 });
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+const pretendard = localFont({
+  src: '../../public/fonts/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
 });
 
 export const metadata: Metadata = {
@@ -31,8 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <MSWClientProvider>{children}</MSWClientProvider>
+      <body className={`${pretendard.variable} font-pretendard pretendard`}>
+        <ToastProvider>
+          <MSWClientProvider>{children}</MSWClientProvider>
+        </ToastProvider>
       </body>
     </html>
   );
