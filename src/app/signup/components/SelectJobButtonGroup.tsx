@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getJobRoles } from './api';
-import { JobRole } from './type';
+import { getJobRoles } from '../api';
+import { JobRole } from '../type';
 
 interface SelectJobButtonGroupProps {
   selectedJobId: string;

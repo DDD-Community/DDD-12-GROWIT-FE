@@ -1,20 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
-import { postSignUp } from '@/app/signup/api';
 import { InputField } from '@/shared/components/InputField';
-import { SignupDialogButton } from '@/app/signup/SignupDialogButton';
-import { SelectJobButtonGroup } from '@/app/signup/SelectJobButtonGroup';
-import { useToast } from '@/shared/components/toast';
-import { CommonError } from '@/shared/type/response';
+import { SignupDialogButton } from '@/app/signup/components/SignupDialogButton';
+import { SelectJobButtonGroup } from '@/app/signup/components/SelectJobButtonGroup';
 import { SignupFormData } from '@/app/signup/type';
+import { useFetchSignUp } from '@/app/signup/hooks/ useFetchSignUp';
 
 const SignUpForm = () => {
-  const { showToast } = useToast();
-  const [isSubmitting, setSubmitting] = useState<boolean>(false);
-  const [isSignupSuccess, setSignupSuccess] = useState<boolean>(false);
+  const { isSubmitting, isSignupSuccess, fetchSignUp } = useFetchSignUp();
   const {
     watch,
     setValue,
@@ -32,24 +26,6 @@ const SignUpForm = () => {
     },
   });
   const jobRoleId = watch('jobRoleId');
-  const onSubmit = async (data: SignupFormData) => {
-    try {
-      setSubmitting(true);
-      await postSignUp(data);
-      setSubmitting(false);
-      setSignupSuccess(true);
-    } catch (error) {
-      const axiosError = error as AxiosError<CommonError>;
-      if (axiosError.isAxiosError && axiosError.response?.data.message) {
-        const errorMessage = axiosError.response
-          ? axiosError.response?.data.message
-          : '예상치 못한 문제가 발생했습니다.';
-        showToast(errorMessage);
-      }
-      setSubmitting(false);
-      setSignupSuccess(false);
-    }
-  };
 
   return (
     <form className="space-y-6 w-full">
@@ -145,7 +121,7 @@ const SignUpForm = () => {
         isValid={isValid}
         isSubmitting={isSubmitting}
         isSignupSuccess={isSignupSuccess}
-        onClick={handleSubmit(onSubmit)}
+        onClick={handleSubmit(fetchSignUp)}
       />
     </form>
   );
