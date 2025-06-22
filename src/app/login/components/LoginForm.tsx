@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { InputField } from '@/shared/components/InputField';
 import { useToast } from '@/shared/components/toast';
-import { useFetchLogin } from './useFetchLogin';
+import { useFetchLogin } from '../hooks/useFetchLogin';
 import { tokenController } from '@/shared/lib/token';
 
 interface LoginFormData {

@@ -1,47 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
 
 interface SignupButtonProps {
   isValid: boolean;
+  onClick: () => void;
+  isSignupSuccess: boolean;
+  isSubmitting: boolean;
 }
 
-export const SignupDialogButton = ({ isValid }: SignupButtonProps) => {
+export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmitting }: SignupButtonProps) => {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
-  const handleSignup = async () => {
-    if (!isValid) return;
-    setShowSuccessDialog(true);
-
-    // try {
-    //   setIsSubmitting(true);
-    //
-    //   // 회원가입 API 호출
-    //   const response = await fetch('/api/signup', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
-    //
-    //   if (!response.ok) {
-    //     throw new Error('회원가입에 실패했습니다.');
-    //   }
-    //
-    //   // 성공 시 Dialog 표시
-    //   setShowSuccessDialog(true);
-    // } catch (error) {
-    //   console.error('회원가입 실패:', error);
-    //   // TODO: 에러 처리 (토스트 메시지 등)
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-  };
+  useEffect(() => {
+    if (isSignupSuccess) setShowSuccessDialog(true);
+  }, [isSignupSuccess]);
 
   const handleSuccessConfirm = () => {
     setShowSuccessDialog(false);
@@ -51,14 +27,16 @@ export const SignupDialogButton = ({ isValid }: SignupButtonProps) => {
   return (
     <>
       <button
-        onClick={handleSignup}
-        type="submit"
-        disabled={!isValid}
+        type="button"
+        onClick={onClick}
+        disabled={!isValid || isSubmitting}
         className={`w-full py-3 rounded-lg font-medium transition-colors ${
-          isValid ? 'bg-white text-black hover:bg-gray-100' : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
+          isValid && !isSubmitting
+            ? 'bg-white text-black hover:bg-gray-100'
+            : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
         }`}
       >
-        가입하기
+        {isSubmitting ? '가입 중...' : '가입하기'}
       </button>
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md">
@@ -69,11 +47,7 @@ export const SignupDialogButton = ({ isValid }: SignupButtonProps) => {
               </svg>
             </div>
             <DialogTitle className="text-center">회원가입 완료</DialogTitle>
-            <DialogDescription className="text-center">
-              GROWIT 회원가입이 성공적으로 완료되었습니다.
-              <br />
-              로그인 페이지로 이동합니다.
-            </DialogDescription>
+            <DialogDescription className="text-center">GROWIT 에 오신것을 환영해요!.</DialogDescription>
           </DialogHeader>
           <div className="flex justify-center">
             <button onClick={handleSuccessConfirm} className="w-full">
