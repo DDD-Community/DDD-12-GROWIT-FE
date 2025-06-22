@@ -19,6 +19,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/next.config.ts ./next.config.ts
+# app 소스 전체 복사
+COPY --from=builder /app/app ./app
 
 # ENV NODE_ENV production
 EXPOSE 3000
