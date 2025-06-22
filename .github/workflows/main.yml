@@ -1,34 +1,38 @@
 name: Deploy Next.js App to EC2
-
 on:
   push:
     branches:
       - main
-
 env:
-  DOCKER_IMAGE: wonchang0314/growit-fe:latest
+  DOCKER_IMAGE: wonchang0314/growit-fe
   CONTAINER_NAME: growit-next
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      ### Docker 이미지 빌드 & 푸시
+      
+      ### 고유한 태그 생성 (GitHub SHA 사용)
+      - name: Generate image tag
+        id: tag
+        run: |
+          echo "IMAGE_TAG=${{ env.DOCKER_IMAGE }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "LATEST_TAG=${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_OUTPUT
+      
+      ### Docker 이미지 빌드 & 푸시 (고유 태그 + latest)
       - name: Build and push Docker image
         run: |
-          docker build -t $DOCKER_IMAGE .
-          docker push $DOCKER_IMAGE
-
+          docker build -t ${{ steps.tag.outputs.IMAGE_TAG }} -t ${{ steps.tag.outputs.LATEST_TAG }} .
+          docker push ${{ steps.tag.outputs.IMAGE_TAG }}
+          docker push ${{ steps.tag.outputs.LATEST_TAG }}
+      
       ### EC2에 SSH 접속하여 Docker pull 및 재시작
       - name: SSH to EC2 and deploy
         uses: appleboy/ssh-action@v1.0.3
@@ -37,7 +41,19 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo docker pull ${{ env.DOCKER_IMAGE }}
+            # 기존 컨테이너 정리
             sudo docker stop ${{ env.CONTAINER_NAME }} || true
             sudo docker rm ${{ env.CONTAINER_NAME }} || true
-            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 3000:3000 ${{ env.DOCKER_IMAGE }}
+            
+            # 최신 이미지 강제 pull (캐시 무시)
+            sudo docker pull ${{ steps.tag.outputs.LATEST_TAG }}
+            
+            # 사용하지 않는 이미지 정리
+            sudo docker image prune -f
+            
+            # 새 컨테이너 실행
+            sudo docker run -d \
+              --name ${{ env.CONTAINER_NAME }} \
+              -p 3000:3000 \
+              --restart unless-stopped \
+              ${{ steps.tag.outputs.LATEST_TAG }}
