@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { postSignUp } from '@/app/signup/api';
 import { InputField } from '@/shared/components/InputField';
 import { SignupDialogButton } from '@/app/signup/SignupDialogButton';
+import { SelectJobButtonGroup } from '@/app/signup/SelectJobButtonGroup';
 import { useToast } from '@/shared/components/toast';
 import { CommonError } from '@/shared/type/response';
 import { SignupFormData } from '@/app/signup/type';
@@ -97,35 +98,10 @@ const SignUpForm = () => {
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-300">직무</label>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className={`px-4 py-2 rounded-lg ${
-              jobRoleId === 'jobId1' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
-            }`}
-            onClick={() => setValue('jobRoleId', 'jobId1', { shouldValidate: true })}
-          >
-            기획
-          </button>
-          <button
-            type="button"
-            className={`px-4 py-2 rounded-lg ${
-              jobRoleId === 'jobId2' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
-            }`}
-            onClick={() => setValue('jobRoleId', 'jobId2', { shouldValidate: true })}
-          >
-            디자이너
-          </button>
-          <button
-            type="button"
-            className={`px-4 py-2 rounded-lg ${
-              jobRoleId === 'jobId3' ? 'bg-[#8C7FF7] text-white' : 'bg-[#2C2C2E] text-gray-400'
-            }`}
-            onClick={() => setValue('jobRoleId', 'jobId3', { shouldValidate: true })}
-          >
-            개발자
-          </button>
-        </div>
+        <SelectJobButtonGroup
+          selectedJobId={jobRoleId}
+          onJobSelect={jobId => setValue('jobRoleId', jobId, { shouldValidate: true })}
+        />
         {errors.jobRoleId && <p className="text-xs text-red-500">{errors.jobRoleId.message as string}</p>}
       </div>
 

@@ -1,5 +1,6 @@
-import { SignupFormData } from '@/app/signup/type';
+import { JobRole, SignupFormData } from '@/app/signup/type';
 import { apiClient } from '@/shared/lib/apiClient';
+import { CommonResponse } from '@/shared/type/response';
 
 interface SignUpRequest extends Omit<SignupFormData, 'privacyPolicy' | 'termsOfService'> {
   requiredConsent: {
@@ -9,6 +10,8 @@ interface SignUpRequest extends Omit<SignupFormData, 'privacyPolicy' | 'termsOfS
 }
 
 interface SignUpResponse {}
+
+interface JobRolesResponse extends CommonResponse<{ jobRoles: JobRole[] }> {}
 
 export async function postSignUp(req: SignupFormData) {
   const { privacyPolicy, termsOfService, ...rest } = req;
@@ -20,4 +23,9 @@ export async function postSignUp(req: SignupFormData) {
     },
   };
   return await apiClient.post<SignUpResponse, SignUpResponse>('/auth/signup', request);
+}
+
+export async function getJobRoles() {
+  const { data } = await apiClient.get<JobRolesResponse>('/resource/jobroles');
+  return data.data.jobRoles;
 }
