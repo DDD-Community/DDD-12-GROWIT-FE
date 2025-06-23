@@ -7,5 +7,8 @@ const config = {
     options: {},
   },
   staticDirs: ['../public'],
+  ...(process.env.CI && {
+    base: '/DDD-12-GROWIT-FE/',
+  }),
 };
 export default config;
