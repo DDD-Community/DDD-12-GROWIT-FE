@@ -2,33 +2,51 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { InputField } from '@/shared/components/InputField';
 
 const meta = {
-  title: 'Input',
+  title: 'Input/InputField',
   component: InputField,
-
   parameters: {
     layout: 'centered',
     actions: { disable: true },
   },
-  tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <div style={{ width: 386 }}>
+        <Story />
+      </div>
+    ),
+  ],
+  argTypes: {
+    type: {
+      control: {
+        type: 'radio',
+      },
+      options: ['text', 'password', 'email', 'number'],
+      description: 'HTML input type을 설정합니다.',
+      defaultValue: 'text',
+    },
+    label: {
+      control: 'text',
+      description: '입력 필드 상단의 라벨',
+    },
+    placeholder: {
+      control: 'text',
+      description: '입력 필드의 placeholder',
+    },
+    isError: {
+      control: 'boolean',
+      description: '에러 상태 여부',
+    },
+    errorMessage: {
+      control: 'text',
+      description: '에러 메시지 텍스트',
+    },
+  },
 } satisfies Meta<typeof InputField>;
 
 export default meta;
 type Story = StoryObj<typeof InputField>;
 
-export const Default: Story = {
-  name: '기본 입력 필드',
-  globals: {
-    backgrounds: 'dark',
-  },
-  args: {
-    label: '이메일',
-    placeholder: '이메일을 입력하세요',
-    type: 'email',
-  },
-};
-
-export const WithError: Story = {
-  name: '에러 상태',
+export const Playground: Story = {
   globals: {
     backgrounds: 'dark',
   },

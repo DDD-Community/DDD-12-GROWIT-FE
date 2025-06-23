@@ -9,7 +9,7 @@ export default {
 const TypographyBlock = ({ label, className, children }: { label: string; className: string; children: string }) => (
   <div className="flex items-start justify-between border-b border-gray-700 py-2">
     <div className={className}>{children}</div>
-    <code className="text-sm text-white ml-4 whitespace-nowrap">className: {className}</code>
+    <code className="text-md text-white font-semibold ml-4 whitespace-nowrap">className: {className}</code>
   </div>
 );
 
