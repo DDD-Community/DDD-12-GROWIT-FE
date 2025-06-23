@@ -59,17 +59,6 @@ jobs:
         env:
           CI: true
 
-      - name: Debug - List built files
-        run: |
-          echo "=== Storybook static files ==="
-          find storybook-static -name "*.svg" | head -10
-          echo "=== Directory structure ==="
-          ls -la storybook-static/
-          echo "=== HTML content check ==="
-          grep -n "chevron-down" storybook-static/index.html || echo "chevron-down not found in index.html"
-          echo "=== Check if base path is set ==="
-          grep -n "DDD-12-GROWIT-FE" storybook-static/index.html || echo "Base path not found in HTML"
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
