@@ -7,8 +7,5 @@ const config = {
     options: {},
   },
   staticDirs: ['../public'],
-  images: {
-    unoptimized: true,
-  },
 };
 export default config;
