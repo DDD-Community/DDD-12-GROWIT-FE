@@ -6,6 +6,9 @@ const config = {
     name: '@storybook/nextjs',
     options: {},
   },
+  images: {
+    unoptimized: true,
+  },
   staticDirs: ['../public'],
   ...(process.env.CI && {
     base: '/DDD-12-GROWIT-FE/',
