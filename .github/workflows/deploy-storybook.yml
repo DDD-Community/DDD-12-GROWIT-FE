@@ -54,8 +54,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build Storybook
-        run: yarn build-storybook
+      - name: Build Storybook with base path
+        run: yarn build-storybook --base-href /DDD-12-GROWIT-FE/
         env:
           CI: true
 
