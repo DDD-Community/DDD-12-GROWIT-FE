@@ -99,13 +99,22 @@ export const Dropdown = ({
         ) : (
           <span className="text-label-alternative">{placeholder}</span>
         )}
-        <Image
-          src="/chevron-down.svg"
-          alt="chevron-down"
-          width={20}
-          height={20}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
           className={`absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-        />
+        >
+          <path
+            d="M5 7.5L10 12.5L15 7.5"
+            stroke="white"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
 
       {isOpen && (
@@ -118,7 +127,15 @@ export const Dropdown = ({
             >
               {selected === option ? (
                 <FlexBox className="gap-2">
-                  <Image src={'/check.svg'} alt="checked-option" width={24} height={24} />
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M20 6L9 17L4 12"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                   {option}
                 </FlexBox>
               ) : (
