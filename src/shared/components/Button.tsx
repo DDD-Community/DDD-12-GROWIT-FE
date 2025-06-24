@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  size: 'sm' | 'ml' | 'lg' | 'xl';
+  size: 'sm' | 'ml' | 'lg' | 'xl' | 'full';
   text: string;
   isPending?: boolean;
   className?: string;
@@ -13,20 +13,22 @@ const Button = ({ size, text, onClick, disabled = false, isPending = false, clas
       className={`rounded-lg 
       ${
         size === 'sm'
-          ? 'py-[8px] px-[14px] w-[106px]'
+          ? 'py-[8px] px-[14px] w-[106px] label-1-bold'
           : size === 'ml'
-            ? 'py-[10px] px-[16px] w-[110px]'
+            ? 'py-[10px] px-[16px] w-[110px] label-1-bold'
             : size === 'lg'
-              ? 'py-[10px] px-[18px] w-[123px]'
-              : 'py-[12px] px-[20px] w-[127px]'
+              ? 'py-[10px] px-[18px] w-[123px] body-1-bold'
+              : size === 'xl'
+                ? 'py-[12px] px-[20px] w-[127px] body-1-bold'
+                : 'py-3 px-4 w-full body-1-bold'
       } 
-      text-md font-semibold shadow-xs
+      shadow-xs
       ${disabled ? 'bg-interaction-disable text-label-disable cursor-not-allowed' : 'cursor-pointer bg-primary-normal hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal'}
        ${className}`}
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
     >
-      {isPending ? (
+      {!disabled && isPending ? (
         <svg
           aria-hidden="true"
           className="inline w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
@@ -44,7 +46,7 @@ const Button = ({ size, text, onClick, disabled = false, isPending = false, clas
           />
         </svg>
       ) : (
-        text
+        <span className="whitespace-nowrap">{text}</span>
       )}
     </button>
   );

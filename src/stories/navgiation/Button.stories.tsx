@@ -21,7 +21,7 @@ const meta = {
     size: 'lg',
     text: 'Button CTA',
     disabled: false,
-    isPending: true,
+    isPending: false,
   },
   decorators: [
     Story => (
