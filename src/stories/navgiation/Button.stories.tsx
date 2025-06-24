@@ -35,7 +35,7 @@ const meta = {
       control: {
         type: 'radio',
       },
-      options: ['sm', 'ml', 'lg', 'xl'],
+      options: ['sm', 'ml', 'lg', 'xl', 'full'],
     },
     text: {
       control: 'text',
