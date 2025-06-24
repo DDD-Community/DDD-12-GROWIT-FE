@@ -8,24 +8,36 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = ({ size, text, onClick, disabled = false, isPending = false, className = '' }: ButtonProps) => {
+  // 크기별 스타일
+  const getSizeStyles = () => {
+    switch (size) {
+      case 'sm':
+        return 'py-[8px] px-[14px] w-[106px] label-1-bold';
+      case 'ml':
+        return 'py-[10px] px-[16px] w-[110px] label-1-bold';
+      case 'lg':
+        return 'py-[10px] px-[18px] w-[123px] body-1-bold';
+      case 'xl':
+        return 'py-[12px] px-[20px] w-[127px] body-1-bold';
+      case 'full':
+        return 'py-3 px-4 w-full body-1-bold';
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+    onClick && onClick(e);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {};
   return (
     <button
       className={`rounded-lg 
-      ${
-        size === 'sm'
-          ? 'py-[8px] px-[14px] w-[106px] label-1-bold'
-          : size === 'ml'
-            ? 'py-[10px] px-[16px] w-[110px] label-1-bold'
-            : size === 'lg'
-              ? 'py-[10px] px-[18px] w-[123px] body-1-bold'
-              : size === 'xl'
-                ? 'py-[12px] px-[20px] w-[127px] body-1-bold'
-                : 'py-3 px-4 w-full body-1-bold'
-      } 
+      ${getSizeStyles()} 
       shadow-xs
       ${disabled ? 'bg-interaction-disable text-label-disable cursor-not-allowed' : 'cursor-pointer bg-primary-normal hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal'}
        ${className}`}
-      onClick={e => onClick && onClick(e)}
+      onClick={handleClick}
       disabled={disabled}
     >
       {!disabled && isPending ? (
