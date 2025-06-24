@@ -15,7 +15,7 @@ const meta = {
   component: DropdownField,
   tags: ['autodocs'],
   parameters: {
-    layout: 'full-screen',
+    layout: 'fullscreen',
     actions: { disable: true },
     docs: {
       description: {
