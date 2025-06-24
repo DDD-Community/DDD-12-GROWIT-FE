@@ -1,6 +1,7 @@
 'use client';
 
 import { useToast } from '@/shared/components/toast';
+import Button from '@/shared/components/Button';
 
 export default function TestToastPage() {
   const { showToast } = useToast();
@@ -22,7 +23,7 @@ export default function TestToastPage() {
   };
 
   return (
-    <div className="p-8 space-y-4">
+    <div className="p-8 space-y-4 bg-gray-200">
       <h1 className="text-2xl font-bold">토스트 테스트 페이지</h1>
 
       <div className="space-y-2">
@@ -50,6 +51,7 @@ export default function TestToastPage() {
         >
           정보 토스트 테스트
         </button>
+        <Button size={'xl'} text={'버튼'} isPending={false} />
       </div>
     </div>
   );
