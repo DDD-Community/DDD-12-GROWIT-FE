@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useToast, ToastProvider } from '@/shared/components/toast';
-import Button from '@/shared/components/Button';
+import { useToast, ToastProvider } from '@/shared/components/feedBack/toast';
+import Button from '@/shared/components/navigation/Button';
 
 const meta = {
   title: 'FeedBack/Toast',
@@ -46,13 +46,13 @@ export const Playground: Story = {
     return (
       <div className="p-8 space-y-4 rounded-xl">
         <div className="space-y-3 w-48">
-          <Button size="full" text="성공 토스트 테스트" onClick={handleTestSuccess} />
+          <Button size="xl" text="성공 토스트 테스트" onClick={handleTestSuccess} />
 
-          <Button size="full" text="실패 토스트 테스트" onClick={handleTestError} />
+          <Button size="xl" text="실패 토스트 테스트" onClick={handleTestError} />
 
-          <Button size="full" text="경고 토스트 테스트" onClick={handleTestWarning} />
+          <Button size="xl" text="경고 토스트 테스트" onClick={handleTestWarning} />
 
-          <Button size="full" text="정보 토스트 테스트" onClick={handleTestInfo} />
+          <Button size="xl" text="정보 토스트 테스트" onClick={handleTestInfo} />
         </div>
       </div>
     );

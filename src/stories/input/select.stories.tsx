@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DropdownField } from '@/shared/components/Dropdown';
+import { DropdownField } from '@/shared/components/input/Dropdown';
 import { useState } from 'react';
 
 const options = [
