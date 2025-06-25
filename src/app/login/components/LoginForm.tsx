@@ -89,7 +89,7 @@ const LoginForm = () => {
           errorMessage={errors.password?.message as string}
         />
       </div>
-      <Button type="submit" text="로그인" size={'full'} status={loading ? 'loading' : isSuccess ? 'success' : 'idle'} />
+      <Button type="submit" text="로그인" size={'xl'} status={loading ? 'loading' : isSuccess ? 'success' : 'idle'} />
       {/* <button
         type="submit"
         disabled={loading}
