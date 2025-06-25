@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { XIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Toast {
   id: string;
@@ -48,9 +49,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast, hideToast }}>
       {children}
       <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map(toast => (
-          <ToastItem key={toast.id} toast={toast} onClose={() => hideToast(toast.id)} />
-        ))}
+        <AnimatePresence>
+          {toasts.map(toast => (
+            <ToastItem key={toast.id} toast={toast} onClose={() => hideToast(toast.id)} />
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
@@ -108,13 +111,13 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
   };
 
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between p-4 rounded-lg shadow-lg w-[335px] md:w-[420px] bg-gray-500',
-        toast.isExisting
-          ? 'animate-out slide-out-to-right-full duration-300'
-          : 'animate-in slide-in-from-right-full duration-300'
-      )}
+    <motion.div
+      key={toast.id}
+      initial={{ x: '100%' }}
+      animate={{ x: 0 }}
+      exit={{ x: '100%' }}
+      transition={{ duration: 0.2 }}
+      className={cn('flex items-center justify-between p-4 rounded-lg shadow-lg w-[335px] md:w-[420px] bg-gray-500')}
     >
       <div className="flex items-center space-x-3  text-label-normal">
         {getIcon(toast.type)}
@@ -123,7 +126,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
       <button onClick={onClose} className="ml-4 text-white/80 hover:text-white transition-colors">
         <XIcon className="w-4 h-4" />
       </button>
-    </div>
+    </motion.div>
   );
 }
 
