@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  size: 'sm' | 'ml' | 'lg' | 'xl' | 'full';
+  size: 'sm' | 'ml' | 'lg' | 'xl';
   text: string;
   status?: 'idle' | 'loading' | 'error' | 'success';
   className?: string;
@@ -16,15 +16,13 @@ const Button = ({ size, text, onClick, disabled = false, status = 'idle', classN
   const getSizeStyles = () => {
     switch (size) {
       case 'sm':
-        return 'py-[8px] px-[14px] w-[106px] label-1-bold';
+        return 'py-[8px] px-[14px] w-full label-1-bold';
       case 'ml':
-        return 'py-[10px] px-[16px] w-[110px] label-1-bold';
+        return 'py-[10px] px-[16px] w-full label-1-bold';
       case 'lg':
-        return 'py-[10px] px-[18px] w-[123px] body-1-bold';
+        return 'py-[10px] px-[18px] w-full body-1-bold';
       case 'xl':
-        return 'py-[12px] px-[20px] w-[127px] body-1-bold';
-      case 'full':
-        return 'py-3 px-4 w-full body-1-bold';
+        return 'py-[12px] px-[20px] w-full body-1-bold';
     }
   };
 

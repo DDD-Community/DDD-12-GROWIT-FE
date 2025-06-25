@@ -27,7 +27,7 @@ const meta = {
       control: {
         type: 'radio',
       },
-      options: ['sm', 'ml', 'lg', 'xl', 'full'],
+      options: ['sm', 'ml', 'lg', 'xl'],
     },
     text: {
       control: 'text',
@@ -59,7 +59,7 @@ export const Playground: Story = {
     };
 
     return (
-      <div>
+      <div className="max-w-xs">
         <p className="font-semibold text-base text-gray-200">💡 사용 예시</p>
         <p className="font-semibold text-base text-gray-200">POST 요청 시작 → 로딩 스피너 표시</p>
         <p className="font-semibold text-base text-gray-200">요청 성공 → 체크 아이콘 및 완료 메시지 표시</p>
