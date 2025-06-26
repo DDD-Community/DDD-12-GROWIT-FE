@@ -1,16 +1,19 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
 
 interface DatePanelProps {
   selectedDate?: Date;
   focusedDate: Date;
+  isStartDate: boolean;
   onDateSelect: (date: Date) => void;
   onFocusedDateChange: (date: Date) => void;
   onClose: () => void;
 }
 
 const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
-  ({ selectedDate, focusedDate, onDateSelect, onFocusedDateChange, onClose }, ref) => {
+  ({ selectedDate, focusedDate, isStartDate, onDateSelect, onFocusedDateChange, onClose }, ref) => {
     const [currentMonth, setCurrentMonth] = useState(focusedDate);
     const gridRef = useRef<HTMLDivElement>(null);
 
@@ -147,7 +150,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
 
     const days = getCalendarDays();
     const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayNames = ['월', '화', '수', '목', '금', '토', '일'];
 
     return (
       <div
@@ -237,8 +240,9 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
                 }}
                 className={`
                 relative p-2 label-1-regular rounded-full transition-colors
-                ${isSelected ? 'bg-accent-violet text-white' : ''}
-                ${isFocused && !isSelected ? 'bg-gray-700 text-white' : ''}
+                ${isStartDate && day.getDay() !== 0 && 'pointer-events-none text-label-assistive'} 
+                ${isSelected ? 'bg-accent-violet text-primary-normal' : ''}
+                ${isFocused && !isSelected ? 'bg-gray-700 text-primary-normal' : ''}
                 ${!isInCurrentMonth ? 'text-gray-500' : ''}
                 ${isToday && !isSelected ? 'bg-gray-600' : ''}
                 hover:bg-gray-700

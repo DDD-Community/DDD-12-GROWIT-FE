@@ -11,12 +11,20 @@ const meta = {
   },
   decorators: [
     Story => (
-      <div style={{ width: 308, paddingLeft: 30, paddingTop: 50 }}>
+      <div style={{ width: 310, paddingLeft: 30, paddingTop: 50 }}>
         <Story />
       </div>
     ),
   ],
-  argTypes: {},
+  argTypes: {
+    isStartDate: {
+      control: { type: 'boolean' },
+      description: '목표 시작 날짜를 정하는 DatePicker인지 여부',
+    },
+    placeholder: {
+      control: { type: 'text' },
+    },
+  },
 } satisfies Meta<typeof DatePicker>;
 
 export default meta;
@@ -26,8 +34,19 @@ export const Default: Story = {
   globals: {
     backgrounds: 'dark',
   },
-  render: () => {
-    const [selectedDate, setSelectedDate] = useState<Date>();
-    return <DatePicker selectedDate={selectedDate} onDateSelect={setSelectedDate} />;
+  args: {
+    isStartDate: true,
+    placeholder: 'YYYY-MM-DD',
+  },
+  render: args => {
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+    return (
+      <DatePicker
+        isStartDate={args.isStartDate}
+        placeholder={args.placeholder}
+        selectedDate={selectedDate}
+        onDateSelect={setSelectedDate}
+      />
+    );
   },
 };

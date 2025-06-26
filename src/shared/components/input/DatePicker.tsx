@@ -1,3 +1,5 @@
+'use client';
+
 import { ButtonHTMLAttributes, useState, useRef, useEffect } from 'react';
 import DatePanel from './DatePanel';
 
@@ -5,16 +7,18 @@ interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
   selectedDate?: Date;
   onDateSelect?: (date: Date) => void;
   placeholder?: string;
+  isStartDate?: boolean;
 }
 
 const DatePicker = ({
-  selectedDate = new Date(),
+  selectedDate,
   onDateSelect,
-  placeholder = 'YYYY-MM-DD',
+  placeholder = 'YYYY - MM - DD',
+  isStartDate = false,
   ...props
 }: DatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [focusedDate, setFocusedDate] = useState<Date>(selectedDate);
+  const [focusedDate, setFocusedDate] = useState<Date | undefined>(selectedDate);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -120,7 +124,8 @@ const DatePicker = ({
         <DatePanel
           ref={panelRef}
           selectedDate={selectedDate}
-          focusedDate={focusedDate}
+          focusedDate={focusedDate || new Date()}
+          isStartDate={isStartDate}
           onDateSelect={handleDateSelect}
           onFocusedDateChange={setFocusedDate}
           onClose={() => setIsOpen(false)}
