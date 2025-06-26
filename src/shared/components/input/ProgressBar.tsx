@@ -8,7 +8,7 @@ export interface ProgressBarProps {
 }
 
 const ProgressBar = ({ doneTask, totalTask, label = '작업 완성률' }: ProgressBarProps) => {
-  const percentage = Math.min(Math.floor((doneTask / totalTask) * 100), 100) || 0;
+  const percentage = totalTask > 0 ? Math.min(Math.round((doneTask / totalTask) * 100), 100) : 0;
   return (
     <div className="flex flex-col gap-2 items-start w-full">
       <FlexBox className="w-full justify-between">
