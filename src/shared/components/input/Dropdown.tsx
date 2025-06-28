@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import FlexBox from './FlexBox';
+import FlexBox from '../layout/FlexBox';
 
 interface DropdownProps {
   options: string[];

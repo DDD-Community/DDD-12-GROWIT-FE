@@ -15,8 +15,9 @@ export function InputField({ label, isError, errorMessage, description, ...props
       <label className="block text-sm font-medium text-gray-300">{label}</label>
       <div className="relative">
         <input
+          maxLength={props.maxLength}
           {...props}
-          className={`w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
+          className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
             isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-[#8C7FF7]'
           }`}
         />
@@ -39,6 +40,17 @@ export function InputField({ label, isError, errorMessage, description, ...props
         )}
       </div>
       {isError && <p className="text-xs text-red-500">{errorMessage}</p>}{' '}
+    </div>
+  );
+}
+
+export function InputWithCount({ maxLength, value, ...props }: InputFieldProps) {
+  return (
+    <div className="pb-2 relative">
+      <InputField maxLength={maxLength} {...props} />
+      <div className="absolute right-0 bottom-[-5] label-1-normal text-label-neutral">
+        {value ? String(value).length : 0}/{maxLength}
+      </div>
     </div>
   );
 }

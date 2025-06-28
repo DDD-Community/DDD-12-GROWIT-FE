@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { InputField } from '@/shared/components/InputField';
+import { InputField } from '@/shared/components/input/InputField';
 import { SignupDialogButton } from '@/app/signup/components/SignupDialogButton';
 import { SelectJobButtonGroup } from '@/app/signup/components/SelectJobButtonGroup';
 import { SignupFormData } from '@/app/signup/type';

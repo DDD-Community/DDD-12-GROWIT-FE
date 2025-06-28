@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InputField, InputWithCount } from '@/shared/components/input/InputField';
+import { TextArea, TextAreaWithCount } from '@/shared/components/input/TextArea';
 import { useState } from 'react';
 
 const meta = {
-  title: 'Input/InputField',
-  component: InputField,
+  title: 'Input/TextArea',
+  component: TextArea,
   parameters: {
     layout: 'centered',
     actions: { disable: true },
@@ -17,14 +17,6 @@ const meta = {
     ),
   ],
   argTypes: {
-    type: {
-      control: {
-        type: 'radio',
-      },
-      options: ['text', 'password', 'email', 'number'],
-      description: 'HTML input type을 설정합니다.',
-      defaultValue: 'text',
-    },
     label: {
       control: 'text',
       description: '입력 필드 상단의 라벨',
@@ -46,21 +38,20 @@ const meta = {
       description: '인풋 최대 길이',
     },
   },
-} satisfies Meta<typeof InputField>;
+} satisfies Meta<typeof TextArea>;
 
 export default meta;
-type Story = StoryObj<typeof InputField>;
+type Story = StoryObj<typeof TextArea>;
 
 export const Default: Story = {
   globals: {
     backgrounds: 'dark',
   },
   args: {
-    label: '이메일',
-    placeholder: '이메일을 입력하세요',
-    type: 'email',
+    label: '1주차',
+    placeholder: 'ex) 하루 30분 UX 포트폴리오 관련 리서치',
     isError: false,
-    errorMessage: '올바른 이메일 형식이 아닙니다',
+    errorMessage: '에러메시지',
   },
 };
 
@@ -69,13 +60,14 @@ export const WithCount: Story = {
     backgrounds: 'dark',
   },
   args: {
-    label: '목표 이름',
-    placeholder: '목표 이름을 입력하세요',
-    type: 'text',
+    label: '2주차',
+    placeholder: 'ex) 나만의 인사이트 포트폴리오에 반영하기',
+    isError: false,
+    errorMessage: '에러메시지',
     maxLength: 30,
   },
   render: args => {
     const [value, setValue] = useState('');
-    return <InputWithCount value={value} onChange={e => setValue(e.target.value)} {...args} />;
+    return <TextAreaWithCount value={value} onChange={e => setValue(e.target.value)} {...args} />;
   },
 };

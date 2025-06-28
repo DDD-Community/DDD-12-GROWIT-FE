@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Button from '@/shared/components/Button';
+import Button from '@/shared/components/navigation/Button';
 import { useState } from 'react';
 
 const meta = {

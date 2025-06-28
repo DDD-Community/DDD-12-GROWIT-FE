@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { SignupFormData } from '@/app/signup/type';
 import { CommonError } from '@/shared/type/response';
-import { useToast } from '@/shared/components/toast';
+import { useToast } from '@/shared/components/feedBack/toast';
 import { postSignUp } from '@/app/signup/api';
 
 export function useFetchSignUp() {
