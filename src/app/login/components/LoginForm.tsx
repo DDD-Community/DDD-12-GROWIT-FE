@@ -3,11 +3,11 @@
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { InputField } from '@/shared/components/InputField';
-import { useToast } from '@/shared/components/toast';
+import { InputField } from '@/shared/components/input/InputField';
+import { useToast } from '@/shared/components/feedBack/toast';
 import { useFetchLogin } from '../hooks/useFetchLogin';
 import { tokenController } from '@/shared/lib/token';
-import Button from '@/shared/components/Button';
+import Button from '@/shared/components/navigation/Button';
 
 interface LoginFormData {
   email: string;

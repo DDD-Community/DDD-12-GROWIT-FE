@@ -38,14 +38,14 @@ const Button = ({ size, text, onClick, disabled = false, status = 'idle', classN
 
   return (
     <motion.button
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       className={`rounded-lg 
       ${getSizeStyles()} 
       shadow-xs
-      ${disabled ? 'bg-interaction-disable text-center text-label-disable cursor-not-allowed' : 'cursor-pointer bg-primary-normal hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal'}
+      ${disabled ? 'bg-interaction-disable text-label-disable cursor-not-allowed' : 'cursor-pointer bg-primary-normal hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal'}
        ${className}`}
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
@@ -104,7 +104,7 @@ const Button = ({ size, text, onClick, disabled = false, status = 'idle', classN
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="whitespace-nowrap"
+              className="flex justify-center items-center"
             >
               {text}
             </motion.span>
