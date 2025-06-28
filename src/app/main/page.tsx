@@ -6,7 +6,7 @@ import { tokenController } from '@/shared/lib/token';
 import { useFetchGetGoal } from '@/app/main/useFetchGetGoal';
 import { LogoutButton } from '@/app/main/components/LogoutButton';
 import { Sidebar } from '@/app/main/components/Sidebar';
-import Button from '@/shared/components/Button';
+import Button from '@/shared/components/navigation/Button';
 
 export default function MainPage() {
   useAutoLogout();

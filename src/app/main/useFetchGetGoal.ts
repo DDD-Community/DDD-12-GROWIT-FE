@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { Goal, Plan } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
-import { useToast } from '@/shared/components/toast';
 import { getGoalList } from '@/app/main/api';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 export function useFetchGetGoal() {
   const { showToast } = useToast();

@@ -1,6 +1,6 @@
-import Button from '@/shared/components/Button';
 import { useRouter } from 'next/navigation';
 import { tokenController } from '@/shared/lib/token';
+import Button from '@/shared/components/navigation/Button';
 
 export const LogoutButton = () => {
   const router = useRouter();

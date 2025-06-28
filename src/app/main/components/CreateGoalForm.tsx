@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { SignupFormData } from '@/app/signup/type';
 import { CreateGoalFormData } from '@/app/main/type';
-import { InputField } from '@/shared/components/InputField';
+import { InputField } from '@/shared/components/input/InputField';
 
 export const CreateGoalForm = () => {
   const {
