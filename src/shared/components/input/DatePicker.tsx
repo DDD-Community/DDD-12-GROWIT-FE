@@ -8,6 +8,8 @@ interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
   onDateSelect?: (date: Date) => void;
   placeholder?: string;
   isStartDate?: boolean;
+  allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
+  minDate?: Date; // 최소 선택 가능 날짜
 }
 
 const DatePicker = ({
@@ -15,6 +17,8 @@ const DatePicker = ({
   onDateSelect,
   placeholder = 'YYYY - MM - DD',
   isStartDate = false,
+  allowedDaysOfWeek,
+  minDate,
   ...props
 }: DatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,6 +130,8 @@ const DatePicker = ({
           selectedDate={selectedDate}
           focusedDate={focusedDate || new Date()}
           isStartDate={isStartDate}
+          allowedDaysOfWeek={allowedDaysOfWeek}
+          minDate={minDate}
           onDateSelect={handleDateSelect}
           onFocusedDateChange={setFocusedDate}
           onClose={() => setIsOpen(false)}

@@ -1,6 +1,6 @@
 'use client';
-import { useState, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState, useMemo, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { InputField } from '@/shared/components/input/InputField';
 import { Sidebar } from '@/app/main/components/Sidebar';
 import { ConfirmGoalBottomBar } from '@/app/main/components/ConfirmGoalBottomBar';
@@ -19,55 +19,85 @@ interface GoalFormData {
     asIs: string;
     toBe: string;
   };
-  plans: string[];
+  plans: { content: string }[];
 }
 
 const defaultValues: GoalFormData = {
   name: '',
   duration: { startDate: '', endDate: '' },
   beforeAfter: { asIs: '', toBe: '' },
-  plans: ['', '', '', ''],
+  plans: [{ content: '' }, { content: '' }, { content: '' }, { content: '' }],
 };
 
-// 임시 Badge 컴포넌트
-const Badge = ({ text }: { text: string }) => (
-  <span
-    style={{ backgroundColor: '#7D5EF7' }}
-    className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white mr-2"
-  >
-    {text}
-  </span>
-);
+// 날짜를 YYYY-MM-DD 형식으로 변환하는 함수 (시간대 문제 해결)
+const formatDateToYYYYMMDD = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+// YYYY-MM-DD 문자열을 Date 객체로 안전하게 변환하는 함수
+const parseDateFromYYYYMMDD = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day); // month는 0-based이므로 -1
+};
+
+// 다음 월요일을 찾는 함수
+const getNextMonday = (fromDate: Date = new Date()): Date => {
+  const nextMonday = new Date(fromDate);
+  const currentDay = nextMonday.getDay();
+  const daysUntilMonday = currentDay === 0 ? 1 : 8 - currentDay; // 일요일이면 다음날, 아니면 다음주 월요일
+  nextMonday.setDate(nextMonday.getDate() + daysUntilMonday);
+  return nextMonday;
+};
+
+// 4주 후 날짜를 계산하는 함수
+const getEndDate = (startDate: Date): Date => {
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + 27); // 4주 = 28일이므로 27일을 더함
+  return endDate;
+};
 
 export default function CreateGoalPage() {
   const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isValid },
     watch,
+    control,
+    register,
     setValue,
+    handleSubmit,
+    formState: { errors, isValid },
   } = useForm<GoalFormData>({
     mode: 'onChange',
     defaultValues,
   });
   const [completed, setCompleted] = useState(false);
+  const startDate = watch('duration.startDate');
 
-  // 프로그레스 계산
+  // 시작날짜가 변경될 때 종료날짜 자동 설정
+  useEffect(() => {
+    if (startDate) {
+      const startDateObj = parseDateFromYYYYMMDD(startDate);
+      const endDateObj = getEndDate(startDateObj);
+      setValue('duration.endDate', formatDateToYYYYMMDD(endDateObj));
+    }
+  }, [startDate, setValue]);
+
   const percent = useMemo(() => {
     let filled = 0;
     if (watch('duration.startDate') && watch('duration.endDate')) filled++;
     if (watch('name')) filled++;
     if (watch('beforeAfter.asIs')) filled++;
     if (watch('beforeAfter.toBe')) filled++;
-    watch('plans').forEach((p: string) => {
-      if (p) filled++;
+    watch('plans').forEach((p: { content: string }) => {
+      if (p?.content) filled++;
     });
     return Math.round((filled / 8) * 100);
   }, [watch()]);
 
   const onSubmit = (data: GoalFormData) => {
     setCompleted(true);
+    console.log(data);
     // TODO: API 연동
   };
 
@@ -96,11 +126,37 @@ export default function CreateGoalPage() {
                         </div>
                       </div>
                       <FlexBox className="gap-2">
-                        <DatePicker {...register('duration.startDate', { required: true })} />
+                        <Controller
+                          control={control}
+                          name="duration.startDate"
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <DatePicker
+                              selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
+                              onDateSelect={date => field.onChange(formatDateToYYYYMMDD(date))}
+                              allowedDaysOfWeek={[1]} // 월요일만 선택 가능 (1: 월요일)
+                              placeholder="시작일"
+                              minDate={getNextMonday()} // 오늘 이후의 다음 월요일부터 선택 가능
+                            />
+                          )}
+                        />
                         <span className="text-white">-</span>
-                        <DatePicker {...register('duration.endDate', { required: true })} />
+                        <Controller
+                          control={control}
+                          name="duration.endDate"
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <DatePicker
+                              selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
+                              onDateSelect={() => {}} // 비활성화되어 클릭해도 아무것도 하지 않음
+                              allowedDaysOfWeek={[]} // 빈 배열로 모든 요일 비활성화
+                              placeholder="종료일"
+                              disabled={true}
+                            />
+                          )}
+                        />
                       </FlexBox>
-                      <p className="caption-1-regular text-neutral-400">* 월요일 고정</p>
+                      <p className="caption-1-regular text-neutral-400">* 월요일 고정, 시작일 기준 4주 후 자동 설정</p>
                     </div>
                     <div className="mb-[20px]">
                       <div className="flex items-center space-x-[8px] mb-[12px]">
@@ -158,10 +214,10 @@ export default function CreateGoalPage() {
                           key={idx}
                           label={`${idx + 1}주차`}
                           placeholder={`ex) ${idx + 1}주차 목표를 입력하세요.`}
-                          isError={!!errors.plans?.[idx]}
-                          errorMessage={errors.plans?.[idx]?.message}
+                          isError={!!errors.plans?.[idx]?.content}
+                          errorMessage={errors.plans?.[idx]?.content?.message}
                           maxLength={30}
-                          {...register(`plans.${idx}`, { required: '주간 목표를 입력해주세요.' })}
+                          {...register(`plans.${idx}.content`, { required: '주간 목표를 입력해주세요.' })}
                         />
                       ))}
                     </div>
@@ -214,3 +270,13 @@ const SectionMessage = ({
     </div>
   );
 };
+
+// 임시 Badge 컴포넌트
+const Badge = ({ text }: { text: string }) => (
+  <span
+    style={{ backgroundColor: '#7D5EF7' }}
+    className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white mr-2"
+  >
+    {text}
+  </span>
+);
