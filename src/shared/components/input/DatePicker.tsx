@@ -99,6 +99,7 @@ const DatePicker = ({
     <div className="relative w-full">
       <button
         ref={triggerRef}
+        type="button"
         {...props}
         className="w-full h-full flex items-center gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal border border-label-assistive shadow-xs focus:ring-2 focus:outline-none"
         onClick={handleToggle}

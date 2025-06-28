@@ -5,12 +5,30 @@ import { motion } from 'framer-motion';
 interface ProgressBarProps {
   doneTask?: number;
   totalTask?: number;
+  isLoading: boolean;
   percentage: number;
   onComplete: () => void;
   isComplete: boolean;
+  isError?: boolean;
 }
 
-export const ConfirmGoalBottomBar = ({ doneTask, totalTask, percentage, onComplete, isComplete }: ProgressBarProps) => {
+export const ConfirmGoalBottomBar = ({
+  isLoading,
+  doneTask,
+  totalTask,
+  percentage,
+  onComplete,
+  isComplete,
+  isError = false,
+}: ProgressBarProps) => {
+  const isButtonEnabled = !isLoading && (isComplete || isError);
+
+  const getButtonText = () => {
+    if (isLoading) return '로딩중';
+    if (isError) return '다시 시도';
+    return '목표 작성 완료';
+  };
+
   return (
     <div className="w-full flex items-center px-[40px] pt-[12px] pb-[16px] gap-[95px] border-t border-line-normal">
       <div className="flex flex-col gap-2 items-start w-full">
@@ -29,13 +47,13 @@ export const ConfirmGoalBottomBar = ({ doneTask, totalTask, percentage, onComple
           />
         </FlexBox>
       </div>
-      <FlexBox className="w-[200px]">
+      <FlexBox className="min-w-[130px]">
         <Button
           size="ml"
-          text="목표 작성 완료"
+          text={getButtonText()}
           onClick={onComplete}
-          disabled={!isComplete}
-          className={isComplete ? '' : 'opacity-50 cursor-not-allowed'}
+          disabled={!isButtonEnabled}
+          className={isButtonEnabled ? '' : 'opacity-50 cursor-not-allowed'}
         />
       </FlexBox>
     </div>

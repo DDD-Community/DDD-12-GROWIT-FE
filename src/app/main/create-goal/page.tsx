@@ -8,8 +8,9 @@ import FlexBox from '@/shared/components/layout/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextAreaWithCount } from '@/shared/components/input/TextArea';
 import Image from 'next/image';
+import { useFetchPostCreateGoal } from '@/app/main/useFetchPostCreateGoal';
 
-interface GoalFormData {
+export interface GoalFormData {
   name: string;
   duration: {
     startDate: string;
@@ -69,9 +70,12 @@ export default function CreateGoalPage() {
     formState: { errors, isValid },
   } = useForm<GoalFormData>({
     mode: 'onChange',
+    reValidateMode: 'onChange',
     defaultValues,
   });
+  const { isLoading, isError, createGoal } = useFetchPostCreateGoal();
   const [completed, setCompleted] = useState(false);
+
   const startDate = watch('duration.startDate');
 
   // 시작날짜가 변경될 때 종료날짜 자동 설정
@@ -85,11 +89,13 @@ export default function CreateGoalPage() {
 
   const percent = useMemo(() => {
     let filled = 0;
-    if (watch('duration.startDate') && watch('duration.endDate')) filled++;
-    if (watch('name')) filled++;
-    if (watch('beforeAfter.asIs')) filled++;
-    if (watch('beforeAfter.toBe')) filled++;
-    watch('plans').forEach((p: { content: string }) => {
+    const formValues = watch();
+
+    if (formValues.duration.startDate && formValues.duration.endDate) filled++;
+    if (formValues.name) filled++;
+    if (formValues.beforeAfter.asIs) filled++;
+    if (formValues.beforeAfter.toBe) filled++;
+    formValues.plans.forEach((p: { content: string }) => {
       if (p?.content) filled++;
     });
     return Math.round((filled / 8) * 100);
@@ -98,7 +104,7 @@ export default function CreateGoalPage() {
   const onSubmit = (data: GoalFormData) => {
     setCompleted(true);
     console.log(data);
-    // TODO: API 연동
+    createGoal(data);
   };
 
   return (
@@ -129,13 +135,21 @@ export default function CreateGoalPage() {
                         <Controller
                           control={control}
                           name="duration.startDate"
-                          rules={{ required: true }}
+                          rules={{
+                            required: '시작일을 선택해주세요.',
+                            validate: value => {
+                              if (!value) return '시작일을 선택해주세요.';
+                              return true;
+                            },
+                          }}
                           render={({ field }) => (
                             <DatePicker
-                              selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
-                              onDateSelect={date => field.onChange(formatDateToYYYYMMDD(date))}
-                              allowedDaysOfWeek={[1]} // 월요일만 선택 가능 (1: 월요일)
                               placeholder="시작일"
+                              selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
+                              onDateSelect={date => {
+                                field.onChange(formatDateToYYYYMMDD(date));
+                              }}
+                              allowedDaysOfWeek={[1]} // 월요일만 선택 가능 (1: 월요일)
                               minDate={getNextMonday()} // 오늘 이후의 다음 월요일부터 선택 가능
                             />
                           )}
@@ -144,12 +158,16 @@ export default function CreateGoalPage() {
                         <Controller
                           control={control}
                           name="duration.endDate"
-                          rules={{ required: true }}
+                          rules={{
+                            required: '종료일이 필요합니다.',
+                            validate: value => {
+                              if (!value) return '종료일이 필요합니다.';
+                              return true;
+                            },
+                          }}
                           render={({ field }) => (
                             <DatePicker
                               selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
-                              onDateSelect={() => {}} // 비활성화되어 클릭해도 아무것도 하지 않음
-                              allowedDaysOfWeek={[]} // 빈 배열로 모든 요일 비활성화
                               placeholder="종료일"
                               disabled={true}
                             />
@@ -231,6 +249,8 @@ export default function CreateGoalPage() {
           percentage={percent}
           onComplete={handleSubmit(onSubmit)}
           isComplete={isValid && percent === 100 && !completed}
+          isLoading={isLoading}
+          isError={isError}
         />
       </main>
     </div>

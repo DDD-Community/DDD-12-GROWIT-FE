@@ -186,6 +186,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
         {/* 헤더 */}
         <div className="flex items-center justify-between pt-4 px-2 pb-2 border-label-assistive">
           <button
+            type="button"
             onClick={() => navigateMonth('prev')}
             className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
             aria-label="이전 달"
@@ -213,6 +214,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
           </h2>
 
           <button
+            type="button"
             onClick={() => navigateMonth('next')}
             className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
             aria-label="다음 달"
@@ -259,6 +261,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
             return (
               <button
                 key={index}
+                type="button"
                 onClick={() => {
                   if (isSelectable) {
                     onDateSelect(day);
