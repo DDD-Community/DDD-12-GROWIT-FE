@@ -3,13 +3,13 @@ import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
 import { GoalFormData } from '@/app/main/create-goal/page';
 
-interface GoalListResponse extends CommonResponse<{ goals: Goal[] }> {}
+interface GoalListResponse extends CommonResponse<Goal[]> {}
 
 interface CreateGoalRequest extends GoalFormData {}
 
 export async function getGoalList() {
   const { data } = await apiClient.get<GoalListResponse>('/goals');
-  return data.data.goals;
+  return data.data;
 }
 
 export async function postCreateGoal(req: CreateGoalRequest) {
