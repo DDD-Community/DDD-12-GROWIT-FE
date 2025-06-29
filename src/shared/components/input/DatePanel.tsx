@@ -7,13 +7,18 @@ interface DatePanelProps {
   selectedDate?: Date;
   focusedDate: Date;
   isStartDate: boolean;
+  allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
+  minDate?: Date; // 최소 선택 가능 날짜
   onDateSelect: (date: Date) => void;
   onFocusedDateChange: (date: Date) => void;
   onClose: () => void;
 }
 
 const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
-  ({ selectedDate, focusedDate, isStartDate, onDateSelect, onFocusedDateChange, onClose }, ref) => {
+  (
+    { selectedDate, focusedDate, isStartDate, allowedDaysOfWeek, minDate, onDateSelect, onFocusedDateChange, onClose },
+    ref
+  ) => {
     const [currentMonth, setCurrentMonth] = useState(focusedDate);
     const gridRef = useRef<HTMLDivElement>(null);
 
@@ -68,6 +73,23 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
 
     const isCurrentMonth = (date: Date) => {
       return date.getMonth() === currentMonth.getMonth() && date.getFullYear() === currentMonth.getFullYear();
+    };
+
+    // 특정 요일만 선택 가능한지 확인하는 함수
+    const isDateSelectable = (date: Date) => {
+      // 최소 날짜 체크 (minDate 포함)
+      if (minDate) {
+        const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        if (dateOnly < minDateOnly) {
+          return false;
+        }
+      }
+
+      if (!allowedDaysOfWeek || allowedDaysOfWeek.length === 0) {
+        return true; // 제한이 없으면 모든 날짜 선택 가능
+      }
+      return allowedDaysOfWeek.includes(date.getDay());
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -128,7 +150,9 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
         case 'Enter':
         case ' ':
           e.preventDefault();
-          onDateSelect(focusedDate);
+          if (isDateSelectable(focusedDate)) {
+            onDateSelect(focusedDate);
+          }
           break;
       }
 
@@ -150,7 +174,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
 
     const days = getCalendarDays();
     const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-    const dayNames = ['월', '화', '수', '목', '금', '토', '일'];
+    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
     return (
       <div
@@ -162,6 +186,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
         {/* 헤더 */}
         <div className="flex items-center justify-between pt-4 px-2 pb-2 border-label-assistive">
           <button
+            type="button"
             onClick={() => navigateMonth('prev')}
             className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
             aria-label="이전 달"
@@ -189,6 +214,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
           </h2>
 
           <button
+            type="button"
             onClick={() => navigateMonth('next')}
             className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
             aria-label="다음 달"
@@ -230,27 +256,33 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
             const isFocused = isSameDay(day, focusedDate);
             const isInCurrentMonth = isCurrentMonth(day);
             const isToday = isSameDay(day, new Date());
+            const isSelectable = isDateSelectable(day);
 
             return (
               <button
                 key={index}
+                type="button"
                 onClick={() => {
-                  onDateSelect(day);
-                  onFocusedDateChange(day);
+                  if (isSelectable) {
+                    onDateSelect(day);
+                    onFocusedDateChange(day);
+                  }
                 }}
                 className={`
                 relative p-2 label-1-regular rounded-full transition-colors
+                ${!isSelectable ? 'pointer-events-none text-label-assistive opacity-50' : ''}
                 ${isStartDate && day.getDay() !== 0 && 'pointer-events-none text-label-assistive'} 
                 ${isSelected ? 'bg-accent-violet text-primary-normal' : ''}
                 ${isFocused && !isSelected ? 'bg-gray-700 text-primary-normal' : ''}
                 ${!isInCurrentMonth ? 'text-gray-500' : ''}
                 ${isToday && !isSelected ? 'bg-gray-600' : ''}
-                hover:bg-gray-700
+                ${isSelectable ? 'hover:bg-gray-700' : ''}
                 focus:outline-none focus:ring-2 focus:accent-violet
               `}
                 role="gridcell"
-                aria-label={`${day.getFullYear()}년 ${day.getMonth() + 1}월 ${day.getDate()}일${isSelected ? ', 선택됨' : ''}${isToday ? ', 오늘' : ''}`}
+                aria-label={`${day.getFullYear()}년 ${day.getMonth() + 1}월 ${day.getDate()}일${isSelected ? ', 선택됨' : ''}${isToday ? ', 오늘' : ''}${!isSelectable ? ', 선택 불가' : ''}`}
                 aria-selected={isSelected}
+                aria-disabled={!isSelectable}
                 tabIndex={-1}
               >
                 {day.getDate()}
