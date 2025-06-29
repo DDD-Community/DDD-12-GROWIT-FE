@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TextArea } from '@/shared/components/input/TextArea';
-import { useState } from 'react';
 
 const meta = {
   title: 'Input/TextArea',
