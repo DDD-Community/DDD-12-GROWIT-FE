@@ -37,14 +37,13 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
       // 성공 토스트 메시지가 보인 후 main 페이지로 이동
       setTimeout(() => {
         router.push('/main');
-      }, 1500);
+      }, 500);
     } catch (err) {
       setIsError(true);
       const errorMessage = err instanceof Error ? err.message : '목표 생성에 실패했습니다.';
       setError(errorMessage);
       showToast(errorMessage, 'error');
     } finally {
-      console.log('ehdwkr');
       setIsLoading(false);
     }
   };
