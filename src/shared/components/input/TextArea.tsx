@@ -1,22 +1,29 @@
 'use client';
 
-import { InputHTMLAttributes } from 'react';
+import { TextareaHTMLAttributes } from 'react';
 
-interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   isError?: boolean;
   errorMessage?: string | null;
   description?: string;
 }
 
-export function InputField({ label, isError, errorMessage, description, ...props }: InputFieldProps) {
+export function TextArea({ label, isError, errorMessage, description, ...props }: TextAreaProps) {
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    e.currentTarget.style.height = 'auto'; // 줄이기 가능하게 초기화
+    e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`; // 실제 내용 높이만큼 확장
+  };
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-300">{label}</label>
       <div className="relative">
-        <input
+        <textarea
+          maxLength={props.maxLength}
+          onInput={handleInput}
           {...props}
-          className={`w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
+          className={`w-full min-h-[88px] px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
             isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-[#8C7FF7]'
           }`}
         />
@@ -39,6 +46,17 @@ export function InputField({ label, isError, errorMessage, description, ...props
         )}
       </div>
       {isError && <p className="text-xs text-red-500">{errorMessage}</p>}
+    </div>
+  );
+}
+
+export function TextAreaWithCount({ maxLength, value, ...props }: TextAreaProps) {
+  return (
+    <div className="pb-2 relative">
+      <TextArea maxLength={maxLength} {...props} />
+      <div className="absolute right-0 bottom-[-5] label-1-normal text-label-neutral">
+        {value ? String(value).length : 0}/{maxLength}
+      </div>
     </div>
   );
 }

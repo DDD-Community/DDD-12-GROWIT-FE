@@ -2,11 +2,12 @@
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { InputField } from '@/shared/components/InputField';
-import { useToast } from '@/shared/components/toast';
+import { useEffect, useState } from 'react';
+import { InputField } from '@/shared/components/input/InputField';
+import { useToast } from '@/shared/components/feedBack/toast';
 import { useFetchLogin } from '../hooks/useFetchLogin';
 import { tokenController } from '@/shared/lib/token';
+import Button from '@/shared/components/navigation/Button';
 
 interface LoginFormData {
   email: string;
@@ -17,6 +18,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { login, loading } = useFetchLogin();
   const { showToast } = useToast();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // 이미 로그인된 사용자 체크
   useEffect(() => {
@@ -24,6 +26,7 @@ const LoginForm = () => {
     const refreshToken = tokenController.getRefreshToken();
 
     if (accessToken && refreshToken) {
+      setIsSuccess(true);
       router.push('/main');
     }
   }, [router]);
@@ -44,7 +47,11 @@ const LoginForm = () => {
     try {
       await login(data.email, data.password);
       showToast('로그인에 성공했습니다!', 'success');
-      router.push('/main');
+      setIsSuccess(true);
+      // 현재는 애니메이션이 잘 보이는지를 테스트하기 위해 약간의 지연을 주었는데 삭제하셔도 무방합니다
+      setTimeout(() => {
+        router.push('/main');
+      }, 200);
     } catch (error: any) {
       showToast(error.message, 'error');
     }
@@ -82,7 +89,8 @@ const LoginForm = () => {
           errorMessage={errors.password?.message as string}
         />
       </div>
-      <button
+      <Button type="submit" text="로그인" size={'xl'} status={loading ? 'loading' : isSuccess ? 'success' : 'idle'} />
+      {/* <button
         type="submit"
         disabled={loading}
         className={`w-full py-3 rounded-lg font-medium transition-colors ${
@@ -90,7 +98,7 @@ const LoginForm = () => {
         }`}
       >
         {loading ? '로그인 중...' : '로그인'}
-      </button>
+      </button> */}
     </form>
   );
 };
