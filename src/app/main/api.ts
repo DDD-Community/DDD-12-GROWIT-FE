@@ -13,5 +13,5 @@ export async function getGoalList() {
 }
 
 export async function postCreateGoal(req: CreateGoalRequest) {
-  return await apiClient.post<CreateGoalRequest>('/goal', req);
+  return await apiClient.post<CreateGoalRequest>('/goals', req);
 }
