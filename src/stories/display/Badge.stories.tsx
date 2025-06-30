@@ -59,9 +59,12 @@ export const Default: Story = {
   },
   args: {
     label: 'label',
+    size: 'md',
+    type: 'default',
+    icon: icons['x'],
   },
   render: args => {
     const icon = icons[args.icon as keyof typeof icons];
-    return <Badge icon={icon} label={args.label} type={args.type} size={args.size} />;
+    return <Badge icon={icon} label={args.label} type={args.type} size={args.size}></Badge>;
   },
 };
