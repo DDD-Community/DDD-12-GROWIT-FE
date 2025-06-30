@@ -14,7 +14,7 @@ interface LoginFormData {
   password: string;
 }
 
-const LoginForm = () => {
+export const LoginForm = () => {
   const router = useRouter();
   const { login, loading } = useFetchLogin();
   const { showToast } = useToast();
@@ -102,5 +102,3 @@ const LoginForm = () => {
     </form>
   );
 };
-
-export default LoginForm;
