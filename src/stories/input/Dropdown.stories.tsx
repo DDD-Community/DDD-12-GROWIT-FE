@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import SelectField from '@/shared/components/input/Select';
+import DropdownField from '@/shared/components/input/Dropdown';
 import { useState } from 'react';
 
 const options = [
@@ -11,15 +11,15 @@ const options = [
 ];
 
 const meta = {
-  title: 'Input/Select',
-  component: SelectField,
+  title: 'Input/Dropdown',
+  component: DropdownField,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     actions: { disable: true },
     docs: {
       description: {
-        component: '접근성을 고려한 Select 컴포넌트입니다. 키보드 네비게이션(↑↓, Enter, Esc, Space)을 지원합니다.',
+        component: '접근성이 개선된 드롭다운 컴포넌트입니다. 키보드 네비게이션(↑↓, Enter, Esc, Space)을 지원합니다.',
       },
     },
   },
@@ -64,10 +64,10 @@ const meta = {
       action: 'changed',
     },
   },
-} satisfies Meta<typeof SelectField>;
+} satisfies Meta<typeof DropdownField>;
 
 export default meta;
-type Story = StoryObj<typeof SelectField>;
+type Story = StoryObj<typeof DropdownField>;
 
 export const Playground: Story = {
   globals: {
@@ -80,6 +80,6 @@ export const Playground: Story = {
   },
   render: args => {
     const [value, setValue] = useState('');
-    return <SelectField {...args} options={options} selected={value} onChange={setValue} />;
+    return <DropdownField {...args} options={options} selected={value} onChange={setValue} />;
   },
 };
