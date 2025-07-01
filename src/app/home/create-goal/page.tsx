@@ -2,13 +2,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { InputField } from '@/shared/components/input/InputField';
-import { Sidebar } from '@/app/main/components/Sidebar';
-import { ConfirmGoalBottomBar } from '@/app/main/components/ConfirmGoalBottomBar';
+import { Sidebar } from '@/feature/goal/components/Sidebar';
+import { ConfirmGoalBottomBar } from '@/feature/goal/components/ConfirmGoalBottomBar';
 import FlexBox from '@/shared/components/layout/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextAreaWithCount } from '@/shared/components/input/TextArea';
 import Image from 'next/image';
-import { useFetchPostCreateGoal } from '@/app/main/useFetchPostCreateGoal';
+import { useFetchPostCreateGoal } from '@/feature/goal/hooks/useFetchPostCreateGoal';
 
 export interface GoalFormData {
   name: string;

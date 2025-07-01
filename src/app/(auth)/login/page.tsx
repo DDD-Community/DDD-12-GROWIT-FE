@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { LoginForm } from '@/feature/login';
+import { LoginForm } from '@/feature/auth';
 
 export default function LoginPage() {
   return (
