@@ -51,12 +51,12 @@ export function TextArea({ label, isError, errorMessage, description, ...props }
       {isError ? (
         <FlexBox className="w-full justify-between">
           {isError && <p className="text-xs text-red-500">{errorMessage}</p>}
-          <div className="label-1-normal text-label-neutral">
+          <div className="label-1-regular text-label-neutral">
             {props.maxLength && `${wordCount}/${props.maxLength}`}
           </div>
         </FlexBox>
       ) : (
-        <div className="flex justify-end label-1-normal text-label-neutral">
+        <div className="flex justify-end label-1-regular text-label-neutral">
           {props.maxLength && `${wordCount}/${props.maxLength}`}
         </div>
       )}

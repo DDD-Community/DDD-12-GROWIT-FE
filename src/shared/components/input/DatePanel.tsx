@@ -179,7 +179,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
     return (
       <div
         ref={ref}
-        className="absolute top-full left-0 right-0 mt-2 bg-label-button-neutral text-white border border-label-assistive rounded-lg shadow-lg z-50"
+        className="min-w-[300px] absolute top-full left-0 right-0 mt-2 bg-label-button-neutral text-white border border-label-assistive rounded-lg shadow-lg z-50"
         role="dialog"
         aria-label="날짜 선택"
       >
