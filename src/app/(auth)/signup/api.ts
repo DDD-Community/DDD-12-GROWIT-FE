@@ -1,4 +1,4 @@
-import { JobRole, SignupFormData } from '@/app/signup/type';
+import { JobRole, SignupFormData } from '@/app/(auth)/signup/type';
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
 

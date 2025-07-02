@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
-import { SignupFormData } from '@/app/signup/type';
+import { SignupFormData } from '@/app/(auth)/signup/type';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { postSignUp } from '@/app/signup/api';
+import { postSignUp } from '@/app/(auth)/signup/api';
 
 export function useFetchSignUp() {
   const { showToast } = useToast();

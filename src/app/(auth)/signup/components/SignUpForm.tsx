@@ -2,10 +2,10 @@
 
 import { useForm } from 'react-hook-form';
 import { InputField } from '@/shared/components/input/InputField';
-import { SignupDialogButton } from '@/app/signup/components/SignupDialogButton';
-import { SelectJobButtonGroup } from '@/app/signup/components/SelectJobButtonGroup';
-import { SignupFormData } from '@/app/signup/type';
-import { useFetchSignUp } from '@/app/signup/hooks/ useFetchSignUp';
+import { SignupDialogButton } from '@/app/(auth)/signup/components/SignupDialogButton';
+import { SelectJobButtonGroup } from '@/app/(auth)/signup/components/SelectJobButtonGroup';
+import { SignupFormData } from '@/app/(auth)/signup/type';
+import { useFetchSignUp } from '@/app/(auth)/signup/hooks/ useFetchSignUp';
 
 const SignUpForm = () => {
   const { isSubmitting, isSignupSuccess, fetchSignUp } = useFetchSignUp();
