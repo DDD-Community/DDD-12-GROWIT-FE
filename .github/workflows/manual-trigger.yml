@@ -5,15 +5,15 @@ on:
       branch:
         description: '배포할 브랜치 선택'
         required: true
-        default: 'home'
+        default: 'main'
         type: choice
         options:
-          - home
+          - main
           - develop
 
 jobs:
   deploy:
-    uses: /.github/workflows/main.yml
+    uses: .github/workflows/main.yml
     with:
       branch: ${{ github.event.inputs.branch }}
     secrets: inherit
