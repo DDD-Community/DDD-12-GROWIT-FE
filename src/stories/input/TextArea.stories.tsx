@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TextArea, TextAreaWithCount } from '@/shared/components/input/TextArea';
-import { useState } from 'react';
+import { TextArea } from '@/shared/components/input/TextArea';
 
 const meta = {
   title: 'Input/TextArea',
@@ -67,7 +66,6 @@ export const WithCount: Story = {
     maxLength: 30,
   },
   render: args => {
-    const [value, setValue] = useState('');
-    return <TextAreaWithCount value={value} onChange={e => setValue(e.target.value)} {...args} />;
+    return <TextArea {...args} />;
   },
 };

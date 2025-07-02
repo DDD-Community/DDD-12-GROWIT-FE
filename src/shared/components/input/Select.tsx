@@ -1,8 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import FlexBox from '../layout/FlexBox';
 
-// 개발 예정
-interface DropdownProps {
+interface SelectProps {
   options: string[];
   selected: string;
   onChange: (selected: string) => void;
@@ -12,7 +11,7 @@ interface DropdownProps {
   className?: string;
 }
 
-export const Dropdown = ({
+export const Select = ({
   options,
   selected,
   onChange,
@@ -20,15 +19,15 @@ export const Dropdown = ({
   disabled = false,
   isError = false,
   className = '',
-}: DropdownProps) => {
-  const dropdownRef = useRef<HTMLDivElement>(null);
+}: SelectProps) => {
+  const selectRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIdx, setFocusedIdx] = useState(-1);
 
   // 드롭다운 바깥쪽 클릭 시 닫히도록 했습니다
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setFocusedIdx(-1);
       }
@@ -83,7 +82,7 @@ export const Dropdown = ({
   };
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="relative w-full" ref={selectRef}>
       <button
         type="button"
         onKeyDown={handleKeyBoardEvents}
@@ -149,19 +148,19 @@ export const Dropdown = ({
   );
 };
 
-interface DropdownFieldProps extends DropdownProps {
+interface SelectFieldProps extends SelectProps {
   label?: string;
   errorMessage?: string;
 }
 
-const DropdownField = ({ label, isError, errorMessage, ...rest }: DropdownFieldProps) => {
+const SelectField = ({ label, isError, errorMessage, ...rest }: SelectFieldProps) => {
   return (
     <div className="space-y-2">
       {label && <label className="block text-sm font-medium label-1-regular text-label-normal">{label}</label>}
-      <Dropdown isError={isError} {...rest} />
+      <Select isError={isError} {...rest} />
       {isError && errorMessage && <p className="label-1-regular text-red-500">{errorMessage}</p>}
     </div>
   );
 };
 
-export default DropdownField;
+export default SelectField;

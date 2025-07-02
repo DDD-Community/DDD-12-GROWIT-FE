@@ -6,7 +6,7 @@ import { Sidebar } from '@/feature/goal/components/Sidebar';
 import { ConfirmGoalBottomBar } from '@/feature/goal/components/ConfirmGoalBottomBar';
 import FlexBox from '@/shared/components/layout/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
-import { TextAreaWithCount } from '@/shared/components/input/TextArea';
+import { TextArea } from '@/shared/components/input/TextArea';
 import Image from 'next/image';
 import { useFetchPostCreateGoal } from '@/feature/goal/hooks/useFetchPostCreateGoal';
 
@@ -200,7 +200,7 @@ export default function CreateGoalPage() {
                       </p>
                     </div>
                     <FlexBox className="mt-6 gap-4">
-                      <TextAreaWithCount
+                      <TextArea
                         label="목표 설정 (AS IS)"
                         placeholder="현재 상태를 간단히 입력해주세요."
                         isError={!!errors.beforeAfter?.asIs}
@@ -209,7 +209,7 @@ export default function CreateGoalPage() {
                         maxLength={30}
                       />
                       <Image src="/icon/arrow-right.svg" alt="Dashboard Preview" width={24} height={24} />
-                      <TextAreaWithCount
+                      <TextArea
                         label="목표 설정 (TO BE)"
                         placeholder="4주 후 이루고 싶은 목표를 간단히 입력해주세요."
                         isError={!!errors.beforeAfter?.toBe}
@@ -228,7 +228,7 @@ export default function CreateGoalPage() {
                     </div>
                     <div className="grid grid-cols-1 gap-3">
                       {[0, 1, 2, 3].map(idx => (
-                        <TextAreaWithCount
+                        <TextArea
                           key={idx}
                           label={`${idx + 1}주차`}
                           placeholder={`ex) ${idx + 1}주차 목표를 입력하세요.`}
