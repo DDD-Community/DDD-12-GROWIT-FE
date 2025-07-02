@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { postCreateGoal } from '../api/api';
-import { GoalFormData } from '@/app/home/create-goal/page';
+import { GoalFormData } from '@/app/(home)/home/create-goal/page';
 import { useToast } from '@/shared/components/feedBack/toast';
 
 interface UseFetchPostCreateGoalReturn {
