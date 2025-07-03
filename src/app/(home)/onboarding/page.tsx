@@ -3,9 +3,18 @@
 import Image from 'next/image';
 import Button from '@/shared/components/navigation/Button';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function OnBoardingPage() {
   const router = useRouter();
+
+  // 온보딩 페이지 진입 시 방문 날짜 저장
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_visited_at', new Date().toISOString());
+    }
+  }, []);
+
   return (
     <div className="flex w-full h-full bg-[#1C1C1E]">
       <div className="flex flex-1 flex-col gap-14 px-4 py-8">

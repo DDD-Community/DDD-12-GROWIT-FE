@@ -10,10 +10,13 @@ export default function MainPage() {
   const { goal, isLoading } = useFetchGetGoal();
   const router = useRouter();
 
-  // goal이 없고 로딩이 끝났으면 온보딩 페이지로 이동
+  // goal이 없고 로딩이 끝났으며, 온보딩 기록이 없으면 온보딩 페이지로 이동
   useEffect(() => {
-    if (!isLoading && goal) {
-      router.replace('/onboarding');
+    if (!isLoading && !goal) {
+      const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
+      if (!onboardingVisited) {
+        router.replace('/onboarding');
+      }
     }
   }, [isLoading, goal, router]);
 
