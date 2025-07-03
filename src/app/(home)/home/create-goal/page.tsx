@@ -110,10 +110,15 @@ export default function CreateGoalPage() {
 
   return (
     <main className="flex flex-1 flex-col pt-[12px]">
-      <div className="px-[40px] py-[20px]">
+      {/* 데스크탑 제목 표시 */}
+      <div className="max-sm:hidden px-[40px] py-[20px]">
         <h1 className="text-white text-2xl font-bold">목표 생성하기</h1>
       </div>
-      <div className="flex flex-1 flex-col overflow-y-auto px-[20px]">
+      <div className="flex flex-1 flex-col sm:px-[20px] overflow-y-auto">
+        {/* 모바일 제목 표시 */}
+        <div className="sm:hidden px-[20px] pt-[16px] pb-[28px] ">
+          <h1 className="text-white text-2xl font-bold">목표 생성하기</h1>
+        </div>
         <div className="flex flex-col p-[20px]">
           <div className="max-w-[868px] w-full mx-auto">
             <div className="max-w-[646px] w-full mx-auto">

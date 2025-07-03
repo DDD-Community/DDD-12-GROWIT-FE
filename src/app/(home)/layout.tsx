@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAutoLogout } from '@/shared/hooks';
-import { BackButton } from '@/shared/components/navigation/BackButton';
 import Button from '@/shared/components/navigation/Button';
+import { ChevronLeft } from 'lucide-react';
 
 interface HomeLayoutProps {
   children?: React.ReactNode;
@@ -13,11 +13,11 @@ interface HomeLayoutProps {
 export default function HomePageLayout({ children }: HomeLayoutProps) {
   useAutoLogout();
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-screen h-screen max-sm:flex-col">
       {/* 데스크톱에서만 보이는 Sidebar */}
       <Sidebar />
       <MobileHeader />
-      {children}
+      <div className="flex flex-1 max-sm:overflow-auto">{children}</div>
     </div>
   );
 }
@@ -42,11 +42,28 @@ const MobileHeader = () => {
   const shouldShowBackButton = pathname !== '/home';
 
   return (
-    <div className="sm:hidden flex items-center justify-between p-4 bg-[#1C1C1E] border-b border-gray-800">
+    <div className="sm:hidden flex items-center justify-between px-2 pb-3 pt-12 bg-[#1C1C1E] border-b border-gray-700">
       <div className="flex items-center gap-3">{shouldShowBackButton && <BackButton />}</div>
       <div className="flex items-center gap-2">
         {pathname === '/home' && <Button size="sm" text="목표추가" onClick={() => router.push('/home/create-goal')} />}
       </div>
     </div>
+  );
+};
+
+const BackButton = () => {
+  const router = useRouter();
+  const handleBack = () => {
+    router.back();
+  };
+
+  return (
+    <button
+      onClick={handleBack}
+      className={`flex items-center justify-center w-10 h-10 rounded-lg  hover:bg-gray-700 transition-colors`}
+      aria-label="뒤로가기"
+    >
+      <ChevronLeft className="w-6 h-6 text-white" />
+    </button>
   );
 };
