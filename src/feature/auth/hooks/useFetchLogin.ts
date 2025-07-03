@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { postLoginApi } from '../api';
+import { postLoginApi } from '../api/api';
 import { tokenController } from '@/shared/lib/token';
 
 export function useFetchLogin() {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { postCreateGoal } from './api';
-import { GoalFormData } from './create-goal/page';
+import { postCreateGoal } from '../api/api';
+import { GoalFormData } from '@/app/home/create-goal/page';
 import { useToast } from '@/shared/components/feedBack/toast';
 
 interface UseFetchPostCreateGoalReturn {
@@ -34,9 +34,9 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
       setIsSuccess(true);
       showToast('목표가 성공적으로 생성되었습니다!', 'success');
 
-      // 성공 토스트 메시지가 보인 후 main 페이지로 이동
+      // 성공 토스트 메시지가 보인 후 home 페이지로 이동
       setTimeout(() => {
-        router.push('/main');
+        router.push('/home');
       }, 500);
     } catch (err) {
       setIsError(true);

@@ -14,7 +14,7 @@ interface LoginFormData {
   password: string;
 }
 
-const LoginForm = () => {
+export const LoginForm = () => {
   const router = useRouter();
   const { login, loading } = useFetchLogin();
   const { showToast } = useToast();
@@ -27,7 +27,7 @@ const LoginForm = () => {
 
     if (accessToken && refreshToken) {
       setIsSuccess(true);
-      router.push('/main');
+      router.push('/home');
     }
   }, [router]);
 
@@ -50,7 +50,7 @@ const LoginForm = () => {
       setIsSuccess(true);
       // 현재는 애니메이션이 잘 보이는지를 테스트하기 위해 약간의 지연을 주었는데 삭제하셔도 무방합니다
       setTimeout(() => {
-        router.push('/main');
+        router.push('/home');
       }, 200);
     } catch (error: any) {
       showToast(error.message, 'error');
@@ -102,5 +102,3 @@ const LoginForm = () => {
     </form>
   );
 };
-
-export default LoginForm;

@@ -3,9 +3,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { tokenController } from '@/shared/lib/token';
-import { useFetchGetGoal } from '@/app/main/useFetchGetGoal';
-import { LogoutButton } from '@/app/main/components/LogoutButton';
-import { Sidebar } from '@/app/main/components/Sidebar';
+import { useFetchGetGoal } from '@/feature/goal/hooks/useFetchGetGoal';
+import { Sidebar } from '@/feature/goal/components/Sidebar';
+import { LogoutButton } from '@/feature/auth';
 import Button from '@/shared/components/navigation/Button';
 
 export default function MainPage() {
@@ -18,7 +18,7 @@ export default function MainPage() {
       <Sidebar />
       <div className="flex flex-col h-screen bg-[#1C1C1E] overflow-hidden p-8">
         <div className="flex justify-end mb-8">
-          <Button size="ml" text="목표추가하기" onClick={() => router.push('/main/create-goal')} />
+          <Button size="ml" text="목표추가하기" onClick={() => router.push('/home/create-goal')} />
           <LogoutButton />
         </div>
         {goal && (

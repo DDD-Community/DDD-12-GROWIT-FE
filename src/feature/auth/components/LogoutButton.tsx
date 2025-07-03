@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 import { tokenController } from '@/shared/lib/token';
 import Button from '@/shared/components/navigation/Button';
