@@ -1,7 +1,7 @@
 import { Goal } from '@/shared/type/goal';
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { GoalFormData } from '@/app/home/create-goal/page';
+import { GoalFormData } from '@/app/(home)/home/create-goal/page';
 
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 

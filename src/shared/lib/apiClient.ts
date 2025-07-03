@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
     // 403 errors (unauthorized access)
     if (error.response?.status === 403) {
       tokenController.clearTokens();
-      window.location.href = '/auth';
+      window.location.href = '/login';
       return Promise.reject(error);
     }
 
@@ -60,7 +60,7 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         // If refresh fails, clear tokens and redirect to auth
         tokenController.clearTokens();
-        window.location.href = '/auth';
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
