@@ -4,10 +4,21 @@ import { useRouter } from 'next/navigation';
 import { useFetchGetGoal } from '@/feature/goal/hooks/useFetchGetGoal';
 import { LogoutButton } from '@/feature/auth';
 import Button from '@/shared/components/navigation/Button';
+import { useEffect } from 'react';
 
 export default function MainPage() {
-  const { goal } = useFetchGetGoal();
+  const { goal, isLoading } = useFetchGetGoal();
   const router = useRouter();
+
+  // goal이 없고 로딩이 끝났으며, 온보딩 기록이 없으면 온보딩 페이지로 이동
+  useEffect(() => {
+    if (!isLoading && !goal) {
+      const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
+      if (!onboardingVisited) {
+        router.replace('/onboarding');
+      }
+    }
+  }, [isLoading, goal, router]);
 
   return (
     <div className="w-full">
