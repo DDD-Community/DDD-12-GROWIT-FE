@@ -15,7 +15,7 @@ interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
 const DatePicker = ({
   selectedDate,
   onDateSelect,
-  placeholder = 'YYYY - MM - DD',
+  placeholder = 'YY - MM - DD',
   isStartDate = false,
   allowedDaysOfWeek,
   minDate,
@@ -53,10 +53,7 @@ const DatePicker = ({
         setIsOpen(false);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -66,15 +63,12 @@ const DatePicker = ({
   // ESC 키로 패널 닫기
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === 'Escape') {
         setIsOpen(false);
         triggerRef.current?.focus();
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscKey);
-    }
+    document.addEventListener('keydown', handleEscKey);
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
@@ -128,7 +122,7 @@ const DatePicker = ({
             fillOpacity="0.61"
           />
         </svg>
-        <span className="flex-1 text-left">{selectedDate ? formatDate(selectedDate) : placeholder}</span>
+        <span className="flex-1 text-left body-2-regular">{selectedDate ? formatDate(selectedDate) : placeholder}</span>
       </button>
 
       {isOpen && (

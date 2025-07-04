@@ -38,6 +38,18 @@ const whiteCircle = (
   </svg>
 );
 
+const X = (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M11 1L1 11M1 1L11 11"
+      stroke="#F7F7F8"
+      stroke-width="1.67"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
 const Icons: Record<IconKey, React.ReactNode> = {
   circle: circle,
   whiteCircle: whiteCircle,

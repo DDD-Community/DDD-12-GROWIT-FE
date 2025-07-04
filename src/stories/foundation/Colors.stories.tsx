@@ -37,6 +37,7 @@ const colorStories = [
       { className: 'bg-elevated-normal', label: 'BG Elevated Normal' },
       { className: 'bg-normal-alternative', label: 'BG Normal Alternative' },
       { className: 'bg-elevated-alternative', label: 'BG Elevated Alternative' },
+      { className: 'bg-elevated-assistive', label: 'BG Elevated Alternative' },
     ],
   },
   {
