@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Modal } from '@/shared/components/feedBack/Modal';
+import { Modal, StartJourneyPopUp } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { useState } from 'react';
@@ -26,6 +26,7 @@ export default meta;
 type Story = StoryObj<typeof Modal>;
 
 export const Playground: Story = {
+  name: 'Default',
   globals: {
     backgrounds: 'dark',
   },
@@ -34,7 +35,7 @@ export const Playground: Story = {
     const [date, setDate] = useState<Date>(new Date());
     return (
       <>
-        <div className="flex justify-center items-center w-72">
+        <div className="flex justify-center items-center">
           <Button size="xl" text="모달 열기" onClick={() => setIsOpen(true)} />
         </div>
         <Modal
@@ -52,6 +53,20 @@ export const Playground: Story = {
           renderFooter={() => <Button size="lg" text="작성 완료" />}
           className="w-[500px]"
         />
+      </>
+    );
+  },
+};
+
+export const StartJourneyModal: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <>
+        <div className="flex justify-center items-center w-72">
+          <Button size="xl" text="여정 시작하기" onClick={() => setIsOpen(true)} />
+        </div>
+        <StartJourneyPopUp open={isOpen} onClose={() => setIsOpen(false)} />
       </>
     );
   },
