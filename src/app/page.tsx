@@ -12,9 +12,9 @@ export default function Home() {
     const accessToken = tokenController.getAccessToken();
     const refreshToken = tokenController.getRefreshToken();
 
-    // 토큰이 있으면 main 페이지로, 없으면 login 페이지로 리다이렉션
+    // 토큰이 있으면 home 페이지로, 없으면 auth 페이지로 리다이렉션
     if (accessToken && refreshToken) {
-      router.push('/main');
+      router.push('/home');
     } else {
       router.push('/login');
     }

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from '@/shared/components/navigation/Button';
 import { useState } from 'react';
+import Icons from '../icons';
 
 const meta = {
   title: 'Navigation/Button',
@@ -23,6 +24,12 @@ const meta = {
     ),
   ],
   argTypes: {
+    variant: {
+      control: {
+        type: 'radio',
+      },
+      options: ['primary', 'secondary', 'tertiary'],
+    },
     size: {
       control: {
         type: 'radio',
@@ -55,7 +62,7 @@ export const Playground: Story = {
       setTimeout(() => {
         setIsSuccess(true);
         setIsPending(false);
-      }, 2000);
+      }, 1000);
     };
 
     return (
@@ -64,7 +71,12 @@ export const Playground: Story = {
         <p className="font-semibold text-base text-gray-200">POST 요청 시작 → 로딩 스피너 표시</p>
         <p className="font-semibold text-base text-gray-200">요청 성공 → 체크 아이콘 및 완료 메시지 표시</p>
         <p className="font-semibold text-base text-gray-200 pb-8">요청 실패 → 에러 상태 표시 (옵션)</p>
-        <Button {...args} status={isPending ? 'loading' : isSuccess ? 'success' : 'idle'} onClick={handleClick} />
+        <Button
+          {...args}
+          status={isPending ? 'loading' : isSuccess ? 'success' : 'idle'}
+          icon={Icons[`${args.variant !== 'primary' ? 'whiteCircle' : 'circle'}`]}
+          onClick={handleClick}
+        />
       </div>
     );
   },

@@ -1,29 +1,32 @@
 'use client';
 
-import { TextareaHTMLAttributes } from 'react';
+import { TextareaHTMLAttributes, useRef, useState } from 'react';
+import FlexBox from '../layout/FlexBox';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label: string;
+  label?: string;
   isError?: boolean;
   errorMessage?: string | null;
   description?: string;
 }
 
-export function TextArea({ label, isError, errorMessage, description, ...props }: TextAreaProps) {
+export function TextArea({ label, isError, errorMessage, description, className = '', ...props }: TextAreaProps) {
+  const [wordCount, setWordCount] = useState(0);
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.currentTarget.style.height = 'auto'; // 줄이기 가능하게 초기화
     e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`; // 실제 내용 높이만큼 확장
+    setWordCount(e.currentTarget.value.length);
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-300">{label}</label>
-      <div className="relative">
+    <div className={`space-y-0 ${className}`}>
+      {label && <label className="block text-sm font-medium text-gray-300">{label}</label>}
+      <div className="relative mt-2">
         <textarea
           maxLength={props.maxLength}
           onInput={handleInput}
           {...props}
-          className={`w-full min-h-[88px] px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
+          className={`w-full min-h-[88px] px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border border-label-assistive focus:ring-2 ${
             isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-[#8C7FF7]'
           }`}
         />
@@ -45,18 +48,18 @@ export function TextArea({ label, isError, errorMessage, description, ...props }
           </div>
         )}
       </div>
-      {isError && <p className="text-xs text-red-500">{errorMessage}</p>}
-    </div>
-  );
-}
-
-export function TextAreaWithCount({ maxLength, value, ...props }: TextAreaProps) {
-  return (
-    <div className="pb-2 relative">
-      <TextArea maxLength={maxLength} {...props} />
-      <div className="absolute right-0 bottom-[-5] label-1-normal text-label-neutral">
-        {value ? String(value).length : 0}/{maxLength}
-      </div>
+      {isError ? (
+        <FlexBox className="w-full justify-between">
+          {isError && <p className="text-xs text-red-500">{errorMessage}</p>}
+          <div className="label-1-regular text-label-neutral">
+            {props.maxLength && `${wordCount}/${props.maxLength}`}
+          </div>
+        </FlexBox>
+      ) : (
+        <div className="flex justify-end label-1-regular text-label-neutral">
+          {props.maxLength && `${wordCount}/${props.maxLength}`}
+        </div>
+      )}
     </div>
   );
 }

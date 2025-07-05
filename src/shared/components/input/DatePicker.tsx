@@ -15,7 +15,7 @@ interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
 const DatePicker = ({
   selectedDate,
   onDateSelect,
-  placeholder = 'YYYY - MM - DD',
+  placeholder = 'YY - MM - DD',
   isStartDate = false,
   allowedDaysOfWeek,
   minDate,
@@ -28,11 +28,17 @@ const DatePicker = ({
 
   // 날짜 포맷팅 함수
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    // const year = String(date.getFullYear()).slice(2);
+    // const month = String(date.getMonth() + 1).padStart(2, '0');
+    // const day = String(date.getDate()).padStart(2, '0');
+    // return `${year}-${month}-${day}`;
+    return date
+      .toLocaleDateString('ko-KR', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .slice(0, 10);
   };
 
   // 패널 외부 클릭 시 닫기
@@ -47,33 +53,27 @@ const DatePicker = ({
         setIsOpen(false);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, []);
 
   // ESC 키로 패널 닫기
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === 'Escape') {
         setIsOpen(false);
         triggerRef.current?.focus();
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscKey);
-    }
+    document.addEventListener('keydown', handleEscKey);
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isOpen]);
+  }, []);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -101,7 +101,7 @@ const DatePicker = ({
         ref={triggerRef}
         type="button"
         {...props}
-        className="w-full h-full flex items-center gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal border border-label-assistive shadow-xs focus:ring-2 focus:outline-none"
+        className="w-full h-full flex items-center gap-2 md:gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal border border-label-assistive shadow-xs focus:ring-2 focus:outline-none"
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
         aria-haspopup="dialog"
@@ -122,7 +122,7 @@ const DatePicker = ({
             fillOpacity="0.61"
           />
         </svg>
-        <span className="flex-1 text-left">{selectedDate ? formatDate(selectedDate) : placeholder}</span>
+        <span className="flex-1 text-left body-2-regular">{selectedDate ? formatDate(selectedDate) : placeholder}</span>
       </button>
 
       {isOpen && (

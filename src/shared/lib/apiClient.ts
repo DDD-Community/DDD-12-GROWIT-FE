@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // If refresh fails, clear tokens and redirect to login
+        // If refresh fails, clear tokens and redirect to auth
         tokenController.clearTokens();
         window.location.href = '/login';
         return Promise.reject(refreshError);

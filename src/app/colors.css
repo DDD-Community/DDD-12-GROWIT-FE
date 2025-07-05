@@ -19,6 +19,7 @@
   --color-normal-alternative: #0f0f10;
   --color-elevated-normal: #212225;
   --color-elevated-alternative: #141415;
+  --color-elevated-assistive: rgba(46, 47, 51, 1);
   --color-interaction-inactive: #5a5c63;
   --color-interaction-disable: #2e2f33;
   --color-line-normal: rgba(112, 115, 124, 0.32);
