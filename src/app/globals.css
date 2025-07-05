@@ -60,6 +60,10 @@
   }
 }
 
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
