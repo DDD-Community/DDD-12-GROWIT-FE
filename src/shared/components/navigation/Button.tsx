@@ -10,7 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariants;
   layout?: ButtonLayouts;
   size: ButtonSize;
-  text: string;
+  text?: string;
   status?: 'idle' | 'loading' | 'error' | 'success';
   icon?: React.ReactNode;
   className?: string;
@@ -19,7 +19,7 @@ const Button = ({
   size,
   variant = 'primary',
   layout = 'normal',
-  text,
+  text = '',
   icon,
   onClick,
   disabled = false,
