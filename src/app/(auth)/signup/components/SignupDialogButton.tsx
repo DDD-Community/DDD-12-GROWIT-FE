@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
+import Button from '@/shared/components/navigation/Button';
 
 interface SignupButtonProps {
   isValid: boolean;
@@ -26,18 +27,12 @@ export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmit
 
   return (
     <>
-      <button
-        type="button"
+      <Button
+        size={'ml'}
         onClick={onClick}
         disabled={!isValid || isSubmitting}
-        className={`w-full py-3 rounded-lg font-medium transition-colors ${
-          isValid && !isSubmitting
-            ? 'bg-white text-black hover:bg-gray-100'
-            : 'bg-[#2C2C2E] text-gray-500 cursor-not-allowed'
-        }`}
-      >
-        {isSubmitting ? '가입 중...' : '가입하기'}
-      </button>
+        text={isSubmitting ? '가입 중...' : '가입하기'}
+      />
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
