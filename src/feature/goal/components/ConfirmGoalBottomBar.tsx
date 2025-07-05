@@ -1,6 +1,7 @@
 import FlexBox from '@/shared/components/layout/FlexBox';
 import Button from '@/shared/components/navigation/Button';
 import { motion } from 'framer-motion';
+import { GoalDialogButton } from '@/feature/goal/components/GoalDialogButton';
 
 interface ProgressBarProps {
   doneTask?: number;
@@ -10,25 +11,19 @@ interface ProgressBarProps {
   onComplete: () => void;
   isComplete: boolean;
   isError?: boolean;
+  isSuccess?: boolean;
 }
 
 export const ConfirmGoalBottomBar = ({
-  isLoading,
   doneTask,
   totalTask,
   percentage,
   onComplete,
+  isLoading,
   isComplete,
   isError = false,
+  isSuccess = false,
 }: ProgressBarProps) => {
-  const isButtonEnabled = !isLoading && (isComplete || isError);
-
-  const getButtonText = () => {
-    if (isLoading) return '로딩중';
-    if (isError) return '다시 시도';
-    return '목표 작성 완료';
-  };
-
   return (
     <div className="w-full flex items-center max-sm:flex-col max-sm:gap-[20px] max-sm:px-[20px] max-sm:pb-[48px] sm:gap-[60px] sm:px-[40px] sm:pb-[16px] pt-[20px] border-t border-line-normal">
       <div className="flex flex-col gap-2 items-start w-full">
@@ -46,9 +41,13 @@ export const ConfirmGoalBottomBar = ({
           />
         </FlexBox>
       </div>
-      <FlexBox className="max-sm:w-full sm:min-w-[140px]">
-        <Button size="xl" text={getButtonText()} onClick={onComplete} disabled={!isButtonEnabled} />
-      </FlexBox>
+      <GoalDialogButton
+        isLoading={isLoading}
+        isComplete={isComplete}
+        isSuccess={isSuccess}
+        isError={isError}
+        onClick={onComplete}
+      />
     </div>
   );
 };

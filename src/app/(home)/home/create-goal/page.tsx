@@ -21,14 +21,22 @@ export interface GoalFormData {
     asIs: string;
     toBe: string;
   };
-  plans: { content: string }[];
+  plans: {
+    content: string;
+    weekOfMonth: number;
+  }[];
 }
 
 const defaultValues: GoalFormData = {
   name: '',
   duration: { startDate: '', endDate: '' },
   beforeAfter: { asIs: '', toBe: '' },
-  plans: [{ content: '' }, { content: '' }, { content: '' }, { content: '' }],
+  plans: [
+    { content: '', weekOfMonth: 1 },
+    { content: '', weekOfMonth: 2 },
+    { content: '', weekOfMonth: 3 },
+    { content: '', weekOfMonth: 4 },
+  ],
 };
 
 // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수 (시간대 문제 해결)
@@ -74,8 +82,8 @@ export default function CreateGoalPage() {
     reValidateMode: 'onChange',
     defaultValues,
   });
-  const { isLoading, isError, createGoal } = useFetchPostCreateGoal();
   const [completed, setCompleted] = useState(false);
+  const { isLoading, isError, isSuccess, createGoal } = useFetchPostCreateGoal();
 
   const startDate = watch('duration.startDate');
 
@@ -254,6 +262,7 @@ export default function CreateGoalPage() {
         onComplete={handleSubmit(onSubmit)}
         isComplete={isValid && percent === 100 && !completed}
         isLoading={isLoading}
+        isSuccess={isSuccess}
         isError={isError}
       />
     </main>
