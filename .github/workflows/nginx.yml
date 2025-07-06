@@ -3,7 +3,7 @@ name: Deploy Nginx
 on:
   push:
     paths:
-      - "nginx/**" # 오직 nginx 디렉토리 안 변경 시만 실행
+      - 'nginx/**' # 오직 nginx 디렉토리 안 변경 시만 실행
     branches:
       - main
 
@@ -40,4 +40,4 @@ jobs:
             sudo docker pull ${{ env.DOCKER_IMAGE }}
             sudo docker stop ${{ env.CONTAINER_NAME }} || true
             sudo docker rm ${{ env.CONTAINER_NAME }} || true
-            sudo docker run -d --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.DOCKER_IMAGE }}
+            sudo docker run -d --add-host=host.docker.internal:host-gateway --name ${{ env.CONTAINER_NAME }} -p 80:80 ${{ env.DOCKER_IMAGE }}
