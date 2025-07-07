@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAutoLogout } from '@/shared/hooks';
-import Button from '@/shared/components/navigation/Button';
 import { ChevronLeft } from 'lucide-react';
+import { useAutoLogout } from '@/shared/hooks';
+import { LogoutButton } from '@/feature/auth';
 
 interface HomeLayoutProps {
   children?: React.ReactNode;
@@ -14,9 +14,8 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
   useAutoLogout();
   return (
     <div className="flex w-screen h-screen max-sm:flex-col">
-      {/* 데스크톱에서만 보이는 Sidebar */}
-      <Sidebar />
-      <MobileHeader />
+      <Sidebar /> {/* 데스크톱에서만 보이는 Sidebar */}
+      <MobileHeader /> {/* 모바일에서만 보이는 Header */}
       <div className="flex flex-1 max-sm:overflow-auto">{children}</div>
     </div>
   );
@@ -25,10 +24,11 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
 const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const router = useRouter();
   return (
-    <aside className="max-sm:hidden flex h-screen w-[88px] bg-fill-normal flex-col items-center py-8 shadow-lg">
+    <aside className="max-sm:hidden flex h-screen w-[88px] gap-[24px] bg-fill-normal flex-col items-center py-8 shadow-lg">
       <button onClick={() => router.push('/home')}>
         <Image src="/Logomark.svg" alt="icon of growit" width={32} height={32} />
       </button>
+      <LogoutButton />
       <div className="flex-1 w-full flex flex-col items-center">{children}</div>
     </aside>
   );
@@ -44,9 +44,7 @@ const MobileHeader = () => {
   return (
     <div className="sm:hidden flex items-center justify-between px-2 pb-3 pt-12 bg-[#1C1C1E] border-b border-gray-700">
       <div className="flex items-center gap-3">{shouldShowBackButton && <BackButton />}</div>
-      <div className="flex items-center gap-2">
-        {pathname === '/home' && <Button size="sm" text="목표추가" onClick={() => router.push('/home/create-goal')} />}
-      </div>
+      <div className="flex items-center gap-2">{pathname === '/home' && <LogoutButton />}</div>
     </div>
   );
 };

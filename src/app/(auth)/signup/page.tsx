@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import SignUpForm from './components/SignUpForm';
+import { SignUpForm } from '@/composite/signup/signUpForm';
 
 export default function SignupPage() {
   return (

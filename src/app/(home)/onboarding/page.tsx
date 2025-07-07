@@ -1,13 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import Button from '@/shared/components/navigation/Button';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { CreateGoalButton } from '@/feature/goal';
 
 export default function OnBoardingPage() {
-  const router = useRouter();
-
   // 온보딩 페이지 진입 시 방문 날짜 저장
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -45,12 +43,7 @@ export default function OnBoardingPage() {
               <br />
               우리의 4주간의 여정 함께 잘 해보자!
             </div>
-            <Button
-              size="xl"
-              text="+ 목표 추가"
-              icon={<Image src="/icon/arrow-right.svg" alt="arrow right" width={24} height={24} />}
-              onClick={() => router.push('/home/create-goal')}
-            />
+            <CreateGoalButton />
           </div>
           <div className="min-w-[80px] min-h-[80px]" />
         </div>
