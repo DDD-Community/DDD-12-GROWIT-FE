@@ -33,12 +33,18 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
     };
   }, []);
 
+  useEffect(() => {
+    if (dialogRef.current && open) {
+      dialogRef.current.showModal();
+    } else if (!open && dialogRef.current?.open) {
+      dialogRef.current.close();
+    }
+  }, [open]);
+
   return (
     <dialog
       ref={dialogRef}
-      open={open}
-      className={`max-w-[338px] md:max-w-[480px] bg-elevated-assistive backdrop:bg-black/50! backdrop:bg-opacity-50
-        backdrop-blur-xl rounded-lg shadow-xl border-0 fixed inset-0 m-auto ${className}`}
+      className={`max-w-[338px] md:max-w-[480px] bg-elevated-assistive rounded-lg shadow-xl border-0 fixed inset-0 m-auto ${className}`}
     >
       {title && (
         <>
