@@ -13,7 +13,7 @@ export default function MainPage() {
       </div>
 
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}
-      <div className="flex flex-col max-sm:w-full sm:w-[360px] p-[16px] bg-accent-fg-violet">
+      <div className="flex flex-col max-sm:w-full sm:w-[334px] p-[16px] border-l border-line-normal">
         <GoalRoadMap />
         <ContributionGraph />
       </div>
