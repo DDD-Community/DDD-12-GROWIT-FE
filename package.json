@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.53.2",
     "@storybook/addon-essentials": "^9.0.0-alpha.11",
     "@storybook/addon-links": "^9.0.11",
     "@storybook/nextjs": "^9.0.11",
