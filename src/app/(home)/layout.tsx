@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAutoLogout } from '@/shared/hooks';
 import { LogoutButton } from '@/feature/auth';
+import { CreateGoalButton } from '@/feature/goal';
 
 interface HomeLayoutProps {
   children?: React.ReactNode;
@@ -29,6 +30,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
         <Image src="/Logomark.svg" alt="icon of growit" width={32} height={32} />
       </button>
       <LogoutButton />
+      <CreateGoalButton />
       <div className="flex-1 w-full flex flex-col items-center">{children}</div>
     </aside>
   );
