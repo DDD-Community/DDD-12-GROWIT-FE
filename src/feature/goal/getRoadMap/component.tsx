@@ -1,17 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import StepBox from '@/shared/components/display/StepBox';
-import { apiClient } from '@/shared/lib/apiClient';
 import ToolTip from '@/shared/components/display/ToolTip';
 import type { Plan, BeforeAfter } from './type';
 
-export const GetRoadMap = () => {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [asIs, setAsIs] = useState('');
-  const [toBe, setToBe] = useState('');
-
+interface GetRoadMapProps {
+  beforeAfter: BeforeAfter;
+  plans: Plan[];
+}
+export const GetRoadMap = ({ beforeAfter, plans }: GetRoadMapProps) => {
   const [tooltipStates, setTooltipStates] = useState({
     earth: false,
     rocket: false,
@@ -22,7 +21,6 @@ export const GetRoadMap = () => {
   });
 
   const handleMouseEnter = (key: keyof typeof tooltipStates) => {
-    console.log(key);
     setTooltipStates(prev => ({ ...prev, [key]: true }));
   };
 
@@ -37,25 +35,9 @@ export const GetRoadMap = () => {
     }));
   };
 
-  const initRoadMap = (beforeAfter: BeforeAfter, plans: Plan[]) => {
-    setAsIs(beforeAfter.asIs);
-    setToBe(beforeAfter.toBe);
-    setPlans(plans);
-  };
-  useEffect(() => {
-    const fetchGoals = async () => {
-      const response = await apiClient.get('mock/goals');
-      const data: any = response.data;
-      const beforeAfter: BeforeAfter = data.data[0].beforeAfter;
-      const plans: Plan[] = data.data[0].plans;
-      initRoadMap(beforeAfter, plans);
-    };
-    fetchGoals();
-  }, []);
-
   return (
-    <section className="relative">
-      <Image src={'/road-map-bg.png'} alt="road-map" width={278} height={570} />
+    <section className="relative overflow-r-hidden">
+      <Image src={'/road-map-bg.png'} alt="road-map" width={278} height={570} className="w-auto h-auto" priority />
       <div
         className="absolute top-12 right-16 cursor-pointer hover:opacity-80 transition-opacity z-1"
         onMouseEnter={() => handleMouseEnter('earth')}
@@ -64,17 +46,17 @@ export const GetRoadMap = () => {
       >
         <Image src={'/earth-blue.png'} alt="earth" width={96} height={89} />
       </div>
-      {tooltipStates.earth && <ToolTip text={toBe} className="absolute top-8 right-1/4 z-2" />}
+      {tooltipStates.earth && <ToolTip text={beforeAfter.toBe} className="absolute top-8 right-1/4 z-2" />}
 
       <div
-        className="absolute bottom-12 right-16 cursor-pointer hover:opacity-80 transition-opacity z-1"
+        className="absolute bottom-20 right-16 cursor-pointer hover:opacity-80 transition-opacity z-1"
         onMouseEnter={() => handleMouseEnter('rocket')}
         onMouseLeave={() => handleMouseLeave('rocket')}
         onClick={() => toggleTooltip('rocket')}
       >
         <Image src={'/rocket.png'} alt="earth" width={96} height={89} />
       </div>
-      {tooltipStates.rocket && <ToolTip text={asIs} className="absolute bottom-36 right-1/4 z-2" />}
+      {tooltipStates.rocket && <ToolTip text={beforeAfter.asIs} className="absolute bottom-36 right-1/4 z-2" />}
 
       <svg className="absolute top-8 w-[470px] h-[500px]" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -94,7 +76,7 @@ export const GetRoadMap = () => {
             onMouseLeave={() => handleMouseLeave('week1')}
             onClick={() => toggleTooltip('week1')}
           >
-            <StepBox step={1} className="absolute bottom-32 right-40" />
+            <StepBox step={1} className="absolute bottom-1/4 left-20" />
             {tooltipStates.week1 && (
               <ToolTip text={plans.length ? plans[0].content : ''} className="absolute bottom-1/3 right-34 z-2" />
             )}
