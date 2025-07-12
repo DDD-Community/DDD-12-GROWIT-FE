@@ -6,6 +6,19 @@ import { useFetchGetGoal, useFetchWeeklyTodoList } from './hooks';
 import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
+import { AddToDo } from '@/feature/todo/addToDoButton/component';
+
+// 확장된 Plan 타입 (weekOfMonth 포함)
+interface ExtendedPlan {
+  id: string;
+  content: string;
+  weekOfMonth?: number;
+}
+
+// 확장된 Goal 타입
+interface ExtendedGoal extends Omit<Goal, 'plans'> {
+  plans: ExtendedPlan[];
+}
 
 export const WeeklyPlanBoard = () => {
   const { isLoading, goal, plans } = useFetchGetGoal();
@@ -14,7 +27,7 @@ export const WeeklyPlanBoard = () => {
   return <PlanSelector.Provider plans={plans}>{goal && <WeeklyPlanBoardInner goal={goal} />}</PlanSelector.Provider>;
 };
 
-const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
+const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
   const { selectedPlanId, selectedPlanContent } = usePlanSelector();
   const { data: weeklyTodos } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
@@ -40,9 +53,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
         </div>
         <div className="flex items-center gap-2">
           <PlanSelector.Selector />
-          <button className="bg-accent-violet text-white py-[8px] px-[14px] text-sm font-semibold rounded-lg">
-            투두 추가 +
-          </button>
+          <AddToDo goal={goal} />
         </div>
       </div>
       {/* 목표/플랜/진행률 */}

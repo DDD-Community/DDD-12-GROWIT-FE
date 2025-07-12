@@ -9,6 +9,7 @@ interface DatePanelProps {
   isStartDate: boolean;
   allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
   minDate?: Date; // 최소 선택 가능 날짜
+  maxDate?: Date; // 최대 선택 가능 날짜
   onDateSelect: (date: Date) => void;
   onFocusedDateChange: (date: Date) => void;
   onClose: () => void;
@@ -16,7 +17,17 @@ interface DatePanelProps {
 
 const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
   (
-    { selectedDate, focusedDate, isStartDate, allowedDaysOfWeek, minDate, onDateSelect, onFocusedDateChange, onClose },
+    {
+      selectedDate,
+      focusedDate,
+      isStartDate,
+      allowedDaysOfWeek,
+      minDate,
+      maxDate,
+      onDateSelect,
+      onFocusedDateChange,
+      onClose,
+    },
     ref
   ) => {
     const [currentMonth, setCurrentMonth] = useState(focusedDate);
@@ -82,6 +93,15 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
         const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
         const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         if (dateOnly < minDateOnly) {
+          return false;
+        }
+      }
+
+      // 최대 날짜 체크 (maxDate 포함)
+      if (maxDate) {
+        const maxDateOnly = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        if (dateOnly > maxDateOnly) {
           return false;
         }
       }

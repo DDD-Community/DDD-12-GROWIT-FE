@@ -10,6 +10,7 @@ interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 
   isStartDate?: boolean;
   allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
   minDate?: Date; // 최소 선택 가능 날짜
+  maxDate?: Date; // 최대 선택 가능 날짜
 }
 
 const DatePicker = ({
@@ -19,6 +20,7 @@ const DatePicker = ({
   isStartDate = false,
   allowedDaysOfWeek,
   minDate,
+  maxDate,
   ...props
 }: DatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,6 +135,7 @@ const DatePicker = ({
           isStartDate={isStartDate}
           allowedDaysOfWeek={allowedDaysOfWeek}
           minDate={minDate}
+          maxDate={maxDate}
           onDateSelect={handleDateSelect}
           onFocusedDateChange={setFocusedDate}
           onClose={() => setIsOpen(false)}

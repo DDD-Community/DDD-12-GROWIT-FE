@@ -3,8 +3,15 @@
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import { Plan } from '@/shared/type/goal';
 
+// 확장된 Plan 타입 (weekOfMonth 포함)
+interface ExtendedPlan {
+  id: string;
+  content: string;
+  weekOfMonth?: number;
+}
+
 interface PlanSelectorContextValue {
-  plans: Plan[];
+  plans: ExtendedPlan[];
   selectedPlanId: string;
   selectedPlanContent: string;
   setSelectedPlanId: (id: string) => void;
@@ -16,7 +23,7 @@ interface PlanSelectorContextValue {
 
 const PlanSelectorContext = createContext<PlanSelectorContextValue | undefined>(undefined);
 
-export const PlanSelectorProvider = ({ plans, children }: { plans: Plan[]; children: ReactNode }) => {
+export const PlanSelectorProvider = ({ plans, children }: { plans: ExtendedPlan[]; children: ReactNode }) => {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const selectedPlanId = plans[selectedPlanIndex]?.id || '';
   const selectedPlanContent = plans[selectedPlanIndex]?.content || '';

@@ -1,6 +1,5 @@
 import { TodayMissionBoard, CheerMessageCard, WeeklyPlanBoard, GoalRoadMap, ContributionGraph } from '@/composite/home';
 import { apiClient } from '@/shared/lib/apiClient';
-import { AddToDo } from '@/feature/addToDo/component';
 
 export default async function MainPage() {
   const fetchContribution = async () => {
@@ -20,12 +19,8 @@ export default async function MainPage() {
           <WeeklyPlanBoard />
         </div>
       </div>
-
-      {/* Todo 추가 컴포넌트 (버튼 + 모달) */}
-      <AddToDo />
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}
-      <div className="flex flex-col gap-8 max-sm:w-full sm:w-[334px] p-[16px] border-l border-line-normal">
-        {/* Todo 추가 버튼 */}
+      <div className="flex flex-col gap-8 p-[16px] border-l border-line-normal max-sm:w-full sm:overflow-y-scroll sm:w-[334px]">
         <GoalRoadMap />
         <ContributionGraph contribution={contribution} />
       </div>

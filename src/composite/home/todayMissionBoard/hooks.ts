@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getTodayMissionList } from './api';
 import { Todo } from '@/shared/type/Todo';
-import { todoMock } from '@/feature/mock';
 
 export function useTodayMissionList() {
   const [data, setData] = useState<Todo[] | null>(null);

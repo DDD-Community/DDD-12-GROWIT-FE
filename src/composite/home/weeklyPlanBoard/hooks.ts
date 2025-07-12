@@ -5,19 +5,29 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { getGoalList, getWeeklyTodoList } from './api';
 import type { TodoWeeklyListRequest } from './api';
-import { Goal, Plan } from '@/shared/type/goal';
+import { Goal } from '@/shared/type/goal';
+
+// 확장된 Plan 타입 (weekOfMonth 포함)
+interface ExtendedPlan {
+  id: string;
+  content: string;
+  weekOfMonth?: number;
+}
+
+// 확장된 Goal 타입
+interface ExtendedGoal extends Omit<Goal, 'plans'> {
+  plans: ExtendedPlan[];
+}
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Todo } from '@/shared/type/Todo';
-import { todoMock } from '@/feature/mock';
-import { mockGoals } from '@/mocks/domain/todo';
 
 export function useFetchGetGoal() {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [goal, setGoal] = useState<Goal | null>(null);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [goal, setGoal] = useState<ExtendedGoal | null>(null);
+  const [plans, setPlans] = useState<ExtendedPlan[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,8 +39,7 @@ export function useFetchGetGoal() {
       setLoading(true);
       setError(null);
 
-      // const goalList = await getGoalList();
-      const goalList = await todoMock.getGoals();
+      const goalList = await getGoalList();
 
       // 첫 번째 goal을 가져오거나 null 처리
       const firstGoal = goalList.length > 0 ? goalList[0] : null;
@@ -106,8 +115,7 @@ export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest
     setIsLoading(true);
     setError(null);
     try {
-      // const result = await getWeeklyTodoList(params);
-      const result = await todoMock.getWeeklyTodoList(params);
+      const result = await getWeeklyTodoList(params);
       setData(result);
     } catch (err: any) {
       setError(err?.message || '주간 할 일 목록을 불러오지 못했습니다.');
