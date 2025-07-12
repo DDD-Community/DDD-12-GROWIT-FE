@@ -10,6 +10,8 @@ import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Todo } from '@/shared/type/Todo';
+import { todoMock } from '@/feature/mock';
+import { mockGoals } from '@/mocks/domain/todo';
 
 export function useFetchGetGoal() {
   const { showToast } = useToast();
@@ -26,7 +28,9 @@ export function useFetchGetGoal() {
     try {
       setLoading(true);
       setError(null);
-      const goalList = await getGoalList();
+
+      // const goalList = await getGoalList();
+      const goalList = await todoMock.getGoals();
 
       // 첫 번째 goal을 가져오거나 null 처리
       const firstGoal = goalList.length > 0 ? goalList[0] : null;
@@ -102,7 +106,8 @@ export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest
     setIsLoading(true);
     setError(null);
     try {
-      const result = await getWeeklyTodoList(params);
+      // const result = await getWeeklyTodoList(params);
+      const result = await todoMock.getWeeklyTodoList(params);
       setData(result);
     } catch (err: any) {
       setError(err?.message || '주간 할 일 목록을 불러오지 못했습니다.');
