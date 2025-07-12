@@ -6,3 +6,5 @@ export interface Todo {
   content: string;
   isCompleted: boolean;
 }
+
+export type DAY_OF_THE_WEEK = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';

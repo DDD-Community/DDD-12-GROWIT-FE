@@ -1,10 +1,10 @@
 'use client';
 
-import { useTodayMissionList } from './hooks';
-import Badge from '@/shared/components/display/Badge';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { useTodayMissionList } from './hooks';
 import { TodayMissionItem } from '@/feature/todo';
+import Badge from '@/shared/components/display/Badge';
 
 export const TodayMissionBoard = () => {
   const { data, isLoading, error } = useTodayMissionList();
@@ -13,7 +13,7 @@ export const TodayMissionBoard = () => {
   // 로딩 상태
   if (isLoading) {
     return (
-      <div className="flex flex-col bg-elevated-assistive rounded-xl p-6 min-h-[120px] animate-pulse">
+      <div className="flex flex-col bg-elevated-assistive border-line-normal rounded-xl p-6 min-h-[120px] animate-pulse">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-6 h-6 bg-gray-700 rounded-full" />
           <div className="w-24 h-4 bg-gray-700 rounded" />
@@ -27,7 +27,7 @@ export const TodayMissionBoard = () => {
   // 에러 상태
   if (error) {
     return (
-      <div className="flex flex-col bg-elevated-assistive rounded-xl p-6 min-h-[120px]">
+      <div className="flex flex-col bg-elevated-assistive border-line-normal rounded-xl p-6 min-h-[120px]">
         <span className="text-red-500">{error}</span>
       </div>
     );
@@ -36,7 +36,7 @@ export const TodayMissionBoard = () => {
   // 미션이 없을 때
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col bg-elevated-assistive rounded-xl p-6 min-h-[120px] items-center justify-center gap-4">
+      <div className="flex flex-col bg-elevated-assistive rounded-xl border-[1px] border-line-normal p-6 min-h-[120px] items-center justify-center gap-4">
         <div className="flex items-center gap-2 mb-2 w-full">
           <Image src="/icon/growit-check.svg" alt="icon of growit" width={24} height={24} />
           <span className="text-lg font-semibold text-label-normal flex items-center gap-2">오늘의 미션</span>
@@ -55,7 +55,7 @@ export const TodayMissionBoard = () => {
 
   // 미션이 있을 때
   return (
-    <div className="flex flex-col bg-elevated-assistive rounded-xl p-6 min-h-[120px]">
+    <div className="flex flex-col bg-elevated-assistive border-line-normal rounded-xl p-6 min-h-[120px]">
       <div className="flex items-center gap-2 mb-4">
         <span className="text-lg font-semibold text-label-alternative flex-1 flex items-center gap-2">
           <svg width="20" height="20" fill="none" viewBox="0 0 20 20">

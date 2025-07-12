@@ -1,14 +1,15 @@
 import { TodayMissionBoard, CheerMessageCard, WeeklyPlanBoard, GoalRoadMap, ContributionGraph } from '@/composite/home';
-import { CreateGoalButton } from '@/feature/goal';
 
 export default function MainPage() {
   return (
     <div className="flex w-full max-sm:flex-col">
       {/* 메인 레이아웃 */}
-      <div className="flex flex-col max-sm:mx-[20px] sm:flex-1 sm:mx-[40px]">
-        <CheerMessageCard />
-        <TodayMissionBoard />
-        <WeeklyPlanBoard />
+      <div className="flex flex-col sm:overflow-y-scroll sm:flex-1">
+        <div className="flex flex-col max-sm:mx-[20px] sm:mx-[40px] gap-[48px]">
+          <CheerMessageCard />
+          <TodayMissionBoard />
+          <WeeklyPlanBoard />
+        </div>
       </div>
 
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}

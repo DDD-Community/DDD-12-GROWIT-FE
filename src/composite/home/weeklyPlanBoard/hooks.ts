@@ -3,11 +3,12 @@
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { getGoalList, getWeeklyTodoList } from './api';
+import type { TodoWeeklyListRequest } from './api';
 import { Goal, Plan } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { getGoalList, getWeeklyTodoList } from './api';
-import type { DAY_OF_THE_WEEK, TodoWeeklyListRequest } from './api';
+import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Todo } from '@/shared/type/Todo';
 
 export function useFetchGetGoal() {
@@ -92,7 +93,7 @@ export function useAutoGoOnboarding(isLoading: boolean, goal: Goal | null) {
   }, [isLoading, goal, router]);
 }
 
-export function useWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
+export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
   const [data, setData] = useState<Record<DAY_OF_THE_WEEK, Todo[]> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,7 +116,7 @@ export function useWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
     if (goalId && planId) {
       fetchWeeklyTodoList({ goalId, planId });
     }
-  }, []);
+  }, [goalId, planId, fetchWeeklyTodoList]);
 
   return {
     data,

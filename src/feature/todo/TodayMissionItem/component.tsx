@@ -3,11 +3,11 @@ import Checkbox from '@/shared/components/input/Checkbox';
 import { Todo } from '@/shared/type/Todo';
 import { usePatchTodoStatus } from './hooks';
 
-interface TodoItemProps {
+interface WeeklyTodoItemProps {
   todo: Todo;
 }
 
-export const TodayMissionItem = ({ todo }: TodoItemProps) => {
+export const TodayMissionItem = ({ todo }: WeeklyTodoItemProps) => {
   const [checked, setChecked] = useState(todo.isCompleted);
   const [hideCheckbox, setHideCheckbox] = useState(false);
   const { mutate, isLoading } = usePatchTodoStatus();

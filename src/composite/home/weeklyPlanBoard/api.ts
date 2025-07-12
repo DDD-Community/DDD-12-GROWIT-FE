@@ -1,10 +1,9 @@
 import { Goal } from '@/shared/type/goal';
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { Todo } from '@/shared/type/Todo';
+import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import qs from 'qs';
 
-export type DAY_OF_THE_WEEK = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 interface TodoListResponse extends CommonResponse<Record<DAY_OF_THE_WEEK, Todo[]>> {}
 
@@ -23,6 +22,6 @@ export async function getWeeklyTodoList(req: TodoWeeklyListRequest) {
     goalId: req.goalId,
     planId: req.planId,
   });
-  const { data } = await apiClient.get<TodoListResponse>(`todos?${queryString}`);
+  const { data } = await apiClient.get<TodoListResponse>(`/todos?${queryString}`);
   return data.data;
 }
