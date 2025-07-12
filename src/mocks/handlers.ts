@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw';
+import { getGoals } from '@/composite/home/goalRoadMap/api';
 
 // 테스트용 더미 데이터
 const users = [
@@ -71,4 +72,4 @@ const getJobRoles = http.get('/resource/jobroles', () => {
 });
 
 // 이 배열에 api 함수들을 넣어 작동
-export const handlers = [getUsers, login, reissue, getJobRoles];
+export const handlers = [getUsers, login, reissue, getJobRoles, getGoals];

@@ -1,12 +1,12 @@
 import localFont from 'next/font/local';
 
-interface StepBoxProps {
+interface StepBoxProps extends React.HTMLAttributes<HTMLDivElement> {
   step: number;
   className?: string;
 }
 
 const ramche = localFont({
-  src: '../../../public/fonts/Ramche.woff2',
+  src: '../../../../public/fonts/Ramche.woff2',
   display: 'swap',
 });
 
