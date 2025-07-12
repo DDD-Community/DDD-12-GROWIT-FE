@@ -2,11 +2,13 @@
 
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Goal, Plan } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { getGoalList } from './api';
+import { getGoalList, getWeeklyTodoList } from './api';
+import type { DAY_OF_THE_WEEK, TodoWeeklyListRequest } from './api';
+import { Todo } from '@/shared/type/Todo';
 
 export function useFetchGetGoal() {
   const { showToast } = useToast();
@@ -88,4 +90,37 @@ export function useAutoGoOnboarding(isLoading: boolean, goal: Goal | null) {
       }
     }
   }, [isLoading, goal, router]);
+}
+
+export function useWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
+  const [data, setData] = useState<Record<DAY_OF_THE_WEEK, Todo[]> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchWeeklyTodoList = useCallback(async (params: TodoWeeklyListRequest) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await getWeeklyTodoList(params);
+      setData(result);
+    } catch (err: any) {
+      setError(err?.message || '주간 할 일 목록을 불러오지 못했습니다.');
+      setData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (goalId && planId) {
+      fetchWeeklyTodoList({ goalId, planId });
+    }
+  }, []);
+
+  return {
+    data,
+    isLoading,
+    error,
+    fetchWeeklyTodoList,
+  };
 }
