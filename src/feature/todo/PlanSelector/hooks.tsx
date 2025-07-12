@@ -13,7 +13,7 @@ interface PlanSelectorContextValue {
   plans: ExtendedPlan[];
   selectedPlanId: string;
   selectedPlanContent: string;
-  selectedWeekOfMonth: number;
+  selectedWeekIndex: number;
   setSelectedPlanId: (id: string) => void;
   selectedPlanIndex: number;
   setSelectedPlanIndex: (idx: number) => void;
@@ -27,7 +27,7 @@ export const PlanSelectorProvider = ({ plans, children }: { plans: ExtendedPlan[
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const selectedPlanId = plans[selectedPlanIndex]?.id || '';
   const selectedPlanContent = plans[selectedPlanIndex]?.content || '';
-  const selectedWeekOfMonth = plans[selectedPlanIndex]?.weekOfMonth || 0;
+  const selectedWeekIndex = plans[selectedPlanIndex]?.weekOfMonth || 0;
 
   const setSelectedPlanId = (id: string) => {
     const idx = plans.findIndex(p => p.id === id);
@@ -42,7 +42,7 @@ export const PlanSelectorProvider = ({ plans, children }: { plans: ExtendedPlan[
       plans,
       selectedPlanId,
       selectedPlanContent,
-      selectedWeekOfMonth,
+      selectedWeekIndex,
       setSelectedPlanId,
       selectedPlanIndex,
       setSelectedPlanIndex,

@@ -7,6 +7,7 @@ import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
+import { AddRetroSpectButton } from '@/feature/retrospects';
 
 // 확장된 Plan 타입 (weekOfMonth 포함)
 interface ExtendedPlan {
@@ -28,7 +29,7 @@ export const WeeklyPlanBoard = () => {
 };
 
 const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
-  const { selectedPlanId, selectedPlanContent, selectedWeekOfMonth } = usePlanSelector();
+  const { selectedPlanId, selectedPlanContent, selectedWeekIndex } = usePlanSelector();
   const { data: weeklyTodos } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
@@ -63,6 +64,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
             <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
             <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
             <span className="text-white text-[16px] font-[700]">‘{selectedPlanContent}’</span>
+            <AddRetroSpectButton goal={goal} currentWeekIndex={selectedWeekIndex} />
           </div>
           <div className="flex-1 flex items-center gap-2">
             <div className="w-full h-2 bg-fill-normal rounded">
@@ -73,7 +75,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
         </div>
       )}
       {/* 요일별 컬럼 */}
-      {weeklyTodos && <WeeklyTodoList weeklyTodos={weeklyTodos} goal={goal} currentWeekIndex={selectedWeekOfMonth} />}
+      {weeklyTodos && <WeeklyTodoList weeklyTodos={weeklyTodos} goal={goal} currentWeekIndex={selectedWeekIndex} />}
     </div>
   );
 };
