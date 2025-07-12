@@ -28,7 +28,7 @@ export const WeeklyPlanBoard = () => {
 };
 
 const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
-  const { selectedPlanId, selectedPlanContent } = usePlanSelector();
+  const { selectedPlanId, selectedPlanContent, selectedWeekOfMonth } = usePlanSelector();
   const { data: weeklyTodos } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
@@ -73,7 +73,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
         </div>
       )}
       {/* 요일별 컬럼 */}
-      {weeklyTodos && <WeeklyTodoList weeklyTodos={weeklyTodos} />}
+      {weeklyTodos && <WeeklyTodoList weeklyTodos={weeklyTodos} goal={goal} currentWeekIndex={selectedWeekOfMonth} />}
     </div>
   );
 };

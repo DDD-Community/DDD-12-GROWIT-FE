@@ -12,7 +12,7 @@ export default async function MainPage() {
   return (
     <div className="flex w-full max-sm:flex-col">
       {/* 메인 레이아웃 */}
-      <div className="flex flex-col sm:overflow-y-scroll sm:flex-1">
+      <div className="flex flex-col sm:overflow-y-scroll sm:flex-1 pt-[48px] pb-[48px]">
         <div className="flex flex-col max-sm:mx-[20px] sm:mx-[40px] gap-[48px]">
           <CheerMessageCard />
           <TodayMissionBoard />
