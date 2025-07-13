@@ -1,33 +1,26 @@
+import EditTodoModal from './EditTodoModal';
+import DeleteTodoModal from './DeleteTodoModal';
 import { useState } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from './hooks';
+import { usePatchTodoStatus } from '../hooks';
 import Button from '@/shared/components/navigation/Button';
+import { DAY_LABELS, WEEKDAYS } from '../const';
+import { Goal } from '@/shared/type/goal';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/shared/components/dropdown-menu';
+import { Edit, Trash2 } from 'lucide-react';
 
 interface WeeklyTodoItemProps {
   todo: Todo;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
-
-interface Goal {
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  plans: { id: string; content: string }[];
-}
-
-const DAY_LABELS: Record<DAY_OF_THE_WEEK, string> = {
-  MONDAY: '월',
-  TUESDAY: '화',
-  WEDNESDAY: '수',
-  THURSDAY: '목',
-  FRIDAY: '금',
-  SATURDAY: '토',
-  SUNDAY: '일',
-};
-
-const WEEKDAYS: DAY_OF_THE_WEEK[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
-const WEEKENDS: DAY_OF_THE_WEEK[] = ['SATURDAY', 'SUNDAY'];
 
 function getDateString(date: Date) {
   return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -83,12 +76,39 @@ interface WeeklyTodoListProps {
 
 export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTodoListProps) => {
   const [showWeekend, setShowWeekend] = useState(false);
+  const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex);
   const days = getWeekDates(weekStart, showWeekend);
 
+  const handleEditSubmit = (updatedTodo: Todo) => {
+    // TODO: 패치 로직 구현
+    console.log('Edit submitted:', updatedTodo);
+    setEditModal({ open: false, todo: null });
+  };
+
+  const handleDeleteSubmit = (todo: Todo) => {
+    // TODO: 패치 로직 구현
+    console.log('Delete submitted:', todo);
+    setDeleteModal({ open: false, todo: null });
+  };
+
   return (
     <div className="flex flex-col">
+      {/* 모달 영역 */}
+      <EditTodoModal
+        open={editModal.open}
+        todo={editModal.todo}
+        onClose={() => setEditModal({ open: false, todo: null })}
+        onSubmit={handleEditSubmit}
+      />
+      <DeleteTodoModal
+        open={deleteModal.open}
+        todo={deleteModal.todo}
+        onClose={() => setDeleteModal({ open: false, todo: null })}
+        onDelete={handleDeleteSubmit}
+      />
       <div className={`grid grid-cols-5 gap-2 min-h-[300px]`}>
         {days.map((day, idx) => (
           <div
@@ -114,7 +134,12 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
             {(weeklyTodos?.[day.key] || [])
               .filter(todo => todo.date === day.date.toISOString().split('T')[0])
               .map(todo => (
-                <WeeklyTodoItem key={todo.id} todo={todo} />
+                <WeeklyTodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onEdit={() => setEditModal({ open: true, todo })}
+                  onDelete={() => setDeleteModal({ open: true, todo })}
+                />
               ))}
           </div>
         ))}
@@ -141,7 +166,7 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
   );
 };
 
-const WeeklyTodoItem = ({ todo }: WeeklyTodoItemProps) => {
+const WeeklyTodoItem = ({ todo, onEdit, onDelete }: WeeklyTodoItemProps) => {
   const [checked, setChecked] = useState(todo.isCompleted);
   const { mutate, isLoading } = usePatchTodoStatus();
 
@@ -151,16 +176,43 @@ const WeeklyTodoItem = ({ todo }: WeeklyTodoItemProps) => {
     await mutate(todo.id, true);
   };
 
+  const handleEdit = () => {
+    // TODO: 편집 기능 구현
+    console.log('편집:', todo.id);
+    onEdit?.();
+  };
+
+  const handleDelete = () => {
+    // TODO: 삭제 기능 구현
+    console.log('삭제:', todo.id);
+    onDelete?.();
+  };
+
   return (
     <div className="bg-elevated-assistive rounded-lg p-3 flex items-center gap-2 relative group">
       <Checkbox checked={todo.isCompleted} onClick={handleCheck} />
       <span className={`text-sm ${todo.isCompleted ? 'line-through text-label-disable' : 'text-label-normal'}`}>
         {todo.content}
       </span>
-      {/* 더보기 메뉴 자리 */}
-      <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 rounded hover:bg-fill-normal">
-        ⋮
-      </button>
+      {/* 더보기 메뉴 */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 rounded hover:bg-fill-normal">
+            ⋮
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-32">
+          <DropdownMenuItem onClick={handleEdit}>
+            <Edit className="mr-2 h-4 w-4" />
+            편집
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleDelete} variant="destructive">
+            <Trash2 className="mr-2 h-4 w-4" />
+            삭제
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
