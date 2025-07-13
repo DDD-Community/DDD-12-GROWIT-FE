@@ -2,6 +2,7 @@ import { TodayMissionBoard, CheerMessageCard, WeeklyPlanBoard, GoalRoadMap, Cont
 import { CreateGoalButton } from '@/feature/goal';
 import { apiClient } from '@/shared/lib/apiClient';
 import { AddToDo } from '@/feature/addToDo/component';
+import OpenRoadMapButton from '@/composite/home/openRoadMapButton/component';
 
 export default async function MainPage() {
   const fetchContribution = async () => {
@@ -24,10 +25,12 @@ export default async function MainPage() {
       {/* Todo 추가 컴포넌트 (버튼 + 모달) */}
       <AddToDo />
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}
-      <div className="flex flex-col gap-8 max-sm:w-full sm:w-[334px] p-[16px] border-l border-line-normal">
+      <div className="flex flex-col gap-8 p-[16px] md:border-l border-line-normal w-[335px] mx-auto">
         {/* Todo 추가 버튼 */}
         <GoalRoadMap />
         <ContributionGraph contribution={contribution} />
+        {/* 로드맵 모바일 버전 */}
+        <OpenRoadMapButton />
       </div>
     </div>
   );

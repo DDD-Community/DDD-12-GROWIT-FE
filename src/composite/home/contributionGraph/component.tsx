@@ -4,7 +4,7 @@ import { Rocket } from './icons';
 type Contribution = 'COMPLETED' | 'NONE';
 export const ContributionGraph = ({ contribution }: { contribution: Contribution[] }) => {
   return (
-    <article>
+    <article className="w-full p-6 border border-line-normal rounded-lg md:border-none">
       <h2 className="heading-1-bold flex items-center gap-2 text-primary-normal pb-4">
         <Rocket />
         진척도
@@ -13,7 +13,7 @@ export const ContributionGraph = ({ contribution }: { contribution: Contribution
         {contribution.map((item, index) => (
           <div
             key={`contribution-${index}`}
-            className={`w-[32px] h-[32px] rounded-md ${item === 'COMPLETED' ? 'bg-accent-violet' : 'bg-gray-200'}`}
+            className={`w-[30px] h-[30px] rounded-md ${item === 'COMPLETED' ? 'bg-accent-violet' : 'bg-gray-200'}`}
           />
         ))}
       </div>
