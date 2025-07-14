@@ -1,6 +1,6 @@
 import EditTodoModal from './EditTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { usePatchTodoStatus } from '../hooks';
@@ -38,7 +38,17 @@ function isToday(date: Date) {
 // 주차별 시작 날짜 계산
 function getWeekStartDate(startDate: string, weekIdx: number) {
   const start = new Date(startDate);
+
+  // 시작 날짜가 해당 주의 월요일이 되도록 조정
+  const dayOfWeek = start.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 월요일까지의 일수
+
+  // 시작 날짜를 해당 주의 월요일로 조정
+  start.setDate(start.getDate() - daysToMonday);
+
+  // 주차에 따라 7일씩 더하기
   start.setDate(start.getDate() + weekIdx * 7);
+
   return start;
 }
 
@@ -79,7 +89,14 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
-  const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex);
+  // props가 변경되면 모달 상태 초기화
+  useEffect(() => {
+    setEditModal({ open: false, todo: null });
+    setDeleteModal({ open: false, todo: null });
+  }, [goal.id, currentWeekIndex]);
+
+  // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
+  const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getWeekDates(weekStart, showWeekend);
 
   const handleEditSubmit = (updatedTodo: Todo) => {
@@ -126,7 +143,7 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
                   {day.label}
                 </span>
               ) : (
-                <span className="text-label-normal text-xs text-center">{day.label}</span>
+                <span className="flex items-center justify-center text-label-normal w-7 h-7 text-sm">{day.label}</span>
               )}
               <span className="text-xs text-[#AEB0B6]">{getDateString(day.date)}</span>
             </div>
@@ -167,13 +184,12 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
 };
 
 const WeeklyTodoItem = ({ todo, onEdit, onDelete }: WeeklyTodoItemProps) => {
+  const { mutate } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
-  const { mutate, isLoading } = usePatchTodoStatus();
 
   const handleCheck = async () => {
-    if (checked || isLoading) return;
     setChecked(!checked);
-    await mutate(todo.id, true);
+    await mutate(todo.id, !checked);
   };
 
   const handleEdit = () => {
@@ -190,7 +206,7 @@ const WeeklyTodoItem = ({ todo, onEdit, onDelete }: WeeklyTodoItemProps) => {
 
   return (
     <div className="bg-elevated-assistive rounded-lg p-3 flex items-center gap-2 relative group">
-      <Checkbox checked={todo.isCompleted} onClick={handleCheck} />
+      <Checkbox checked={checked} onClick={handleCheck} />
       <span className={`text-sm ${todo.isCompleted ? 'line-through text-label-disable' : 'text-label-normal'}`}>
         {todo.content}
       </span>

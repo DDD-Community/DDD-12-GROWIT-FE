@@ -31,9 +31,11 @@ interface ExtendedGoal {
 
 interface AddToDoProps {
   goal: ExtendedGoal;
+  selectedPlanId: string;
+  onSuccess?: () => void;
 }
 
-export const AddToDo = ({ goal }: AddToDoProps) => {
+export const AddToDo = ({ goal, selectedPlanId, onSuccess }: AddToDoProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -48,7 +50,7 @@ export const AddToDo = ({ goal }: AddToDoProps) => {
     handleAddTodo,
     resetForm,
     isFormValid,
-  } = useAddTodoForm(goal);
+  } = useAddTodoForm(goal, selectedPlanId);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -63,6 +65,8 @@ export const AddToDo = ({ goal }: AddToDoProps) => {
     const success = await handleAddTodo();
     if (success) {
       setIsModalOpen(false);
+      // todo 추가 성공 시 callback 호출
+      onSuccess?.();
     }
   };
 

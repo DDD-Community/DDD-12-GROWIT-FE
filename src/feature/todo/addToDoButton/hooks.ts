@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { Axios, AxiosError } from 'axios';
 
 export function useFetchAddTodo() {
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ interface ExtendedGoal {
   plans: ExtendedPlan[];
 }
 
-export function useAddTodoForm(goal: ExtendedGoal) {
+export function useAddTodoForm(goal: ExtendedGoal, selectedPlanId: string) {
   const [date, setDate] = useState<Date>();
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState<string | null>(null);
@@ -60,28 +61,6 @@ export function useAddTodoForm(goal: ExtendedGoal) {
   // Goal의 시작일과 종료일을 Date 객체로 변환
   const startDate = new Date(goal.duration.startDate);
   const endDate = new Date(goal.duration.endDate);
-
-  // 선택한 날짜에 해당하는 planId 찾기
-  const getPlanIdForDate = useCallback(
-    (selectedDate: Date): string | null => {
-      const selectedWeek = Math.ceil(
-        (selectedDate.getDate() + new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1).getDay()) / 7
-      );
-
-      // 해당 주차에 맞는 plan 찾기
-      const matchingPlan = goal.plans.find(plan => {
-        // weekOfMonth가 있는 경우
-        if (plan.weekOfMonth !== undefined) {
-          return plan.weekOfMonth === selectedWeek;
-        }
-        // weekOfMonth가 없는 경우 첫 번째 plan 반환
-        return true;
-      });
-
-      return matchingPlan?.id || null;
-    },
-    [goal.plans]
-  );
 
   // 날짜 선택 핸들러
   const handleDateSelect = useCallback((selectedDate: Date) => {
@@ -116,19 +95,19 @@ export function useAddTodoForm(goal: ExtendedGoal) {
       return;
     }
 
-    const planId = getPlanIdForDate(date);
-    if (!planId) {
-      showToast('선택한 날짜에 해당하는 계획을 찾을 수 없습니다.', 'error');
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      await addTodo({
+      // 로컬 시간대를 고려한 날짜 형식 변환
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+
+      const { data } = await addTodo({
         goalId: goal.id,
-        planId,
-        date: date.toISOString().split('T')[0], // YYYY-MM-DD 형식
+        planId: selectedPlanId,
+        date: formattedDate, // YYYY-MM-DD 형식
         content,
       });
 
@@ -139,14 +118,15 @@ export function useAddTodoForm(goal: ExtendedGoal) {
 
       showToast('투두가 성공적으로 추가되었습니다.', 'success');
       return true; // 성공 시 true 반환
-    } catch (error) {
-      console.error('투두 추가 실패:', error);
-      showToast('투두 추가에 실패했습니다.', 'error');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        showToast(`${error.response?.data.message}`, 'error');
+      }
       return false; // 실패 시 false 반환
     } finally {
       setIsSubmitting(false);
     }
-  }, [date, content, getPlanIdForDate, addTodo, goal.id, showToast]);
+  }, [date, content, addTodo, goal.id, showToast]);
 
   // 폼 초기화
   const resetForm = useCallback(() => {
@@ -177,6 +157,5 @@ export function useAddTodoForm(goal: ExtendedGoal) {
 
     // 유틸리티
     isFormValid,
-    getPlanIdForDate,
   };
 }

@@ -2,12 +2,13 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { useFetchGetGoal, useFetchWeeklyTodoList } from './hooks';
+import { useFetchGetGoal, useFetchWeeklyTodoList, useGoalSelector } from './hooks';
 import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
 import { AddRetroSpectButton } from '@/feature/retrospects';
+import { GoalSelector } from './GoalSelector';
 
 // 확장된 Plan 타입 (weekOfMonth 포함)
 interface ExtendedPlan {
@@ -22,15 +23,38 @@ interface ExtendedGoal extends Omit<Goal, 'plans'> {
 }
 
 export const WeeklyPlanBoard = () => {
-  const { isLoading, goal, plans } = useFetchGetGoal();
-  if (!plans.length) return null;
+  const { isLoading, goalList } = useFetchGetGoal();
+  const { selectedGoalId, selectedGoal, selectedPlans, setSelectedGoalId } = useGoalSelector(goalList);
 
-  return <PlanSelector.Provider plans={plans}>{goal && <WeeklyPlanBoardInner goal={goal} />}</PlanSelector.Provider>;
+  if (!selectedPlans.length) return null;
+
+  return (
+    <PlanSelector.Provider plans={selectedPlans}>
+      {selectedGoal && (
+        <WeeklyPlanBoardInner
+          goal={selectedGoal}
+          goalList={goalList}
+          selectedGoalId={selectedGoalId}
+          onGoalChange={setSelectedGoalId}
+        />
+      )}
+    </PlanSelector.Provider>
+  );
 };
 
-const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
+const WeeklyPlanBoardInner = ({
+  goal,
+  goalList,
+  selectedGoalId,
+  onGoalChange,
+}: {
+  goal: ExtendedGoal;
+  goalList: ExtendedGoal[];
+  selectedGoalId: string;
+  onGoalChange: (goalId: string) => void;
+}) => {
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex } = usePlanSelector();
-  const { data: weeklyTodos } = useFetchWeeklyTodoList({
+  const { data: weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
   });
@@ -44,17 +68,25 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
     return { percent: total ? Math.round((done / total) * 100) : 0, total, done };
   }, [weeklyTodos]);
 
+  // todo 목록 새로고침 함수
+  const refreshTodoList = () => {
+    if (goal?.id && selectedPlanId) {
+      fetchWeeklyTodoList({ goalId: goal.id, planId: selectedPlanId });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
       {/* 상단 바 */}
       <div className="flex items-center justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
         <div className="flex items-center gap-2">
           <Image src="/icon/growit-calendar.svg" alt="icon of growit" width={24} height={24} />
-          <span className="text-lg font-bold text-label-normal">주간 플랜</span>
+          <span className="text-lg font-bold text-label-normal w-[130px]">주간 플랜</span>
+          <GoalSelector goalList={goalList} selectedGoalId={selectedGoalId} onGoalChange={onGoalChange} />
         </div>
         <div className="flex items-center gap-2">
           <PlanSelector.Selector />
-          <AddToDo goal={goal} />
+          <AddToDo goal={goal} selectedPlanId={selectedPlanId} onSuccess={refreshTodoList} />
         </div>
       </div>
       {/* 목표/플랜/진행률 */}
@@ -63,7 +95,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: ExtendedGoal }) => {
           <div className="flex gap-[12px] items-center">
             <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
             <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
-            <span className="text-white text-[16px] font-[700]">‘{selectedPlanContent}’</span>
+            <span className="text-white text-[16px] font-[700]">'{selectedPlanContent}'</span>
             <AddRetroSpectButton goal={goal} currentWeekIndex={selectedWeekIndex} />
           </div>
           <div className="flex-1 flex items-center gap-2">

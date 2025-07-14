@@ -8,16 +8,17 @@ import type { TodoWeeklyListRequest } from './api';
 import { Goal } from '@/shared/type/goal';
 
 // 확장된 Plan 타입 (weekOfMonth 포함)
-interface ExtendedPlan {
+export interface ExtendedPlan {
   id: string;
   content: string;
   weekOfMonth?: number;
 }
 
 // 확장된 Goal 타입
-interface ExtendedGoal extends Omit<Goal, 'plans'> {
+export interface ExtendedGoal extends Omit<Goal, 'plans'> {
   plans: ExtendedPlan[];
 }
+
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
@@ -26,8 +27,7 @@ import { Todo } from '@/shared/type/Todo';
 export function useFetchGetGoal() {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [goal, setGoal] = useState<ExtendedGoal | null>(null);
-  const [plans, setPlans] = useState<ExtendedPlan[]>([]);
+  const [goalList, setGoalList] = useState<ExtendedGoal[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,18 +39,8 @@ export function useFetchGetGoal() {
       setLoading(true);
       setError(null);
 
-      const goalList = await getGoalList();
-
-      // 첫 번째 goal을 가져오거나 null 처리
-      const firstGoal = goalList.length > 0 ? goalList[0] : null;
-      setGoal(firstGoal);
-
-      // plans 데이터 별도 설정
-      if (firstGoal) {
-        setPlans(firstGoal.plans);
-      } else {
-        setPlans([]);
-      }
+      const goals = await getGoalList();
+      setGoalList(goals);
 
       setLoading(false);
     } catch (err) {
@@ -63,8 +53,7 @@ export function useFetchGetGoal() {
 
       setError(errorMessage);
       setLoading(false);
-      setGoal(null);
-      setPlans([]);
+      setGoalList([]);
 
       // 토스트 메시지 표시 (shouldThrow가 false일 때만)
       if (!shouldThrow) {
@@ -84,8 +73,7 @@ export function useFetchGetGoal() {
   };
 
   return {
-    goal,
-    plans,
+    goalList,
     isLoading,
     error,
     fetchGoal,
@@ -93,17 +81,39 @@ export function useFetchGetGoal() {
   };
 }
 
-export function useAutoGoOnboarding(isLoading: boolean, goal: Goal | null) {
+// Goal 선택을 위한 Hook
+export function useGoalSelector(goalList: ExtendedGoal[]) {
+  const [selectedGoalId, setSelectedGoalId] = useState<string>('');
+
+  // goalList가 변경되면 첫 번째 goal을 자동 선택
+  useEffect(() => {
+    if (goalList.length > 0 && !selectedGoalId) {
+      setSelectedGoalId(goalList[0].id);
+    }
+  }, [goalList, selectedGoalId]);
+
+  const selectedGoal = goalList.find(goal => goal.id === selectedGoalId) || null;
+  const selectedPlans = selectedGoal?.plans || [];
+
+  return {
+    selectedGoalId,
+    selectedGoal,
+    selectedPlans,
+    setSelectedGoalId,
+  };
+}
+
+export function useAutoGoOnboarding(isLoading: boolean, goalList: ExtendedGoal[]) {
   const router = useRouter();
   // goal이 없고 로딩이 끝났으며, 온보딩 기록이 없으면 온보딩 페이지로 이동
   useEffect(() => {
-    if (!isLoading && !goal) {
+    if (!isLoading && goalList.length === 0) {
       const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
       if (!onboardingVisited) {
         router.replace('/onboarding');
       }
     }
-  }, [isLoading, goal, router]);
+  }, [isLoading, goalList, router]);
 }
 
 export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
