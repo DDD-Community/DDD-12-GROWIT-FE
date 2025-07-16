@@ -122,7 +122,7 @@ const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onWeekChange, onTo
       onClose={onClose}
       title="투두 수정"
       renderContent={() => (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-[400px]">
           <div className="flex flex-col gap-2">
             <DatePicker
               selectedDate={selectedDate}
@@ -140,7 +140,7 @@ const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onWeekChange, onTo
               maxLength={30}
               value={content}
               onChange={handleContentChange}
-              className="mt-2"
+              className="mt-2 w-full"
               placeholder="내용을 입력하세요"
               isError={!!contentError}
               errorMessage={contentError}

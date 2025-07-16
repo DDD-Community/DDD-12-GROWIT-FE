@@ -40,7 +40,7 @@ const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps
       onClose={onClose}
       title="해당 투두를 삭제하겠습니까?"
       renderContent={() => (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-[400px]">
           <div className="flex items-center gap-2">
             <div className="bg-elevated-normal border border-line-normal rounded-md px-3 py-2 flex items-center gap-2">
               <span className="text-label-normal text-base">
@@ -48,7 +48,7 @@ const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps
               </span>
             </div>
           </div>
-          <TextArea maxLength={30} value={todo?.content || ''} readOnly className="mt-2" />
+          <TextArea maxLength={30} value={todo?.content || ''} readOnly className="mt-2 w-full" />
         </div>
       )}
       renderFooter={() => (
