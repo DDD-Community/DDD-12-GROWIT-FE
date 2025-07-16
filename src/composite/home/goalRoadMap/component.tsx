@@ -13,12 +13,14 @@ export const GoalRoadMap = async () => {
   };
   const { beforeAfter, plans } = await fetchRoadMap();
   return (
-    <aside>
-      <h2 className="heading-1-bold flex gap-2 text-primary-normal pb-4">
-        <Earth />
-        로드맵
-      </h2>
-      <GetRoadMap beforeAfter={beforeAfter} plans={plans} />
+    <aside className="hidden md:block w-full p-6">
+      <article>
+        <h2 className="heading-1-bold flex gap-2 text-primary-normal pb-4">
+          <Earth />
+          로드맵
+        </h2>
+        <GetRoadMap beforeAfter={beforeAfter} plans={plans} />
+      </article>
     </aside>
   );
 };

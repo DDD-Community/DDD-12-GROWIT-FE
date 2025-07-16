@@ -40,3 +40,17 @@ export const Earth = ({ ...props }: React.SVGProps<SVGSVGElement>) => {
     </svg>
   );
 };
+
+export const DownLoad = () => {
+  return (
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M23 18.8333V23.8333C23 24.2754 22.8244 24.6993 22.5118 25.0118C22.1993 25.3244 21.7754 25.5 21.3333 25.5H12.1667C11.7246 25.5 11.3007 25.3244 10.9882 25.0118C10.6756 24.6993 10.5 24.2754 10.5 23.8333V14.6667C10.5 14.2246 10.6756 13.8007 10.9882 13.4882C11.3007 13.1756 11.7246 13 12.1667 13H17.1667M20.5 10.5H25.5M25.5 10.5V15.5M25.5 10.5L16.3333 19.6667"
+        stroke="#F7F7F8"
+        strokeWidth="1.67"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

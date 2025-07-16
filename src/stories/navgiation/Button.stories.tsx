@@ -28,7 +28,7 @@ const meta = {
       control: {
         type: 'radio',
       },
-      options: ['primary', 'secondary', 'tertiary'],
+      options: ['primary', 'secondary', 'tertiary', 'accent'],
     },
     size: {
       control: {

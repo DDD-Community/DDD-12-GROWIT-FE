@@ -1,9 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import StepBox from '@/shared/components/display/StepBox';
-import ToolTip from '@/shared/components/display/ToolTip';
+import { StartBox, StepBox, GoalBox } from '@/shared/components/display/StepBox';
 import type { Plan, BeforeAfter } from './type';
 
 interface GetRoadMapProps {
@@ -36,29 +34,40 @@ export const GetRoadMap = ({ beforeAfter, plans }: GetRoadMapProps) => {
   };
 
   return (
-    <section className="relative overflow-r-hidden">
-      <Image src={'/road-map-bg.png'} alt="road-map" width={278} height={570} className="w-auto h-auto" priority />
+    <section className="relative overflow-r-hidden bg-[url('/road-map-bg.png')] w-[335px] md:w-[278px] h-[570px] bg-cover bg-no-repeat rounded-xl border border-line-normal md:border-none">
       <div
-        className="absolute top-12 right-16 cursor-pointer hover:opacity-80 transition-opacity z-1"
         onMouseEnter={() => handleMouseEnter('earth')}
         onMouseLeave={() => handleMouseLeave('earth')}
         onClick={() => toggleTooltip('earth')}
       >
-        <Image src={'/earth-blue.png'} alt="earth" width={96} height={89} />
+        <StartBox
+          showToolTip={tooltipStates.earth}
+          toolTipContent={beforeAfter.toBe}
+          imgSrc="/earth-blue.png"
+          alt="earth"
+          imgWidth={96}
+          imgHeight={89}
+          className="absolute top-8 right-8 md:right-4 cursor-pointer hover:opacity-80 transition-opacity z-1"
+        />
       </div>
-      {tooltipStates.earth && <ToolTip text={beforeAfter.toBe} className="absolute top-8 right-1/4 z-2" />}
 
       <div
-        className="absolute bottom-20 right-16 cursor-pointer hover:opacity-80 transition-opacity z-1"
         onMouseEnter={() => handleMouseEnter('rocket')}
         onMouseLeave={() => handleMouseLeave('rocket')}
         onClick={() => toggleTooltip('rocket')}
       >
-        <Image src={'/rocket.png'} alt="earth" width={96} height={89} />
+        <GoalBox
+          showToolTip={tooltipStates.rocket}
+          toolTipContent={beforeAfter.asIs}
+          imgSrc="/rocket.png"
+          alt="rocket"
+          imgWidth={96}
+          imgHeight={89}
+          className="absolute bottom-10 right-10 cursor-pointer hover:opacity-80 transition-opacity z-1"
+        />
       </div>
-      {tooltipStates.rocket && <ToolTip text={beforeAfter.asIs} className="absolute bottom-36 right-1/4 z-2" />}
 
-      <svg className="absolute top-8 w-[470px] h-[500px]" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+      <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 60 300" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M48,45 Q-15,100 -10,150 Q-15,200 48,255"
           stroke="white"
@@ -76,34 +85,40 @@ export const GetRoadMap = ({ beforeAfter, plans }: GetRoadMapProps) => {
             onMouseLeave={() => handleMouseLeave('week1')}
             onClick={() => toggleTooltip('week1')}
           >
-            <StepBox step={1} className="absolute bottom-1/4 left-20" />
-            {tooltipStates.week1 && (
-              <ToolTip text={plans.length ? plans[0].content : ''} className="absolute bottom-1/3 right-34 z-2" />
-            )}
+            <StepBox
+              step={1}
+              showToolTip={tooltipStates.week1}
+              toolTipContent={plans[2].content}
+              className="absolute bottom-[100px] left-[120px] md:bottom-[140px] md:left-[70px]"
+              onClick={() => toggleTooltip('week1')}
+            />
           </div>
-          <div
-            onMouseEnter={() => handleMouseEnter('week2')}
-            onMouseLeave={() => handleMouseLeave('week2')}
-            onClick={() => toggleTooltip('week2')}
-          >
-            <StepBox step={2} className="absolute top-1/2 left-6" />
-            {tooltipStates.week2 && <ToolTip text={plans[1].content} className="absolute bottom-1/2 left-1 z-2" />}
+          <div onMouseEnter={() => handleMouseEnter('week2')} onMouseLeave={() => handleMouseLeave('week2')}>
+            <StepBox
+              step={2}
+              showToolTip={tooltipStates.week2}
+              toolTipContent={plans[1].content}
+              className="absolute bottom-[200px] left-[65px] md:bottom-[240px] md:left-[30px]"
+              onClick={() => toggleTooltip('week2')}
+            />
           </div>
-          <div
-            onMouseEnter={() => handleMouseEnter('week3')}
-            onMouseLeave={() => handleMouseLeave('week3')}
-            onClick={() => toggleTooltip('week3')}
-          >
-            <StepBox step={3} className="absolute top-1/3 left-6" />
-            {tooltipStates.week3 && <ToolTip text={plans[2].content} className="absolute top-40 -left-5 z-2" />}
+          <div onMouseEnter={() => handleMouseEnter('week3')} onMouseLeave={() => handleMouseLeave('week3')}>
+            <StepBox
+              step={3}
+              showToolTip={tooltipStates.week3}
+              toolTipContent={plans[2].content}
+              className="absolute top-[190px] left-[60px] md:top-[170px] md:left-[35px]"
+              onClick={() => toggleTooltip('week3')}
+            />
           </div>
-          <div
-            onMouseEnter={() => handleMouseEnter('week4')}
-            onMouseLeave={() => handleMouseLeave('week4')}
-            onClick={() => toggleTooltip('week4')}
-          >
-            <StepBox step={4} className="absolute top-1/5 left-1/4" />
-            {tooltipStates.week4 && <ToolTip text={plans[3].content} className="absolute top-1/7 left-1/4 z-2" />}
+          <div onMouseEnter={() => handleMouseEnter('week4')} onMouseLeave={() => handleMouseLeave('week4')}>
+            <StepBox
+              step={4}
+              showToolTip={tooltipStates.week4}
+              toolTipContent={plans[3].content}
+              className="absolute top-[90px] left-[120px] md:left-[90px]"
+              onClick={() => toggleTooltip('week4')}
+            />
           </div>
         </>
       )}
