@@ -1,9 +1,9 @@
-import { Earth, DownLoad } from './icons';
+import { Earth } from './icons';
 import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
 import type { Plan, BeforeAfter } from '@/feature/goal/getRoadMap/type';
 import { apiClient } from '@/shared/lib/apiClient';
 
-export const GoalRoadMap = async ({ className }: { className?: string }) => {
+export const GoalRoadMap = async () => {
   const fetchRoadMap = async () => {
     const response = await apiClient.get('/mock/goals');
     const data: any = response.data;

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import localFont from 'next/font/local';
-import ToolTip from './ToolTip';
+import { ToolTip } from './ToolTip';
 
 interface StepBoxProps extends React.HTMLAttributes<HTMLDivElement> {
   step?: number;
