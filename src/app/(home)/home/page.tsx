@@ -13,7 +13,7 @@ export default async function MainPage() {
         </div>
       </div>
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}
-      <div className="flex flex-col gap-8 md:min-h-[1109px] p-[16px] md:border-l border-line-normal w-[335px] mx-auto">
+      <div className="flex flex-col gap-8 sm:overflow-y-scroll p-[16px] md:border-l border-line-normal w-[335px] mx-auto">
         {/* Todo 추가 버튼 */}
         <GoalRoadMap />
         <ContributionGraph />
