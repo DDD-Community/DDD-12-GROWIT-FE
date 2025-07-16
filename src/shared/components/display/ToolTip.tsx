@@ -3,7 +3,7 @@ interface ToolTipProps {
   className?: string;
 }
 
-const ToolTip = ({ text, className = '' }: ToolTipProps) => {
+export const ToolTip = ({ text, className = '' }: ToolTipProps) => {
   return (
     <div className={`absolute ${className}`}>
       <div className="relative py-2 px-3 bg-label-normal rounded-xl text-semibold text-xs whitespace-nowrap">
@@ -15,4 +15,14 @@ const ToolTip = ({ text, className = '' }: ToolTipProps) => {
   );
 };
 
-export default ToolTip;
+interface DarkToolTip {
+  children: React.ReactNode;
+  className?: string;
+}
+export const DarkToolTip = ({ children, className = '' }: DarkToolTip) => {
+  return (
+    <div className={`absolute ${className} text-label-neutral caption-1-medium`}>
+      <div className="relative py-2 px-3 bg-elevated-assistive rounded-xl whitespace-nowrap">{children}</div>
+    </div>
+  );
+};
