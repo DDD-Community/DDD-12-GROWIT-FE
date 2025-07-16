@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { useFetchGetGoal, useFetchWeeklyTodoList, useGoalSelector } from './hooks';
+import { useAutoGoOnboarding, useFetchGetGoal, useFetchWeeklyTodoList, useGoalSelector } from './hooks';
 import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
@@ -25,6 +25,8 @@ interface ExtendedGoal extends Omit<Goal, 'plans'> {
 export const WeeklyPlanBoard = () => {
   const { isLoading, goalList } = useFetchGetGoal();
   const { selectedGoalId, selectedGoal, selectedPlans, setSelectedGoalId } = useGoalSelector(goalList);
+
+  useAutoGoOnboarding(isLoading, goalList);
 
   if (!selectedPlans.length) return null;
 
@@ -82,7 +84,6 @@ const WeeklyPlanBoardInner = ({
         <div className="flex items-center gap-2">
           <Image src="/icon/growit-calendar.svg" alt="icon of growit" width={24} height={24} />
           <span className="text-lg font-bold text-label-normal w-[130px]">주간 플랜</span>
-          <GoalSelector goalList={goalList} selectedGoalId={selectedGoalId} onGoalChange={onGoalChange} />
         </div>
         <div className="flex items-center gap-2">
           <PlanSelector.Selector />

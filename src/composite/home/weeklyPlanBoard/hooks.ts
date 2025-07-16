@@ -106,12 +106,16 @@ export function useGoalSelector(goalList: ExtendedGoal[]) {
 export function useAutoGoOnboarding(isLoading: boolean, goalList: ExtendedGoal[]) {
   const router = useRouter();
   // goal이 없고 로딩이 끝났으며, 온보딩 기록이 없으면 온보딩 페이지로 이동
+  console.log('goalList', goalList);
   useEffect(() => {
     if (!isLoading && goalList.length === 0) {
-      const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
-      if (!onboardingVisited) {
-        router.replace('/onboarding');
-      }
+      // const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
+      // if (!onboardingVisited) {
+      //   router.replace('/onboarding');
+      // }
+      router.replace('/onboarding'); // 임시로 온보딩 페이지로 이동
+    } else {
+      router.replace('/home'); // 임시로 온보딩 페이지로 이동
     }
   }, [isLoading, goalList, router]);
 }
