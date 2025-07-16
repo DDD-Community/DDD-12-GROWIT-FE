@@ -1,6 +1,6 @@
 'use client';
 
-import { TextareaHTMLAttributes, useRef, useState } from 'react';
+import { TextareaHTMLAttributes, useState } from 'react';
 import FlexBox from '../layout/FlexBox';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
