@@ -50,7 +50,12 @@ interface ExtendedGoal {
   plans: ExtendedPlan[];
 }
 
-export function useAddTodoForm(goal: ExtendedGoal, selectedPlanId: string) {
+export function useAddTodoForm(
+  goal: ExtendedGoal,
+  selectedPlanId: string,
+  onWeekChange?: (weekOfMonth: number) => void,
+  onToggleWeekend?: (showWeekend: boolean) => void
+) {
   const [date, setDate] = useState<Date>();
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState<string | null>(null);
@@ -117,6 +122,19 @@ export function useAddTodoForm(goal: ExtendedGoal, selectedPlanId: string) {
       setContentError(null);
 
       showToast('투두가 성공적으로 추가되었습니다.', 'success');
+
+      // weekOfMonth 정보가 있으면 해당 주차로 이동
+      if (data.plan?.weekOfMonth && onWeekChange) {
+        onWeekChange(data.plan.weekOfMonth);
+      }
+
+      // 날짜가 주말인지 확인하고 주말 표시 토글
+      const dayOfWeek = date.getDay(); // 0: 일요일, 6: 토요일
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      if (onToggleWeekend) {
+        onToggleWeekend(isWeekend); // 주말이면 true, 평일이면 false
+      }
+
       return true; // 성공 시 true 반환
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -126,7 +144,7 @@ export function useAddTodoForm(goal: ExtendedGoal, selectedPlanId: string) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [date, content, addTodo, goal.id, showToast]);
+  }, [date, content, addTodo, goal.id, showToast, onWeekChange, onToggleWeekend]);
 
   // 폼 초기화
   const resetForm = useCallback(() => {

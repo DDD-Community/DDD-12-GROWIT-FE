@@ -2,6 +2,9 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/navigation/Button';
 import { Todo } from '@/shared/type/Todo';
+import { deleteTodo } from '../api';
+import { useState } from 'react';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 interface DeleteTodoModalProps {
   open: boolean;
@@ -11,6 +14,26 @@ interface DeleteTodoModalProps {
 }
 
 const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+
+  const handleDelete = async () => {
+    if (!todo) return;
+
+    setIsLoading(true);
+    try {
+      await deleteTodo(todo.id);
+      showToast('투두가 성공적으로 삭제되었습니다.', 'success');
+      onDelete(todo);
+      onClose();
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || '투두 삭제에 실패했습니다.';
+      showToast(errorMessage, 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -30,8 +53,14 @@ const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps
       )}
       renderFooter={() => (
         <div className="flex w-full gap-2">
-          <Button size="xl" variant="secondary" text="취소" onClick={onClose} />
-          <Button size="xl" variant="primary" text="삭제" onClick={() => todo && onDelete(todo)} />
+          <Button size="xl" variant="secondary" text="취소" onClick={onClose} disabled={isLoading} />
+          <Button
+            size="xl"
+            variant="primary"
+            text={isLoading ? '삭제 중...' : '삭제'}
+            onClick={handleDelete}
+            disabled={isLoading}
+          />
         </div>
       )}
     />

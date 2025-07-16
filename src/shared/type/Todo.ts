@@ -8,3 +8,11 @@ export interface Todo {
 }
 
 export type DAY_OF_THE_WEEK = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+
+export interface TodoResponse {
+  id: string;
+  plan: {
+    id: string;
+    weekOfMonth: number;
+  };
+}

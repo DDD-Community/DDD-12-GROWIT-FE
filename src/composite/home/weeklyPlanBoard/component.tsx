@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   useAutoGoOnboarding,
   useFetchGetGoal,
@@ -60,7 +60,7 @@ const WeeklyPlanBoardInner = ({
   selectedGoalId: string;
   onGoalChange: (goalId: string) => void;
 }) => {
-  const { selectedPlanId, selectedPlanContent, selectedWeekIndex } = usePlanSelector();
+  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
   const { data: weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
@@ -68,6 +68,9 @@ const WeeklyPlanBoardInner = ({
 
   // 파생 상태로 투두 목록 관리
   const { todoList, toggleTodoStatus } = useWeeklyTodoListState(weeklyTodos);
+
+  // 주말 표시 상태 관리
+  const [showWeekend, setShowWeekend] = useState(false);
 
   // 완료율 계산
   const { percent, total, done } = useMemo(() => {
@@ -85,6 +88,20 @@ const WeeklyPlanBoardInner = ({
     }
   };
 
+  // 주차 변경 함수
+  const handleWeekChange = (weekOfMonth: number) => {
+    // 해당 주차의 plan을 찾아서 선택
+    const targetPlan = goal.plans.find(plan => plan.weekOfMonth === weekOfMonth);
+    if (targetPlan) {
+      setSelectedPlanId(targetPlan.id);
+    }
+  };
+
+  // 주말 표시 토글 함수
+  const handleToggleWeekend = (showWeekend: boolean) => {
+    setShowWeekend(showWeekend);
+  };
+
   return (
     <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
       {/* 상단 바 */}
@@ -95,7 +112,13 @@ const WeeklyPlanBoardInner = ({
         </div>
         <div className="flex items-center gap-2">
           <PlanSelector.Selector />
-          <AddToDo goal={goal} selectedPlanId={selectedPlanId} onSuccess={refreshTodoList} />
+          <AddToDo
+            goal={goal}
+            selectedPlanId={selectedPlanId}
+            onSuccess={refreshTodoList}
+            onWeekChange={handleWeekChange}
+            onToggleWeekend={handleToggleWeekend}
+          />
         </div>
       </div>
       {/* 목표/플랜/진행률 */}
@@ -122,6 +145,10 @@ const WeeklyPlanBoardInner = ({
           goal={goal}
           currentWeekIndex={selectedWeekIndex}
           onToggleTodo={toggleTodoStatus}
+          refreshTodoList={refreshTodoList}
+          onWeekChange={handleWeekChange}
+          showWeekend={showWeekend}
+          onToggleWeekend={handleToggleWeekend}
         />
       )}
     </div>

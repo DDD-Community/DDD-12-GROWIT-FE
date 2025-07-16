@@ -29,12 +29,29 @@ interface WeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
   onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  refreshTodoList?: () => void;
+  onWeekChange?: (weekOfMonth: number) => void;
+  showWeekend?: boolean;
+  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex, onToggleTodo }: WeeklyTodoListProps) => {
-  const [showWeekend, setShowWeekend] = useState(false);
+export const WeeklyTodoList = ({
+  weeklyTodos,
+  goal,
+  currentWeekIndex,
+  onToggleTodo,
+  refreshTodoList,
+  onWeekChange,
+  showWeekend: externalShowWeekend,
+  onToggleWeekend: externalOnToggleWeekend,
+}: WeeklyTodoListProps) => {
+  const [internalShowWeekend, setInternalShowWeekend] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
+
+  // 외부에서 제어하는 경우 외부 상태 사용, 그렇지 않으면 내부 상태 사용
+  const showWeekend = externalShowWeekend !== undefined ? externalShowWeekend : internalShowWeekend;
+  const setShowWeekend = externalOnToggleWeekend || setInternalShowWeekend;
 
   // props가 변경되면 모달 상태 초기화
   useEffect(() => {
@@ -50,12 +67,21 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex, onToggleTo
     // TODO: 패치 로직 구현
     console.log('Edit submitted:', updatedTodo);
     setEditModal({ open: false, todo: null });
+    // Todo 수정 후 리스트 새로고침
+    refreshTodoList?.();
   };
 
   const handleDeleteSubmit = (todo: Todo) => {
     // TODO: 패치 로직 구현
     console.log('Delete submitted:', todo);
     setDeleteModal({ open: false, todo: null });
+    // Todo 삭제 후 리스트 새로고침
+    refreshTodoList?.();
+  };
+
+  // 주말 표시 토글 함수
+  const handleToggleWeekend = (showWeekend: boolean) => {
+    setShowWeekend(showWeekend);
   };
 
   return (
@@ -64,8 +90,11 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex, onToggleTo
       <EditTodoModal
         open={editModal.open}
         todo={editModal.todo}
+        goal={goal}
         onClose={() => setEditModal({ open: false, todo: null })}
         onSubmit={handleEditSubmit}
+        onWeekChange={onWeekChange}
+        onToggleWeekend={handleToggleWeekend}
       />
       <DeleteTodoModal
         open={deleteModal.open}

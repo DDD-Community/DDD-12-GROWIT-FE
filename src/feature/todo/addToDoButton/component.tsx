@@ -33,9 +33,11 @@ interface AddToDoProps {
   goal: ExtendedGoal;
   selectedPlanId: string;
   onSuccess?: () => void;
+  onWeekChange?: (weekOfMonth: number) => void;
+  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const AddToDo = ({ goal, selectedPlanId, onSuccess }: AddToDoProps) => {
+export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggleWeekend }: AddToDoProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -50,7 +52,7 @@ export const AddToDo = ({ goal, selectedPlanId, onSuccess }: AddToDoProps) => {
     handleAddTodo,
     resetForm,
     isFormValid,
-  } = useAddTodoForm(goal, selectedPlanId);
+  } = useAddTodoForm(goal, selectedPlanId, onWeekChange, onToggleWeekend);
 
   const showModal = () => {
     setIsModalOpen(true);

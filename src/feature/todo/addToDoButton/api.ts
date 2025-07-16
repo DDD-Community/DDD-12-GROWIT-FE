@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { Todo } from '@/shared/type/Todo';
+import { Todo, TodoResponse } from '@/shared/type/Todo';
 
 interface AddTodoRequest {
   goalId: string;
@@ -9,7 +9,7 @@ interface AddTodoRequest {
   content: string;
 }
 
-interface AddTodoResponse extends CommonResponse<{ id: string }> {}
+interface AddTodoResponse extends CommonResponse<TodoResponse> {}
 
 export async function postAddTodo(request: AddTodoRequest) {
   const response = await apiClient.post<AddTodoResponse, AddTodoRequest>('/todos', request);
