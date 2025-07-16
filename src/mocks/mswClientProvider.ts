@@ -8,12 +8,27 @@ export default function MSWClientProvider({ children }: { children: React.ReactN
   useEffect(() => {
     const init = async () => {
       if (process.env.NODE_ENV === 'development') {
-        const { worker } = await import('./browser');
-        await worker.start({
-          serviceWorker: { url: '/mockServiceWorker.js' },
-          onUnhandledRequest: 'bypass',
-        });
-        setReadyToUseMSW(true);
+        try {
+          console.log('MSW 초기화 시작...');
+          const { worker } = await import('./browser');
+
+          console.log('MSW Worker 로드됨:', worker);
+          console.log('MSW 핸들러 목록:', worker.listHandlers());
+
+          await worker.start({
+            serviceWorker: { url: '/mockServiceWorker.js' },
+            onUnhandledRequest: 'bypass',
+            quiet: false, // MSW 로그 활성화
+          });
+
+          console.log('MSW가 성공적으로 초기화되었습니다.');
+          console.log('등록된 핸들러:', worker.listHandlers());
+          setReadyToUseMSW(true);
+        } catch (error) {
+          console.error('MSW 초기화 실패:', error);
+          // MSW 초기화 실패 시에도 앱은 계속 실행
+          setReadyToUseMSW(true);
+        }
       }
     };
     init();

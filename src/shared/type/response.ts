@@ -1,4 +1,4 @@
-export interface CommonResponse<T> {
+export interface CommonResponse<T = unknown> {
   data: T;
 }
 

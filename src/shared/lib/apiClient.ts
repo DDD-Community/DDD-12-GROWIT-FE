@@ -75,4 +75,6 @@ export const apiClient = {
     axiosInstance.post<T>(url, data, config),
   put: <T, U = unknown>(url: string, data?: U, config?: AxiosRequestConfig) => axiosInstance.put<T>(url, data, config),
   delete: <T>(url: string, config?: AxiosRequestConfig) => axiosInstance.delete<T>(url, config),
+  patch: <T, U = unknown>(url: string, data?: U, config?: AxiosRequestConfig) =>
+    axiosInstance.patch<T>(url, data, config),
 };
