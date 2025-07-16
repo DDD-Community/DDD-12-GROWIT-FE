@@ -5,7 +5,6 @@ import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { usePatchTodoStatus } from '../hooks';
 import Button from '@/shared/components/navigation/Button';
-import { DAY_LABELS, WEEKDAYS } from '../const';
 import { Goal } from '@/shared/type/goal';
 import {
   DropdownMenu,
@@ -15,76 +14,24 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
+import { getDateString, isToday, getWeekStartDate, getWeekDates } from '../utils';
 
 interface WeeklyTodoItemProps {
   todo: Todo;
+  dayOfWeek: DAY_OF_THE_WEEK;
+  onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
   onDelete?: () => void;
-}
-
-function getDateString(date: Date) {
-  return `${date.getMonth() + 1}/${date.getDate()}`;
-}
-
-function isToday(date: Date) {
-  const today = new Date();
-  return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
-  );
-}
-
-// 주차별 시작 날짜 계산
-function getWeekStartDate(startDate: string, weekIdx: number) {
-  const start = new Date(startDate);
-
-  // 시작 날짜가 해당 주의 월요일이 되도록 조정
-  const dayOfWeek = start.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
-  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 월요일까지의 일수
-
-  // 시작 날짜를 해당 주의 월요일로 조정
-  start.setDate(start.getDate() - daysToMonday);
-
-  // 주차에 따라 7일씩 더하기
-  start.setDate(start.getDate() + weekIdx * 7);
-
-  return start;
-}
-
-// 해당 주차의 요일별 날짜 배열 반환
-function getWeekDates(weekStart: Date, showWeekend: boolean) {
-  if (showWeekend) {
-    // 토요일: +5, 일요일: +6
-    return [
-      {
-        key: 'SATURDAY' as DAY_OF_THE_WEEK,
-        label: DAY_LABELS['SATURDAY'],
-        date: new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 5),
-      },
-      {
-        key: 'SUNDAY' as DAY_OF_THE_WEEK,
-        label: DAY_LABELS['SUNDAY'],
-        date: new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6),
-      },
-    ];
-  } else {
-    // 평일: 월~금 (idx 0~4)
-    return WEEKDAYS.map((key, idx) => {
-      const date = new Date(weekStart);
-      date.setDate(weekStart.getDate() + idx);
-      return { key, label: DAY_LABELS[key], date };
-    });
-  }
 }
 
 interface WeeklyTodoListProps {
   weeklyTodos: Record<DAY_OF_THE_WEEK, Todo[]>;
   goal: Goal;
   currentWeekIndex: number;
+  onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
 }
 
-export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTodoListProps) => {
+export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex, onToggleTodo }: WeeklyTodoListProps) => {
   const [showWeekend, setShowWeekend] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
@@ -148,16 +95,16 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
               <span className="text-xs text-[#AEB0B6]">{getDateString(day.date)}</span>
             </div>
             {/* 투두 카드 리스트 */}
-            {(weeklyTodos?.[day.key] || [])
-              .filter(todo => todo.date === day.date.toISOString().split('T')[0])
-              .map(todo => (
-                <WeeklyTodoItem
-                  key={todo.id}
-                  todo={todo}
-                  onEdit={() => setEditModal({ open: true, todo })}
-                  onDelete={() => setDeleteModal({ open: true, todo })}
-                />
-              ))}
+            {(weeklyTodos?.[day.key] || []).map(todo => (
+              <WeeklyTodoItem
+                key={todo.id}
+                todo={todo}
+                dayOfWeek={day.key}
+                onToggleTodo={onToggleTodo}
+                onEdit={() => setEditModal({ open: true, todo })}
+                onDelete={() => setDeleteModal({ open: true, todo })}
+              />
+            ))}
           </div>
         ))}
       </div>
@@ -183,30 +130,40 @@ export const WeeklyTodoList = ({ weeklyTodos, goal, currentWeekIndex }: WeeklyTo
   );
 };
 
-const WeeklyTodoItem = ({ todo, onEdit, onDelete }: WeeklyTodoItemProps) => {
-  const { mutate } = usePatchTodoStatus();
+const WeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: WeeklyTodoItemProps) => {
+  const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
 
   const handleCheck = async () => {
-    setChecked(!checked);
-    await mutate(todo.id, !checked);
+    const newChecked = !checked;
+
+    try {
+      // 서버에 상태 변경 요청
+      await mutate(todo.id, newChecked);
+
+      // 성공 시 로컬 상태 업데이트 및 onToggleTodo 호출
+      setChecked(newChecked);
+      onToggleTodo?.(dayOfWeek, todo.id);
+    } catch (error) {
+      // 실패 시 원래 상태 유지 (checked 상태는 변경하지 않음)
+      console.error('Todo 상태 변경 실패:', error);
+      // onToggleTodo도 호출하지 않음
+    }
   };
 
   const handleEdit = () => {
     // TODO: 편집 기능 구현
-    console.log('편집:', todo.id);
     onEdit?.();
   };
 
   const handleDelete = () => {
     // TODO: 삭제 기능 구현
-    console.log('삭제:', todo.id);
     onDelete?.();
   };
 
   return (
     <div className="bg-elevated-assistive rounded-lg p-3 flex items-center gap-2 relative group">
-      <Checkbox checked={checked} onClick={handleCheck} />
+      <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
       <span className={`text-sm ${todo.isCompleted ? 'line-through text-label-disable' : 'text-label-normal'}`}>
         {todo.content}
       </span>

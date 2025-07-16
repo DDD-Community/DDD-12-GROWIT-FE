@@ -2,13 +2,18 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { useAutoGoOnboarding, useFetchGetGoal, useFetchWeeklyTodoList, useGoalSelector } from './hooks';
+import {
+  useAutoGoOnboarding,
+  useFetchGetGoal,
+  useFetchWeeklyTodoList,
+  useGoalSelector,
+  useWeeklyTodoListState,
+} from './hooks';
 import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
 import { AddRetroSpectButton } from '@/feature/retrospects';
-import { GoalSelector } from './GoalSelector';
 
 // 확장된 Plan 타입 (weekOfMonth 포함)
 interface ExtendedPlan {
@@ -61,14 +66,17 @@ const WeeklyPlanBoardInner = ({
     planId: selectedPlanId,
   });
 
+  // 파생 상태로 투두 목록 관리
+  const { todoList, toggleTodoStatus } = useWeeklyTodoListState(weeklyTodos);
+
   // 완료율 계산
   const { percent, total, done } = useMemo(() => {
-    if (!weeklyTodos) return { percent: 0, total: 0, done: 0 };
-    const todos = Object.values(weeklyTodos).flat();
+    if (!todoList) return { percent: 0, total: 0, done: 0 };
+    const todos = Object.values(todoList).flat();
     const total = todos.length;
     const done = todos.filter(t => t.isCompleted).length;
     return { percent: total ? Math.round((done / total) * 100) : 0, total, done };
-  }, [weeklyTodos]);
+  }, [todoList]);
 
   // todo 목록 새로고침 함수
   const refreshTodoList = () => {
@@ -108,7 +116,14 @@ const WeeklyPlanBoardInner = ({
         </div>
       )}
       {/* 요일별 컬럼 */}
-      {weeklyTodos && <WeeklyTodoList weeklyTodos={weeklyTodos} goal={goal} currentWeekIndex={selectedWeekIndex} />}
+      {todoList && (
+        <WeeklyTodoList
+          weeklyTodos={todoList}
+          goal={goal}
+          currentWeekIndex={selectedWeekIndex}
+          onToggleTodo={toggleTodoStatus}
+        />
+      )}
     </div>
   );
 };
