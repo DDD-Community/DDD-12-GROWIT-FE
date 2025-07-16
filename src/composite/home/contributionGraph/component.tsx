@@ -38,12 +38,34 @@ export const ContributionGraph = () => {
         진척도
       </h2>
       <div className="grid grid-cols-7 gap-2">
-        {contribution.map((item, index) => (
-          <div
-            key={`contribution-${index}`}
-            className={`w-[30px] h-[30px] rounded-md ${item === 'COMPLETED' ? 'bg-accent-violet' : 'bg-gray-200'}`}
-          />
-        ))}
+        {Array.from({ length: 28 }, (_, index) => {
+          const item = contribution[index];
+
+          if (item) {
+            return (
+              <div
+                key={`contribution-${index}`}
+                className={`w-[30px] h-[30px] flex items-center justify-center rounded-md ${item === 'COMPLETED' ? 'bg-accent-violet' : 'bg-gray-200'}`}
+              />
+            );
+          } else
+            return (
+              <div
+                key={`contribution-${index}`}
+                className={`w-[30px] h-[30px] flex items-center justify-center rounded-md bg-gray-800`}
+              >
+                <svg width="20" height="20" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M8.5 1.5L1.5 8.5M1.5 1.5L8.5 8.5"
+                    stroke="#7D5EF7"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            );
+        })}
       </div>
       <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={toggleTooltip}>
         <FlexBox className="gap-2 text-label-neutral my-4 relative">
