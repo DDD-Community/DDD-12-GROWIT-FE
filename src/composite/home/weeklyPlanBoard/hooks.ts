@@ -115,7 +115,7 @@ export function useAutoGoOnboarding(isLoading: boolean, goalList: ExtendedGoal[]
     } else {
       router.replace('/home'); // 임시로 온보딩 페이지로 이동
     }
-  }, [isLoading]);
+  }, [isLoading, goalList]);
 }
 
 export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
