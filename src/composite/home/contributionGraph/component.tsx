@@ -58,9 +58,9 @@ export const ContributionGraph = () => {
                   <path
                     d="M8.5 1.5L1.5 8.5M1.5 1.5L8.5 8.5"
                     stroke="#7D5EF7"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -70,7 +70,7 @@ export const ContributionGraph = () => {
       <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={toggleTooltip}>
         <FlexBox className="gap-2 text-label-neutral my-4 relative">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#clip0_811_9591)">
+            <g clipPath="url(#clip0_811_9591)">
               <path
                 d="M8.00065 10.6667V8.00004M8.00065 5.33337H8.00732M14.6673 8.00004C14.6673 11.6819 11.6826 14.6667 8.00065 14.6667C4.31875 14.6667 1.33398 11.6819 1.33398 8.00004C1.33398 4.31814 4.31875 1.33337 8.00065 1.33337C11.6826 1.33337 14.6673 4.31814 14.6673 8.00004Z"
                 stroke="#C2C4C8"

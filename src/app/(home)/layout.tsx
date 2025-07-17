@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAutoLogout } from '@/shared/hooks';
 import { LogoutButton } from '@/feature/auth';
-import { CreateGoalButton } from '@/feature/goal';
+//import { CreateGoalButton } from '@/feature/goal';
 
 interface HomeLayoutProps {
   children?: React.ReactNode;

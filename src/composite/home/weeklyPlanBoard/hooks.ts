@@ -1,5 +1,3 @@
-'use client';
-
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -117,7 +115,7 @@ export function useAutoGoOnboarding(isLoading: boolean, goalList: ExtendedGoal[]
     } else {
       router.replace('/home'); // 임시로 온보딩 페이지로 이동
     }
-  }, [isLoading, goalList, router]);
+  }, [isLoading]);
 }
 
 export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest) {
