@@ -15,18 +15,6 @@ import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
 import { AddRetroSpectButton } from '@/feature/retrospects';
 
-// 확장된 Plan 타입 (weekOfMonth 포함)
-interface ExtendedPlan {
-  id: string;
-  content: string;
-  weekOfMonth?: number;
-}
-
-// 확장된 Goal 타입
-interface ExtendedGoal extends Omit<Goal, 'plans'> {
-  plans: ExtendedPlan[];
-}
-
 export const WeeklyPlanBoard = () => {
   const { isLoading, goalList } = useFetchGetGoal();
   const { selectedGoalId, selectedGoal, selectedPlans, setSelectedGoalId } = useGoalSelector(goalList);
@@ -55,8 +43,8 @@ const WeeklyPlanBoardInner = ({
   selectedGoalId,
   onGoalChange,
 }: {
-  goal: ExtendedGoal;
-  goalList: ExtendedGoal[];
+  goal: Goal;
+  goalList: Goal[];
   selectedGoalId: string;
   onGoalChange: (goalId: string) => void;
 }) => {
@@ -128,7 +116,7 @@ const WeeklyPlanBoardInner = ({
             <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
             <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
             <span className="text-white text-[16px] font-[700]">'{selectedPlanContent}'</span>
-            <AddRetroSpectButton goal={goal} currentWeekIndex={selectedWeekIndex} />
+            <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
           </div>
           <div className="flex-1 flex items-center gap-2">
             <div className="w-full h-2 bg-fill-normal rounded">

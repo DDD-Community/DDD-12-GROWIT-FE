@@ -15,4 +15,5 @@ export interface Goal {
 export interface Plan {
   id: string;
   content: string;
+  weekOfMonth: number;
 }
