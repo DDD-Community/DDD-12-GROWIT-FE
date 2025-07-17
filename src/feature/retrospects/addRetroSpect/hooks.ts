@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { postAddRetrospect, getRetrospects } from './api';
+import { postAddRetrospect, getRetrospects, putRetrospect } from './api';
 
 interface UseAddRetrospectOptions {
   onSuccess?: (data: { id: string }) => void;
@@ -28,6 +28,47 @@ export function useFetchAddRetrospect(options?: UseAddRetrospectOptions) {
 
   return {
     addRetrospect,
+    isLoading,
+    error,
+  };
+}
+
+interface UseEditRetrospectOptions {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}
+
+interface EditRetrospectParams {
+  retrospectId: string;
+  planId: string;
+  content: string;
+}
+
+export function useFetchEditRetrospect(options?: UseEditRetrospectOptions) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown>(null);
+
+  const editRetrospect = useCallback(
+    async ({ retrospectId, planId, content }: EditRetrospectParams) => {
+      if (isLoading) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        await putRetrospect({ retrospectId, planId, content });
+        options?.onSuccess?.();
+      } catch (err) {
+        setError(err);
+        options?.onError?.(err);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoading, options]
+  );
+
+  return {
+    editRetrospect,
     isLoading,
     error,
   };

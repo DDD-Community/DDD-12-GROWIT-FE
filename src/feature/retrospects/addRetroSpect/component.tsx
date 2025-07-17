@@ -5,7 +5,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { ToolTip } from '@/shared/components/display/ToolTip';
 import { Goal } from '@/shared/type/goal';
-import { useFetchAddRetrospect, useFetchRetrospects } from './hooks';
+import { useFetchAddRetrospect, useFetchRetrospects, useFetchEditRetrospect } from './hooks';
 
 interface AddRetroSpectButtonProps {
   goal: Goal;
@@ -17,6 +17,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const { addRetrospect, isLoading: isAddingRetrospect } = useFetchAddRetrospect({
     onSuccess: () => {
@@ -24,7 +25,18 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
       fetchRetrospects();
     },
     onError: err => {
+      // 에러 핸들링 (필요시)
       console.error('회고 등록 실패:', err);
+    },
+  });
+
+  const { editRetrospect, isLoading: isEditingRetrospect } = useFetchEditRetrospect({
+    onSuccess: () => {
+      handleModalClose();
+      fetchRetrospects();
+    },
+    onError: err => {
+      console.error('회고 수정 실패:', err);
     },
   });
 
@@ -36,7 +48,9 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
-      onSuccess: () => {},
+      onSuccess: () => {
+        // 성공 시 처리 (필요시)
+      },
       onError: err => {
         console.error('회고 목록 조회 실패:', err);
       },
@@ -44,28 +58,59 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   );
 
   const handleSubmit = useCallback(async () => {
-    if (!isFormValid() || isAddingRetrospect) return;
+    if (!isFormValid() || isAddingRetrospect || isEditingRetrospect) return;
 
     try {
-      await addRetrospect({
-        goalId: goal.id,
-        planId: selectedPlanId,
-        content,
-      });
+      if (isEditMode && retrospect) {
+        // 편집 모드: 기존 회고 수정
+        await editRetrospect({
+          retrospectId: retrospect.id,
+          planId: selectedPlanId,
+          content,
+        });
+      } else {
+        // 추가 모드: 새 회고 작성
+        await addRetrospect({
+          goalId: goal.id,
+          planId: selectedPlanId,
+          content,
+        });
+      }
       // 성공 시 모달은 onSuccess에서 닫힘
     } catch (error) {
       // 에러는 onError에서 처리됨
     }
-  }, [addRetrospect, content, isAddingRetrospect, goal]);
+  }, [
+    addRetrospect,
+    editRetrospect,
+    content,
+    isAddingRetrospect,
+    isEditingRetrospect,
+    isEditMode,
+    retrospect,
+    goal,
+    selectedPlanId,
+  ]);
 
   const showModal = useCallback(() => {
     setIsModalOpen(true);
-  }, []);
+    // 회고가 있으면 편집 모드로 설정하고 기존 내용을 불러옴
+    if (retrospect) {
+      setIsEditMode(true);
+      setContent(retrospect.content);
+      setContentError('');
+    } else {
+      setIsEditMode(false);
+      setContent('');
+      setContentError('');
+    }
+  }, [retrospect]);
 
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setContent('');
     setContentError('');
+    setIsEditMode(false);
   }, []);
 
   const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -83,7 +128,24 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   }, [content, contentError]);
 
   // 현재 주차에 회고가 있는지 확인
-  const shouldShowTooltip = !retrospect && !isLoadingRetrospects && !fetchError;
+  const hasRetrospect = retrospect && retrospect.content && retrospect.content.trim() !== '';
+  const shouldShowTooltip = !hasRetrospect && !isLoadingRetrospects && !fetchError;
+
+  // 디버깅용 로그
+  console.log('Tooltip Debug:', {
+    retrospect,
+    hasRetrospect,
+    isLoadingRetrospects,
+    fetchError,
+    shouldShowTooltip,
+    'retrospect type': typeof retrospect,
+    'retrospect content': retrospect?.content,
+  });
+
+  const buttonText = hasRetrospect ? '편집하기' : '회고 작성';
+  const modalTitle = isEditMode ? `${currentWeekIndex}주차 회고 편집` : `${currentWeekIndex}주차 회고 작성`;
+  const footerButtonText = isEditMode ? '편집 완료' : '작성 완료';
+  const isSubmitting = isAddingRetrospect || isEditingRetrospect;
 
   return (
     <>
@@ -95,14 +157,15 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
           onClick={() => showModal()}
           icon={<Image src={'/icon/growit-comment.svg'} alt={'회고록 작성 아이콘'} width={20} height={20} />}
         />
-        {!shouldShowTooltip && (
+        {/* 단순화된 조건: 로딩이 끝나고 데이터가 없으면 툴팁 표시 */}
+        {!isLoadingRetrospects && !retrospect && (
           <ToolTip text="주간회고를 입력하세요" className="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10" />
         )}
       </div>
       <Modal
         open={isModalOpen}
         onClose={handleModalClose}
-        title={`${currentWeekIndex}주차 회고 작성`}
+        title={modalTitle}
         renderContent={() => (
           <div className="flex flex-col justify-start gap-4">
             <TextArea
@@ -116,7 +179,9 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
             />
           </div>
         )}
-        renderFooter={() => <Button text="작성 완료" size="xl" onClick={handleSubmit} disabled={!isFormValid()} />}
+        renderFooter={() => (
+          <Button text={footerButtonText} size="xl" onClick={handleSubmit} disabled={!isFormValid() || isSubmitting} />
+        )}
       />
     </>
   );
