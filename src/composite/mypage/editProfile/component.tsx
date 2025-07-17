@@ -5,15 +5,14 @@ import FlexBox from '@/shared/components/layout/FlexBox';
 import Badge from '@/shared/components/display/Badge';
 import Button from '@/shared/components/navigation/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Select } from '@/shared/components/input/Select';
 import { SelectWithPortal } from '@/shared/components/input/Select';
 import { useEditProfile } from './hooks';
 
 export const EditProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { userName, jobRole, email, careerYear } = useEditProfile();
+  const { userName, jobRole, email, careerYear, careerLevels, jobList, putUserProfile } = useEditProfile();
   const [selectedJobRole, setSelectedJobRole] = useState('');
   const [selectedCareerYear, setSelectedCareerYear] = useState('');
 
@@ -71,20 +70,14 @@ export const EditProfile = () => {
           renderContent={() => (
             <>
               <Select
-                options={['기획', '디자인', '개발']}
+                options={jobList}
                 selected={selectedJobRole}
                 onChange={setSelectedJobRole}
                 placeholder={'직무를 선택해주세요'}
                 className="min-w-[430px]"
               />
               <SelectWithPortal
-                options={[
-                  '신입(1년차 미만)',
-                  '주니어(1년~3년)',
-                  '미드레벨(3년~6년)',
-                  '시니어(6~10년)',
-                  '리드/매니저(10년 이상)',
-                ]}
+                options={careerLevels}
                 selected={selectedCareerYear}
                 onChange={setSelectedCareerYear}
                 placeholder={'연차를 선택해주세요'}
@@ -94,7 +87,11 @@ export const EditProfile = () => {
           renderFooter={() => (
             <>
               <Button text="취소" variant="tertiary" size={'xl'} onClick={() => setIsModalOpen(false)} />
-              <Button text="수정 완료" size={'xl'} />
+              <Button
+                text="수정 완료"
+                size={'xl'}
+                onClick={() => putUserProfile(userName, selectedJobRole, selectedCareerYear)}
+              />
             </>
           )}
         />
