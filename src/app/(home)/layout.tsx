@@ -63,7 +63,6 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
 
 const MobileHeader = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   // 홈 페이지에서는 뒤로가기 버튼 숨기기
   const shouldShowBackButton = pathname !== '/home';

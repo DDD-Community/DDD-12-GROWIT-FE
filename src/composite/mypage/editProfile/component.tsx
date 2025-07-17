@@ -1,54 +1,109 @@
+'use client';
+
 import Image from 'next/image';
 import FlexBox from '@/shared/components/layout/FlexBox';
 import Badge from '@/shared/components/display/Badge';
 import Button from '@/shared/components/navigation/Button';
+import { Modal } from '@/shared/components/feedBack/Modal';
+import { useState, useEffect } from 'react';
+import { Select } from '@/shared/components/input/Select';
+import { SelectWithPortal } from '@/shared/components/input/Select';
+import { useEditProfile } from './hooks';
 
 export const EditProfile = () => {
-  return (
-    <FlexBox className="w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
-      <FlexBox className="gap-4">
-        <Image
-          src={'/growit-cat.png'}
-          alt={'growit-cat'}
-          width={100}
-          height={100}
-          className="border-[2px] min-w-[100px] h-[100px] border-line-normal rounded-[200px]"
-        />
-        <div className="flex flex-col gap-2">
-          <h2 className="heading-2-bold">사용자</h2>
-          <FlexBox className="gap-2">
-            <Badge type="default" size="md" label="기획자" />
-            <span className="body-1-normal text-label-neutral">2년차</span>
-          </FlexBox>
-        </div>
-      </FlexBox>
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-      <div className="max-w-[150px]">
-        <Button
-          size="ml"
-          variant="secondary"
-          text="프로필 수정"
-          layout="icon-left"
-          icon={
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clip-path="url(#clip0_901_6588)">
-                <path
-                  d="M14.166 2.49993C14.3849 2.28106 14.6447 2.10744 14.9307 1.98899C15.2167 1.87054 15.5232 1.80957 15.8327 1.80957C16.1422 1.80957 16.4487 1.87054 16.7347 1.98899C17.0206 2.10744 17.2805 2.28106 17.4993 2.49993C17.7182 2.7188 17.8918 2.97863 18.0103 3.2646C18.1287 3.55057 18.1897 3.85706 18.1897 4.16659C18.1897 4.47612 18.1287 4.78262 18.0103 5.06859C17.8918 5.35455 17.7182 5.61439 17.4993 5.83326L6.24935 17.0833L1.66602 18.3333L2.91602 13.7499L14.166 2.49993Z"
-                  stroke="#F7F7F8"
-                  strokeWidth="1.67"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_901_6588">
-                  <rect width="20" height="20" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          }
+  const { userName, jobRole, email, careerYear } = useEditProfile();
+  const [selectedJobRole, setSelectedJobRole] = useState('');
+  const [selectedCareerYear, setSelectedCareerYear] = useState('');
+
+  return (
+    <>
+      <FlexBox className="w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
+        <FlexBox className="gap-4">
+          <Image
+            src={'/growit-cat.png'}
+            alt={'growit-cat'}
+            width={100}
+            height={100}
+            className="border-[2px] min-w-[100px] h-[100px] border-line-normal rounded-[200px]"
+          />
+          <div className="flex flex-col gap-2">
+            <h2 className="heading-2-bold">{userName}</h2>
+            <FlexBox className="gap-2">
+              <Badge type="default" size="md" label={jobRole} />
+              <span className="body-1-normal text-label-neutral">{careerYear}년차</span>
+            </FlexBox>
+          </div>
+        </FlexBox>
+
+        <div className="max-w-[150px]">
+          <Button
+            size="ml"
+            variant="secondary"
+            text="프로필 수정"
+            layout="icon-left"
+            onClick={() => setIsModalOpen(true)}
+            icon={
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_901_6588)">
+                  <path
+                    d="M14.166 2.49993C14.3849 2.28106 14.6447 2.10744 14.9307 1.98899C15.2167 1.87054 15.5232 1.80957 15.8327 1.80957C16.1422 1.80957 16.4487 1.87054 16.7347 1.98899C17.0206 2.10744 17.2805 2.28106 17.4993 2.49993C17.7182 2.7188 17.8918 2.97863 18.0103 3.2646C18.1287 3.55057 18.1897 3.85706 18.1897 4.16659C18.1897 4.47612 18.1287 4.78262 18.0103 5.06859C17.8918 5.35455 17.7182 5.61439 17.4993 5.83326L6.24935 17.0833L1.66602 18.3333L2.91602 13.7499L14.166 2.49993Z"
+                    stroke="#F7F7F8"
+                    strokeWidth="1.67"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_901_6588">
+                    <rect width="20" height="20" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            }
+          />
+        </div>
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="프로필 수정"
+          renderContent={() => (
+            <>
+              <Select
+                options={['기획', '디자인', '개발']}
+                selected={selectedJobRole}
+                onChange={setSelectedJobRole}
+                placeholder={'직무를 선택해주세요'}
+                className="min-w-[430px]"
+              />
+              <SelectWithPortal
+                options={[
+                  '신입(1년차 미만)',
+                  '주니어(1년~3년)',
+                  '미드레벨(3년~6년)',
+                  '시니어(6~10년)',
+                  '리드/매니저(10년 이상)',
+                ]}
+                selected={selectedCareerYear}
+                onChange={setSelectedCareerYear}
+                placeholder={'연차를 선택해주세요'}
+              />
+            </>
+          )}
+          renderFooter={() => (
+            <>
+              <Button text="취소" variant="tertiary" size={'xl'} onClick={() => setIsModalOpen(false)} />
+              <Button text="수정 완료" size={'xl'} />
+            </>
+          )}
         />
-      </div>
-    </FlexBox>
+      </FlexBox>
+      <p className="text-label-normal text-2xl font-bold">가입 정보</p>
+      <FlexBox className="gap-2 mb-4">
+        <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />
+        <p className="body-1-normal text-label-alternative">{email}</p>
+      </FlexBox>
+    </>
   );
 };
