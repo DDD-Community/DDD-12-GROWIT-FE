@@ -1,19 +1,17 @@
 'use client';
 
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAutoLogout } from '@/shared/hooks';
 import { LogoutButton } from '@/feature/auth';
 import Button from '@/shared/components/navigation/Button';
 import { SideBar } from '@/shared/components/navigation/SideBar';
-//import { CreateGoalButton } from '@/feature/goal';
 
 interface HomeLayoutProps {
   children?: React.ReactNode;
 }
 
-export default function HomePageLayout({ children }: HomeLayoutProps) {
+export default function MyPageLayout({ children }: HomeLayoutProps) {
   useAutoLogout();
   const router = useRouter();
   return (
@@ -54,7 +52,6 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
           size={'lg'}
         />
       </SideBar>
-      {/* 데스크톱에서만 보이는 Sidebar */}
       <MobileHeader /> {/* 모바일에서만 보이는 Header */}
       <div className="flex flex-1 max-sm:overflow-auto">{children}</div>
     </div>
@@ -63,7 +60,6 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
 
 const MobileHeader = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   // 홈 페이지에서는 뒤로가기 버튼 숨기기
   const shouldShowBackButton = pathname !== '/home';
