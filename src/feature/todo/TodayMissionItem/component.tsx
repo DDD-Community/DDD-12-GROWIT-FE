@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { Todo } from '@/shared/type/Todo';
