@@ -102,18 +102,18 @@ export const WeeklyTodoList = ({
         onClose={() => setDeleteModal({ open: false, todo: null })}
         onDelete={handleDeleteSubmit}
       />
-      <div className={`grid grid-cols-5 gap-2 min-h-[300px]`}>
+      <div className={`grid grid-cols-5 min-h-[300px]`}>
         {days.map((day, idx) => (
           <div
             key={day.key}
             className={`
               flex flex-col gap-2
               ${idx !== 0 ? 'border-l border-[#70737C52]' : ''}
-              px-1
+              px-2
             `}
           >
             {/* 날짜 + 요일 헤더 */}
-            <div className="flex items-center mb-1 ml-2 gap-[8px]">
+            <div className="flex items-center mb-1 gap-[8px]">
               {isToday(day.date) ? (
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white text-[#23242A] font-bold text-md shadow">
                   {day.label}
@@ -191,16 +191,20 @@ const WeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: Wee
   };
 
   return (
-    <div className="bg-elevated-assistive rounded-lg p-3 flex items-center gap-2 relative group">
-      <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
-      <span className={`text-sm ${todo.isCompleted ? 'line-through text-label-disable' : 'text-label-normal'}`}>
+    <div className="bg-elevated-assistive border-[1px] border-line-normal rounded-lg p-3 flex relative group">
+      <div className="flex items-center mr-1 h-10">
+        <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
+      </div>
+      <span
+        className={`text-sm flex-1 ${todo.isCompleted ? 'line-through text-label-disable' : 'text-label-normal'} overflow-hidden h-10 leading-5 line-clamp-1 flex items-center`}
+      >
         {todo.content}
       </span>
       {/* 더보기 메뉴 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 rounded hover:bg-fill-normal">
-            ⋮
+          <button className="group-hover:block ml-auto px-2 py-1 rounded hover:bg-fill-normal h-10 flex items-center">
+            <span className="text-sm text-white">⋮</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">

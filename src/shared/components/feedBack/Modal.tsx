@@ -75,7 +75,8 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
       <FlexBox direction="col" className="py-5 px-8 gap-5 overflow-y-visible">
         {!renderContent ? <></> : renderContent()}
       </FlexBox>
-      <FlexBox className="w-full py-4 px-8 justify-end">{!renderFooter ? <></> : renderFooter()}</FlexBox>
+      <div id="modal-portal-layer" className="relative" />
+      <FlexBox className="w-full py-4 px-8 justify-end gap-2">{!renderFooter ? <></> : renderFooter()}</FlexBox>
     </dialog>
   );
 };

@@ -14,3 +14,18 @@ export const LogoutButton = () => {
 
   return <Button size={'ml'} text={'로그아웃'} onClick={handleLogout} />;
 };
+
+export const LogoutDarkButton = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    tokenController.clearTokens();
+    router.push('/login');
+  };
+
+  return (
+    <div className="max-w-40">
+      <Button variant="secondary" size={'xl'} text={'로그아웃'} onClick={handleLogout} />
+    </div>
+  );
+};

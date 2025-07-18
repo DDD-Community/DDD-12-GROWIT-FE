@@ -29,8 +29,8 @@ const ButtonVariantMap = {
     disabled: 'bg-interaction-disable text-label-disable border border-line-alternative cursor-not-allowed',
   },
   tertiary: {
-    enabled: 'bg-inherit hover:bg-fill-normal text-label-normal',
-    disabled: 'bg-inherit text-label-disable cursor-not-allowed',
+    enabled: 'hover:bg-fill-normal text-label-normal',
+    disabled: 'text-label-disable cursor-not-allowed',
   },
   accent: {
     enabled:
