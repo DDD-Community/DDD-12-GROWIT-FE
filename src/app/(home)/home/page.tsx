@@ -8,7 +8,7 @@ export default async function MainPage() {
       {/* 메인 레이아웃 */}
       <div className="flex flex-col sm:overflow-y-scroll sm:flex-1 pt-[32px] pb-[48px]">
         <div className="flex flex-col max-sm:mx-[20px] sm:mx-[40px] gap-[48px]">
-          <Image src="/logo.svg" alt="logo" width={86} height={32} />
+          <Image src="/logo-text.svg" alt="logo" width={86} height={32} />
           <CheerMessageCard />
           <TodayMissionBoard />
           <WeeklyPlanBoard />
