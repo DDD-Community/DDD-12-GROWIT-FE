@@ -69,19 +69,31 @@ export const EditProfile = () => {
           title="프로필 수정"
           renderContent={() => (
             <>
-              <Select
-                options={jobList}
-                selected={selectedJobRole}
-                onChange={setSelectedJobRole}
-                placeholder={'직무를 선택해주세요'}
-                className="min-w-[430px]"
-              />
-              <SelectWithPortal
-                options={careerLevels}
-                selected={selectedCareerYear}
-                onChange={setSelectedCareerYear}
-                placeholder={'연차를 선택해주세요'}
-              />
+              <div className="flex flex-col gap-2">
+                <label htmlFor="select-job" className="label-1-normal text-label-normal">
+                  직무
+                </label>
+                <Select
+                  id="select-job"
+                  options={jobList}
+                  selected={selectedJobRole}
+                  onChange={setSelectedJobRole}
+                  placeholder={'직무를 선택해주세요'}
+                  className="min-w-[430px]"
+                />
+              </div>
+              <div className="flex flex-col w-full gap-2">
+                <label htmlFor="select-careerYear" className="label-1-normal text-label-normal">
+                  연차
+                </label>
+                <SelectWithPortal
+                  id="select-careerYear"
+                  options={careerLevels}
+                  selected={selectedCareerYear}
+                  onChange={setSelectedCareerYear}
+                  placeholder={'연차를 선택해주세요'}
+                />
+              </div>
             </>
           )}
           renderFooter={() => (

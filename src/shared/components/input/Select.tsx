@@ -1,8 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, ButtonHTMLAttributes } from 'react';
 import FlexBox from '../layout/FlexBox';
 import { createPortal } from 'react-dom';
 
 interface SelectProps {
+  id?: string;
   options: string[];
   selected: string;
   onChange: (selected: string) => void;
@@ -13,6 +14,7 @@ interface SelectProps {
 }
 
 export const Select = ({
+  id = '',
   options,
   selected,
   onChange,
@@ -85,6 +87,7 @@ export const Select = ({
   return (
     <div className="relative w-full" ref={selectRef}>
       <button
+        id={id}
         type="button"
         onKeyDown={handleKeyBoardEvents}
         disabled={disabled}
@@ -150,6 +153,7 @@ export const Select = ({
 };
 
 export const SelectWithPortal = ({
+  id = '',
   options,
   selected,
   onChange,
@@ -235,6 +239,7 @@ export const SelectWithPortal = ({
   return (
     <div className="relative w-full" ref={selectRef}>
       <button
+        id={id}
         type="button"
         onKeyDown={handleKeyBoardEvents}
         disabled={disabled}
