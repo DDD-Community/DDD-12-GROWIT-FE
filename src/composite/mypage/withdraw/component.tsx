@@ -33,7 +33,9 @@ export const WithdrawButton = () => {
             <div className="w-[80px] h-[80px] flex justify-center items-center rounded-full bg-yellow-100">
               <Image src={'/alert-triangle.svg'} alt={'alert-signout'} width={38} height={34} />
             </div>
-            <p className="heading-2-bold text-label-normal">탈퇴하면, 소중한 커리어 기록이 모두 사라져요!</p>
+            <p className="heading-2-bold text-label-normal text-center">
+              탈퇴하면, 소중한 커리어 기록이 모두 사라져요!
+            </p>
             <p className="body-1-normal text-label-normal">그래도 탈퇴하실 건가요?</p>
           </>
         )}

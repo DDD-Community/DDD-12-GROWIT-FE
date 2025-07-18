@@ -18,7 +18,7 @@ export const EditProfile = () => {
 
   return (
     <>
-      <FlexBox className="w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
+      <div className="flex flex-col md:flex-row md:items-center w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
         <FlexBox className="gap-4">
           <Image
             src={'/growit-cat.png'}
@@ -36,7 +36,7 @@ export const EditProfile = () => {
           </div>
         </FlexBox>
 
-        <div className="max-w-[150px]">
+        <div className="w-full md:max-w-[150px]">
           <Button
             size="ml"
             variant="secondary"
@@ -69,7 +69,7 @@ export const EditProfile = () => {
           title="프로필 수정"
           renderContent={() => (
             <>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 min-w-[297px] md:min-w-[430px]">
                 <label htmlFor="select-job" className="label-1-normal text-label-normal">
                   직무
                 </label>
@@ -79,10 +79,9 @@ export const EditProfile = () => {
                   selected={selectedJobRole}
                   onChange={setSelectedJobRole}
                   placeholder={'직무를 선택해주세요'}
-                  className="min-w-[430px]"
                 />
               </div>
-              <div className="flex flex-col w-full gap-2">
+              <div className="flex flex-col w-full gap-2 min-w-[297px] md:min-w-[430px]">
                 <label htmlFor="select-careerYear" className="label-1-normal text-label-normal">
                   연차
                 </label>
@@ -107,7 +106,7 @@ export const EditProfile = () => {
             </>
           )}
         />
-      </FlexBox>
+      </div>
       <p className="text-label-normal text-2xl font-bold">가입 정보</p>
       <FlexBox className="gap-2 mb-4">
         <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />

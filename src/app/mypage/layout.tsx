@@ -1,9 +1,10 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+// import { ChevronLeft } from 'lucide-react';
 import { useAutoLogout } from '@/shared/hooks';
-import { LogoutButton } from '@/feature/auth';
+// import { LogoutButton } from '@/feature/auth';
 import Button from '@/shared/components/navigation/Button';
 import { SideBar } from '@/shared/components/navigation/SideBar';
 
@@ -59,32 +60,29 @@ export default function MyPageLayout({ children }: HomeLayoutProps) {
 }
 
 const MobileHeader = () => {
-  const pathname = usePathname();
-
-  // 홈 페이지에서는 뒤로가기 버튼 숨기기
-  const shouldShowBackButton = pathname !== '/home';
+  //const pathname = usePathname();
 
   return (
-    <div className="sm:hidden flex items-center justify-between px-2 pb-3 pt-12 bg-[#1C1C1E] border-b border-gray-700">
-      <div className="flex items-center gap-3">{shouldShowBackButton && <BackButton />}</div>
-      <div className="flex items-center gap-2">{pathname === '/home' && <LogoutButton />}</div>
+    <div className="sm:hidden flex items-center justify-between px-8 pb-3 pt-12">
+      <p className="title-3-bold text-label-normal">마이페이지</p>
+      <Image src="/align-justify.svg" alt="hamburger-btn" width={28} height={28} />
     </div>
   );
 };
 
-const BackButton = () => {
-  const router = useRouter();
-  const handleBack = () => {
-    router.back();
-  };
+// const BackButton = () => {
+//   const router = useRouter();
+//   const handleBack = () => {
+//     router.back();
+//   };
 
-  return (
-    <button
-      onClick={handleBack}
-      className={`flex items-center justify-center w-10 h-10 rounded-lg  hover:bg-gray-700 transition-colors`}
-      aria-label="뒤로가기"
-    >
-      <ChevronLeft className="w-6 h-6 text-white" />
-    </button>
-  );
-};
+//   return (
+//     <button
+//       onClick={handleBack}
+//       className={`flex items-center justify-center w-10 h-10 rounded-lg  hover:bg-gray-700 transition-colors`}
+//       aria-label="뒤로가기"
+//     >
+//       <ChevronLeft className="w-6 h-6 text-white" />
+//     </button>
+//   );
+// };
