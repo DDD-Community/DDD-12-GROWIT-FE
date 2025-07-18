@@ -127,22 +127,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     return content.length >= 10 && !contentError;
   }, [content, contentError]);
 
-  // 현재 주차에 회고가 있는지 확인
-  const hasRetrospect = retrospect && retrospect.content && retrospect.content.trim() !== '';
-  const shouldShowTooltip = !hasRetrospect && !isLoadingRetrospects && !fetchError;
-
-  // 디버깅용 로그
-  console.log('Tooltip Debug:', {
-    retrospect,
-    hasRetrospect,
-    isLoadingRetrospects,
-    fetchError,
-    shouldShowTooltip,
-    'retrospect type': typeof retrospect,
-    'retrospect content': retrospect?.content,
-  });
-
-  const buttonText = hasRetrospect ? '편집하기' : '회고 작성';
   const modalTitle = isEditMode ? `${currentWeekIndex}주차 회고 편집` : `${currentWeekIndex}주차 회고 작성`;
   const footerButtonText = isEditMode ? '편집 완료' : '작성 완료';
   const isSubmitting = isAddingRetrospect || isEditingRetrospect;

@@ -6,13 +6,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { useAddTodoForm } from './hooks';
-
-// 확장된 Plan 타입 (weekOfMonth 포함)
-interface ExtendedPlan {
-  id: string;
-  content: string;
-  weekOfMonth?: number;
-}
+import { Plan } from '@/shared/type/goal';
 
 // 확장된 Goal 타입
 interface ExtendedGoal {
@@ -26,7 +20,7 @@ interface ExtendedGoal {
     asIs: string;
     toBe: string;
   };
-  plans: ExtendedPlan[];
+  plans: Plan[];
 }
 
 interface AddToDoProps {

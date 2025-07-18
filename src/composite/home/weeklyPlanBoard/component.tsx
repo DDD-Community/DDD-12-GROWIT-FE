@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   useAutoGoOnboarding,
   useFetchGetGoal,
@@ -13,11 +13,11 @@ import { usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
-import { AddRetroSpectButton } from '@/feature/retrospects';
+import { WeeklyGoalProgress } from '@/feature/goal';
 
 export const WeeklyPlanBoard = () => {
   const { isLoading, goalList } = useFetchGetGoal();
-  const { selectedGoalId, selectedGoal, selectedPlans, setSelectedGoalId } = useGoalSelector(goalList);
+  const { selectedGoal, selectedPlans } = useGoalSelector(goalList);
 
   useAutoGoOnboarding(isLoading, goalList);
 
@@ -25,29 +25,12 @@ export const WeeklyPlanBoard = () => {
 
   return (
     <PlanSelector.Provider plans={selectedPlans}>
-      {selectedGoal && (
-        <WeeklyPlanBoardInner
-          goal={selectedGoal}
-          goalList={goalList}
-          selectedGoalId={selectedGoalId}
-          onGoalChange={setSelectedGoalId}
-        />
-      )}
+      {selectedGoal && <WeeklyPlanBoardInner goal={selectedGoal} />}
     </PlanSelector.Provider>
   );
 };
 
-const WeeklyPlanBoardInner = ({
-  goal,
-  goalList,
-  selectedGoalId,
-  onGoalChange,
-}: {
-  goal: Goal;
-  goalList: Goal[];
-  selectedGoalId: string;
-  onGoalChange: (goalId: string) => void;
-}) => {
+const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
   const { data: weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
@@ -60,17 +43,8 @@ const WeeklyPlanBoardInner = ({
   // 주말 표시 상태 관리
   const [showWeekend, setShowWeekend] = useState(false);
 
-  // 완료율 계산
-  const { percent, total, done } = useMemo(() => {
-    if (!todoList) return { percent: 0, total: 0, done: 0 };
-    const todos = Object.values(todoList).flat();
-    const total = todos.length;
-    const done = todos.filter(t => t.isCompleted).length;
-    return { percent: total ? Math.round((done / total) * 100) : 0, total, done };
-  }, [todoList]);
-
   // todo 목록 새로고침 함수
-  const refreshTodoList = () => {
+  const handleRefreshTodoList = () => {
     if (goal?.id && selectedPlanId) {
       fetchWeeklyTodoList({ goalId: goal.id, planId: selectedPlanId });
     }
@@ -103,7 +77,7 @@ const WeeklyPlanBoardInner = ({
           <AddToDo
             goal={goal}
             selectedPlanId={selectedPlanId}
-            onSuccess={refreshTodoList}
+            onSuccess={handleRefreshTodoList}
             onWeekChange={handleWeekChange}
             onToggleWeekend={handleToggleWeekend}
           />
@@ -111,20 +85,13 @@ const WeeklyPlanBoardInner = ({
       </div>
       {/* 목표/플랜/진행률 */}
       {goal && (
-        <div className="flex items-center gap-4 px-6 py-[17px] rounded-2xl bg-[#37383C47]">
-          <div className="flex gap-[12px] items-center">
-            <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
-            <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
-            <span className="text-white text-[16px] font-[700]">'{selectedPlanContent}'</span>
-            <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
-          </div>
-          <div className="flex-1 flex items-center gap-2">
-            <div className="w-full h-2 bg-fill-normal rounded">
-              <div className="h-2 bg-accent-violet rounded" style={{ width: percent + '%' }} />
-            </div>
-            <span className="text-label-normal text-xs">{percent}%</span>
-          </div>
-        </div>
+        <WeeklyGoalProgress
+          goal={goal}
+          selectedPlanContent={selectedPlanContent}
+          selectedPlanId={selectedPlanId}
+          selectedWeekIndex={selectedWeekIndex}
+          todoList={todoList}
+        />
       )}
       {/* 요일별 컬럼 */}
       {todoList && (
@@ -133,7 +100,7 @@ const WeeklyPlanBoardInner = ({
           goal={goal}
           currentWeekIndex={selectedWeekIndex}
           onToggleTodo={toggleTodoStatus}
-          refreshTodoList={refreshTodoList}
+          refreshTodoList={handleRefreshTodoList}
           onWeekChange={handleWeekChange}
           showWeekend={showWeekend}
           onToggleWeekend={handleToggleWeekend}
