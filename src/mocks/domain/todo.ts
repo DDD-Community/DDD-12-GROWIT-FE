@@ -31,10 +31,12 @@ export const mockGoals: Goal[] = [
       {
         id: 'plan-1',
         content: 'React 컴포넌트 설계 및 리팩토링',
+        weekOfMonth: 1,
       },
       {
         id: 'plan-2',
         content: 'TypeScript와 React 연동',
+        weekOfMonth: 2,
       },
     ],
   },
@@ -53,10 +55,12 @@ export const mockGoals: Goal[] = [
       {
         id: 'plan-3',
         content: '디자인 토큰 정의 및 컴포넌트 설계',
+        weekOfMonth: 1,
       },
       {
         id: 'plan-4',
         content: '스토리북을 활용한 컴포넌트 문서화',
+        weekOfMonth: 2,
       },
     ],
   },
@@ -75,10 +79,12 @@ export const mockGoals: Goal[] = [
       {
         id: 'plan-5',
         content: '프로젝트 기획 및 요구사항 분석',
+        weekOfMonth: 1,
       },
       {
         id: 'plan-6',
         content: '팀 협업 및 커뮤니케이션',
+        weekOfMonth: 2,
       },
     ],
   },
