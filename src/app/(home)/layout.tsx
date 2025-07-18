@@ -27,7 +27,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   return (
     <aside className="max-sm:hidden flex h-screen min-w=[88px] gap-[24px] bg-fill-normal flex-col items-center py-8 shadow-lg">
       <button onClick={() => router.push('/home')}>
-        <Image src="/Logomark.svg" alt="icon of growit" width={32} height={32} />
+        <Image src="/logo-favicon.svg" alt="icon of growit" width={32} height={32} />
       </button>
       <LogoutButton />
       <div className="flex-1 w-full flex flex-col items-center">{children}</div>

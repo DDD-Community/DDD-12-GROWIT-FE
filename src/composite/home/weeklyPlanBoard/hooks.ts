@@ -5,18 +5,6 @@ import { getGoalList, getWeeklyTodoList } from './api';
 import type { TodoWeeklyListRequest } from './api';
 import { Goal } from '@/shared/type/goal';
 
-// 확장된 Plan 타입 (weekOfMonth 포함)
-export interface ExtendedPlan {
-  id: string;
-  content: string;
-  weekOfMonth?: number;
-}
-
-// 확장된 Goal 타입
-export interface ExtendedGoal extends Omit<Goal, 'plans'> {
-  plans: ExtendedPlan[];
-}
-
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
@@ -25,7 +13,7 @@ import { Todo } from '@/shared/type/Todo';
 export function useFetchGetGoal() {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [goalList, setGoalList] = useState<ExtendedGoal[]>([]);
+  const [goalList, setGoalList] = useState<Goal[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -80,7 +68,7 @@ export function useFetchGetGoal() {
 }
 
 // Goal 선택을 위한 Hook
-export function useGoalSelector(goalList: ExtendedGoal[]) {
+export function useGoalSelector(goalList: Goal[]) {
   const [selectedGoalId, setSelectedGoalId] = useState<string>('');
 
   // goalList가 변경되면 첫 번째 goal을 자동 선택
@@ -101,10 +89,9 @@ export function useGoalSelector(goalList: ExtendedGoal[]) {
   };
 }
 
-export function useAutoGoOnboarding(isLoading: boolean, goalList: ExtendedGoal[]) {
+export function useAutoGoOnboarding(isLoading: boolean, goalList: Goal[]) {
   const router = useRouter();
   // goal이 없고 로딩이 끝났으며, 온보딩 기록이 없으면 온보딩 페이지로 이동
-  console.log('goalList', goalList);
   useEffect(() => {
     if (!isLoading && goalList.length === 0) {
       // const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
