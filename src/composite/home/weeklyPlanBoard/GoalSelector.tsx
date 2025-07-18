@@ -1,10 +1,10 @@
 'use client';
 
 import { Select } from '@/shared/components/input/Select';
-import { ExtendedGoal } from './hooks';
+import { Goal } from '@/shared/type/goal';
 
 interface GoalSelectorProps {
-  goalList: ExtendedGoal[];
+  goalList: Goal[];
   selectedGoalId: string;
   onGoalChange: (goalId: string) => void;
   disabled?: boolean;
