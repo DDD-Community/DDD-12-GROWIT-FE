@@ -12,6 +12,8 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
 import { getDateString, isToday, getWeekStartDate, getAllWeekDates } from '../utils';
+import EditTodoModal from './EditTodoModal';
+import DeleteTodoModal from './DeleteTodoModal';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
@@ -28,6 +30,8 @@ interface MobileWeeklyTodoListProps {
   onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
+  onWeekChange?: (weekOfMonth: number) => void;
+  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
 export const MobileWeeklyTodoList = ({
@@ -37,8 +41,12 @@ export const MobileWeeklyTodoList = ({
   onToggleTodo,
   onEdit,
   onDelete,
+  onWeekChange,
+  onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
   const [selectedDay, setSelectedDay] = useState<DAY_OF_THE_WEEK>('MONDAY');
+  const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
   // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
@@ -52,10 +60,45 @@ export const MobileWeeklyTodoList = ({
     }
   }, [days]);
 
+  // props가 변경되면 모달 상태 초기화
+  useEffect(() => {
+    setEditModal({ open: false, todo: null });
+    setDeleteModal({ open: false, todo: null });
+  }, [goal.id, currentWeekIndex]);
+
   const selectedDayTodos = weeklyTodos[selectedDay] || [];
+
+  const handleEditSubmit = (updatedTodo: Todo) => {
+    setEditModal({ open: false, todo: null });
+    // Todo 수정 후 부모 컴포넌트에 알림
+    onEdit?.(updatedTodo);
+  };
+
+  const handleDeleteSubmit = (todo: Todo) => {
+    setDeleteModal({ open: false, todo: null });
+    // Todo 삭제 후 부모 컴포넌트에 알림
+    onDelete?.(todo);
+  };
 
   return (
     <div className="flex flex-col">
+      {/* 모달 영역 */}
+      <EditTodoModal
+        open={editModal.open}
+        todo={editModal.todo}
+        goal={goal}
+        onClose={() => setEditModal({ open: false, todo: null })}
+        onSubmit={handleEditSubmit}
+        onWeekChange={onWeekChange}
+        onToggleWeekend={onToggleWeekend}
+      />
+      <DeleteTodoModal
+        open={deleteModal.open}
+        todo={deleteModal.todo}
+        onClose={() => setDeleteModal({ open: false, todo: null })}
+        onDelete={handleDeleteSubmit}
+      />
+
       {/* 요일/날짜 선택 섹션 */}
       <div className="grid grid-cols-7 gap-2 mb-4">
         {days.map(day => {
@@ -98,8 +141,8 @@ export const MobileWeeklyTodoList = ({
               todo={todo}
               dayOfWeek={selectedDay}
               onToggleTodo={onToggleTodo}
-              onEdit={() => onEdit?.(todo)}
-              onDelete={() => onDelete?.(todo)}
+              onEdit={() => setEditModal({ open: true, todo })}
+              onDelete={() => setDeleteModal({ open: true, todo })}
             />
           ))
         )}
@@ -147,7 +190,7 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuItem onClick={onEdit}>
             <Edit className="mr-2 h-4 w-4" />
-            편집
+            수정
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={onDelete} variant="destructive">

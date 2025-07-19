@@ -33,6 +33,8 @@ interface WeeklyTodoListProps {
   onWeekChange?: (weekOfMonth: number) => void;
   showWeekend?: boolean;
   onToggleWeekend?: (showWeekend: boolean) => void;
+  onEdit?: (todo: Todo) => void;
+  onDelete?: (todo: Todo) => void;
 }
 
 export const DesktopWeeklyTodoList = ({
@@ -44,6 +46,8 @@ export const DesktopWeeklyTodoList = ({
   onWeekChange,
   showWeekend: externalShowWeekend,
   onToggleWeekend: externalOnToggleWeekend,
+  onEdit,
+  onDelete,
 }: WeeklyTodoListProps) => {
   const [internalShowWeekend, setInternalShowWeekend] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
@@ -69,6 +73,7 @@ export const DesktopWeeklyTodoList = ({
     setEditModal({ open: false, todo: null });
     // Todo 수정 후 리스트 새로고침
     refreshTodoList?.();
+    onEdit?.(updatedTodo);
   };
 
   const handleDeleteSubmit = (todo: Todo) => {
@@ -77,6 +82,7 @@ export const DesktopWeeklyTodoList = ({
     setDeleteModal({ open: false, todo: null });
     // Todo 삭제 후 리스트 새로고침
     refreshTodoList?.();
+    onDelete?.(todo);
   };
 
   // 주말 표시 토글 함수

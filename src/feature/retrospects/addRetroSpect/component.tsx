@@ -153,7 +153,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
         renderContent={() => (
           <div className="flex flex-col justify-start gap-4">
             <TextArea
-              className="min-w-[300px] md:min-w-[512px]"
+              className="min-w-[300px] md:min-w-[496px]"
               maxLength={200}
               value={content}
               onChange={handleContentChange}
