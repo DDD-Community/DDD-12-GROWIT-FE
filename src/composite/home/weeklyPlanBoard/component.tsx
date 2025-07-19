@@ -14,6 +14,7 @@ import { PlanSelector } from '@/feature/todo';
 import { Goal } from '@/shared/type/goal';
 import { AddToDo } from '@/feature/todo/addToDoButton/component';
 import { WeeklyGoalProgress } from '@/feature/goal';
+import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 
 export const WeeklyPlanBoard = () => {
   const { isLoading, goalList } = useFetchGetGoal();
@@ -64,6 +65,24 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
     setShowWeekend(showWeekend);
   };
 
+  // Todo 편집 핸들러
+  const handleEdit = (todo: Todo) => {
+    // TODO: 편집 모달 열기 로직 구현
+    console.log('Edit todo:', todo);
+  };
+
+  // Todo 삭제 핸들러
+  const handleDelete = (todo: Todo) => {
+    // TODO: 삭제 모달 열기 로직 구현
+    console.log('Delete todo:', todo);
+  };
+
+  // Todo 상태 토글 핸들러 (모바일용)
+  const handleToggleTodo = (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
+    // 기존 toggleTodoStatus와 동일한 로직 사용
+    toggleTodoStatus(dayOfWeek, todoId);
+  };
+
   return (
     <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
       {/* 상단 바 */}
@@ -95,16 +114,28 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
       )}
       {/* 요일별 컬럼 */}
       {todoList && (
-        <WeeklyTodoList
-          weeklyTodos={todoList}
-          goal={goal}
-          currentWeekIndex={selectedWeekIndex}
-          onToggleTodo={toggleTodoStatus}
-          refreshTodoList={handleRefreshTodoList}
-          onWeekChange={handleWeekChange}
-          showWeekend={showWeekend}
-          onToggleWeekend={handleToggleWeekend}
-        />
+        <>
+          <div className="invisible sm:visible h-0 sm:h-auto overflow-hidden sm:overflow-visible">
+            <WeeklyTodoList.Desktop
+              weeklyTodos={todoList}
+              goal={goal}
+              currentWeekIndex={selectedWeekIndex}
+              onToggleTodo={toggleTodoStatus}
+              showWeekend={showWeekend}
+              onToggleWeekend={handleToggleWeekend}
+            />
+          </div>
+          <div className="visible sm:invisible sm:h-0 sm:overflow-hidden">
+            <WeeklyTodoList.Mobile
+              weeklyTodos={todoList}
+              goal={goal}
+              currentWeekIndex={selectedWeekIndex}
+              onToggleTodo={handleToggleTodo}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+        </>
       )}
     </div>
   );

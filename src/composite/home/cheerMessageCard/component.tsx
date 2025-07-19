@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export const CheerMessageCard = () => {
   return (
-    <div className="flex gap-[16px] sm:gap-[16px] gap-[12px]">
+    <div className="flex gap-[16px] sm:gap-[16px]">
       <Image
         src={'/growit-cat.png'}
         alt={'growit-cat'}
