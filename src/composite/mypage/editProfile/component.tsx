@@ -10,6 +10,14 @@ import { Select } from '@/shared/components/input/Select';
 import { SelectWithPortal } from '@/shared/components/input/Select';
 import { useEditProfile } from './hooks';
 
+const careerMap: Record<string, string> = {
+  NEWBIE: '신입',
+  JUNIOR: '주니어',
+  MID: '미드레벨',
+  SENIOR: '시니어',
+  LEAD: '리드/매니저',
+} as const;
+
 export const EditProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userName, jobRole, email, careerYear, careerLevels, jobList, putUserProfile } = useEditProfile();
@@ -31,7 +39,7 @@ export const EditProfile = () => {
             <h2 className="heading-2-bold">{userName}</h2>
             <FlexBox className="gap-2">
               <Badge type="default" size="md" label={jobRole} />
-              <span className="body-1-normal text-label-neutral">{careerYear}년차</span>
+              <span className="body-1-normal text-label-neutral">{careerMap[careerYear]}</span>
             </FlexBox>
           </div>
         </FlexBox>
