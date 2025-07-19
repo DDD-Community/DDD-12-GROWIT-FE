@@ -93,9 +93,10 @@ export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggl
         onClose={handleModalClose}
         title="투두 추가"
         renderContent={() => (
-          <div className="flex flex-col justify-start gap-4 w-[400px]">
+          <div className="flex flex-col justify-start gap-4">
             <div className="w-full">
               <DatePicker
+                className="min-w-[300px] md:min-w-[500px]"
                 selectedDate={date}
                 onDateSelect={handleDateSelect}
                 minDate={startDate}
@@ -108,7 +109,7 @@ export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggl
             </div>
 
             <TextArea
-              className="w-full"
+              className="min-w-[300px] md:min-w-[496px]"
               maxLength={100}
               value={content}
               onChange={handleContentChange}

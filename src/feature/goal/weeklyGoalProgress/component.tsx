@@ -24,14 +24,16 @@ export const WeeklyGoalProgress = ({
 }: WeeklyGoalProgressProps) => {
   const { percent } = useWeeklyGoalProgress({ todoList });
   return (
-    <div className="flex items-center justify-between px-6 py-[17px] rounded-2xl bg-[#37383C47]">
-      <div className="flex gap-[12px] items-center">
-        <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
-        <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
-        <span className="text-white text-[16px] font-[700]">'{selectedPlanContent}'</span>
+    <div className="flex items-center justify-between px-6 py-[17px] rounded-2xl bg-[#37383C47] max-sm:flex-col max-sm:gap-3">
+      <div className="flex gap-[12px] items-center max-sm:w-full max-sm:justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-[#C2C4C8E0] text-[14px] font-[500]">이번주 목표</span>
+          <div className="bg-[#70737C52] h-[16px] w-[1px]"></div>
+          <span className="text-white text-[16px] font-[700]">'{selectedPlanContent}'</span>
+        </div>
         <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
       </div>
-      <div className="flex flex-col items-center gap-[12px] w-[50%]">
+      <div className="flex flex-col items-center gap-[12px] w-[50%] max-sm:w-full">
         <div className="flex w-full justify-between gap-2 items-center">
           <div className="px-3 rounded-full bg-accent-violet/20 ">
             <span className="text-accent-fg-violet text-xs font-light">주간 투두 완료율</span>

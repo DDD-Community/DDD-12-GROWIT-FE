@@ -54,3 +54,14 @@ export function getWeekDates(weekStart: Date, showWeekend: boolean) {
     });
   }
 }
+
+// 모바일용: 평일과 주말을 모두 포함한 요일별 날짜 배열 반환
+export function getAllWeekDates(weekStart: Date) {
+  const allDays: DAY_OF_THE_WEEK[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+
+  return allDays.map((key, idx) => {
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + idx);
+    return { key, label: DAY_LABELS[key], date };
+  });
+}
