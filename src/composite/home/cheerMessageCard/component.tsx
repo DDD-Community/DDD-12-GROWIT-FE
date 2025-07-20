@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useFetchUserName } from './hooks';
+import { useFetchUserName } from '@/shared/hooks';
 
 export const CheerMessageCard = () => {
   const { userName } = useFetchUserName();
