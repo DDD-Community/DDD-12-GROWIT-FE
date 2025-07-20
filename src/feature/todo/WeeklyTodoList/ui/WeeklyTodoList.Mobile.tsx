@@ -52,14 +52,6 @@ export const MobileWeeklyTodoList = ({
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getAllWeekDates(weekStart); // 모바일에서는 평일과 주말 모두 포함
 
-  // 오늘 날짜가 포함된 요일을 찾아서 초기 선택값으로 설정
-  useEffect(() => {
-    const todayDay = days.find(day => isToday(day.date));
-    if (todayDay) {
-      setSelectedDay(todayDay.key);
-    }
-  }, [days]);
-
   // props가 변경되면 모달 상태 초기화
   useEffect(() => {
     setEditModal({ open: false, todo: null });
@@ -113,7 +105,7 @@ export const MobileWeeklyTodoList = ({
                 flex flex-col items-center justify-center h-[56px] rounded-2xl
                 ${
                   isTodayDate
-                    ? 'bg-purple-500 text-white'
+                    ? 'bg-accent-violet text-white'
                     : isSelected
                       ? 'bg-white text-[#23242A] font-[600]'
                       : 'bg-[#2A2B31] text-[#AEB0B6]'
