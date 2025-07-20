@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/layout/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { ToolTip } from '@/shared/components/display/ToolTip';

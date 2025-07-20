@@ -1,4 +1,4 @@
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import Button from '../navigation/Button';
 import { DialogHTMLAttributes, useEffect, useRef } from 'react';
 

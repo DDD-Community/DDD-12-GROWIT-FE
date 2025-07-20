@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/shared/lib/apiClient';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Rocket } from './icons';
 import { DarkToolTip } from '@/shared/components/display/ToolTip';
 

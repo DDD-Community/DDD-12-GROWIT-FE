@@ -1,6 +1,6 @@
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/layout/Button';
 import { Todo } from '@/shared/type/Todo';
 import { deleteTodo } from '../api';
 import { useState } from 'react';

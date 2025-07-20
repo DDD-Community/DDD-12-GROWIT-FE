@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
 import { ConfirmGoalDialogButton } from '@/feature/goal';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useFetchPostCreateGoal, useProgressPercentage } from './hook';
 
 export const ConfirmGoalBottomBar = () => {

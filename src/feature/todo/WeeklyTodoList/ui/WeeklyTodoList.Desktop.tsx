@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { usePatchTodoStatus } from '../hooks';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/layout/Button';
 import { Goal } from '@/shared/type/goal';
 import {
   DropdownMenu,

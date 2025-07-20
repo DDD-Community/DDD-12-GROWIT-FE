@@ -2,9 +2,9 @@
 
 import { ButtonHTMLAttributes, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FlexBox from '../layout/FlexBox';
-import type { ButtonVariants, ButtonLayouts, ButtonSize } from '@/shared/components/navigation/utils/button';
-import { getButtonClasses } from '@/shared/components/navigation/utils/button';
+import FlexBox from '../foundation/FlexBox';
+import type { ButtonVariants, ButtonLayouts, ButtonSize } from '@/shared/components/layout/utils/button';
+import { getButtonClasses } from '@/shared/components/layout/utils/button';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariants;

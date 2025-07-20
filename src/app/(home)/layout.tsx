@@ -5,8 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAutoLogout } from '@/shared/hooks';
 import { LogoutButton } from '@/feature/auth';
-import Button from '@/shared/components/navigation/Button';
-import { SideBar } from '@/shared/components/navigation/SideBar';
+import Button from '@/shared/components/layout/Button';
+import { SideBar } from '@/shared/components/layout/SideBar';
 //import { CreateGoalButton } from '@/feature/goal';
 
 interface HomeLayoutProps {

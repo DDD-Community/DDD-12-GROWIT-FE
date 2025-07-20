@@ -6,7 +6,7 @@ import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
 import { BeforeAfter, Plan } from '@/feature/goal/getRoadMap/type';
 import { useEffect, useState } from 'react';
 import Button from '@/shared/components/navigation/Button';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 
 const OpenRoadMapButton = () => {
   const [isOpen, setIsOpen] = useState(false);

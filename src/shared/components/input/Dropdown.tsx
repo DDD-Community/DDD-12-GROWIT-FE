@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import FlexBox from '../layout/FlexBox';
+import FlexBox from '../foundation/FlexBox';
 
 // 개발 예정
 interface DropdownProps {
