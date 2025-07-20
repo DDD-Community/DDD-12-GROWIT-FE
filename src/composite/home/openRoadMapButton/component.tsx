@@ -5,7 +5,7 @@ import { DownLoad, Earth } from '../goalRoadMap/icons';
 import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
 import { BeforeAfter, Plan } from '@/feature/goal/getRoadMap/type';
 import { useEffect, useState } from 'react';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 
 const OpenRoadMapButton = () => {

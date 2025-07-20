@@ -16,7 +16,7 @@ export default function OnBoardingPage() {
           <div className="bg-[#232326] rounded-2xl p-8 text-white text-base leading-relaxed shadow-lg">
             <p className="mb-2">안녕하다냥 {userName} 🐱</p>
             <div>
-              나는 정서의 목표 행성까지의 여정을 함께할 <b>동행자 그로냥</b>이당
+              나는 {userName}의 목표 행성까지의 여정을 함께할 <b>동행자 그로냥</b>이당
               <br />
               우리의 4주간 여정의 목표 행성을 정해야한당
             </div>

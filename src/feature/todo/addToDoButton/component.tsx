@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Button from '@/shared/components/layout/Button';
+import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import DatePicker from '@/shared/components/input/DatePicker';

@@ -1,5 +1,5 @@
 'use client';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 import { useRouter } from 'next/navigation';
 
 export const CreateGoalButton = () => {

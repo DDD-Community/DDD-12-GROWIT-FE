@@ -1,7 +1,7 @@
 import { Modal } from '@/shared/components/feedBack/Modal';
 import DatePanel from '@/shared/components/input/DatePanel';
 import { TextArea } from '@/shared/components/input/TextArea';
-import Button from '@/shared/components/layout/Button';
+import Button from '@/shared/components/input/Button';
 import { Todo } from '@/shared/type/Todo';
 import { useState, useEffect } from 'react';
 import { putTodo } from '../api';

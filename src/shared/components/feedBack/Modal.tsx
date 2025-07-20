@@ -1,5 +1,5 @@
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import Button from '../navigation/Button';
+import Button from '../input/Button';
 import { DialogHTMLAttributes, useEffect, useRef } from 'react';
 
 interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
