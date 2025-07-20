@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { InputField } from '@/shared/components/input/InputField';

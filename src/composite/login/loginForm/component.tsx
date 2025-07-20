@@ -7,7 +7,7 @@ import { InputField } from '@/shared/components/input/InputField';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useFetchLogin } from '@/composite/login/loginForm/hook';
 import { tokenController } from '@/shared/lib/token';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 
 interface LoginFormData {
   email: string;

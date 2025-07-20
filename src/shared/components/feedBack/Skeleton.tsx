@@ -1,4 +1,4 @@
-import FlexBox from './FlexBox';
+import FlexBox from '../foundation/FlexBox';
 
 interface SkeletonUIProps {
   // 추후에 더 추가 예정

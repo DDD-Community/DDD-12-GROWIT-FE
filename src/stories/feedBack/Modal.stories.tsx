@@ -3,7 +3,7 @@ import { Modal, StartJourneyPopUp } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { useState } from 'react';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 
 const meta = {
   title: 'FeedBack/Modal',

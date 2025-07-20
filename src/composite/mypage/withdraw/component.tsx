@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Image from 'next/image';
 import { useState } from 'react';

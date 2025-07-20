@@ -21,7 +21,7 @@ export const StepBox = ({ step, showToolTip = false, toolTipContent = '', childr
     >
       {step}
       {toolTipContent && showToolTip && (
-        <ToolTip text={toolTipContent} className="absolute -top-12 right-1/2 transform translate-1/2 z-2 text-black" />
+        <ToolTip text={toolTipContent} className="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10" />
       )}
       {children}
     </div>

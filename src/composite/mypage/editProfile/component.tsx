@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import Badge from '@/shared/components/display/Badge';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { useState } from 'react';
 import { Select } from '@/shared/components/input/Select';
