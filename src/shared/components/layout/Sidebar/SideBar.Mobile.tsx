@@ -23,7 +23,7 @@ export const SideBarMobile = () => {
       {/* 햄버거 메뉴 버튼 - 오른쪽 상단으로 이동 */}
       <button
         onClick={toggleSidebar}
-        className="sm:hidden fixed top-3 right-4 z-50 p-2 bg-[#232326] rounded-lg shadow-lg"
+        className="sm:hidden fixed top-3 right-4 p-2 bg-[#232326] rounded-lg shadow-lg z-101"
         aria-label="메뉴 열기"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,11 +38,11 @@ export const SideBarMobile = () => {
       </button>
 
       {/* 모바일 사이드바 오버레이 */}
-      {isOpen && <div className="sm:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={toggleSidebar} />}
+      {isOpen && <div className="sm:hidden fixed inset-0 bg-black bg-opacity-30 z-100" onClick={toggleSidebar} />}
 
       {/* 모바일 사이드바 - 오른쪽에서 열림 */}
       <div
-        className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-[#232326] shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`sm:hidden fixed top-0 right-0 h-full w-64 bg-[#232326] shadow-lg transform transition-transform duration-300 ease-in-out z-110 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

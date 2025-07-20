@@ -12,7 +12,13 @@ export default function OnBoardingPage() {
     <div className="flex w-full h-full bg-[#1C1C1E]">
       <div className="flex flex-1 flex-col gap-14 px-4 py-8">
         <div className="flex w-full gap-5">
-          <Image src="/niaaaang.png" alt="logo" className="w-[80px] h-[80px]" width={38} height={38} />
+          <Image
+            src="/niaaaang.png"
+            alt="logo"
+            className="sm:w-[80px] sm:h-[80px] max-sm:w-[50px] max-sm:h-[50px]"
+            width={38}
+            height={38}
+          />
           <div className="bg-[#232326] rounded-2xl p-8 text-white text-base leading-relaxed shadow-lg">
             <p className="mb-2">안녕하다냥 {userName} 🐱</p>
             <div>
@@ -25,10 +31,8 @@ export default function OnBoardingPage() {
               정해주라냥
             </div>
           </div>
-          <div className="min-w-[80px] min-h-[80px]" />
         </div>
         <div className="flex w-full gap-5 flex-row-reverse">
-          <div className="w-[80px] h-[80px]" />
           <div className="bg-[#232326] rounded-2xl p-6 flex flex-col gap-4 items-end shadow-lg">
             <div className="text-white">
               오케이 반가워{' '}
@@ -40,7 +44,6 @@ export default function OnBoardingPage() {
             </div>
             <CreateGoalButton />
           </div>
-          <div className="min-w-[80px] min-h-[80px]" />
         </div>
       </div>
     </div>

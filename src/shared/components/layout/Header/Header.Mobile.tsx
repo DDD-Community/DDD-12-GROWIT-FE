@@ -24,13 +24,13 @@ export const HeaderMobile = () => {
       case '/onboarding':
         return '온보딩';
       default:
-        return 'Growit';
+        return '';
     }
   };
 
   return (
     <>
-      <header className="sm:hidden fixed left-0 w-full flex items-center justify-between px-4 py-3 bg-[#1C1C1E] border-b border-gray-700">
+      <header className="sm:hidden fixed left-0 w-full flex items-center justify-between px-4 py-3 bg-[#1C1C1E] border-b-[1px] border-line-normal z-100">
         {/* 왼쪽: 뒤로가기 버튼 */}
         <div className="flex items-center gap-3 w-[40px] h-[40px]">{shouldShowBackButton && <BackButton />}</div>
 
@@ -42,7 +42,8 @@ export const HeaderMobile = () => {
         {/* 오른쪽: 로그아웃 버튼 */}
         <div className="flex items-center gap-3 w-[40px] h-[40px]"></div>
       </header>
-      <div className="h-[40px]" />
+      {/* fixed 된 Header 의 높이를  */}
+      <div className="h-[65px]" />
     </>
   );
 };

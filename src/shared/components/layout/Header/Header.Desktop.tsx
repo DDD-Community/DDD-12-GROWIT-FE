@@ -26,7 +26,7 @@ export const HeaderDesktop = () => {
   };
 
   return (
-    <header className="hidden sm:flex items-center justify-between px-6 py-4 bg-[#232326] border-b border-gray-700 shadow-sm">
+    <header className="hidden sm:flex items-center justify-between px-6 py-4 bg-[#232326] shadow-sm border-t-[1px] border-line-normal">
       {/* 왼쪽: 로고와 페이지 제목 */}
       <div className="flex items-center gap-4">
         <Image src="/logo-text.svg" alt="Growit" width={86} height={32} />
