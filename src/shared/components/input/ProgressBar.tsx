@@ -1,4 +1,4 @@
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import { motion } from 'framer-motion';
 
 export interface ProgressBarProps {

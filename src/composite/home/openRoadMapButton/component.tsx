@@ -5,8 +5,8 @@ import { DownLoad, Earth } from '../goalRoadMap/icons';
 import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
 import { BeforeAfter, Plan } from '@/feature/goal/getRoadMap/type';
 import { useEffect, useState } from 'react';
-import Button from '@/shared/components/navigation/Button';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import Button from '@/shared/components/input/Button';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 
 const OpenRoadMapButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,8 +38,8 @@ const OpenRoadMapButton = () => {
         <DownLoad />
       </button>
       {isOpen && plans.length && beforeAfter && (
-        <div className="fixed inset-0 bg-black/50 z-40 md:hidden">
-          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-2 md:relative md:z-auto">
+        <div className="fixed inset-0 bg-black/50 z-120 md:hidden">
+          <div className="fixed inset-0 z-130 flex flex-col items-center justify-center gap-2 md:relative md:z-auto">
             <FlexBox className="w-[335px] justify-end">
               <Button
                 layout="icon-only"

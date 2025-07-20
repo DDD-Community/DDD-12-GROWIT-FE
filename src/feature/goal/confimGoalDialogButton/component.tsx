@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Button from '@/shared/components/navigation/Button';
-import FlexBox from '@/shared/components/layout/FlexBox';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
 import { useRouter } from 'next/navigation';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
+import FlexBox from '@/shared/components/foundation/FlexBox';
+import Button from '@/shared/components/input/Button';
 
 interface GoalDialogButtonProps {
   isLoading: boolean;

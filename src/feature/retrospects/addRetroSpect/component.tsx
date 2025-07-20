@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { ToolTip } from '@/shared/components/display/ToolTip';
@@ -141,9 +141,13 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
           onClick={() => showModal()}
           icon={<Image src={'/icon/growit-comment.svg'} alt={'회고록 작성 아이콘'} width={20} height={20} />}
         />
-        {/* 단순화된 조건: 로딩이 끝나고 데이터가 없으면 툴팁 표시 */}
         {!isLoadingRetrospects && !retrospect && (
-          <ToolTip text="주간회고를 입력하세요" className="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10" />
+          <>
+            {/* 데스크톱: top-center */}
+            <ToolTip text="주간회고를 입력하세요" position="top-center" className="z-10 hidden sm:block" />
+            {/* 모바일: top-right */}
+            <ToolTip text="주간회고를 입력하세요" position="top-right" className="z-10 block sm:hidden" />
+          </>
         )}
       </div>
       <Modal

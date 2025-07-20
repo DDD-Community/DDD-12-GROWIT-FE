@@ -4,7 +4,7 @@ import { Goal } from '@/shared/type/goal';
 import { Todo } from '@/shared/type/Todo';
 import { AddRetroSpectButton } from '@/feature/retrospects';
 import { useWeeklyGoalProgress } from './hooks';
-import FlexBox from '@/shared/components/layout/FlexBox';
+import FlexBox from '@/shared/components/foundation/FlexBox';
 import { motion } from 'framer-motion';
 
 interface WeeklyGoalProgressProps {

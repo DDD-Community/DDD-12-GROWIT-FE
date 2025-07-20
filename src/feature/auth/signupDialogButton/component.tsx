@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
-import Button from '@/shared/components/navigation/Button';
+import Button from '@/shared/components/input/Button';
 
 interface SignupButtonProps {
   isValid: boolean;
