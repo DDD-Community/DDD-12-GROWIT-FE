@@ -30,7 +30,7 @@ export const SignUpForm = () => {
       <InputField
         label="Email"
         type="email"
-        placeholder="가입된 이메일을 입력해주세요."
+        placeholder="가입할 이메일을 입력해주세요."
         {...register('email', {
           required: '이메일을 입력해주세요.',
           pattern: {
