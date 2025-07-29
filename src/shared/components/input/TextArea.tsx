@@ -27,7 +27,7 @@ export function TextArea({ label, isError, errorMessage, description, className 
           onInput={handleInput}
           {...props}
           className={`w-full min-h-[88px] px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border border-label-assistive focus:ring-2 ${
-            isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-[#8C7FF7]'
+            isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
           }`}
         />
         {isError && (
