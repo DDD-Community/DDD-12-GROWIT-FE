@@ -130,6 +130,7 @@ const MainGoal = () => {
       <TextArea
         label="목표 설정 (AS IS)"
         placeholder="현재 상태를 간단히 입력해주세요."
+        className="flex-1"
         isError={!!errors.beforeAfter?.asIs}
         errorMessage={errors.beforeAfter?.asIs?.message}
         {...register('beforeAfter.asIs', { required: '현재 상태를 입력해주세요.' })}
@@ -139,6 +140,7 @@ const MainGoal = () => {
       <TextArea
         label="목표 설정 (TO BE)"
         placeholder="4주 후 이루고 싶은 목표를 간단히 입력해주세요."
+        className="flex-1"
         isError={!!errors.beforeAfter?.toBe}
         errorMessage={errors.beforeAfter?.toBe?.message}
         {...register('beforeAfter.toBe', { required: '4주 후 목표를 입력해주세요.' })}
