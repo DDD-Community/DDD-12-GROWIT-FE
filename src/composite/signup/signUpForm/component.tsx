@@ -1,9 +1,28 @@
 'use client';
 import { useForm } from 'react-hook-form';
+import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
 import { SignupDialogButton, SelectJobButtonGroup } from '@/feature/auth';
 import { SignupFormData } from './type';
 import { useFetchSignUp } from './hook';
+import { CareerYearType } from './type';
+
+const CAREER_YEAR_OPTIONS = [
+  '선택',
+  '신입(1년차 미만)',
+  '주니어(1~3년)',
+  '미드레벨(3~6년)',
+  '시니어(6~10년)',
+  '리드/매니저(10년 이상)',
+];
+
+const CAREER_YEAR_VALUES: Record<string, CareerYearType> = {
+  '신입(1년차 미만)': 'NEWBIE',
+  '주니어(1~3년)': 'JUNIOR',
+  '미드레벨(3~6년)': 'MID',
+  '시니어(6~10년)': 'SENIOR',
+  '리드/매니저(10년 이상)': 'LEAD',
+};
 
 export const SignUpForm = () => {
   const { isSubmitting, isSignupSuccess, fetchSignUp } = useFetchSignUp();
@@ -81,17 +100,23 @@ export const SignUpForm = () => {
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-300">연차</label>
-        <select
-          className="w-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border-none focus:ring-2 focus:ring-[#8C7FF7]"
-          {...register('careerYear', { required: '연차를 선택해주세요.' })}
-        >
-          <option value="">선택</option>
-          <option value="NEWBIE">신입(1년차 미만)</option>
-          <option value="JUNIOR">주니어(1~3년)</option>
-          <option value="MID">미드레벨(3~6년)</option>
-          <option value="SENIOR">시니어(6~10년)</option>
-          <option value="LEAD">리드/매니저(10년 이상)</option>
-        </select>
+        <Select
+          options={CAREER_YEAR_OPTIONS}
+          selected={(() => {
+            const value = watch('careerYear');
+            const label = Object.entries(CAREER_YEAR_VALUES).find(([key, val]) => val === value)?.[0];
+            return label || '선택';
+          })()}
+          onChange={value =>
+            setValue('careerYear', value === '선택' ? '' : CAREER_YEAR_VALUES[value], { shouldValidate: true })
+          }
+          placeholder="연차를 선택해주세요"
+          isError={!!errors.careerYear}
+          {...(() => {
+            const { onChange, ...rest } = register('careerYear', { required: '연차를 선택해주세요.' });
+            return rest;
+          })()}
+        />
         {errors.careerYear && <p className="text-xs text-red-500">{errors.careerYear.message as string}</p>}
       </div>
 
