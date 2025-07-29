@@ -17,8 +17,8 @@ export function InputField({ label, isError, errorMessage, description, ...props
         <input
           maxLength={props.maxLength}
           {...props}
-          className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white placeholder-gray-500 border-none focus:ring-2 ${
-            isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-[#8C7FF7]'
+          className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border border-label-assistive placeholder-gray-500 focus:ring-2 ${
+            isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
           }`}
         />
         {isError && (
