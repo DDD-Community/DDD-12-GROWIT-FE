@@ -1,37 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import Button from '@/shared/components/input/Button';
+import { Goal } from '@/shared/type/goal';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
-import DatePicker from '@/shared/components/input/DatePicker';
 import { useAddTodoForm } from './hooks';
-import { Plan } from '@/shared/type/goal';
-
-// 확장된 Goal 타입
-interface ExtendedGoal {
-  id: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  beforeAfter: {
-    asIs: string;
-    toBe: string;
-  };
-  plans: Plan[];
-}
+import DatePicker from '@/shared/components/input/DatePicker';
+import Button from '@/shared/components/input/Button';
 
 interface AddToDoProps {
-  goal: ExtendedGoal;
+  goal: Goal;
   selectedPlanId: string;
-  onSuccess?: () => void;
+  onSuccessAddTodo: () => void;
   onWeekChange?: (weekOfMonth: number) => void;
   onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggleWeekend }: AddToDoProps) => {
+export const AddToDoModal = ({
+  goal,
+  selectedPlanId,
+  onSuccessAddTodo,
+  onWeekChange,
+  onToggleWeekend,
+}: AddToDoProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -61,8 +52,7 @@ export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggl
     const success = await handleAddTodo();
     if (success) {
       setIsModalOpen(false);
-      // todo 추가 성공 시 callback 호출
-      onSuccess?.();
+      onSuccessAddTodo();
     }
   };
 
@@ -110,7 +100,7 @@ export const AddToDo = ({ goal, selectedPlanId, onSuccess, onWeekChange, onToggl
 
             <TextArea
               className="min-w-[300px] md:min-w-[496px]"
-              maxLength={100}
+              maxLength={30}
               value={content}
               onChange={handleContentChange}
               placeholder="투두 내용을 입력해주세요 (5글자 이상)"

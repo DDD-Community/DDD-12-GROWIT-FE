@@ -1,6 +1,6 @@
 'use client';
 
-import { TextareaHTMLAttributes, useState } from 'react';
+import { TextareaHTMLAttributes, useEffect, useState } from 'react';
 import FlexBox from '../foundation/FlexBox';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -11,12 +11,18 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export function TextArea({ label, isError, errorMessage, description, className = '', ...props }: TextAreaProps) {
-  const [wordCount, setWordCount] = useState(0);
+  const [wordCount, setWordCount] = useState(() => {
+    return typeof props.value === 'string' ? props.value.length : 0;
+  });
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.currentTarget.style.height = 'auto'; // 줄이기 가능하게 초기화
     e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`; // 실제 내용 높이만큼 확장
     setWordCount(e.currentTarget.value.length);
   };
+
+  useEffect(() => {
+    setWordCount(props.value?.toString().length || 0);
+  }, [props.value]);
 
   return (
     <div className={`space-y-0 ${className}`}>

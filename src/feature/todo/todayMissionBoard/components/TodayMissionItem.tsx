@@ -2,14 +2,16 @@
 
 import { useState } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from './hooks';
+import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
+import { usePatchTodoStatus } from '../hooks';
 
 interface WeeklyTodoItemProps {
   todo: Todo;
+  currentDayOfWeek: DAY_OF_THE_WEEK;
+  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
 }
 
-export const TodayMissionItem = ({ todo }: WeeklyTodoItemProps) => {
+export const TodayMissionItem = ({ todo, onToggleTodo, currentDayOfWeek }: WeeklyTodoItemProps) => {
   const [checked, setChecked] = useState(todo.isCompleted);
   const [hideCheckbox, setHideCheckbox] = useState(false);
   const { mutate, isLoading } = usePatchTodoStatus();
@@ -19,6 +21,7 @@ export const TodayMissionItem = ({ todo }: WeeklyTodoItemProps) => {
     setChecked(true);
     await mutate(todo.id, true);
     setHideCheckbox(true);
+    onToggleTodo(currentDayOfWeek, todo.id);
   };
 
   return (
