@@ -68,24 +68,17 @@ export const DesktopWeeklyTodoList = ({
   const days = getWeekDates(weekStart, showWeekend);
 
   const handleEditSubmit = (updatedTodo: Todo) => {
-    // TODO: 패치 로직 구현
-    console.log('Edit submitted:', updatedTodo);
     setEditModal({ open: false, todo: null });
-    // Todo 수정 후 리스트 새로고침
     refreshTodoList?.();
     onEdit?.(updatedTodo);
   };
 
   const handleDeleteSubmit = (todo: Todo) => {
-    // TODO: 패치 로직 구현
-    console.log('Delete submitted:', todo);
     setDeleteModal({ open: false, todo: null });
-    // Todo 삭제 후 리스트 새로고침
     refreshTodoList?.();
     onDelete?.(todo);
   };
 
-  // 주말 표시 토글 함수
   const handleToggleWeekend = (showWeekend: boolean) => {
     setShowWeekend(showWeekend);
   };
@@ -168,6 +161,10 @@ export const DesktopWeeklyTodoList = ({
 const WeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: WeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
+
+  useEffect(() => {
+    setChecked(todo.isCompleted);
+  }, [todo.isCompleted]);
 
   const handleCheck = async () => {
     const newChecked = !checked;
