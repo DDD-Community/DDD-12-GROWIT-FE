@@ -2,13 +2,28 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { useTodayMissionList } from './hooks';
-import { TodayMissionItem } from '@/feature/todo';
+import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
+import { TodayMissionItem } from './components/TodayMissionItem';
 import Badge from '@/shared/components/display/Badge';
+import { getCurrentWeekInfo } from './utils';
 
-export const TodayMissionBoard = () => {
-  const { data, isLoading, error } = useTodayMissionList();
-  const missionCount = useMemo(() => data?.length || 0, [data]);
+interface TodayMissionBoardProps {
+  isLoading: boolean;
+  todayTodoList: Todo[] | null;
+  error: string | null;
+  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  goalStartDate?: string; // 목표 시작일 (주차 계산용)
+}
+
+export const TodayMissionBoard = ({
+  isLoading,
+  todayTodoList,
+  error,
+  onToggleTodo,
+  goalStartDate,
+}: TodayMissionBoardProps) => {
+  const missionCount = useMemo(() => todayTodoList?.length || 0, [todayTodoList]);
+  const { currentDayOfWeek } = getCurrentWeekInfo(goalStartDate);
 
   // 로딩 상태
   if (isLoading) {
@@ -34,7 +49,7 @@ export const TodayMissionBoard = () => {
   }
 
   // 미션이 없을 때
-  if (!data || data.length === 0) {
+  if (!todayTodoList || todayTodoList.length === 0) {
     return (
       <div className="flex flex-col bg-elevated-assistive rounded-xl border-[1px] border-line-normal p-6 min-h-[120px] items-center justify-center gap-4">
         <div className="flex items-center gap-2 mb-2 w-full">
@@ -66,8 +81,13 @@ export const TodayMissionBoard = () => {
         <Badge type="default" size="sm" label={missionCount.toString()} />
       </div>
       <ul className="flex flex-col gap-3">
-        {data.map(todoItem => (
-          <TodayMissionItem todo={todoItem} />
+        {todayTodoList.map(todoItem => (
+          <TodayMissionItem
+            key={todoItem.id}
+            todo={todoItem}
+            currentDayOfWeek={currentDayOfWeek}
+            onToggleTodo={onToggleTodo}
+          />
         ))}
       </ul>
     </div>

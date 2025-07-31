@@ -1,4 +1,4 @@
-import { TodayMissionBoard, CheerMessageCard, WeeklyPlanBoard, GoalRoadMap, ContributionGraph } from '@/composite/home';
+import { CheerMessageCard, PlanBoard, GoalRoadMap, ContributionGraph } from '@/composite/home';
 import OpenRoadMapButton from '@/composite/home/openRoadMapButton/component';
 import Image from 'next/image';
 
@@ -10,8 +10,7 @@ export default async function MainPage() {
         <div className="flex flex-col max-sm:mx-[20px] sm:mx-[40px] gap-[48px]">
           <Image src="/logo-text.svg" alt="logo" width={86} height={32} />
           <CheerMessageCard />
-          <TodayMissionBoard />
-          <WeeklyPlanBoard />
+          <PlanBoard />
         </div>
       </div>
       {/* 서브 레이아웃 - 로드맵 & 잔디그래프 확인 */}

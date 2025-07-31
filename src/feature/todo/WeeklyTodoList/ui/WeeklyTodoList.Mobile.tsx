@@ -18,7 +18,7 @@ import DeleteTodoModal from './DeleteTodoModal';
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
   dayOfWeek: DAY_OF_THE_WEEK;
-  onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
@@ -27,7 +27,7 @@ interface MobileWeeklyTodoListProps {
   weeklyTodos: Record<DAY_OF_THE_WEEK, Todo[]>;
   goal: Goal;
   currentWeekIndex: number;
-  onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
   onWeekChange?: (weekOfMonth: number) => void;
@@ -68,7 +68,6 @@ export const MobileWeeklyTodoList = ({
 
   const handleDeleteSubmit = (todo: Todo) => {
     setDeleteModal({ open: false, todo: null });
-    // Todo 삭제 후 부모 컴포넌트에 알림
     onDelete?.(todo);
   };
 
@@ -147,20 +146,19 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
 
+  useEffect(() => {
+    setChecked(todo.isCompleted);
+  }, [todo.isCompleted]);
+
   const handleCheck = async () => {
     const newChecked = !checked;
 
     try {
-      // 서버에 상태 변경 요청
       await mutate(todo.id, newChecked);
-
-      // 성공 시 로컬 상태 업데이트 및 onToggleTodo 호출
       setChecked(newChecked);
-      onToggleTodo?.(dayOfWeek, todo.id);
+      onToggleTodo(dayOfWeek, todo.id);
     } catch (error) {
-      // 실패 시 원래 상태 유지 (checked 상태는 변경하지 않음)
       console.error('Todo 상태 변경 실패:', error);
-      // onToggleTodo도 호출하지 않음
     }
   };
 
