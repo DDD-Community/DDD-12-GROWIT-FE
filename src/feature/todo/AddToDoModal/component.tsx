@@ -16,7 +16,13 @@ interface AddToDoProps {
   onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const AddToDoModal = ({ goal, selectedPlanId, onSuccessAddTodo, onWeekChange, onToggleWeekend }: AddToDoProps) => {
+export const AddToDoModal = ({
+  goal,
+  selectedPlanId,
+  onSuccessAddTodo,
+  onWeekChange,
+  onToggleWeekend,
+}: AddToDoProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -94,7 +100,7 @@ export const AddToDoModal = ({ goal, selectedPlanId, onSuccessAddTodo, onWeekCha
 
             <TextArea
               className="min-w-[300px] md:min-w-[496px]"
-              maxLength={100}
+              maxLength={30}
               value={content}
               onChange={handleContentChange}
               placeholder="투두 내용을 입력해주세요 (5글자 이상)"
