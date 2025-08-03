@@ -30,7 +30,7 @@ export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest
   }, [goalId, planId, fetchWeeklyTodoList]);
 
   return {
-    weeklyTodos : data,
+    weeklyTodos: data,
     isLoading,
     error,
     fetchWeeklyTodoList,
@@ -41,9 +41,9 @@ export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest
 export function useWeeklyTodoListState(initialData: Record<DAY_OF_THE_WEEK, Todo[]> | null) {
   const [todoList, setTodoList] = useState<Record<DAY_OF_THE_WEEK, Todo[]> | null>(initialData);
 
-  // 초기 데이터가 변경되면 상태 업데이트
+  // 주의! initialData 는 함수로 전달할 것
   useEffect(() => {
-    setTodoList(initialData);
+    setTodoList(() => initialData);
   }, [initialData]);
 
   // 투두 체크 상태 토글
@@ -138,5 +138,28 @@ export function useWeeklyTodoListState(initialData: Record<DAY_OF_THE_WEEK, Todo
     getTodosByDay,
     getAllTodos,
     resetTodoList,
+  };
+}
+
+export function useDesktopWeekendToggle() {
+  const [showWeekend, setShowWeekend] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  if (!isInitialized) {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0: 일요일, 6: 토요일
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+    setShowWeekend(isWeekend);
+    setIsInitialized(true);
+  }
+
+  const toggleWeekend = useCallback((show: boolean) => {
+    setShowWeekend(show);
+  }, []);
+
+  return {
+    showWeekend,
+    toggleWeekend,
   };
 }

@@ -2,10 +2,11 @@
 export const getCurrentWeekIndex = (goalStartDate: string): number => {
   const today = new Date();
   const startDate = new Date(goalStartDate);
+  const startDateAtMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
 
-  const timeDiff = today.getTime() - startDate.getTime();
+  const timeDiff = today.getTime() - startDateAtMidnight.getTime();
   const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
   const weekIndex = Math.floor(daysDiff / 7);
 
-  return Math.max(0, Math.min(weekIndex, 3));
+  return Math.max(0, weekIndex);
 };
