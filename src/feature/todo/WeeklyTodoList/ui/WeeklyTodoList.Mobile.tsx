@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
-import { getDateString, isToday, getWeekStartDate, getAllWeekDates } from '../utils';
+import { getWeekStartDate, getAllWeekDates, getDateString, isToday, getTodayDayOfWeek } from '../utils';
 import EditTodoModal from './EditTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
 
@@ -44,7 +44,7 @@ export const MobileWeeklyTodoList = ({
   onWeekChange,
   onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
-  const [selectedDay, setSelectedDay] = useState<DAY_OF_THE_WEEK>('MONDAY');
+  const [selectedDay, setSelectedDay] = useState<DAY_OF_THE_WEEK>(getTodayDayOfWeek());
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
@@ -62,7 +62,6 @@ export const MobileWeeklyTodoList = ({
 
   const handleEditSubmit = (updatedTodo: Todo) => {
     setEditModal({ open: false, todo: null });
-    // Todo 수정 후 부모 컴포넌트에 알림
     onEdit?.(updatedTodo);
   };
 

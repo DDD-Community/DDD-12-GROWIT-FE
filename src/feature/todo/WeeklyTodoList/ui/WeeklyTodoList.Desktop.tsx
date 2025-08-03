@@ -31,8 +31,8 @@ interface WeeklyTodoListProps {
   onToggleTodo?: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   refreshTodoList?: () => void;
   onWeekChange?: (weekOfMonth: number) => void;
-  showWeekend?: boolean;
-  onToggleWeekend?: (showWeekend: boolean) => void;
+  showWeekend: boolean;
+  onToggleWeekend: (showWeekend: boolean) => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
 }
@@ -44,18 +44,13 @@ export const DesktopWeeklyTodoList = ({
   onToggleTodo,
   refreshTodoList,
   onWeekChange,
-  showWeekend: externalShowWeekend,
-  onToggleWeekend: externalOnToggleWeekend,
+  showWeekend,
+  onToggleWeekend,
   onEdit,
   onDelete,
 }: WeeklyTodoListProps) => {
-  const [internalShowWeekend, setInternalShowWeekend] = useState(false);
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
-
-  // 외부에서 제어하는 경우 외부 상태 사용, 그렇지 않으면 내부 상태 사용
-  const showWeekend = externalShowWeekend !== undefined ? externalShowWeekend : internalShowWeekend;
-  const setShowWeekend = externalOnToggleWeekend || setInternalShowWeekend;
 
   // props가 변경되면 모달 상태 초기화
   useEffect(() => {
@@ -80,7 +75,7 @@ export const DesktopWeeklyTodoList = ({
   };
 
   const handleToggleWeekend = (showWeekend: boolean) => {
-    setShowWeekend(showWeekend);
+    onToggleWeekend(showWeekend);
   };
 
   return (
@@ -143,14 +138,14 @@ export const DesktopWeeklyTodoList = ({
             variant={'secondary'}
             text={'<'}
             disabled={!showWeekend}
-            onClick={() => setShowWeekend(false)}
+            onClick={() => onToggleWeekend(false)}
           />
           <Button
             size={'ml'}
             variant={'secondary'}
             text={'>'}
             disabled={showWeekend}
-            onClick={() => setShowWeekend(true)}
+            onClick={() => onToggleWeekend(true)}
           />
         </div>
       </div>

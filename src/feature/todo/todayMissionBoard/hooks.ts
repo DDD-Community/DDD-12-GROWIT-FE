@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getTodayMissionList, patchTodoStatus } from './api';
 import { Todo } from '@/shared/type/Todo';
 
-export function useTodayMissionList() {
+export function useFetchTodayMissionList() {
   const [data, setData] = useState<Todo[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

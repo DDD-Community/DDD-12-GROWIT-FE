@@ -1,2 +1,2 @@
 export { TodayMissionBoard } from './component';
-export { useTodayMissionList } from './hooks';
+export { useFetchTodayMissionList } from './hooks';
