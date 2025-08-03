@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useMemo, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode, useEffect, useRef } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { getCurrentWeekIndex } from './utils';
 
@@ -38,9 +38,10 @@ export const PlanSelectorProvider = ({
   const selectedPlanId = plans[selectedPlanIndex]?.id || '';
   const selectedPlanContent = plans[selectedPlanIndex]?.content || '';
   const selectedWeekIndex = plans[selectedPlanIndex]?.weekOfMonth || 0;
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    if (plans.length > 0) {
+    if (plans.length > 0 && !isInitialized.current) {
       const currentWeekIndex = getCurrentWeekIndex(goal.duration.startDate);
       const todayPlanIndex = plans.findIndex(plan => plan.weekOfMonth === currentWeekIndex + 1); // weekOfMonth는 1부터 시작
 
@@ -50,6 +51,8 @@ export const PlanSelectorProvider = ({
       } else {
         setSelectedPlanIndex(0);
       }
+
+      isInitialized.current = true;
     }
   }, [plans, goal?.duration.startDate]);
 
