@@ -8,22 +8,22 @@ import { AddToDoModal } from '@/feature/todo/AddToDoModal/component';
 import { TodayMissionBoard, usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
-import {
-  useAutoGoOnboarding,
-  useFetchGetGoal,
-  useFetchWeeklyTodoList,
-  useGoalSelector,
-  useWeeklyTodoListState,
-} from './hooks';
+import { useFetchWeeklyTodoList, useWeeklyTodoListState } from './hooks';
 import { useTodayMissionList } from '@/feature/todo/todayMissionBoard';
+import { useGoalSelector, useRedirectToOnboarding } from '@/shared/hooks';
+import { CreateNewGoal } from './ui/CreateNewGoal';
 
 export const PlanBoard = () => {
-  const { isLoading, goalList } = useFetchGetGoal();
-  const { selectedGoal, selectedPlans } = useGoalSelector(goalList);
+  const { isLoading, goalList, selectedGoal, selectedPlans } = useGoalSelector();
 
-  useAutoGoOnboarding(isLoading, goalList);
+  useRedirectToOnboarding({
+    isLoading,
+    goalListLength: goalList.length,
+  });
 
-  if (!selectedPlans.length) return null;
+  if (goalList.length === 0) {
+    return <CreateNewGoal />;
+  }
 
   return (
     <PlanSelector.Provider plans={selectedPlans}>

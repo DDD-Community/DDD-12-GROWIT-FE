@@ -2,10 +2,9 @@
 
 import Image from 'next/image';
 import { CreateGoalButton } from '@/feature/goal';
-import { useOnboarding, useFetchUserName } from '@/shared/hooks';
+import { useFetchUserName } from '@/shared/hooks';
 
 export default function OnBoardingPage() {
-  useOnboarding();
   const { fullUserName } = useFetchUserName();
 
   return (
