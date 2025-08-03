@@ -10,6 +10,14 @@ const careerMap = {
   '리드/매니저(10년 이상)': 'LEAD',
 } as const;
 
+const careerMapDisplay: Record<string, string> = {
+  NEWBIE: '신입(1년차 미만)',
+  JUNIOR: '주니어(1년~3년)',
+  MID: '미드레벨(3년~6년)',
+  SENIOR: '시니어(6년~10년)',
+  LEAD: '리드/매니저(10년 이상)',
+} as const;
+
 type CareerLevel = keyof typeof careerMap;
 
 export const useEditProfile = () => {
@@ -65,13 +73,56 @@ export const useEditProfile = () => {
   const jobList = Array.from(jobRoleIds.keys());
   const careerLevels = Object.keys(careerMap);
 
-  return {
+  const profile = {
     userName,
-    jobList,
     jobRole,
     email,
     careerYear,
+    jobList,
     careerLevels,
+    careerMapDisplay,
+  };
+
+  return {
+    profile,
     putUserProfile,
+  };
+};
+
+export const useModalState = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return {
+    isModalOpen,
+    handleOpenModal,
+    handleCloseModal,
+  };
+};
+
+export const useEditProfileForm = (jobRole: string, careerYear: string, isModalOpen: boolean) => {
+  const [selectedJobRole, setSelectedJobRole] = useState('');
+  const [selectedCareerYear, setSelectedCareerYear] = useState('');
+
+  // Modal이 열릴 때 기존 프로필 정보로 초기화
+  useEffect(() => {
+    if (isModalOpen) {
+      setSelectedJobRole(jobRole);
+      setSelectedCareerYear(careerMapDisplay[careerYear] || '');
+    }
+  }, [isModalOpen, jobRole, careerYear]);
+
+  return {
+    selectedJobRole,
+    selectedCareerYear,
+    setSelectedJobRole,
+    setSelectedCareerYear,
   };
 };

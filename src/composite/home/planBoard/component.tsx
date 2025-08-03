@@ -1,46 +1,46 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { PlanSelector } from '@/feature/todo';
 import { WeeklyGoalProgress } from '@/feature/goal';
 import { AddToDoModal } from '@/feature/todo/AddToDoModal/component';
 import { TodayMissionBoard, usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
-import {
-  useAutoGoOnboarding,
-  useFetchGetGoal,
-  useFetchWeeklyTodoList,
-  useGoalSelector,
-  useWeeklyTodoListState,
-} from './hooks';
-import { useTodayMissionList } from '@/feature/todo/todayMissionBoard';
+import { useFetchWeeklyTodoList, useWeeklyTodoListState, useDesktopWeekendToggle } from './hooks';
+import { useFetchTodayMissionList } from '@/feature/todo/todayMissionBoard';
+import { useGoalSelector, useRedirectToOnboarding } from '@/shared/hooks';
+import { CreateNewGoal } from './components/CreateNewGoal';
 
 export const PlanBoard = () => {
-  const { isLoading, goalList } = useFetchGetGoal();
-  const { selectedGoal, selectedPlans } = useGoalSelector(goalList);
+  const { isLoading, goalList, selectedGoal, selectedPlans } = useGoalSelector();
 
-  useAutoGoOnboarding(isLoading, goalList);
+  useRedirectToOnboarding({
+    isLoading,
+    goalListLength: goalList.length,
+  });
 
-  if (!selectedPlans.length) return null;
+  if (goalList.length === 0) {
+    return <CreateNewGoal />;
+  }
 
   return (
-    <PlanSelector.Provider plans={selectedPlans}>
+    <PlanSelector.Provider plans={selectedPlans} goal={selectedGoal!}>
       {selectedGoal && <WeeklyPlanBoard goal={selectedGoal} />}
     </PlanSelector.Provider>
   );
 };
 
 const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
-  const [showWeekend, setShowWeekend] = useState(false);
+  const { showWeekend, toggleWeekend } = useDesktopWeekendToggle();
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
-  const { data: weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
+  const { fetchTodayMissionList, ...todayMissionStatus } = useFetchTodayMissionList();
+  const { fetchWeeklyTodoList, weeklyTodos } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
   });
   const { todoList, toggleTodoStatus } = useWeeklyTodoListState(weeklyTodos);
-  const { fetchTodayMissionList, ...todayMissionStatus } = useTodayMissionList();
 
   const handleRefreshTodoList = useCallback(() => {
     if (goal?.id && selectedPlanId) {
@@ -59,9 +59,12 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
     [goal.plans, setSelectedPlanId]
   );
 
-  const handleToggleWeekend = useCallback((showWeekend: boolean) => {
-    setShowWeekend(showWeekend);
-  }, []);
+  const handleToggleWeekend = useCallback(
+    (showWeekend: boolean) => {
+      toggleWeekend(showWeekend);
+    },
+    [toggleWeekend]
+  );
 
   const handleEdit = useCallback(
     (updatedTodo: Todo) => {

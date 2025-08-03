@@ -5,24 +5,30 @@ import FlexBox from '@/shared/components/foundation/FlexBox';
 import Badge from '@/shared/components/display/Badge';
 import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
-import { useState } from 'react';
+import { useToast } from '@/shared/components/feedBack/toast';
 import { Select } from '@/shared/components/input/Select';
 import { SelectWithPortal } from '@/shared/components/input/Select';
-import { useEditProfile } from './hooks';
-
-const careerMap: Record<string, string> = {
-  NEWBIE: '신입',
-  JUNIOR: '주니어',
-  MID: '미드레벨',
-  SENIOR: '시니어',
-  LEAD: '리드/매니저',
-} as const;
+import { useEditProfile, useModalState, useEditProfileForm } from './hooks';
 
 export const EditProfile = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userName, jobRole, email, careerYear, careerLevels, jobList, putUserProfile } = useEditProfile();
-  const [selectedJobRole, setSelectedJobRole] = useState('');
-  const [selectedCareerYear, setSelectedCareerYear] = useState('');
+  const { showToast } = useToast();
+  const { profile, putUserProfile } = useEditProfile();
+  const { isModalOpen, handleOpenModal, handleCloseModal } = useModalState();
+  const { selectedJobRole, selectedCareerYear, setSelectedJobRole, setSelectedCareerYear } = useEditProfileForm(
+    profile.jobRole,
+    profile.careerYear,
+    isModalOpen
+  );
+
+  const handleEditProfile = async () => {
+    try {
+      await putUserProfile(profile.userName, selectedJobRole, selectedCareerYear);
+      showToast('프로필이 성공적으로 수정되었습니다.', 'success');
+      handleCloseModal();
+    } catch (error) {
+      showToast('프로필 수정에 실패했습니다.', 'error');
+    }
+  };
 
   return (
     <>
@@ -36,10 +42,10 @@ export const EditProfile = () => {
             className="border-[2px] min-w-[100px] h-[100px] border-line-normal rounded-[200px]"
           />
           <div className="flex flex-col gap-2">
-            <h2 className="heading-2-bold">{userName}</h2>
+            <h2 className="heading-2-bold">{profile.userName}</h2>
             <FlexBox className="gap-2">
-              <Badge type="default" size="md" label={jobRole} />
-              <span className="body-1-normal text-label-neutral">{careerMap[careerYear]}</span>
+              <Badge type="default" size="md" label={profile.jobRole} />
+              <span className="body-1-normal text-label-neutral">{profile.careerMapDisplay[profile.careerYear]}</span>
             </FlexBox>
           </div>
         </FlexBox>
@@ -50,7 +56,7 @@ export const EditProfile = () => {
             variant="secondary"
             text="프로필 수정"
             layout="icon-left"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenModal}
             icon={
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_901_6588)">
@@ -73,7 +79,7 @@ export const EditProfile = () => {
         </div>
         <Modal
           open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           title="프로필 수정"
           renderContent={() => (
             <>
@@ -83,7 +89,7 @@ export const EditProfile = () => {
                 </label>
                 <Select
                   id="select-job"
-                  options={jobList}
+                  options={profile.jobList}
                   selected={selectedJobRole}
                   onChange={setSelectedJobRole}
                   placeholder={'직무를 선택해주세요'}
@@ -95,7 +101,7 @@ export const EditProfile = () => {
                 </label>
                 <SelectWithPortal
                   id="select-careerYear"
-                  options={careerLevels}
+                  options={profile.careerLevels}
                   selected={selectedCareerYear}
                   onChange={setSelectedCareerYear}
                   placeholder={'연차를 선택해주세요'}
@@ -105,12 +111,8 @@ export const EditProfile = () => {
           )}
           renderFooter={() => (
             <>
-              <Button text="취소" variant="tertiary" size={'xl'} onClick={() => setIsModalOpen(false)} />
-              <Button
-                text="수정 완료"
-                size={'xl'}
-                onClick={() => putUserProfile(userName, selectedJobRole, selectedCareerYear)}
-              />
+              <Button text="취소" variant="tertiary" size={'xl'} onClick={handleCloseModal} />
+              <Button text="수정 완료" size={'xl'} onClick={handleEditProfile} />
             </>
           )}
         />
@@ -118,7 +120,7 @@ export const EditProfile = () => {
       <p className="text-label-normal text-2xl font-bold">가입 정보</p>
       <FlexBox className="gap-2 mb-4">
         <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />
-        <p className="body-1-normal text-label-alternative">{email}</p>
+        <p className="body-1-normal text-label-alternative">{profile.email}</p>
       </FlexBox>
     </>
   );

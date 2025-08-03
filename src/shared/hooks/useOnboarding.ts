@@ -1,9 +1,13 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
-export const useOnboarding = () => {
-  const router = useRouter();
+interface UseRedirectToOnboardingProps {
+  goalListLength: number;
+  isLoading: boolean;
+}
 
+export function useRedirectToOnboarding({ goalListLength, isLoading }: UseRedirectToOnboardingProps) {
+  const router = useRouter();
   const saveOnboardingVisit = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('onboarding_visited_at', new Date().toISOString());
@@ -11,20 +15,24 @@ export const useOnboarding = () => {
   }, []);
 
   const navigateToOnboarding = useCallback(() => {
-    // 온보딩 페이지 진입 시 방문 날짜 저장
     saveOnboardingVisit();
-
-    // 온보딩 페이지로 이동
     router.push('/onboarding');
   }, [router, saveOnboardingVisit]);
 
-  // 컴포넌트가 마운트될 때 자동으로 방문 날짜 저장
   useEffect(() => {
-    saveOnboardingVisit();
-  }, [saveOnboardingVisit]);
+    /** 로딩이 완료되고, 목표가 없고, 온보딩을 방문한 기록이 없을 때만 온보딩으로 이동
+     */
+    if (!isLoading && goalListLength === 0) {
+      const onboardingVisited = typeof window !== 'undefined' && localStorage.getItem('onboarding_visited_at');
+
+      if (!onboardingVisited) {
+        navigateToOnboarding();
+      }
+    }
+  }, [isLoading, goalListLength, navigateToOnboarding]);
 
   return {
     navigateToOnboarding,
     saveOnboardingVisit,
   };
-};
+}
