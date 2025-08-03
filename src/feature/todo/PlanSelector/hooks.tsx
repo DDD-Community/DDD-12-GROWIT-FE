@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode, useEffect } from 'react';
+import { Goal } from '@/shared/type/goal';
+import { getCurrentWeekIndex } from './utils';
 
 // 확장된 Plan 타입 (weekOfMonth 포함)
 interface ExtendedPlan {
@@ -23,11 +25,33 @@ interface PlanSelectorContextValue {
 
 const PlanSelectorContext = createContext<PlanSelectorContextValue | undefined>(undefined);
 
-export const PlanSelectorProvider = ({ plans, children }: { plans: ExtendedPlan[]; children: ReactNode }) => {
+export const PlanSelectorProvider = ({
+  plans,
+  children,
+  goal,
+}: {
+  plans: ExtendedPlan[];
+  children: ReactNode;
+  goal: Goal;
+}) => {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const selectedPlanId = plans[selectedPlanIndex]?.id || '';
   const selectedPlanContent = plans[selectedPlanIndex]?.content || '';
   const selectedWeekIndex = plans[selectedPlanIndex]?.weekOfMonth || 0;
+
+  useEffect(() => {
+    if (plans.length > 0) {
+      const currentWeekIndex = getCurrentWeekIndex(goal.duration.startDate);
+      const todayPlanIndex = plans.findIndex(plan => plan.weekOfMonth === currentWeekIndex + 1); // weekOfMonth는 1부터 시작
+
+      // 오늘 날짜에 맞는 주차가 있으면 선택, 없으면 첫 번째 주차 선택
+      if (todayPlanIndex !== -1) {
+        setSelectedPlanIndex(todayPlanIndex);
+      } else {
+        setSelectedPlanIndex(0);
+      }
+    }
+  }, [plans, goal?.duration.startDate]);
 
   const setSelectedPlanId = (id: string) => {
     const idx = plans.findIndex(p => p.id === id);

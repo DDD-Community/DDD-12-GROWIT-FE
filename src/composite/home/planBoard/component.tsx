@@ -26,7 +26,7 @@ export const PlanBoard = () => {
   }
 
   return (
-    <PlanSelector.Provider plans={selectedPlans}>
+    <PlanSelector.Provider plans={selectedPlans} goal={selectedGoal!}>
       {selectedGoal && <WeeklyPlanBoard goal={selectedGoal} />}
     </PlanSelector.Provider>
   );
