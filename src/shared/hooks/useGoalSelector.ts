@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, createContext, useContext, ReactNode, createElement } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
@@ -13,10 +13,27 @@ async function getGoalList() {
   return data.data;
 }
 
-function useFetchGoalList() {
+interface GoalContextType {
+  isLoading: boolean;
+  goalList: Goal[];
+  selectedGoal: Goal | null;
+  selectedPlans: Goal['plans'];
+  selectedGoalId: string;
+  setSelectedGoalId: (id: string) => void;
+  fetchGoal: (shouldThrow?: boolean) => Promise<void>;
+}
+
+const GoalContext = createContext<GoalContextType | null>(null);
+
+interface GoalProviderProps {
+  children: ReactNode;
+}
+
+export function GoalProvider({ children }: GoalProviderProps) {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
+  const [selectedGoalId, setSelectedGoalId] = useState<string>('');
 
   const fetchGoal = useCallback(
     async (shouldThrow = false) => {
@@ -54,17 +71,6 @@ function useFetchGoalList() {
     fetchGoal();
   }, [fetchGoal]);
 
-  return {
-    goalList,
-    isLoading,
-    fetchGoal,
-  };
-}
-
-export function useGoalSelector() {
-  const { goalList, isLoading, fetchGoal } = useFetchGoalList();
-  const [selectedGoalId, setSelectedGoalId] = useState<string>('');
-
   useEffect(() => {
     if (goalList.length > 0 && !selectedGoalId) {
       setSelectedGoalId(goalList[0].id);
@@ -74,15 +80,23 @@ export function useGoalSelector() {
   const selectedGoal = goalList.find(goal => goal.id === selectedGoalId) || null;
   const selectedPlans = selectedGoal?.plans || [];
 
-  return {
+  const value: GoalContextType = {
     isLoading,
-
     goalList,
     selectedGoal,
     selectedPlans,
     selectedGoalId,
-
     setSelectedGoalId,
     fetchGoal,
   };
+
+  return createElement(GoalContext.Provider, { value }, children);
+}
+
+export function useGoalSelector() {
+  const context = useContext(GoalContext);
+  if (!context) {
+    throw new Error('useGoalSelector must be used within a GoalProvider');
+  }
+  return context;
 }

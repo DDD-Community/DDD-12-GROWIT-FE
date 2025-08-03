@@ -30,7 +30,7 @@ export function useFetchWeeklyTodoList({ goalId, planId }: TodoWeeklyListRequest
   }, [goalId, planId, fetchWeeklyTodoList]);
 
   return {
-    data,
+    weeklyTodos : data,
     isLoading,
     error,
     fetchWeeklyTodoList,

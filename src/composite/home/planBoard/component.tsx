@@ -11,7 +11,7 @@ import { Goal } from '@/shared/type/goal';
 import { useFetchWeeklyTodoList, useWeeklyTodoListState } from './hooks';
 import { useTodayMissionList } from '@/feature/todo/todayMissionBoard';
 import { useGoalSelector, useRedirectToOnboarding } from '@/shared/hooks';
-import { CreateNewGoal } from './ui/CreateNewGoal';
+import { CreateNewGoal } from './components/CreateNewGoal';
 
 export const PlanBoard = () => {
   const { isLoading, goalList, selectedGoal, selectedPlans } = useGoalSelector();
@@ -35,7 +35,7 @@ export const PlanBoard = () => {
 const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
   const [showWeekend, setShowWeekend] = useState(false);
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
-  const { data: weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
+  const { weeklyTodos, fetchWeeklyTodoList } = useFetchWeeklyTodoList({
     goalId: goal?.id || '',
     planId: selectedPlanId,
   });
