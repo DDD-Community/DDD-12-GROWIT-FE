@@ -37,7 +37,7 @@ export default function SignupPage() {
       {/* 오른쪽 이미지 섹션 - lg 크기 이상에서만 표시 */}
       <div className="hidden lg:flex w-1/2 m-4 p-4 items-center justify-center">
         <div className="relative w-full h-full rounded-[16px]">
-          <Image src="/landing.png" alt="Dashboard Preview" fill className="object-contain" />
+          <Image src="/landing.png" alt="Dashboard Preview" fill priority className="object-contain" />
         </div>
       </div>
     </div>

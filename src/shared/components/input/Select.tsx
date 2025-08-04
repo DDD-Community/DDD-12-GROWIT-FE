@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, ButtonHTMLAttributes } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import FlexBox from '../foundation/FlexBox';
 import { createPortal } from 'react-dom';
 
