@@ -6,6 +6,7 @@ import { SignupDialogButton, SelectJobButtonGroup } from '@/feature/auth';
 import { SignupFormData } from './type';
 import { useFetchSignUp } from './hook';
 import { CareerYearType } from './type';
+import Checkbox from '@/shared/components/input/Checkbox';
 
 const CAREER_YEAR_OPTIONS = [
   '선택',
@@ -122,20 +123,12 @@ export const SignUpForm = () => {
 
       <div className="space-y-2">
         <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            className="form-checkbox h-4 w-4 text-[#8C7FF7] rounded border-gray-500 bg-[#2C2C2E]"
-            {...register('privacyPolicy', { required: '개인정보 수집에 동의해주세요.' })}
-          />
+          <Checkbox {...register('privacyPolicy', { required: '개인정보 수집에 동의해주세요.' })} />
           <span className="text-gray-400 text-sm">개인정보 수집 동의</span>
         </label>
         {errors.privacyPolicy && <p className="text-xs text-red-500">{errors.privacyPolicy.message as string}</p>}
         <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            className="form-checkbox h-4 w-4 text-[#8C7FF7] rounded border-gray-500 bg-[#2C2C2E]"
-            {...register('termsOfService', { required: '이용 약관에 동의해주세요.' })}
-          />
+          <Checkbox {...register('termsOfService', { required: '이용 약관에 동의해주세요.' })} />
           <span className="text-gray-400 text-sm">이용 약관 동의</span>
         </label>
         {errors.termsOfService && <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>}

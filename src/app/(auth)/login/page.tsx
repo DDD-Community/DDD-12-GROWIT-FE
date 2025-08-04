@@ -31,9 +31,9 @@ export default function LoginPage() {
       </div>
 
       {/* 오른쪽 이미지 섹션 - lg 크기 이상에서만 표시 */}
-      <div className="hidden md:flex w-1/2 bg-[#8C7FF7] rounded-[16px] m-[20px] p-[20px] items-center justify-center">
-        <div className="w-full max-w-2xl">
-          <Image src="/landing-header-message.svg" alt="Dashboard Preview" width={400} height={300} />
+      <div className="hidden lg:flex w-1/2 m-4 p-4 items-center justify-center">
+        <div className="relative w-full h-full rounded-[16px]">
+          <Image src="/landing.png" alt="Dashboard Preview" fill className="object-contain" />
         </div>
       </div>
     </div>
