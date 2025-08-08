@@ -3,7 +3,7 @@ import { PlanSelect } from '@/feature/todo/PlanSelector/component';
 
 export { TodayMissionBoard } from './todayMissionBoard/component';
 export { PlanSelect } from './PlanSelector/component';
-export { WeeklyTodoList } from './WeeklyTodoList/ui/WeeklyTodoList';
+export { WeeklyTodoList } from './WeeklyTodoList/components/WeeklyTodoList';
 
 const PlanSelector = {
   Provider: PlanSelectorProvider,
