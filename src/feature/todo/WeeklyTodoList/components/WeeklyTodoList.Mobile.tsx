@@ -11,9 +11,12 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
-import { getWeekStartDate, getAllWeekDates, getDateString, isToday, getTodayDayOfWeek } from '../utils';
+import { cn } from '@/shared/lib/utils';
+import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../utils';
 import EditTodoModal from './EditTodoModal';
+import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
+import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
@@ -28,35 +31,42 @@ interface MobileWeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  refreshTodoList?: () => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
   onWeekChange?: (weekOfMonth: number) => void;
   onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const MobileWeeklyTodoList = ({
+export const WeeklyTodoList = ({
   weeklyTodos,
   goal,
   currentWeekIndex,
   onToggleTodo,
+  refreshTodoList,
   onEdit,
   onDelete,
   onWeekChange,
   onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
-  const [selectedDay, setSelectedDay] = useState<DAY_OF_THE_WEEK>(getTodayDayOfWeek());
+  const { selectedDay } = useSelectedDayState();
+  const { setSelectedDay } = useSelectedDayActions();
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
-  // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getAllWeekDates(weekStart); // 모바일에서는 평일과 주말 모두 포함
+  const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
 
-  // props가 변경되면 모달 상태 초기화
   useEffect(() => {
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
   }, [goal.id, currentWeekIndex]);
+
+  const { resetToToday } = useSelectedDayActions();
+  useEffect(() => {
+    resetToToday();
+  }, [currentWeekIndex, resetToToday]);
 
   const selectedDayTodos = weeklyTodos[selectedDay] || [];
 
@@ -89,8 +99,8 @@ export const MobileWeeklyTodoList = ({
         onDelete={handleDeleteSubmit}
       />
 
-      {/* 요일/날짜 선택 섹션 */}
-      <div className="grid grid-cols-7 gap-2 mb-4">
+      {/* 요일/날짜 선택 섹션 (데스크톱 스타일 적용) */}
+      <div className="grid grid-cols-7 gap-2 mb-[20px]">
         {days.map(day => {
           const isSelected = selectedDay === day.key;
           const isTodayDate = isToday(day.date);
@@ -99,43 +109,52 @@ export const MobileWeeklyTodoList = ({
             <button
               key={day.key}
               onClick={() => setSelectedDay(day.key)}
-              className={`
-                flex flex-col items-center justify-center h-[56px] rounded-2xl
-                ${
-                  isTodayDate
-                    ? 'bg-accent-violet text-white'
-                    : isSelected
-                      ? 'bg-white text-[#23242A] font-[600]'
-                      : 'bg-[#2A2B31] text-[#AEB0B6]'
-                }
-                transition-colors duration-200
-              `}
+              className="relative flex flex-col items-center justify-center gap-[4px] hover:cursor-pointer"
             >
-              <span className="text-xs font-medium">{day.label}</span>
-              <span className="text-xs mt-1">{getDateString(day.date)}</span>
+              <span
+                className={cn(
+                  'flex relative items-center justify-center w-[30px] h-[30px] rounded-full text-sm',
+                  isSelected ? 'bg-white text-[#23242A] font-bold shadow' : 'text-label-normal'
+                )}
+              >
+                {day.label}
+                {isTodayDate && <div className="absolute top-[2px] w-[4px] h-[4px] rounded-[6px] bg-accent-fg-lime" />}
+              </span>
+              <span className={cn('text-xs text-[#AEB0B6]', isSelected && 'font-bold text-white')}>
+                {getDateString(day.date)}
+              </span>
             </button>
           );
         })}
       </div>
 
       {/* 선택된 날짜의 Todo 목록 */}
-      <div className="flex flex-col gap-3 min-h-[200px]">
-        {selectedDayTodos.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center py-8 text-[#AEB0B6]">이 날의 Todo 가 없어요 ㅠ_ㅠ</div>
-          </div>
-        ) : (
-          selectedDayTodos.map(todo => (
-            <MobileWeeklyTodoItem
-              key={todo.id}
-              todo={todo}
-              dayOfWeek={selectedDay}
-              onToggleTodo={onToggleTodo}
-              onEdit={() => setEditModal({ open: true, todo })}
-              onDelete={() => setDeleteModal({ open: true, todo })}
-            />
-          ))
-        )}
+      <div className="flex flex-col gap-[20px] min-h-[200px]">
+        <AddTodoModal
+          goal={goal}
+          selectedPlanId={selectedPlanId}
+          onSuccessAddTodo={() => refreshTodoList?.()}
+          onWeekChange={onWeekChange}
+          onToggleWeekend={onToggleWeekend}
+        />
+        <div className="flex flex-col">
+          {selectedDayTodos.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center py-8 text-[#AEB0B6]">이 날의 Todo 가 없어요 ㅠ_ㅠ</div>
+            </div>
+          ) : (
+            selectedDayTodos.map(todo => (
+              <MobileWeeklyTodoItem
+                key={todo.id}
+                todo={todo}
+                dayOfWeek={selectedDay}
+                onToggleTodo={onToggleTodo}
+                onEdit={() => setEditModal({ open: true, todo })}
+                onDelete={() => setDeleteModal({ open: true, todo })}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -162,7 +181,7 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
   };
 
   return (
-    <div className="bg-elevated-assistive border-[1px] border-line-normal rounded-lg p-[14px] flex items-center gap-3 shadow">
+    <div className="border-line-normal rounded-lg px-[14px] py-[8px] flex items-center gap-3 shadow">
       <div className="flex items-center">
         <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
       </div>
@@ -172,11 +191,11 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
       {/* 더보기 메뉴 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-1 rounded hover:bg-[#2A2B31] transition-colors">
+          <button className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer">
             <span className="text-white text-lg">⋮</span>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
+        <DropdownMenuContent align="end" side="bottom" sideOffset={4} avoidCollisions={false} className="w-32">
           <DropdownMenuItem onClick={onEdit}>
             <Edit className="mr-2 h-4 w-4" />
             수정

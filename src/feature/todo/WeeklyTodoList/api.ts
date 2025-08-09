@@ -13,6 +13,15 @@ interface ChangeTodoRequest {
   content: string;
 }
 
+interface AddTodoRequest {
+  goalId: string;
+  planId: string;
+  date: string; // '2025-06-30';
+  content: string;
+}
+
+interface AddTodoResponse extends CommonResponse<TodoResponse> {}
+
 export async function patchTodoStatus(req: ChangeTodoStatusRequest) {
   const { todoId, isCompleted } = req;
   const { data } = await apiClient.patch<CommonResponse>(`/todos/${todoId}`, { isCompleted });
@@ -28,4 +37,9 @@ export async function putTodo(req: ChangeTodoRequest) {
 export async function deleteTodo(todoId: string) {
   const { data } = await apiClient.delete<CommonResponse>(`/todos/${todoId}`);
   return data.data;
+}
+
+export async function postAddTodo(request: AddTodoRequest) {
+  const response = await apiClient.post<AddTodoResponse, AddTodoRequest>('/todos', request);
+  return response.data;
 }

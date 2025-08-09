@@ -5,6 +5,10 @@ interface UseWeeklyGoalProgressProps {
   todoList: Record<string, Todo[]> | null;
 }
 
+/**
+ * @deprecated
+ * - 주차계산 progress 기능이 제거됨
+ */
 export const useWeeklyGoalProgress = ({ todoList }: UseWeeklyGoalProgressProps) => {
   const { percent, total, done } = useMemo(() => {
     if (!todoList) return { percent: 0, total: 0, done: 0 };

@@ -1,9 +1,10 @@
 import EditTodoModal from './EditTodoModal';
+import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
 import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from '../hooks';
+import { usePatchTodoStatus } from '@/feature/todo/todayMissionBoard/hooks';
 import Button from '@/shared/components/input/Button';
 import { Goal } from '@/shared/type/goal';
 import {
@@ -37,6 +38,9 @@ interface WeeklyTodoListProps {
   onDelete?: (todo: Todo) => void;
 }
 
+/**
+ * @deprecated
+ */
 export const DesktopWeeklyTodoList = ({
   weeklyTodos,
   goal,
@@ -61,6 +65,11 @@ export const DesktopWeeklyTodoList = ({
   // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getWeekDates(weekStart, showWeekend);
+  const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
+
+  const handleSuccessAddTodo = () => {
+    refreshTodoList?.();
+  };
 
   const handleEditSubmit = (updatedTodo: Todo) => {
     setEditModal({ open: false, todo: null });
@@ -80,6 +89,16 @@ export const DesktopWeeklyTodoList = ({
 
   return (
     <div className="flex flex-col">
+      {/* 추가 모달 트리거 */}
+      <div className="flex justify-end mb-3">
+        <AddTodoModal
+          goal={goal}
+          selectedPlanId={selectedPlanId}
+          onSuccessAddTodo={handleSuccessAddTodo}
+          onWeekChange={onWeekChange}
+          onToggleWeekend={onToggleWeekend}
+        />
+      </div>
       {/* 모달 영역 */}
       <EditTodoModal
         open={editModal.open}
@@ -201,7 +220,7 @@ const WeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: Wee
       {/* 더보기 메뉴 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="group-hover:block ml-auto px-2 py-1 rounded hover:bg-fill-normal h-10 flex items-center">
+          <button className="group-hover:block ml-auto px-2 py-1 rounded hover:bg-fill-normal h-10 flex items-center hover:cursor-pointer">
             <span className="text-sm text-white">⋮</span>
           </button>
         </DropdownMenuTrigger>
