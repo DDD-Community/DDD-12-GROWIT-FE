@@ -1,51 +1,37 @@
 'use client';
 
 import { useCallback } from 'react';
-import { PlanSelector } from '@/feature/todo';
+import { useTodoBoardActions, useTodoBoardState } from '@/feature/todo';
 import { WeeklyGoalProgress } from '@/feature/goal';
-import { TodayMissionBoard, usePlanSelector, WeeklyTodoList } from '@/feature/todo';
+import { usePlanSelector } from '@/feature/todo';
+import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
+import { PlanSelect } from '@/models/todo/planSelector';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
-import { useFetchWeeklyTodoList, useWeeklyTodoListState, useDesktopWeekendToggle } from './hooks';
-import { useFetchTodayMissionList } from '@/feature/todo/todayMissionBoard';
-import { useGoalSelector, useRedirectToOnboarding } from '@/shared/hooks';
-import { CreateNewGoal } from './components/CreateNewGoal';
+import { useDesktopWeekendToggle } from './hooks';
 
-export const PlanBoard = () => {
-  const { isLoading, goalList, selectedGoal, selectedPlans } = useGoalSelector();
+import { useTodayTodoListActions } from '@/models/todo/todayTodoList';
+import { useGoalSelector } from '@/models/goal/context';
 
-  useRedirectToOnboarding({
-    isLoading,
-    goalListLength: goalList.length,
-  });
-
-  if (goalList.length === 0) {
-    return <CreateNewGoal />;
-  }
-
-  return (
-    <PlanSelector.Provider plans={selectedPlans} goal={selectedGoal!}>
-      {selectedGoal && <WeeklyPlanBoard goal={selectedGoal} />}
-    </PlanSelector.Provider>
-  );
+export const WeeklyPlanBoard = () => {
+  const { selectedGoal } = useGoalSelector();
+  if (!selectedGoal) return null;
+  return <WeeklyPlanBoardInner goal={selectedGoal} />;
 };
 
-const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
+const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
+  const { todoList } = useTodoBoardState();
   const { toggleWeekend } = useDesktopWeekendToggle();
+  const { refetchTodayList } = useTodayTodoListActions();
+  const { fetchWeeklyTodos, toggleTodoStatus } = useTodoBoardActions();
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
-  const { fetchTodayMissionList, ...todayMissionStatus } = useFetchTodayMissionList();
-  const { fetchWeeklyTodoList, weeklyTodos } = useFetchWeeklyTodoList({
-    goalId: goal?.id || '',
-    planId: selectedPlanId,
-  });
-  const { todoList, toggleTodoStatus } = useWeeklyTodoListState(weeklyTodos);
 
   const handleRefreshTodoList = useCallback(() => {
     if (goal?.id && selectedPlanId) {
-      fetchWeeklyTodoList({ goalId: goal.id, planId: selectedPlanId });
-      fetchTodayMissionList();
+      fetchWeeklyTodos({ goalId: goal.id, planId: selectedPlanId });
+      refetchTodayList();
     }
-  }, [goal?.id, selectedPlanId, fetchWeeklyTodoList, fetchTodayMissionList]);
+  }, [goal?.id, selectedPlanId, fetchWeeklyTodos, refetchTodayList]);
 
   const handleWeekChange = useCallback(
     (weekOfMonth: number) => {
@@ -106,46 +92,37 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
   const handleToggleTodo = useCallback(
     (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
       toggleTodoStatus(dayOfWeek, todoId);
-      fetchTodayMissionList();
+      refetchTodayList();
     },
-    [toggleTodoStatus, fetchTodayMissionList]
+    [toggleTodoStatus, refetchTodayList]
   );
 
   return (
     <>
-      <TodayMissionBoard
-        {...todayMissionStatus}
-        goalStartDate={goal.duration.startDate}
-        onToggleTodo={handleToggleTodo}
-      />
       <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
         <div className="flex items-center flex-1 max-sm:flex-col max-sm:gap-2 max-sm:items-start justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
           <div className="flex flex-1 items-center gap-2 sm:flex-row-reverse sm:justify-between max-sm:w-full max-sm:justify-between max-sm:flex-col">
-            <PlanSelector.Selector />
-            {goal && (
-              <WeeklyGoalProgress
-                goal={goal}
-                selectedPlanContent={selectedPlanContent}
-                selectedPlanId={selectedPlanId}
-                selectedWeekIndex={selectedWeekIndex}
-              />
-            )}
+            <PlanSelect />
+            <WeeklyGoalProgress
+              goal={goal}
+              selectedPlanContent={selectedPlanContent}
+              selectedPlanId={selectedPlanId}
+              selectedWeekIndex={selectedWeekIndex}
+            />
           </div>
         </div>
         {todoList && (
-          <div className="sm:overflow-hidden">
-            <WeeklyTodoList.Mobile
-              weeklyTodos={todoList}
-              goal={goal}
-              currentWeekIndex={selectedWeekIndex}
-              onToggleTodo={handleToggleTodo}
-              refreshTodoList={handleRefreshTodoList}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onWeekChange={handleWeekChange}
-              onToggleWeekend={handleToggleWeekend}
-            />
-          </div>
+          <WeeklyTodoList
+            weeklyTodos={todoList}
+            goal={goal}
+            currentWeekIndex={selectedWeekIndex}
+            onToggleTodo={handleToggleTodo}
+            refreshTodoList={handleRefreshTodoList}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onWeekChange={handleWeekChange}
+            onToggleWeekend={handleToggleWeekend}
+          />
         )}
       </div>
     </>

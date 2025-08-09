@@ -2,26 +2,29 @@
 
 import { useState } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from '../hooks';
+import { Todo } from '@/shared/type/Todo';
+import { useTodayTodoListActions, useTodayTodoListState } from '@/models/todo/todayTodoList/context';
+import { useTodoBoardActions } from '../../../../models/todo/todoList';
+import { useSelectedDayState } from '@/models/todo/selectedDay';
 
 interface WeeklyTodoItemProps {
   todo: Todo;
-  currentDayOfWeek: DAY_OF_THE_WEEK;
-  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
 }
 
-export const TodayMissionItem = ({ todo, onToggleTodo, currentDayOfWeek }: WeeklyTodoItemProps) => {
+export const TodayMissionItem = ({ todo }: WeeklyTodoItemProps) => {
+  const { isLoading } = useTodayTodoListState();
+  const { selectedDay } = useSelectedDayState();
+  const { toggleTodoStatus: toggleTodoStatus } = useTodoBoardActions();
+  const { toggleTodoStatus: toggleTodayTodoStatus } = useTodayTodoListActions();
   const [checked, setChecked] = useState(todo.isCompleted);
   const [hideCheckbox, setHideCheckbox] = useState(false);
-  const { mutate, isLoading } = usePatchTodoStatus();
 
   const handleCheck = async () => {
-    if (checked || isLoading) return;
+    if (checked) return;
     setChecked(true);
-    await mutate(todo.id, true);
+    await toggleTodoStatus(selectedDay, todo.id);
+    await toggleTodayTodoStatus(todo.id, true);
     setHideCheckbox(true);
-    onToggleTodo(currentDayOfWeek, todo.id);
   };
 
   return (

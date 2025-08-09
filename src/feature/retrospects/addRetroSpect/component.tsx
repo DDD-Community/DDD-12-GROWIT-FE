@@ -136,8 +136,8 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
         />
         {!isLoadingRetrospects && !retrospect && (
           <>
-            <ToolTip text="회고를 입력하세요" position="top-center" className="z-10 hidden sm:block" />
-            <ToolTip text="회고를 입력하세요" position="bottom-right" className="z-10 block sm:hidden" />
+            <ToolTip text="회고를 입력하세요" position="top-center" className="hidden sm:block" />
+            <ToolTip text="회고를 입력하세요" position="bottom-right" className="block sm:hidden" />
           </>
         )}
         {retrospect && (

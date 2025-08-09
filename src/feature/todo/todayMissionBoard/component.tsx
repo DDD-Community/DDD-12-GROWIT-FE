@@ -2,28 +2,13 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { TodayMissionItem } from './components/TodayMissionItem';
+import { useTodayTodoListState } from '@/models/todo/todayTodoList/context';
 import Badge from '@/shared/components/display/Badge';
-import { getCurrentWeekInfo } from './utils';
 
-interface TodayMissionBoardProps {
-  isLoading: boolean;
-  todayTodoList: Todo[] | null;
-  error: string | null;
-  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
-  goalStartDate?: string; // 목표 시작일 (주차 계산용)
-}
-
-export const TodayMissionBoard = ({
-  isLoading,
-  todayTodoList,
-  error,
-  onToggleTodo,
-  goalStartDate,
-}: TodayMissionBoardProps) => {
+export const TodayMissionBoard = () => {
+  const { todayTodoList, isLoading, error } = useTodayTodoListState();
   const missionCount = useMemo(() => todayTodoList?.length || 0, [todayTodoList]);
-  const { currentDayOfWeek } = getCurrentWeekInfo(goalStartDate);
 
   // 로딩 상태
   if (isLoading) {
@@ -55,7 +40,6 @@ export const TodayMissionBoard = ({
         <div className="flex items-center gap-2 mb-2 w-full">
           <Image src="/icon/growit-check.svg" alt="icon of growit" width={24} height={24} />
           <span className="text-lg font-semibold text-label-normal flex items-center gap-2">오늘의 미션</span>
-          <Badge type="default" size="sm" label={missionCount.toString()} />
         </div>
         <div className="flex flex-col items-center w-full gap-2 py-8">
           <div className="flex gap-[4px]">
@@ -78,16 +62,10 @@ export const TodayMissionBoard = ({
           </svg>
           오늘의 미션
         </span>
-        <Badge type="default" size="sm" label={missionCount.toString()} />
       </div>
       <ul className="flex flex-col gap-3">
         {todayTodoList.map(todoItem => (
-          <TodayMissionItem
-            key={todoItem.id}
-            todo={todoItem}
-            currentDayOfWeek={currentDayOfWeek}
-            onToggleTodo={onToggleTodo}
-          />
+          <TodayMissionItem key={todoItem.id} todo={todoItem} />
         ))}
       </ul>
     </div>

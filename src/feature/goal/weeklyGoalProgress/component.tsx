@@ -16,6 +16,8 @@ export const WeeklyGoalProgress = ({
   selectedPlanId,
   selectedWeekIndex,
 }: WeeklyGoalProgressProps) => {
+  if (!goal) return null;
+
   return (
     <div className="flex gap-[12px] items-center max-sm:w-full max-sm:justify-between max-sm:py-[12px]">
       <div className="flex items-center gap-[20px]">

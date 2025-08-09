@@ -12,10 +12,11 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { getWeekStartDate, getAllWeekDates, getDateString, isToday, getTodayDayOfWeek } from '../utils';
+import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../utils';
 import EditTodoModal from './EditTodoModal';
 import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
+import { useSelectedDayState, useSelectedDayActions } from '@/models/todo/selectedDay';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
@@ -37,7 +38,7 @@ interface MobileWeeklyTodoListProps {
   onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const MobileWeeklyTodoList = ({
+export const WeeklyTodoList = ({
   weeklyTodos,
   goal,
   currentWeekIndex,
@@ -48,7 +49,8 @@ export const MobileWeeklyTodoList = ({
   onWeekChange,
   onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
-  const [selectedDay, setSelectedDay] = useState<DAY_OF_THE_WEEK>(getTodayDayOfWeek());
+  const { selectedDay } = useSelectedDayState();
+  const { setSelectedDay } = useSelectedDayActions();
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
@@ -60,6 +62,11 @@ export const MobileWeeklyTodoList = ({
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
   }, [goal.id, currentWeekIndex]);
+
+  const { resetToToday } = useSelectedDayActions();
+  useEffect(() => {
+    resetToToday();
+  }, [currentWeekIndex, resetToToday]);
 
   const selectedDayTodos = weeklyTodos[selectedDay] || [];
 

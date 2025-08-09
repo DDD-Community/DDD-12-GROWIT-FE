@@ -4,7 +4,7 @@ import DeleteTodoModal from './DeleteTodoModal';
 import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from '../hooks';
+import { usePatchTodoStatus } from '@/feature/todo/todayMissionBoard/hooks';
 import Button from '@/shared/components/input/Button';
 import { Goal } from '@/shared/type/goal';
 import {
@@ -38,6 +38,9 @@ interface WeeklyTodoListProps {
   onDelete?: (todo: Todo) => void;
 }
 
+/**
+ * @deprecated
+ */
 export const DesktopWeeklyTodoList = ({
   weeklyTodos,
   goal,
