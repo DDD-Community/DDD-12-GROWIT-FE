@@ -19,7 +19,7 @@ export const WeeklyGoalProgress = ({
   if (!goal) return null;
 
   return (
-    <div className="flex gap-[12px] items-center max-sm:w-full max-sm:justify-between max-sm:py-[12px]">
+    <div className="flex gap-[12px] items-center sm:mt-[42px] max-sm:w-full max-sm:justify-between max-sm:py-[12px]">
       <div className="flex items-center gap-[20px]">
         <div className="max-sm:hidden flex items-center gap-[20px]">
           <span className="text-white text-[18px] font-[700]">{selectedWeekIndex}주차</span>

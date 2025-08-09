@@ -101,7 +101,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
     <>
       <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
         <div className="flex items-center flex-1 max-sm:flex-col max-sm:gap-2 max-sm:items-start justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
-          <div className="flex flex-1 items-center gap-2 sm:flex-row-reverse sm:justify-between max-sm:w-full max-sm:justify-between max-sm:flex-col">
+          <div className="flex flex-1 items-end gap-2 sm:flex-row-reverse sm:justify-between max-sm:w-full max-sm:justify-between max-sm:flex-col">
             <PlanSelect />
             <WeeklyGoalProgress
               goal={goal}
