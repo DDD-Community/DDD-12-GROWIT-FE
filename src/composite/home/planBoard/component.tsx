@@ -31,7 +31,7 @@ export const PlanBoard = () => {
 };
 
 const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
-  const { showWeekend, toggleWeekend } = useDesktopWeekendToggle();
+  const { toggleWeekend } = useDesktopWeekendToggle();
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
   const { fetchTodayMissionList, ...todayMissionStatus } = useFetchTodayMissionList();
   const { fetchWeeklyTodoList, weeklyTodos } = useFetchWeeklyTodoList({
@@ -133,35 +133,19 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
           </div>
         </div>
         {todoList && (
-          <>
-            <div className="invisible sm:visible h-0 sm:h-auto overflow-hidden sm:overflow-visible">
-              <WeeklyTodoList.Desktop
-                weeklyTodos={todoList}
-                goal={goal}
-                currentWeekIndex={selectedWeekIndex}
-                onToggleTodo={handleToggleTodo}
-                refreshTodoList={handleRefreshTodoList}
-                onWeekChange={handleWeekChange}
-                showWeekend={showWeekend}
-                onToggleWeekend={handleToggleWeekend}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            </div>
-            <div className="visible sm:invisible sm:h-0 sm:overflow-hidden">
-              <WeeklyTodoList.Mobile
-                weeklyTodos={todoList}
-                goal={goal}
-                currentWeekIndex={selectedWeekIndex}
-                onToggleTodo={handleToggleTodo}
-                refreshTodoList={handleRefreshTodoList}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onWeekChange={handleWeekChange}
-                onToggleWeekend={handleToggleWeekend}
-              />
-            </div>
-          </>
+          <div className="sm:overflow-hidden">
+            <WeeklyTodoList.Mobile
+              weeklyTodos={todoList}
+              goal={goal}
+              currentWeekIndex={selectedWeekIndex}
+              onToggleTodo={handleToggleTodo}
+              refreshTodoList={handleRefreshTodoList}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onWeekChange={handleWeekChange}
+              onToggleWeekend={handleToggleWeekend}
+            />
+          </div>
         )}
       </div>
     </>

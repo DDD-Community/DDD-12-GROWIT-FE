@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { Modal } from '@/shared/components/feedBack/Modal';
@@ -58,25 +59,14 @@ export const AddTodoModal = ({
 
   return (
     <>
-      <div className="w-[110px] h-[36px] rounded-lg bg-accent-violet">
-        <Button
-          variant="tertiary"
-          text="투두 추가"
-          size="sm"
-          layout="icon-right"
+      <div className="rounded-lg">
+        <button
+          className="flex px-[14px] py-[8px] gap-[12px] rounded-lg hover:bg-fill-normal transition-colors hover:cursor-pointer"
           onClick={() => showModal()}
-          icon={
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M9.99935 4.16663V15.8333M4.16602 9.99996H15.8327"
-                stroke="white"
-                strokeWidth="1.67"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          }
-        />
+        >
+          <Image src="/icon/plus.svg" alt="plus" width={20} height={20} />
+          <span className="font-[15px] text-label-alternative text-nowrap">투두 추가</span>
+        </button>
       </div>
       <Modal
         open={isModalOpen}

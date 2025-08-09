@@ -217,7 +217,7 @@ const WeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: Wee
       {/* 더보기 메뉴 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="group-hover:block ml-auto px-2 py-1 rounded hover:bg-fill-normal h-10 flex items-center">
+          <button className="group-hover:block ml-auto px-2 py-1 rounded hover:bg-fill-normal h-10 flex items-center hover:cursor-pointer">
             <span className="text-sm text-white">⋮</span>
           </button>
         </DropdownMenuTrigger>
