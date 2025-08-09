@@ -121,31 +121,26 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
         onToggleTodo={handleToggleTodo}
       />
       <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
-        <div className="flex items-center max-sm:flex-col max-sm:gap-2 max-sm:items-start justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
-          <div className="flex items-center gap-2">
-            <Image src="/icon/growit-calendar.svg" alt="icon of growit" width={24} height={24} />
-            <span className="text-lg font-bold text-label-normal w-[130px]">주간 플랜</span>
-          </div>
-          <div className="flex items-center gap-2 max-sm:w-full max-sm:justify-between">
+        <div className="flex items-center flex-1 max-sm:flex-col max-sm:gap-2 max-sm:items-start justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
+          <div className="flex flex-1 items-center gap-2 sm:flex-row-reverse sm:justify-between max-sm:w-full max-sm:justify-between max-sm:flex-col">
             <PlanSelector.Selector />
-            <AddToDoModal
-              goal={goal}
-              selectedPlanId={selectedPlanId}
-              onSuccessAddTodo={handleRefreshTodoList}
-              onWeekChange={handleWeekChange}
-              onToggleWeekend={handleToggleWeekend}
-            />
+            {goal && (
+              <WeeklyGoalProgress
+                goal={goal}
+                selectedPlanContent={selectedPlanContent}
+                selectedPlanId={selectedPlanId}
+                selectedWeekIndex={selectedWeekIndex}
+              />
+            )}
           </div>
         </div>
-        {goal && (
-          <WeeklyGoalProgress
-            goal={goal}
-            selectedPlanContent={selectedPlanContent}
-            selectedPlanId={selectedPlanId}
-            selectedWeekIndex={selectedWeekIndex}
-            todoList={todoList}
-          />
-        )}
+        <AddToDoModal
+          goal={goal}
+          selectedPlanId={selectedPlanId}
+          onSuccessAddTodo={handleRefreshTodoList}
+          onWeekChange={handleWeekChange}
+          onToggleWeekend={handleToggleWeekend}
+        />
         {todoList && (
           <>
             <div className="invisible sm:visible h-0 sm:h-auto overflow-hidden sm:overflow-visible">
