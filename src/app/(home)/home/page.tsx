@@ -1,6 +1,6 @@
 'use client';
 
-import { CheerMessageCard, GoalBanner } from '@/composite/home';
+import { CheerMessageCard, GoalBanner, GrowitTitle } from '@/composite/home';
 import { GoalProvider } from '@/model/goal/context';
 import { PlanProvider } from '@/model/todo/planSelector';
 import { WeeklyPlanBoard } from '@/composite/home/planBoard';
@@ -17,6 +17,7 @@ export default function MainPage() {
           <TodayTodoListProvider>
             <SelectedDayProvider>
               <div className="flex w-full flex-col">
+                <GrowitTitle />
                 <div className="border-b-[1px] border-b-[#70737C52] max-sm:mx-[20px] sm:mx-[40px] mt-[32px] pb-[24px]">
                   <CheerMessageCard />
                 </div>

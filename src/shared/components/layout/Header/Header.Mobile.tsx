@@ -5,7 +5,6 @@ import { ChevronLeft } from 'lucide-react';
 
 export const HeaderMobile = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   // 홈 페이지에서는 헤더를 표시하지 않음
   if (pathname === '/home') {

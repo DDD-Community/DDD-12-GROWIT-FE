@@ -21,7 +21,7 @@ export const WeeklyGoalBanner = ({ goal }: WeeklyGoalBannerProps) => {
         src="/image/growit-landing.png"
         alt="landing"
         fill
-        className="object-cover object-[50%_25%] opacity-40 pointer-events-none z-0"
+        className="object-cover object-[40%_15%] opacity-40 pointer-events-none z-0"
       />
       <div className="flex flex-col gap-[16px] relative z-[2]">
         <div className="flex items-center gap-2">
