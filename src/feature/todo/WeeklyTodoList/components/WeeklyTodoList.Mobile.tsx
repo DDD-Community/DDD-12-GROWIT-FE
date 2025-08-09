@@ -16,7 +16,7 @@ import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../ut
 import EditTodoModal from './EditTodoModal';
 import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
-import { useSelectedDayState, useSelectedDayActions } from '@/models/todo/selectedDay';
+import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;

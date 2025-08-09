@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { TodayMissionItem } from './components/TodayMissionItem';
-import { useTodayTodoListState } from '@/models/todo/todayTodoList/context';
+import { useTodayTodoListState } from '@/model/todo/todayTodoList/context';
 import Badge from '@/shared/components/display/Badge';
 
 export const TodayMissionBoard = () => {

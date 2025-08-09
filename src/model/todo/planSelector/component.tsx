@@ -3,7 +3,7 @@
 import Button from '@/shared/components/input/Button';
 import { PlanSelectorProvider, usePlanSelector } from './hooks';
 import { useRedirectToOnboarding } from '@/shared/hooks';
-import { useGoalSelector } from '@/models/goal/context';
+import { useGoalSelector } from '@/model/goal/context';
 import { CreateNewGoal } from './components/CreateNewGoal';
 
 interface PlanProviderProps {

@@ -5,13 +5,13 @@ import { useTodoBoardActions, useTodoBoardState } from '@/feature/todo';
 import { WeeklyGoalProgress } from '@/feature/goal';
 import { usePlanSelector } from '@/feature/todo';
 import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
-import { PlanSelect } from '@/models/todo/planSelector';
+import { PlanSelect } from '@/model/todo/planSelector';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
 import { useDesktopWeekendToggle } from './hooks';
 
-import { useTodayTodoListActions } from '@/models/todo/todayTodoList';
-import { useGoalSelector } from '@/models/goal/context';
+import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
+import { useGoalSelector } from '@/model/goal/context';
 
 export const WeeklyPlanBoard = () => {
   const { selectedGoal } = useGoalSelector();

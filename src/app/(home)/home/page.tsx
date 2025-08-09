@@ -1,12 +1,12 @@
 'use client';
 
 import { CheerMessageCard } from '@/composite/home';
-import { GoalProvider } from '@/models/goal/context';
-import { PlanProvider } from '@/models/todo/planSelector';
+import { GoalProvider } from '@/model/goal/context';
+import { PlanProvider } from '@/model/todo/planSelector';
 import { WeeklyPlanBoard } from '@/composite/home/planBoard';
-import { TodoListProvider } from '@/models/todo/todoList';
-import { TodayTodoListProvider } from '@/models/todo/todayTodoList';
-import { SelectedDayProvider } from '@/models/todo/selectedDay';
+import { TodoListProvider } from '@/model/todo/todoList';
+import { TodayTodoListProvider } from '@/model/todo/todayTodoList';
+import { SelectedDayProvider } from '@/model/todo/selectedDay';
 import { TodayMissionBoard } from '@/feature/todo';
 
 export default function MainPage() {

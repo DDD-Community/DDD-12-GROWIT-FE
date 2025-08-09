@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { Todo } from '@/shared/type/Todo';
-import { useTodayTodoListActions, useTodayTodoListState } from '@/models/todo/todayTodoList/context';
-import { useTodoBoardActions } from '../../../../models/todo/todoList';
-import { useSelectedDayState } from '@/models/todo/selectedDay';
+import { useTodayTodoListActions, useTodayTodoListState } from '@/model/todo/todayTodoList/context';
+import { useTodoBoardActions } from '../../../../model/todo/todoList';
+import { useSelectedDayState } from '@/model/todo/selectedDay';
 
 interface WeeklyTodoItemProps {
   todo: Todo;

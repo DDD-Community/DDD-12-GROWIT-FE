@@ -3,8 +3,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { getWeeklyTodoList, type TodoWeeklyListRequest } from './api';
-import { useGoalSelector } from '@/models/goal/context';
-import { usePlanSelector } from '@/models/todo/planSelector/hooks';
+import { useGoalSelector } from '@/model/goal/context';
+import { usePlanSelector } from '@/model/todo/planSelector/hooks';
 
 interface TodoBoardContextValue {
   // fetch 결과

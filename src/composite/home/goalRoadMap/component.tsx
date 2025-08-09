@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
-import { useGoalSelector } from '@/models/goal/context';
+import { useGoalSelector } from '@/model/goal/context';
 import { EarthIcon, MoveIcon } from './icons';
 
 const GoalRoadMapDesktop = () => {
