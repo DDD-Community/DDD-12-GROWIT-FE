@@ -1,4 +1,5 @@
 import EditTodoModal from './EditTodoModal';
+import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
 import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
@@ -61,6 +62,11 @@ export const DesktopWeeklyTodoList = ({
   // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getWeekDates(weekStart, showWeekend);
+  const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
+
+  const handleSuccessAddTodo = () => {
+    refreshTodoList?.();
+  };
 
   const handleEditSubmit = (updatedTodo: Todo) => {
     setEditModal({ open: false, todo: null });
@@ -80,6 +86,16 @@ export const DesktopWeeklyTodoList = ({
 
   return (
     <div className="flex flex-col">
+      {/* 추가 모달 트리거 */}
+      <div className="flex justify-end mb-3">
+        <AddTodoModal
+          goal={goal}
+          selectedPlanId={selectedPlanId}
+          onSuccessAddTodo={handleSuccessAddTodo}
+          onWeekChange={onWeekChange}
+          onToggleWeekend={onToggleWeekend}
+        />
+      </div>
       {/* 모달 영역 */}
       <EditTodoModal
         open={editModal.open}

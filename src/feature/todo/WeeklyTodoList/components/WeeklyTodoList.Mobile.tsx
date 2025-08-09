@@ -13,6 +13,7 @@ import {
 import { Edit, Trash2 } from 'lucide-react';
 import { getWeekStartDate, getAllWeekDates, getDateString, isToday, getTodayDayOfWeek } from '../utils';
 import EditTodoModal from './EditTodoModal';
+import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
 
 interface MobileWeeklyTodoItemProps {
@@ -28,6 +29,7 @@ interface MobileWeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
+  refreshTodoList?: () => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
   onWeekChange?: (weekOfMonth: number) => void;
@@ -39,6 +41,7 @@ export const MobileWeeklyTodoList = ({
   goal,
   currentWeekIndex,
   onToggleTodo,
+  refreshTodoList,
   onEdit,
   onDelete,
   onWeekChange,
@@ -48,11 +51,10 @@ export const MobileWeeklyTodoList = ({
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
-  // currentWeekIndex는 1부터 시작하는 주차 번호이므로 0부터 시작하는 인덱스로 변환
   const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
   const days = getAllWeekDates(weekStart); // 모바일에서는 평일과 주말 모두 포함
+  const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
 
-  // props가 변경되면 모달 상태 초기화
   useEffect(() => {
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
@@ -72,6 +74,16 @@ export const MobileWeeklyTodoList = ({
 
   return (
     <div className="flex flex-col">
+      {/* 추가 모달 트리거 */}
+      <div className="flex justify-end mb-3">
+        <AddTodoModal
+          goal={goal}
+          selectedPlanId={selectedPlanId}
+          onSuccessAddTodo={() => refreshTodoList?.()}
+          onWeekChange={onWeekChange}
+          onToggleWeekend={onToggleWeekend}
+        />
+      </div>
       {/* 모달 영역 */}
       <EditTodoModal
         open={editModal.open}

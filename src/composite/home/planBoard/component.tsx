@@ -1,10 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useCallback } from 'react';
 import { PlanSelector } from '@/feature/todo';
 import { WeeklyGoalProgress } from '@/feature/goal';
-import { AddToDoModal } from '@/feature/todo/AddToDoModal/component';
 import { TodayMissionBoard, usePlanSelector, WeeklyTodoList } from '@/feature/todo';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
@@ -134,13 +132,6 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
             )}
           </div>
         </div>
-        <AddToDoModal
-          goal={goal}
-          selectedPlanId={selectedPlanId}
-          onSuccessAddTodo={handleRefreshTodoList}
-          onWeekChange={handleWeekChange}
-          onToggleWeekend={handleToggleWeekend}
-        />
         {todoList && (
           <>
             <div className="invisible sm:visible h-0 sm:h-auto overflow-hidden sm:overflow-visible">
@@ -149,6 +140,8 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
                 goal={goal}
                 currentWeekIndex={selectedWeekIndex}
                 onToggleTodo={handleToggleTodo}
+                refreshTodoList={handleRefreshTodoList}
+                onWeekChange={handleWeekChange}
                 showWeekend={showWeekend}
                 onToggleWeekend={handleToggleWeekend}
                 onEdit={handleEdit}
@@ -161,6 +154,7 @@ const WeeklyPlanBoard = ({ goal }: { goal: Goal }) => {
                 goal={goal}
                 currentWeekIndex={selectedWeekIndex}
                 onToggleTodo={handleToggleTodo}
+                refreshTodoList={handleRefreshTodoList}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onWeekChange={handleWeekChange}
