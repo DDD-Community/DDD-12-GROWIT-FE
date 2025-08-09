@@ -1,5 +1,5 @@
 @theme {
-  --color-primary-normal: #ffffff;
+  --color-brand-green: rgba(53, 217, 66, 1) --color-primary-normal: #ffffff;
   --color-primary-strong: hsl(0, 0%, 86%);
   --color-primary-heavy: rgba(255, 255, 255, 0.65);
   --color-static-white: #ffffff;
