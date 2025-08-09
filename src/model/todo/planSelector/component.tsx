@@ -16,9 +16,9 @@ export const PlanSelect = () => {
   if (!plans.length) return null;
 
   return (
-    <div className="flex gap-2 max-sm:py-[12px]">
+    <div className="flex gap-2 max-sm:py-[12px] max-sm:mx-auto">
       <Button size={'sm'} variant={'secondary'} text={'<'} disabled={selectedPlanIndex === 0} onClick={goPrev} />
-      <span className="sm:hidden text-white text-[16px] font-[700] whitespace-nowrap min-w-[50px] text-center">
+      <span className="flex items-center justify-center sm:hidden text-white text-[16px] font-[700] whitespace-nowrap min-w-[50px] text-center">
         {selectedPlanIndex + 1}주차
       </span>
       <Button
