@@ -6,12 +6,11 @@ import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
 import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
 import { useGoalSelector } from '@/model/goal/context';
 import { WeeklyGoalProgress } from '@/feature/goal';
-import { WeeklyTodoList } from '@/feature/todo/WeeklyTodoList';
+import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { useDesktopWeekendToggle } from './hooks';
 import { Goal } from '@/shared/type/goal';
-
 
 export const WeeklyPlanBoard = () => {
   const { selectedGoal } = useGoalSelector();
