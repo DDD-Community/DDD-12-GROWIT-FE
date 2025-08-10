@@ -12,7 +12,7 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../utils';
+import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../../../../model/todo/selectedDay/utils';
 import EditTodoModal from './EditTodoModal';
 import { AddTodoModal } from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';

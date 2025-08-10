@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { getTodayDayOfWeek } from '@/feature/todo/weeklyTodoList/utils';
+import { getTodayDayOfWeek } from './utils';
 
 interface SelectedDayState {
   selectedDay: DAY_OF_THE_WEEK;

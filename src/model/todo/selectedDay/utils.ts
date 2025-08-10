@@ -1,5 +1,5 @@
-import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { DAY_LABELS, WEEKDAYS } from './const';
+import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 
 // 오늘 요일을 계산하여 DAY_OF_THE_WEEK 타입으로 반환
 export function getTodayDayOfWeek(): DAY_OF_THE_WEEK {

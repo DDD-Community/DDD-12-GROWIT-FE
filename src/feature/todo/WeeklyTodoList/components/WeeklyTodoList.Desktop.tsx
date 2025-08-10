@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
-import { getDateString, isToday, getWeekStartDate, getWeekDates } from '../utils';
+import { getDateString, isToday, getWeekStartDate, getWeekDates } from '../../../../model/todo/selectedDay/utils';
 
 interface WeeklyTodoItemProps {
   todo: Todo;
