@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from '../hooks';
+import { usePatchTodoStatus } from './hooks';
 import { Goal } from '@/shared/type/goal';
 import {
   DropdownMenu,
@@ -12,10 +12,11 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '../../../../model/todo/selectedDay/utils';
-import EditTodoModal from './EditTodoModal';
-import { AddTodoModal } from './AddTodoModal';
-import DeleteTodoModal from './DeleteTodoModal';
+import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '@/model/todo/selectedDay/utils';
+import EditTodoModal from './components/EditTodoModal';
+import { AddTodoModal } from './components/AddTodoModal';
+import DeleteTodoModal from './components/DeleteTodoModal';
+
 import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
 
 interface MobileWeeklyTodoItemProps {
