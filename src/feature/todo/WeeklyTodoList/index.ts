@@ -1,1 +1,1 @@
-export { WeeklyTodoList } from './components/WeeklyTodoList.Mobile';
+export { WeeklyTodoList } from './component';
