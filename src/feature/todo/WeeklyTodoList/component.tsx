@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
