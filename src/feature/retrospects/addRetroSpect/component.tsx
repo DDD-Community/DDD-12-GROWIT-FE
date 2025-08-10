@@ -44,7 +44,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     retrospect,
     fetchRetrospects,
     isLoading: isLoadingRetrospects,
-    error: fetchError,
   } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
@@ -62,24 +61,19 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
 
     try {
       if (isEditMode && retrospect) {
-        // 편집 모드: 기존 회고 수정
         await editRetrospect({
           retrospectId: retrospect.id,
           planId: selectedPlanId,
           content,
         });
       } else {
-        // 추가 모드: 새 회고 작성
         await addRetrospect({
           goalId: goal.id,
           planId: selectedPlanId,
           content,
         });
       }
-      // 성공 시 모달은 onSuccess에서 닫힘
-    } catch (error) {
-      // 에러는 onError에서 처리됨
-    }
+    } catch (error) {}
   }, [
     addRetrospect,
     editRetrospect,
@@ -94,7 +88,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
 
   const showModal = useCallback(() => {
     setIsModalOpen(true);
-    // 회고가 있으면 편집 모드로 설정하고 기존 내용을 불러옴
     if (retrospect) {
       setIsEditMode(true);
       setContent(retrospect.content);
@@ -133,21 +126,22 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
 
   return (
     <>
-      <div className="relative">
+      <div className="relative min-w-[44px]">
         <Button
-          variant="secondary"
-          size="sm"
+          variant="tertiary"
+          size="lg"
           layout="icon-only"
           onClick={() => showModal()}
           icon={<Image src={'/icon/growit-comment.svg'} alt={'회고록 작성 아이콘'} width={20} height={20} />}
         />
         {!isLoadingRetrospects && !retrospect && (
           <>
-            {/* 데스크톱: top-center */}
-            <ToolTip text="주간회고를 입력하세요" position="top-center" className="z-10 hidden sm:block" />
-            {/* 모바일: top-right */}
-            <ToolTip text="주간회고를 입력하세요" position="top-right" className="z-10 block sm:hidden" />
+            <ToolTip text="회고를 입력하세요" position="top-center" className="hidden sm:block" />
+            <ToolTip text="회고를 입력하세요" position="bottom-right" className="block sm:hidden" />
           </>
+        )}
+        {retrospect && (
+          <div className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-[6px] bg-accent-fg-lime" />
         )}
       </div>
       <Modal

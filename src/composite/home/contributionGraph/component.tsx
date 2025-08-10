@@ -2,7 +2,7 @@
 
 import { Rocket } from './icons';
 import { useFetchContributionList } from './hooks';
-import { useGoalSelector } from '@/shared/hooks';
+import { useGoalSelector } from '@/model/goal/context';
 import { ContributionTooltip } from './components/ContributionTooltip';
 import { ContributionGrid } from './components/ContributionGrid';
 import { ContributionSkeleton } from './components/ContributionSkeleton';
