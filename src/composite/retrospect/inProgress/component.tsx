@@ -8,9 +8,13 @@ import { RetrospectBox } from './components/RetrospectBox';
 import { RoadMap } from '@/shared/components/display/RoadMap';
 
 export const InProgress = () => {
+  const dummyDuration = {
+    startDate: '2023/7/1',
+    endDate: '2025/8/31',
+  };
   return (
     <>
-      <RoadMap />
+      <RoadMap currentStep={1} totalSteps={4} duration={dummyDuration} />
       <Accordion
         renderTitle={() => (
           <FlexBox className="flex gap-4">

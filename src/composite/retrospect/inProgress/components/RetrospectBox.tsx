@@ -44,7 +44,15 @@ export const RetrospectBox = ({
       <div className="flex flex-col flex-1 gap-4 pt-1">
         <FlexBox className="gap-2">
           <p className="headline-1-bold text-label-normal">{week}주차</p>
-          {!isLocked && <Badge type="default" size="sm" label={isCompleted ? '작성완료' : '진행 중'} />}
+          {!isLocked && (
+            <Badge
+              type="default"
+              size="sm"
+              textColor={!isLocked && isCompleted ? 'text-label-neutral' : 'text-brand-neon'}
+              color={!isLocked && isCompleted ? 'bg-fill-normal' : 'bg-green-500/20'}
+              label={isCompleted ? '작성완료' : '진행 중'}
+            />
+          )}
         </FlexBox>
         <FlexBox className="w-full rounded-lg gap-4 body-1-normal">
           <span className="text-label-alternative">주차 목표</span>
