@@ -1,17 +1,16 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useTodoBoardActions, useTodoBoardState } from '@/feature/todo';
+import { usePlanSelector } from '@/model/todo/planSelector';
+import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
+import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
+import { useGoalSelector } from '@/model/goal/context';
 import { WeeklyGoalProgress } from '@/feature/goal';
-import { usePlanSelector } from '@/feature/todo';
 import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { Goal } from '@/shared/type/goal';
 import { useDesktopWeekendToggle } from './hooks';
-
-import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
-import { useGoalSelector } from '@/model/goal/context';
+import { Goal } from '@/shared/type/goal';
 
 export const WeeklyPlanBoard = () => {
   const { selectedGoal } = useGoalSelector();

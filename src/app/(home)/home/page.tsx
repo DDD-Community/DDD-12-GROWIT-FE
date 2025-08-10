@@ -7,7 +7,7 @@ import { WeeklyPlanBoard } from '@/composite/home/planBoard';
 import { TodoListProvider } from '@/model/todo/todoList';
 import { TodayTodoListProvider } from '@/model/todo/todayTodoList';
 import { SelectedDayProvider } from '@/model/todo/selectedDay';
-import { TodayMissionBoard } from '@/feature/todo';
+import { TodayMissionBoard } from '@/feature/todo/todayMissionBoard';
 
 export default function MainPage() {
   return (
