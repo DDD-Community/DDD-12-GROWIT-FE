@@ -2,7 +2,10 @@
 
 import { CreateGoalFormElement } from '@/feature/goal';
 import SectionMessage from '@/shared/components/display/SectionMessage';
-import Badge from '@/shared/components/display/Badge';
+// import Badge from '@/shared/components/display/Badge';
+import FlexBox from '@/shared/components/foundation/FlexBox';
+import Button from '@/shared/components/input/Button';
+import { useState } from 'react';
 
 interface Props {
   mobileHeader: React.ReactNode;
@@ -10,6 +13,13 @@ interface Props {
 }
 
 export const CreateGoalForm = ({ mobileHeader, confirmFooter }: Props) => {
+  const [selectedDuration, setSelectedDuration] = useState('4주');
+
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>, duration: string) => {
+    e.preventDefault();
+    setSelectedDuration(duration);
+  };
+
   return (
     <CreateGoalFormElement.Provider>
       <div className="flex flex-1 flex-col sm:px-[20px] overflow-y-auto">
@@ -25,12 +35,43 @@ export const CreateGoalForm = ({ mobileHeader, confirmFooter }: Props) => {
                     <SectionMessage>모든 입력 정보는 목표 생성 후 수정이 불가합니다.</SectionMessage>
                   </div>
                   <div className="flex flex-col gap-[8px] mb-[20px]">
-                    <div className="flex flex-col gap-[8px]">
+                    <div className="flex flex-col gap-[8px] mb-5">
                       <div className="flex items-center space-x-[8px] mb-[8px]">
                         <p className="heading-2-bold text-white">기간</p>
-                        <Badge label={'4주'} size={'sm'} type={'default'} />
+                        {/* <Badge label={'4주'} size={'sm'} type={'default'} /> */}
                       </div>
+                      <FlexBox className="gap-2 flex-1">
+                        <Button
+                          size="lg"
+                          text="4주"
+                          variant="secondary"
+                          className={`${selectedDuration === '4주' && 'bg-gray-100! text-gray-900!'}`}
+                          onClick={e => handleButtonClick(e, '4주')}
+                        />
+                        <Button
+                          size="lg"
+                          text="8주"
+                          variant="secondary"
+                          className={`${selectedDuration === '8주' && 'bg-gray-100! text-gray-900!'}`}
+                          onClick={e => handleButtonClick(e, '8주')}
+                        />
+                        <Button
+                          size="lg"
+                          text="12주"
+                          variant="secondary"
+                          className={`${selectedDuration === '12주' && 'bg-gray-100! text-gray-900!'}`}
+                          onClick={e => handleButtonClick(e, '12주')}
+                        />
+
+                        {/* <button className="bg-interaction-disable text-label-disable py-[10px] px-[18px] rounded-lg flex-1">
+                          8주
+                        </button>
+                        <button className="bg-interaction-disable text-label-disable py-[10px] px-[18px] rounded-lg flex-1">
+                          12주
+                        </button> */}
+                      </FlexBox>
                     </div>
+                    <p className="heading-2-bold text-white">시작 날짜</p>
                     <CreateGoalFormElement.DurationDate />
                     <p className="caption-1-regular text-neutral-400">* 월요일 고정, 시작일 기준 4주 후 자동 설정</p>
                   </div>

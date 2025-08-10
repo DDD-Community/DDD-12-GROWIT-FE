@@ -1,0 +1,48 @@
+'use client';
+
+import FlexBox from '@/shared/components/foundation/FlexBox';
+import { useState, useEffect } from 'react';
+import { InProgress } from '../inProgress/component';
+import { CompletedTasks } from '../done/component';
+//import { getRetrospects } from '../inProgress/api';
+
+type ActiveTab = 'inProgress' | 'done';
+
+const Navigation = () => {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('inProgress');
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await getRetrospects(2025);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+  return (
+    <div className="p-5 space-y-5 w-full">
+      <FlexBox className="gap-2 w-full">
+        <button
+          onClick={() => setActiveTab('inProgress')}
+          className={`text-label-normal rounded-full body-1-bold ${activeTab === 'inProgress' && 'bg-label-button-neutral outline-2 outline-line-normal'} py-3 px-5 cursor-pointer hover:bg-label-button-hover`}
+        >
+          진행중인 회고
+        </button>
+        <button
+          onClick={() => setActiveTab('done')}
+          className={`text-label-normal rounded-full body-1-bold ${activeTab === 'done' && 'bg-label-button-neutral outline-2 outline-line-normal'} py-3 px-5 cursor-pointer hover:bg-label-button-hover`}
+        >
+          종료한 목표
+        </button>
+      </FlexBox>
+      <div className="flex flex-col gap-4 mt-5">{activeTab === 'inProgress' && <InProgress />}</div>
+      <div className="flex flex-col gap-4 mt-5">{activeTab === 'done' && <CompletedTasks />}</div>
+    </div>
+  );
+};
+
+export default Navigation;
