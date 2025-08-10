@@ -6,14 +6,24 @@ type BadgeSize = 'sm' | 'md' | 'lg';
 interface BadgeProps {
   type: BadgeType;
   size: BadgeSize;
+  color?: string;
+  textColor?: string;
   icon?: React.ReactNode;
   label?: string;
   className?: string;
 }
 
-const Badge = ({ type, size, icon, label, className }: BadgeProps) => {
+const Badge = ({
+  type,
+  size,
+  color = 'bg-brand-neon',
+  textColor = 'text-label-normal',
+  icon,
+  label,
+  className,
+}: BadgeProps) => {
   const baseClass = clsx(
-    'inline-flex items-center gap-2 font-medium bg-accent-violet text-label-normal',
+    `inline-flex items-center gap-2 label-1-normal ${color} ${textColor} ${className}`,
     type === 'icon-only'
       ? 'rounded-full p-2'
       : size === 'sm'
