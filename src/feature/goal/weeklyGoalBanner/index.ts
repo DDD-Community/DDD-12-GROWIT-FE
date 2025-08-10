@@ -1,0 +1,1 @@
+export { WeeklyGoalBanner } from './component';

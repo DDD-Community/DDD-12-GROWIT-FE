@@ -1,11 +1,11 @@
 import { InputHTMLAttributes } from 'react';
 
-const Checkbox = ({ ...props }: InputHTMLAttributes<HTMLInputElement>) => {
+const Checkbox: React.FC<InputHTMLAttributes<HTMLInputElement>> = props => {
   const getStyles = () => {
     if (props.disabled) {
       return 'bg-interaction-disable outline-line-normal';
     } else {
-      return 'outline-line-normal hover:outline-gray-500 focus:border focus:border-line-normal focus:drop-shadow-sm checked:bg-primary-normal';
+      return 'outline-line-strong hover:outline-gray-400 focus:border focus:border-line-normal focus:drop-shadow-sm checked:bg-primary-normal';
     }
   };
 
