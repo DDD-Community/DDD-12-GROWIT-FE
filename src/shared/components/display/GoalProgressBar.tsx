@@ -9,7 +9,6 @@ export interface GoalProgressProps {
 
 export const GoalProgressBar = ({ totalSteps, currentStep }: GoalProgressProps) => {
   const progressPercent = (currentStep / totalSteps) * 100;
-  console.log('Progress Percent:', progressPercent);
 
   return (
     <div className="flex flex-col gap-2 items-start w-full">

@@ -3,27 +3,28 @@
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useState, useEffect } from 'react';
 import { InProgress } from '../inProgress/component';
-import { RoadMap } from '@/shared/components/display/RoadMap';
-import { apiClient } from '@/shared/lib/apiClient';
-import { getRetrospects } from '../inProgress/api';
+import { CompletedTasks } from '../done/component';
+//import { getRetrospects } from '../inProgress/api';
+
+type ActiveTab = 'inProgress' | 'done';
 
 const Navigation = () => {
-  const [activeTab, setActiveTab] = useState('inProgress');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('inProgress');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getRetrospects(2025);
-        console.log('Fetched data:', data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await getRetrospects(2025);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
   return (
-    <div className="p-5 space-y-5">
+    <div className="p-5 space-y-5 w-full">
       <FlexBox className="gap-2 w-full">
         <button
           onClick={() => setActiveTab('inProgress')}
@@ -38,8 +39,8 @@ const Navigation = () => {
           종료한 목표
         </button>
       </FlexBox>
-      <RoadMap />
       <div className="flex flex-col gap-4 mt-5">{activeTab === 'inProgress' && <InProgress />}</div>
+      <div className="flex flex-col gap-4 mt-5">{activeTab === 'done' && <CompletedTasks />}</div>
     </div>
   );
 };

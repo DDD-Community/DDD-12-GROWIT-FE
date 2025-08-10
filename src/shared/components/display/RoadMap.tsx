@@ -4,7 +4,7 @@ import { GoalProgressBar } from './GoalProgressBar';
 
 export const RoadMap = () => {
   return (
-    <div className="bg-black p-4 rounded-xl space-y-4">
+    <div className="bg-black pt-7 px-6 pb-9 rounded-xl space-y-4">
       <FlexBox className="gap-2">
         <Badge type={'default'} size={'md'} label="4주" />
         <div className="py-1 px-4 body-1-normal text-label-neutral bg-fill-normal rounded-xl">2025/7/1 ~ 2025/8/31</div>

@@ -1,5 +1,6 @@
 @theme {
-  --color-brand-green: rgba(53, 217, 66, 1) --color-primary-normal: #ffffff;
+  --color-brand-neon: rgba(53, 217, 66, 1);
+  --color-primary-normal: #ffffff;
   --color-primary-strong: hsl(0, 0%, 86%);
   --color-primary-heavy: rgba(255, 255, 255, 0.65);
   --color-static-white: #ffffff;
@@ -31,6 +32,8 @@
   --color-status-positive: #1ed45a;
   --color-status-cautionary: #ffa938;
   --color-status-negative: #ff6363;
+  --color-accent-orange: rgba(225, 123, 42, 1);
+  --color-accent-blue: rgba(47, 85, 199, 1);
   --color-accent-red-orange: #ff7b2e;
   --color-accent-lime: rgba(107, 224, 22, 1);
   --color-accent-cyan: #28d0ed;

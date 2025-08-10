@@ -10,6 +10,7 @@ import { RoadMap } from '@/shared/components/display/RoadMap';
 export const InProgress = () => {
   return (
     <>
+      <RoadMap />
       <Accordion
         renderTitle={() => (
           <FlexBox className="flex gap-4">
