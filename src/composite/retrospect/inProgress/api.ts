@@ -16,6 +16,19 @@ interface RetrospectResponse {
   goal: Retrospect;
 }
 
+interface Plan {
+  id: string;
+  weekOfMonth: number;
+  content: string;
+}
+
+export interface WeeklyRetrospectResponse {
+  id: string;
+  goalId: string;
+  plan: Plan;
+  content: string;
+}
+
 const mockRetrospects: RetrospectResponse[] = [
   {
     id: '1',
@@ -47,6 +60,17 @@ export const getRetrospects = async (year: number) => {
     return data;
   } catch (error) {
     console.error('Error fetching retrospects:', error);
+    throw error;
+  }
+};
+
+export const getWeeklyRetrospect = async (goalId: string) => {
+  try {
+    const response = await apiClient.get<WeeklyRetrospectResponse[]>(`/retrospects?goalId=${goalId}`);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error('Error fetching weekly retrospects:', error);
     throw error;
   }
 };
