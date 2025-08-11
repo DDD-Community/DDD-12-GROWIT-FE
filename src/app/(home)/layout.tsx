@@ -14,7 +14,7 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
     <div className="flex w-scree sm:h-screen max-sm:h-full max-sm:flex-col">
       <SideBar />
       <Header.Mobile />
-      <div className="flex flex-1 sm:flex-col overflow-hidden">{children}</div>
+      <div className="flex flex-1 sm:flex-col overflow-x-hidden">{children}</div>
     </div>
   );
 }
