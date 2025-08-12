@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Badge from '@/shared/components/display/Badge';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useCallback } from 'react';
@@ -11,8 +12,11 @@ interface CompletedTaskBoxProps {
   isCompleted: boolean;
   content: string;
   duration: Duration;
+  id?: string; // id prop 추가
 }
-export const CompletedTaskBox = ({ isCompleted, content, duration }: CompletedTaskBoxProps) => {
+export const CompletedTaskBox = ({ isCompleted, content, duration, id }: CompletedTaskBoxProps) => {
+  const router = useRouter();
+
   const getWeeksBetween = useCallback((startDate: string, endDate: string): number => {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -26,8 +30,17 @@ export const CompletedTaskBox = ({ isCompleted, content, duration }: CompletedTa
 
   const week = getWeeksBetween(duration.startDate, duration.endDate) - 1; // 시작 주는 제외
 
+  const handleCardClick = () => {
+    if (id) {
+      router.push(`/retrospect/${id}`);
+    }
+  };
+
   return (
-    <div className="md:w-[700px] bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg hover:outline-2 outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs">
+    <div
+      className="md:w-[700px] bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg hover:outline-2 outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs cursor-pointer transition-transform hover:scale-[1.02]"
+      onClick={handleCardClick}
+    >
       <div className="flex flex-col gap-4">
         <FlexBox className="gap-2">
           <Badge
