@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { getCompletedRetrospects, CompletedRetrospects } from './api';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { CompletedTaskBox } from './components/CompletedTaskBox';
 
 export const CompletedTasks = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<CompletedRetrospects[]>([]);
 
@@ -17,6 +19,11 @@ export const CompletedTasks = () => {
     setIsLoading(false);
   }, []);
 
+  // 회고 상세페이지로 이동하는 함수
+  const handleNavigateToRetrospect = (taskId: string) => {
+    router.push(`/retrospect/${taskId}`);
+  };
+
   return (
     <FlexBox direction="col" className="gap-4">
       {completedTasks.length > 0 && !isLoading ? (
@@ -27,6 +34,7 @@ export const CompletedTasks = () => {
             isCompleted={task.isCompleted}
             content={task.goal.name}
             duration={task.goal.duration}
+            onNavigation={() => handleNavigateToRetrospect(task.id)}
           />
         ))
       ) : (

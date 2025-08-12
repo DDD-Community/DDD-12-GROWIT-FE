@@ -8,37 +8,54 @@ interface Duration {
   startDate: string;
   endDate: string;
 }
+
 interface CompletedTaskBoxProps {
   isCompleted: boolean;
   content: string;
   duration: Duration;
-  id?: string; // id prop 추가
+  id?: string;
+  onNavigation?: () => void;
 }
-export const CompletedTaskBox = ({ isCompleted, content, duration, id }: CompletedTaskBoxProps) => {
+
+export const CompletedTaskBox = ({ isCompleted, content, duration, id, onNavigation }: CompletedTaskBoxProps) => {
   const router = useRouter();
 
   const getWeeksBetween = useCallback((startDate: string, endDate: string): number => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    // 밀리초 차이 계산
     const diffMs = end.getTime() - start.getTime();
-    // 1주일 = 7일 * 24시간 * 60분 * 60초 * 1000밀리초
     const weekMs = 7 * 24 * 60 * 60 * 1000;
-    // 올림 처리 → 중간에 걸친 주도 포함
     return Math.ceil(diffMs / weekMs);
   }, []);
 
-  const week = getWeeksBetween(duration.startDate, duration.endDate) - 1; // 시작 주는 제외
+  const getAnimationStyles = useCallback(() => {
+    if (onNavigation) {
+      return {
+        container: 'cursor-pointer transition-transform hover:scale-[1.02] hover:outline-2',
+        arrow: 'block',
+      };
+    }
+    return {
+      container: 'cursor-default',
+      arrow: 'hidden',
+    };
+  }, [onNavigation]);
+
+  const week = getWeeksBetween(duration.startDate, duration.endDate) - 1;
 
   const handleCardClick = () => {
-    if (id) {
+    if (onNavigation) {
+      onNavigation();
+    } else if (id) {
       router.push(`/retrospect/${id}`);
     }
   };
 
+  const animationStyles = getAnimationStyles();
+
   return (
     <div
-      className="md:w-[700px] bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg hover:outline-2 outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs cursor-pointer transition-transform hover:scale-[1.02]"
+      className={`w-full bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs ${animationStyles.container}`}
       onClick={handleCardClick}
     >
       <div className="flex flex-col gap-4">
@@ -68,7 +85,7 @@ export const CompletedTaskBox = ({ isCompleted, content, duration, id }: Complet
           {duration.startDate} ~ {duration.endDate}
         </p>
       </div>
-      <Image src="/chevron-right.svg" alt="right-arrow" width={24} height={24} className="cursor-pointer" />
+      <Image src="/chevron-right.svg" alt="right-arrow" width={24} height={24} className={`${animationStyles.arrow}`} />
     </div>
   );
 };
