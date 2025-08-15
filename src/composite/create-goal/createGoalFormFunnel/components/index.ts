@@ -1,3 +1,4 @@
-export { Step1BasicInfo } from './Step1BasicInfo';
-export { Step2MainGoal } from './Step2MainGoal';
-export { Step3WeeklyGoals } from './Step3WeeklyGoals';
+export { Step1GoalCategory } from './Step1GoalCategory';
+export { Step2GoalName } from './Step2GoalName';
+export { Step3Duration } from './Step3Duration';
+export { Step4Summary } from './Step4Summary';

@@ -3,20 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreateGoalFormElement } from '@/feature/goal';
-import { Step1BasicInfo, Step2MainGoal, Step3WeeklyGoals } from './components';
+import { Step1GoalCategory, Step2GoalName, Step3Duration, Step4Summary } from './components';
 import { FunnelHeader } from '@/shared/components/layout/FunnelHeader';
 
-interface Props {
-  confirmFooter: React.ReactNode;
-}
+type StepType = 'goal-category' | 'goal-name' | 'duration' | 'summary';
 
-type StepType = 'basic-info' | 'main-goal' | 'weekly-goals';
-
-export const CreateGoalFormFunnel = ({ confirmFooter }: Props) => {
+export const CreateGoalFormFunnel = () => {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState<StepType>('basic-info');
+  const [currentStep, setCurrentStep] = useState<StepType>('goal-category');
 
-  const steps: StepType[] = ['basic-info', 'main-goal', 'weekly-goals'];
+  const steps: StepType[] = ['goal-category', 'goal-name', 'duration', 'summary'];
   const currentStepIndex = steps.indexOf(currentStep) + 1;
   const totalSteps = steps.length;
 
@@ -47,17 +43,15 @@ export const CreateGoalFormFunnel = ({ confirmFooter }: Props) => {
             <div className="max-w-[868px] w-full mx-auto">
               <div className="max-w-[646px] w-full mx-auto">
                 <CreateGoalFormElement.FormContainer>
-                  {currentStep === 'basic-info' && <Step1BasicInfo onNext={() => handleNext('main-goal')} />}
-                  {currentStep === 'main-goal' && (
-                    <Step2MainGoal onNext={() => handleNext('weekly-goals')} onPrev={() => handleNext('basic-info')} />
-                  )}
-                  {currentStep === 'weekly-goals' && <Step3WeeklyGoals onPrev={() => handleNext('main-goal')} />}
+                  {currentStep === 'goal-category' && <Step1GoalCategory onNext={() => handleNext('goal-name')} />}
+                  {currentStep === 'goal-name' && <Step2GoalName onNext={() => handleNext('duration')} />}
+                  {currentStep === 'duration' && <Step3Duration onNext={() => handleNext('summary')} />}
+                  {currentStep === 'summary' && <Step4Summary />}
                 </CreateGoalFormElement.FormContainer>
               </div>
             </div>
           </div>
         </div>
-        {confirmFooter}
       </div>
     </CreateGoalFormElement.Provider>
   );
