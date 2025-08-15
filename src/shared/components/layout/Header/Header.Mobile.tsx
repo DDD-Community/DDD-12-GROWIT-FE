@@ -2,52 +2,36 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import { HEADER_CONFIG } from './header.config';
 
 export const HeaderMobile = () => {
   const pathname = usePathname();
-
-  // 홈 페이지에서는 헤더를 표시하지 않음
-  if (pathname === '/home') {
+  if (HEADER_CONFIG.hideHeaderPages.includes(pathname as any)) {
+    // << 여기 타입 고칠 것
     return null;
   }
 
-  // 홈 페이지에서는 뒤로가기 버튼 숨기기
-  const shouldShowBackButton = pathname !== '/home';
+  const shouldShowBackButton = !HEADER_CONFIG.hideBackButtonPages.includes(pathname as any); // << 여기 고칠 것
 
   const getPageTitle = () => {
-    switch (pathname) {
-      case '/home':
-        return '홈';
-      case '/mypage':
-        return '마이페이지';
-      case '/onboarding':
-        return '온보딩';
-      default:
-        return '';
-    }
+    return HEADER_CONFIG.pageTitles[pathname] || '';
   };
 
   return (
     <>
       <header className="sm:hidden fixed left-0 w-full flex items-center justify-between px-4 py-3 bg-[#1C1C1E] border-b-[1px] border-line-normal z-100">
-        {/* 왼쪽: 뒤로가기 버튼 */}
-        <div className="flex items-center gap-3 w-[40px] h-[40px]">{shouldShowBackButton && <BackButton />}</div>
-
-        {/* 중앙: 페이지 제목 */}
+        <div className="flex items-center gap-3 w-[40px] h-[40px]">{shouldShowBackButton && <HeaderBackButton />}</div>
         <div className="flex-1 text-center">
           <h1 className="text-base font-semibold text-white">{getPageTitle()}</h1>
         </div>
-
-        {/* 오른쪽: 로그아웃 버튼 */}
         <div className="flex items-center gap-3 w-[40px] h-[40px]"></div>
       </header>
-      {/* fixed 된 Header 의 높이를  */}
       <div className="h-[65px]" />
     </>
   );
 };
 
-const BackButton = () => {
+export const HeaderBackButton = () => {
   const router = useRouter();
 
   const handleBack = () => {

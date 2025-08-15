@@ -1,11 +1,10 @@
 'use client';
 
-import { CreateGoalFormElement } from '@/feature/goal';
-import SectionMessage from '@/shared/components/display/SectionMessage';
-// import Badge from '@/shared/components/display/Badge';
-import FlexBox from '@/shared/components/foundation/FlexBox';
-import Button from '@/shared/components/input/Button';
 import { useState } from 'react';
+import { CreateGoalFormElement } from '@/feature/goal';
+import Button from '@/shared/components/input/Button';
+import FlexBox from '@/shared/components/foundation/FlexBox';
+import SectionMessage from '@/shared/components/display/SectionMessage';
 
 interface Props {
   mobileHeader: React.ReactNode;
@@ -62,13 +61,6 @@ export const CreateGoalForm = ({ mobileHeader, confirmFooter }: Props) => {
                           className={`${selectedDuration === '12주' && 'bg-gray-100! text-gray-900!'}`}
                           onClick={e => handleButtonClick(e, '12주')}
                         />
-
-                        {/* <button className="bg-interaction-disable text-label-disable py-[10px] px-[18px] rounded-lg flex-1">
-                          8주
-                        </button>
-                        <button className="bg-interaction-disable text-label-disable py-[10px] px-[18px] rounded-lg flex-1">
-                          12주
-                        </button> */}
                       </FlexBox>
                     </div>
                     <p className="heading-2-bold text-white">시작 날짜</p>
