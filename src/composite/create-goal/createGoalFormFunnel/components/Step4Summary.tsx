@@ -16,7 +16,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return '-';
     const d = new Date(date);
-    return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][d.getDay()]})`;
   };
 
   const calculateDuration = () => {
@@ -24,39 +24,39 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
     const start = new Date(formValues.duration.startDate);
     const end = new Date(formValues.duration.endDate);
     const weeks = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7));
-    return `${weeks}주`;
+    return `<${weeks}주>`;
+  };
+
+  const formatDateRange = () => {
+    if (!formValues.duration.startDate || !formValues.duration.endDate) return '-';
+    const start = new Date(formValues.duration.startDate);
+    const end = new Date(formValues.duration.endDate);
+    return `${formatDate(start)} ~ ${formatDate(end)}`;
   };
 
   return (
     <div className="flex flex-col gap-8">
       <div>
         <GuideMessage status="excited" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
-        <div className="bg-gray-800 rounded-lg p-6 space-y-6">
-          <div className="border-b border-gray-700 pb-4">
-            <p className="caption-1-regular text-neutral-400 mb-2">카테고리</p>
-            <div className="flex items-center gap-2">
-              {selectedCategory && <span className="label-1-bold text-white">{selectedCategory.label}</span>}
+        <div className="bg-[#0F0F10] rounded-lg p-6 space-y-6">
+          <div>
+            <h3 className="body-1-bold text-white mb-4">{formValues.name || '-'}</h3>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center">
+              <span className="text-zinc-300 mr-3">기간</span>
+              <span className="text-[#3AEE49]">{calculateDuration()}</span>
             </div>
-          </div>
 
-          <div className="border-b border-gray-700 pb-4">
-            <p className="caption-1-regular text-neutral-400 mb-2">목표 이름</p>
-            <p className="body-1-regular text-white">{formValues.name || '-'}</p>
-          </div>
-
-          <div className="border-b border-gray-700 pb-4">
-            <p className="caption-1-regular text-neutral-400 mb-2">기간</p>
-            <p className="body-1-regular text-white">{calculateDuration()}</p>
-          </div>
-
-          <div className="flex gap-8">
-            <div className="flex-1">
-              <p className="caption-1-regular text-neutral-400 mb-2">시작일</p>
-              <p className="body-1-regular text-white">{formatDate(formValues.duration.startDate)}</p>
+            <div className="flex items-center">
+              <span className="text-zinc-300 mr-3">날짜</span>
+              <span className="text-white">{formatDateRange()}</span>
             </div>
-            <div className="flex-1">
-              <p className="caption-1-regular text-neutral-400 mb-2">종료일</p>
-              <p className="body-1-regular text-white">{formatDate(formValues.duration.endDate)}</p>
+
+            <div className="flex items-center">
+              <span className="text-zinc-300 mr-3">분야</span>
+              <span className="text-white">{selectedCategory?.label || '-'}</span>
             </div>
           </div>
         </div>
