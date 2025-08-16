@@ -5,27 +5,19 @@ import { useFormContext } from 'react-hook-form';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import Button from '@/shared/components/input/Button';
 import { GoalFormData } from '@/shared/type/form';
+import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 
 interface Step1GoalCategoryProps {
   onNext: () => void;
 }
 
-const GOAL_CATEGORIES = [
-  { id: 'study', label: '스터디' },
-  { id: 'career', label: '취업/이직' },
-  { id: 'routine', label: '루틴' },
-  { id: 'finance', label: '재테크' },
-  { id: 'sideproject', label: '사이드 프로젝트' },
-  { id: 'networking', label: '네트워킹' },
-];
-
 export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
-  const { setValue } = useFormContext<GoalFormData>();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { watch, setValue } = useFormContext<GoalFormData>();
+  const formValues = watch();
+  const selectedCategory = formValues.category;
 
   const handleCategorySelect = (e: React.MouseEvent<HTMLButtonElement>, categoryId: string) => {
     e.preventDefault();
-    setSelectedCategory(categoryId);
     setValue('category', categoryId);
   };
 

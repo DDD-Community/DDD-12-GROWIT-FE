@@ -2,23 +2,15 @@
 
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
+import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 
 interface Step4SummaryProps {}
-
-const GOAL_CATEGORIES = [
-  { id: 'health', label: '건강', icon: '💪' },
-  { id: 'study', label: '학습', icon: '📚' },
-  { id: 'career', label: '커리어', icon: '💼' },
-  { id: 'hobby', label: '취미', icon: '🎨' },
-  { id: 'relationship', label: '관계', icon: '🤝' },
-  { id: 'finance', label: '재정', icon: '💰' },
-];
 
 export const Step4Summary = ({}: Step4SummaryProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
   
-  const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === (formValues as any).category);
+  const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
   
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return '-';
@@ -52,10 +44,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
             <p className="caption-1-regular text-neutral-400 mb-2">카테고리</p>
             <div className="flex items-center gap-2">
               {selectedCategory && (
-                <>
-                  <span className="text-2xl">{selectedCategory.icon}</span>
-                  <span className="label-1-bold text-white">{selectedCategory.label}</span>
-                </>
+                <span className="label-1-bold text-white">{selectedCategory.label}</span>
               )}
             </div>
           </div>
