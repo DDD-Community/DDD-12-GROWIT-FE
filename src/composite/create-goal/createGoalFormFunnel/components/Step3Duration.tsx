@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { CreateGoalFormElement } from '@/feature/goal';
 import Button from '@/shared/components/input/Button';
@@ -14,13 +14,26 @@ interface Step3DurationProps {
 
 export const Step3Duration = ({ onNext }: Step3DurationProps) => {
   const [selectedDuration, setSelectedDuration] = useState<number>(4);
-  const { watch } = useFormContext<GoalFormData>();
+  const { watch, setValue, getValues } = useFormContext<GoalFormData>();
 
   const formValues = watch();
   const isStepValid = formValues.duration.startDate && formValues.duration.endDate;
 
+  const updatePlans = useCallback(
+    (weeks: number) => {
+      const currentPlans = getValues('plans') || [];
+      const newPlans = Array.from({ length: weeks }, (_, index) => ({
+        content: currentPlans[index]?.content || '',
+        weekOfMonth: index + 1,
+      }));
+      setValue('plans', newPlans);
+    },
+    [getValues, setValue]
+  );
+
   const handleDurationClick = (duration: number) => {
     setSelectedDuration(duration);
+    updatePlans(duration);
   };
 
   const handleNext = () => {
@@ -33,8 +46,8 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
     <div className="flex flex-col gap-8">
       <div>
         <GuideMessage text={`몇 주 동안 이 목표에\n도전해볼까?`} highlight={['몇 주 동안']} status="curious" />
-        <div className="mb-6">
-          <p className="label-1-bold text-white mb-3">기간</p>
+        <div className="mb-12">
+          <p className="label-1-bold text-white mb-3">기간 선택</p>
           <div className="flex gap-2">
             <Button
               size="lg"

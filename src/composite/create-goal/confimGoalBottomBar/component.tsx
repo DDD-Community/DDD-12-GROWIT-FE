@@ -12,19 +12,15 @@ import { useFetchPostCreateGoal } from './hook';
 export const ConfirmGoalBottomBar = () => {
   const router = useRouter();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const {
-    handleSubmit,
-    getValues,
-  } = useFormContext<GoalFormData>();
+  const { handleSubmit, getValues } = useFormContext<GoalFormData>();
   const { isSuccess, isError, isLoading, createGoal } = useFetchPostCreateGoal();
-  
+
   const formValues = getValues();
   const isFormValid = formValues.category && formValues.name && formValues.duration.startDate;
   const isButtonEnabled = !isLoading && (isFormValid || isError);
 
   const getButtonText = () => {
     if (isLoading) return '로딩중';
-    if (isError) return '다시 시도';
     return '목표 작성 완료';
   };
 
@@ -43,8 +39,7 @@ export const ConfirmGoalBottomBar = () => {
         text={getButtonText()}
         variant="brand"
         disabled={!isButtonEnabled}
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={e => {
           handleSubmit(createGoal)(e);
         }}
       />

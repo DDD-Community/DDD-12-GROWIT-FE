@@ -23,7 +23,8 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
     if (!formValues.duration.startDate || !formValues.duration.endDate) return '-';
     const start = new Date(formValues.duration.startDate);
     const end = new Date(formValues.duration.endDate);
-    const weeks = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7));
+    const days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const weeks = Math.ceil(days / 7);
     return `<${weeks}주>`;
   };
 
@@ -35,8 +36,8 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-8">
         <GuideMessage status="excited" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
         <div className="bg-[#0F0F10] rounded-lg p-6 space-y-6">
           <div>

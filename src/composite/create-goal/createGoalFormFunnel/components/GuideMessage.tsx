@@ -49,15 +49,27 @@ export const GuideMessage = ({ text, highlight, status = 'welcome' }: GuideMessa
   };
 
   return (
-    <div className="flex items-center gap-2 mb-6">
+    <div className="flex items-center gap-2 py-6">
       <div className="relative flex-shrink-0">
         {/* Mobile */}
         <div className="block sm:hidden">
-          <Image src={`/image/grorong-${status}-s.png`} alt="그로롱" width={100} height={100} className="object-contain" />
+          <Image
+            src={`/image/grorong-${status}-s.png`}
+            alt="그로롱"
+            width={100}
+            height={100}
+            className="object-contain"
+          />
         </div>
         {/* Desktop */}
         <div className="hidden sm:block">
-          <Image src={`/image/grorong-${status}-m.png`} alt="그로롱" width={120} height={120} className="object-contain" />
+          <Image
+            src={`/image/grorong-${status}-m.png`}
+            alt="그로롱"
+            width={120}
+            height={120}
+            className="object-contain"
+          />
         </div>
       </div>
 
