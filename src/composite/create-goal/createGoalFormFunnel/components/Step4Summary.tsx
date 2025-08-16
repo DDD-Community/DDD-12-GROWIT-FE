@@ -3,21 +3,22 @@
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
 import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
+import { GuideMessage } from './GuideMessage';
 
 interface Step4SummaryProps {}
 
 export const Step4Summary = ({}: Step4SummaryProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
-  
+
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
-  
+
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return '-';
     const d = new Date(date);
     return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
   };
-  
+
   const calculateDuration = () => {
     if (!formValues.duration.startDate || !formValues.duration.endDate) return '-';
     const start = new Date(formValues.duration.startDate);
@@ -26,42 +27,28 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
     return `${weeks}주`;
   };
 
-
   return (
     <div className="flex flex-col gap-8">
-      {/* 요약 정보 영역 */}
       <div>
-        <div className="flex flex-col gap-[8px] mb-[24px]">
-          <p className="heading-2-bold text-white">목표 설정 완료</p>
-          <p className="label-1-regular text-neutral-400">
-            설정하신 목표 내용을 확인해주세요.
-          </p>
-        </div>
-        
+        <GuideMessage status="excited" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
         <div className="bg-gray-800 rounded-lg p-6 space-y-6">
-          {/* 카테고리 */}
           <div className="border-b border-gray-700 pb-4">
             <p className="caption-1-regular text-neutral-400 mb-2">카테고리</p>
             <div className="flex items-center gap-2">
-              {selectedCategory && (
-                <span className="label-1-bold text-white">{selectedCategory.label}</span>
-              )}
+              {selectedCategory && <span className="label-1-bold text-white">{selectedCategory.label}</span>}
             </div>
           </div>
-          
-          {/* 목표 이름 */}
+
           <div className="border-b border-gray-700 pb-4">
             <p className="caption-1-regular text-neutral-400 mb-2">목표 이름</p>
             <p className="body-1-regular text-white">{formValues.name || '-'}</p>
           </div>
-          
-          {/* 기간 */}
+
           <div className="border-b border-gray-700 pb-4">
             <p className="caption-1-regular text-neutral-400 mb-2">기간</p>
             <p className="body-1-regular text-white">{calculateDuration()}</p>
           </div>
-          
-          {/* 시작일 & 종료일 */}
+
           <div className="flex gap-8">
             <div className="flex-1">
               <p className="caption-1-regular text-neutral-400 mb-2">시작일</p>
@@ -74,7 +61,6 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import Button from '@/shared/components/input/Button';
 import { GoalFormData } from '@/shared/type/form';
 import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
+import { GuideMessage } from './GuideMessage';
 
 interface Step1GoalCategoryProps {
   onNext: () => void;
@@ -31,11 +32,7 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <div className="flex flex-col gap-[8px] mb-[24px]">
-          <p className="heading-2-bold text-white">목표 카테고리</p>
-          <p className="label-1-regular text-neutral-400">어떤 분야의 목표를 달성하고 싶으신가요?</p>
-        </div>
-
+        <GuideMessage text="어떤 분야에 집중하고 싶어?" highlight={['분야']} status="curious" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           {GOAL_CATEGORIES.map(category => (
             <Button
