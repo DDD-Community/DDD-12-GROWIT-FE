@@ -1,48 +1,68 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
-import { ConfirmGoalDialogButton } from '@/feature/goal';
-import FlexBox from '@/shared/components/foundation/FlexBox';
-import { useFetchPostCreateGoal, useProgressPercentage } from './hook';
+import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
+import Button from '@/shared/components/input/Button';
+import { useFetchPostCreateGoal } from './hook';
 
 export const ConfirmGoalBottomBar = () => {
+  const router = useRouter();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const {
-    watch,
     handleSubmit,
-    formState: { isValid },
+    getValues,
   } = useFormContext<GoalFormData>();
-  const percentage = useProgressPercentage(watch);
   const { isSuccess, isError, isLoading, createGoal } = useFetchPostCreateGoal();
+  
+  const formValues = getValues();
+  const isFormValid = formValues.category && formValues.name && formValues.duration.startDate;
+  const isButtonEnabled = !isLoading && (isFormValid || isError);
+
+  const getButtonText = () => {
+    if (isLoading) return '로딩중';
+    if (isError) return '다시 시도';
+    return '목표 작성 완료';
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessDialog(false);
+    router.push('/home');
+  };
+
+  useEffect(() => {
+    if (isSuccess) setShowSuccessDialog(true);
+  }, [isSuccess]);
 
   return (
     <>
-      <div className="flex items-center fixed bottom-0 left-0 right-0 pt-[20px] bg-[#1B1C1E] border-t-[1px] border-line-normal max-sm:flex-col max-sm:gap-[20px] max-sm:px-[20px] max-sm:pb-[20px] sm:gap-[60px] sm:px-[40px] sm:pb-[16px] sm:left-[88px] sm:w-[calc(100%-88px)]">
-        <div className="flex flex-col gap-2 items-start w-full">
-          <FlexBox className="w-full justify-between">
-            <div className="body-1-medium text-primary-normal">
-              <span className="title-3-bold text-accent-violet">{percentage}%</span>
+      <FunnelNextButton
+        text={getButtonText()}
+        variant="brand"
+        disabled={!isButtonEnabled}
+        onClick={(e) => {
+          e.preventDefault();
+          handleSubmit(createGoal)(e);
+        }}
+      />
+
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md" showCloseButton={false}>
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mb-4">
+              <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-          </FlexBox>
-          <FlexBox className="relative w-full rounded-full h-2 bg-fill-normal">
-            <motion.div
-              className={`absolute h-full top-0 left-0 rounded-full bg-accent-fg-violet`}
-              initial={{ width: 0 }}
-              animate={{ width: `${percentage}%` }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-            />
-          </FlexBox>
-        </div>
-        <ConfirmGoalDialogButton
-          isLoading={isLoading}
-          isComplete={isValid}
-          isSuccess={isSuccess}
-          isError={isError}
-          onClick={handleSubmit(createGoal)}
-        />
-      </div>
-      <div className="sm:h-[100px] max-sm:h-[200px]" />
+            <DialogTitle className="text-center">축하한다냥 🐱</DialogTitle>
+            <DialogDescription className="text-center">드디어 4주간 여정의 도착지가 정해졌다냥!</DialogDescription>
+          </DialogHeader>
+          <Button size={'ml'} text={'4주 여정 시작하기'} onClick={handleSuccessConfirm} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

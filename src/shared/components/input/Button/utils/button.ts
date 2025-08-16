@@ -1,6 +1,6 @@
 // 버튼 스타일을 가져오기 위한 유틸 함수
 
-export type ButtonVariants = 'primary' | 'secondary' | 'tertiary' | 'accent';
+export type ButtonVariants = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'brand';
 export type ButtonLayouts = 'normal' | 'icon-left' | 'icon-right' | 'icon-only';
 export type ButtonSize = 'sm' | 'ml' | 'lg' | 'xl';
 
@@ -36,6 +36,11 @@ const ButtonVariantMap = {
     enabled:
       'bg-accent-violet hover:bg-accent-violet/50 focus:outline-4 focus:outline-solid focus:outline-line-normal text-primary-normal hover:text-primary-normal/50',
     disabled: 'bg-interaction-disable text-label-disable border border-line-alternative cursor-not-allowed',
+  },
+  brand: {
+    enabled:
+      'bg-[var(--color-brand-neon)] hover:bg-[var(--color-brand-neon)]/80 focus:outline-4 focus:outline-solid focus:outline-[#3AEE49]/30 text-black font-bold',
+    disabled: 'bg-[var(--color-brand-neon)]/30 text-black/50 cursor-not-allowed',
   },
 } as const satisfies Record<
   ButtonVariants,

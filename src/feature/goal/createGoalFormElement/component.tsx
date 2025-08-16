@@ -1,10 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import FlexBox from '@/shared/components/foundation/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { InputField } from '@/shared/components/input/InputField';
@@ -22,7 +20,7 @@ const defaultValues: GoalFormData = {
   category: '',
   name: '',
   duration: { startDate: '', endDate: '' },
-  beforeAfter: { asIs: '', toBe: '' },
+  toBe: '목표 달성',  // 기본값 설정
   plans: [
     { content: '', weekOfMonth: 1 },
     { content: '', weekOfMonth: 2 },
@@ -135,27 +133,17 @@ const MainGoal = () => {
     formState: { errors },
   } = useFormContext<GoalFormData>();
   return (
-    <FlexBox className="mt-6 gap-4">
+    <div className="mt-6">
       <TextArea
-        label="목표 설정 (AS IS)"
-        placeholder="현재 상태를 간단히 입력해주세요."
-        className="flex-1"
-        isError={!!errors.beforeAfter?.asIs}
-        errorMessage={errors.beforeAfter?.asIs?.message}
-        {...register('beforeAfter.asIs', { required: '현재 상태를 입력해주세요.' })}
+        label="목표 설정"
+        placeholder="이루고 싶은 목표를 간단히 입력해주세요."
+        className="w-full"
+        isError={!!errors.toBe}
+        errorMessage={errors.toBe?.message}
+        {...register('toBe', { required: '목표를 입력해주세요.' })}
         maxLength={30}
       />
-      <Image src="/icon/arrow-right.svg" alt="Dashboard Preview" width={24} height={24} />
-      <TextArea
-        label="목표 설정 (TO BE)"
-        placeholder="4주 후 이루고 싶은 목표를 간단히 입력해주세요."
-        className="flex-1"
-        isError={!!errors.beforeAfter?.toBe}
-        errorMessage={errors.beforeAfter?.toBe?.message}
-        {...register('beforeAfter.toBe', { required: '4주 후 목표를 입력해주세요.' })}
-        maxLength={30}
-      />
-    </FlexBox>
+    </div>
   );
 };
 
@@ -174,7 +162,7 @@ const WeekendGoal = () => {
           isError={!!errors.plans?.[idx]?.content}
           errorMessage={errors.plans?.[idx]?.content?.message}
           maxLength={30}
-          {...register(`plans.${idx}.content`, { required: '주간 목표를 입력해주세요.' })}
+          {...register(`plans.${idx}.content`)}
         />
       ))}
     </div>

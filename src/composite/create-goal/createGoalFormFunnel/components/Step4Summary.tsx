@@ -4,13 +4,13 @@ import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
 import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
+import { ConfirmGoalBottomBar } from '../../confimGoalBottomBar/component';
 
 interface Step4SummaryProps {}
 
 export const Step4Summary = ({}: Step4SummaryProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
-
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
 
   const formatDate = (date: string | Date | undefined) => {
@@ -46,7 +46,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
           <div className="space-y-3">
             <div className="flex items-center">
               <span className="text-zinc-300 mr-3">기간</span>
-              <span className="text-[#3AEE49]">{calculateDuration()}</span>
+              <span className="text-[var(--color-brand-neon)]">{calculateDuration()}</span>
             </div>
 
             <div className="flex items-center">
@@ -60,6 +60,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
             </div>
           </div>
         </div>
+        <ConfirmGoalBottomBar />
       </div>
     </div>
   );
