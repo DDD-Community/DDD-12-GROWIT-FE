@@ -13,13 +13,13 @@ interface Step3DurationProps {
 }
 
 export const Step3Duration = ({ onNext }: Step3DurationProps) => {
-  const [selectedDuration, setSelectedDuration] = useState('4주');
+  const [selectedDuration, setSelectedDuration] = useState<number>(4);
   const { watch } = useFormContext<GoalFormData>();
 
   const formValues = watch();
   const isStepValid = formValues.duration.startDate && formValues.duration.endDate;
 
-  const handleDurationClick = (duration: string) => {
+  const handleDurationClick = (duration: number) => {
     setSelectedDuration(duration);
   };
 
@@ -41,32 +41,32 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
               text="4주"
               variant="secondary"
               type="button"
-              className={`flex-1 ${selectedDuration === '4주' && 'bg-gray-100! text-gray-900!'}`}
-              onClick={() => handleDurationClick('4주')}
+              className={`flex-1 ${selectedDuration === 4 && 'bg-gray-100! text-gray-900!'}`}
+              onClick={() => handleDurationClick(4)}
             />
             <Button
               size="lg"
               text="8주"
               variant="secondary"
               type="button"
-              className={`flex-1 ${selectedDuration === '8주' && 'bg-gray-100! text-gray-900!'}`}
-              onClick={() => handleDurationClick('8주')}
+              className={`flex-1 ${selectedDuration === 8 && 'bg-gray-100! text-gray-900!'}`}
+              onClick={() => handleDurationClick(8)}
             />
             <Button
               size="lg"
               text="12주"
               variant="secondary"
               type="button"
-              className={`flex-1 ${selectedDuration === '12주' && 'bg-gray-100! text-gray-900!'}`}
-              onClick={() => handleDurationClick('12주')}
+              className={`flex-1 ${selectedDuration === 12 && 'bg-gray-100! text-gray-900!'}`}
+              onClick={() => handleDurationClick(12)}
             />
           </div>
         </div>
         <div>
           <p className="label-1-bold text-white mb-3">시작 날짜</p>
-          <CreateGoalFormElement.DurationDate />
+          <CreateGoalFormElement.DurationDate weeks={selectedDuration} />
           <p className="caption-1-regular text-neutral-400 mt-2">
-            * 월요일 고정, 시작일 기준 {selectedDuration} 후 자동 설정
+            * 월요일 고정, 시작일 기준 {selectedDuration}주 후 자동 설정
           </p>
         </div>
       </div>

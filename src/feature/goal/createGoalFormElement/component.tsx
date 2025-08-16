@@ -6,7 +6,14 @@ import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-fo
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { InputField } from '@/shared/components/input/InputField';
-import { formatDateToYYYYMMDD, getEndDate, getNextMonday, parseDateFromYYYYMMDD } from './utils';
+import {
+  formatDateToYYYYMMDD,
+  getEndDate,
+  getEndDateByWeeks,
+  getNextMonday,
+  getTodayDate,
+  parseDateFromYYYYMMDD,
+} from './utils';
 
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
@@ -16,11 +23,15 @@ interface CreateGoalFormContainerProps {
   children: React.ReactNode;
 }
 
+interface CreateGoalFormDurationProps {
+  weeks: number;
+}
+
 const defaultValues: GoalFormData = {
   category: '',
   name: '',
   duration: { startDate: '', endDate: '' },
-  toBe: '목표 달성',  // 기본값 설정
+  toBe: '목표 달성', // 기본값 설정
   plans: [
     { content: '', weekOfMonth: 1 },
     { content: '', weekOfMonth: 2 },
@@ -42,17 +53,17 @@ const FormContainer = ({ children }: CreateGoalFormContainerProps) => {
   return <form>{children}</form>;
 };
 
-const DurationDate = () => {
+const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
   const { control, watch, setValue } = useFormContext<GoalFormData>();
   const startDate = watch('duration.startDate');
 
   useEffect(() => {
-    if (startDate) {
+    if (startDate && weeks) {
       const startDateObj = parseDateFromYYYYMMDD(startDate);
-      const endDateObj = getEndDate(startDateObj);
+      const endDateObj = getEndDateByWeeks(startDateObj, weeks);
       setValue('duration.endDate', formatDateToYYYYMMDD(endDateObj));
     }
-  }, [startDate, setValue]);
+  }, [startDate, weeks, setValue]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -74,8 +85,7 @@ const DurationDate = () => {
               onDateSelect={date => {
                 field.onChange(formatDateToYYYYMMDD(date));
               }}
-              allowedDaysOfWeek={[1]} // 월요일만 선택 가능 (1: 월요일)
-              minDate={getNextMonday()} // 오늘 이후의 다음 월요일부터 선택 가능
+              minDate={getTodayDate()} // 오늘 이후의 다음 월요일부터 선택 가능
             />
           )}
         />
@@ -97,7 +107,7 @@ const DurationDate = () => {
               <span>
                 종료 예정일{' '}
                 <span className="text-[#3AEE49]">
-                  {formatDateToYYYYMMDD(getEndDate(parseDateFromYYYYMMDD(startDate)))}
+                  {formatDateToYYYYMMDD(getEndDateByWeeks(parseDateFromYYYYMMDD(startDate), weeks))}
                 </span>
               </span>
             ) : (
