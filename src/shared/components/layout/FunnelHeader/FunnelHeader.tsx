@@ -10,7 +10,7 @@ interface FunnelHeaderProps {
   title?: string;
 }
 
-export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 생성하기' }: FunnelHeaderProps) => {
+export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 추가' }: FunnelHeaderProps) => {
   const router = useRouter();
 
   const handleBack = () => {

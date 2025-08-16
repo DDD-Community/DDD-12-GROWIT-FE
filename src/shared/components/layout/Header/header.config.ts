@@ -5,6 +5,6 @@ export const HEADER_CONFIG = {
     '/home': '홈',
     '/mypage': '마이페이지',
     '/onboarding': '온보딩',
-    '/home/create-goal': '목표 생성하기',
+    '/home/create-goal': '목표 추가',
   } as Record<string, string>,
 } as const;

@@ -86,10 +86,17 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
           <p className="label-1-bold text-white mb-3">시작 날짜</p>
           <CreateGoalFormElement.DurationDate weeks={selectedDuration} />
           <p className="mt-2 text-[14px] text-neutral-400 flex items-center gap-1">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
-              <circle cx="8" cy="8" r="7" stroke="#9CA3AF" strokeWidth="1.5"/>
-              <path d="M8 5V8" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round"/>
-              <circle cx="8" cy="11" r="0.5" fill="#9CA3AF"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="flex-shrink-0"
+            >
+              <circle cx="8" cy="8" r="7" stroke="#9CA3AF" strokeWidth="1.5" />
+              <path d="M8 5V8" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" />
+              <circle cx="8" cy="11" r="0.5" fill="#9CA3AF" />
             </svg>
             <span>목표 시작일과 상관없이, 목표 종료일은 일요일에 끝나요.</span>
           </p>

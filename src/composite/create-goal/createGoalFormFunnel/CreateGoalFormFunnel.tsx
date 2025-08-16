@@ -32,13 +32,8 @@ export const CreateGoalFormFunnel = () => {
   return (
     <CreateGoalFormElement.Provider>
       <div className="flex flex-1 flex-col">
-        <FunnelHeader
-          currentStep={currentStepIndex}
-          totalSteps={totalSteps}
-          onBack={handleBack}
-          title="목표 생성하기"
-        />
-        <div className="flex flex-1 flex-col sm:px-[20px] overflow-y-auto">
+        <FunnelHeader currentStep={currentStepIndex} totalSteps={totalSteps} onBack={handleBack} title="목표 추가" />
+        <div className="flex flex-col sm:px-[20px]">
           <div className="flex flex-col p-[20px]">
             <div className="max-w-[868px] w-full mx-auto">
               <div className="max-w-[646px] w-full mx-auto">
