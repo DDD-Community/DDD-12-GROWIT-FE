@@ -23,6 +23,7 @@ export const CompletedTasks = () => {
         completedTasks.map(task => (
           <CompletedTaskBox
             key={task.id}
+            id={task.id}
             isCompleted={task.isCompleted}
             content={task.goal.name}
             duration={task.goal.duration}

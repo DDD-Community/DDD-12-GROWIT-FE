@@ -28,7 +28,7 @@ export const RetrospectBox = ({
       className={`flex items-stretch gap-4 w-full bg-elevated-normal py-5 px-6 pb-8 rounded-lg mt-4 shadow-xs ${isThisWeek ? 'border border-white/50' : ''}`}
     >
       {/* 왼쪽 아이콘 + 선 */}
-      <div className="flex flex-col items-center gap-4 h-full">
+      <div className="flex flex-col items-center gap-4">
         {!isLocked && isCompleted ? (
           <Image src="/checked.svg" alt="checked" width={32} height={32} />
         ) : (
@@ -37,7 +37,7 @@ export const RetrospectBox = ({
           </div>
         )}
 
-        <div className={`bg-line-normal w-0.5 ${isLocked ? 'h-[100px]' : 'h-[200px]'}`}></div>
+        <div className={`bg-line-normal w-0.5`}></div>
       </div>
 
       {/* 오른쪽 내용 */}
