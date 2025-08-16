@@ -69,7 +69,7 @@ export function GoalProvider({ children }: GoalProviderProps) {
 
   useEffect(() => {
     fetchGoal();
-  }, [fetchGoal]);
+  }, []);
 
   useEffect(() => {
     if (goalList.length > 0 && !selectedGoalId) {
