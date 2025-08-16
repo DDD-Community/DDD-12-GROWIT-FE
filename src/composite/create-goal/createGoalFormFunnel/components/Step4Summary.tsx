@@ -12,6 +12,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
+  const duration = formValues.duration;
 
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return '-';
@@ -19,19 +20,10 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][d.getDay()]})`;
   };
 
-  const calculateDuration = () => {
-    if (!formValues.duration.startDate || !formValues.duration.endDate) return '-';
-    const start = new Date(formValues.duration.startDate);
-    const end = new Date(formValues.duration.endDate);
-    const days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const weeks = Math.ceil(days / 7);
-    return `<${weeks}주>`;
-  };
-
   const formatDateRange = () => {
-    if (!formValues.duration.startDate || !formValues.duration.endDate) return '-';
-    const start = new Date(formValues.duration.startDate);
-    const end = new Date(formValues.duration.endDate);
+    if (!formValues.durationDate.startDate || !formValues.durationDate.endDate) return '-';
+    const start = new Date(formValues.durationDate.startDate);
+    const end = new Date(formValues.durationDate.endDate);
     return `${formatDate(start)} ~ ${formatDate(end)}`;
   };
 
@@ -47,7 +39,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
           <div className="space-y-3">
             <div className="flex items-center">
               <span className="text-zinc-300 mr-3">기간</span>
-              <span className="text-[var(--color-brand-neon)]">{calculateDuration()}</span>
+              <span className="text-[var(--color-brand-neon)]">{`<${duration}주>`}</span>
             </div>
 
             <div className="flex items-center">

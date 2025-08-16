@@ -1,7 +1,8 @@
 export interface GoalFormData {
   category: string;
   name: string;
-  duration: {
+  duration: number; // 4, 8, 12 중 선택된 주차
+  durationDate: {
     startDate: string;
     endDate: string;
   };

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { CreateGoalFormElement } from '@/feature/goal';
+import { getToday } from '@/feature/goal/createGoalFormElement/utils';
 import Button from '@/shared/components/input/Button';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
@@ -13,11 +14,17 @@ interface Step3DurationProps {
 }
 
 export const Step3Duration = ({ onNext }: Step3DurationProps) => {
-  const [selectedDuration, setSelectedDuration] = useState<number>(4);
   const { watch, setValue, getValues } = useFormContext<GoalFormData>();
 
   const formValues = watch();
-  const isStepValid = formValues.duration.startDate && formValues.duration.endDate;
+  const selectedDuration = formValues.duration || 4;
+  const isStepValid = formValues.durationDate.startDate && formValues.durationDate.endDate;
+
+  useEffect(() => {
+    if (!formValues.durationDate.startDate) {
+      setValue('durationDate.startDate', getToday());
+    }
+  }, []);
 
   const updatePlans = useCallback(
     (weeks: number) => {
@@ -32,7 +39,7 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
   );
 
   const handleDurationClick = (duration: number) => {
-    setSelectedDuration(duration);
+    setValue('duration', duration);
     updatePlans(duration);
   };
 
@@ -78,8 +85,13 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
         <div>
           <p className="label-1-bold text-white mb-3">시작 날짜</p>
           <CreateGoalFormElement.DurationDate weeks={selectedDuration} />
-          <p className="caption-1-regular text-neutral-400 mt-2">
-            * 월요일 고정, 시작일 기준 {selectedDuration}주 후 자동 설정
+          <p className="mt-2 text-[14px] text-neutral-400 flex items-center gap-1">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
+              <circle cx="8" cy="8" r="7" stroke="#9CA3AF" strokeWidth="1.5"/>
+              <path d="M8 5V8" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round"/>
+              <circle cx="8" cy="11" r="0.5" fill="#9CA3AF"/>
+            </svg>
+            <span>목표 시작일과 상관없이, 목표 종료일은 일요일에 끝나요.</span>
           </p>
         </div>
       </div>

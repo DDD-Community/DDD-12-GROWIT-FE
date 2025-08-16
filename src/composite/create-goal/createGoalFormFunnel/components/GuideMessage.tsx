@@ -74,7 +74,7 @@ export const GuideMessage = ({ text, highlight, status = 'welcome' }: GuideMessa
       </div>
 
       <div className="inline-block">
-        <div className="bg-[#2C2C2E] rounded-2xl px-4 py-3 shadow-md inline-block">
+        <div className="bg-[#2C2C2E] rounded-t-2xl rounded-r-2xl rounded-bl-none rounded-br-2xl px-4 py-3 shadow-md inline-block">
           <p className="text-white text-[16px] leading-relaxed">{getHighlightedText()}</p>
         </div>
       </div>

@@ -40,7 +40,7 @@ export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
         <GuideMessage text="어떤 목표를 가지고 있어?" highlight={['목표']} status="curious" />
         <CreateGoalFormElement.Name />
         {selectedCategory && CATEGORY_EXAMPLES[selectedCategory] && (
-          <p className="mt-2 caption-1-regular text-neutral-400">ex. {CATEGORY_EXAMPLES[selectedCategory]}</p>
+          <p className="mt-2 text-[14px] text-neutral-400">ex. {CATEGORY_EXAMPLES[selectedCategory]}</p>
         )}
       </div>
       <FunnelNextButton disabled={!isStepValid} onClick={handleNext} />

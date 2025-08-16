@@ -31,17 +31,12 @@ const DatePicker = ({
 
   // 날짜 포맷팅 함수
   const formatDate = (date: Date) => {
-    // const year = String(date.getFullYear()).slice(2);
-    // const month = String(date.getMonth() + 1).padStart(2, '0');
-    // const day = String(date.getDate()).padStart(2, '0');
-    // return `${year}-${month}-${day}`;
-    return date
-      .toLocaleDateString('ko-KR', {
-        year: '2-digit',
-        month: '2-digit',
-        day: '2-digit',
-      })
-      .slice(0, 10);
+    const year = String(date.getFullYear()).slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayOfWeek = dayNames[date.getDay()];
+    return `${year}-${month}-${day} (${dayOfWeek})`;
   };
 
   // 패널 외부 클릭 시 닫기

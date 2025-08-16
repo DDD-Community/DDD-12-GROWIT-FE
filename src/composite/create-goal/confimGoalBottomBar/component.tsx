@@ -16,7 +16,7 @@ export const ConfirmGoalBottomBar = () => {
   const { isSuccess, isError, isLoading, createGoal } = useFetchPostCreateGoal();
 
   const formValues = getValues();
-  const isFormValid = formValues.category && formValues.name && formValues.duration.startDate;
+  const isFormValid = formValues.category && formValues.name && formValues.durationDate.startDate;
   const isButtonEnabled = !isLoading && (isFormValid || isError);
 
   const getButtonText = () => {

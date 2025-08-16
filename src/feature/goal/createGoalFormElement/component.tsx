@@ -30,7 +30,8 @@ interface CreateGoalFormDurationProps {
 const defaultValues: GoalFormData = {
   category: '',
   name: '',
-  duration: { startDate: '', endDate: '' },
+  duration: 4, // 기본 4주 선택
+  durationDate: { startDate: '', endDate: '' },
   toBe: '목표 달성', // 기본값 설정
   plans: [
     { content: '', weekOfMonth: 1 },
@@ -55,13 +56,13 @@ const FormContainer = ({ children }: CreateGoalFormContainerProps) => {
 
 const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
   const { control, watch, setValue } = useFormContext<GoalFormData>();
-  const startDate = watch('duration.startDate');
+  const startDate = watch('durationDate.startDate');
 
   useEffect(() => {
     if (startDate && weeks) {
       const startDateObj = parseDateFromYYYYMMDD(startDate);
       const endDateObj = getEndDateByWeeks(startDateObj, weeks);
-      setValue('duration.endDate', formatDateToYYYYMMDD(endDateObj));
+      setValue('durationDate.endDate', formatDateToYYYYMMDD(endDateObj));
     }
   }, [startDate, weeks, setValue]);
 
@@ -70,7 +71,7 @@ const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
       <div className="w-full">
         <Controller
           control={control}
-          name="duration.startDate"
+          name="durationDate.startDate"
           rules={{
             required: '시작일을 선택해주세요.',
             validate: value => {
@@ -107,7 +108,13 @@ const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
               <span>
                 종료 예정일{' '}
                 <span className="text-[#3AEE49]">
-                  {formatDateToYYYYMMDD(getEndDateByWeeks(parseDateFromYYYYMMDD(startDate), weeks))}
+                  {(() => {
+                    const endDate = getEndDateByWeeks(parseDateFromYYYYMMDD(startDate), weeks);
+                    const dateStr = formatDateToYYYYMMDD(endDate);
+                    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                    const dayOfWeek = dayNames[endDate.getDay()];
+                    return `${dateStr} (${dayOfWeek})`;
+                  })()}
                 </span>
               </span>
             ) : (
