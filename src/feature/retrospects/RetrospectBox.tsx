@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Badge from './Badge';
-import FlexBox from '../foundation/FlexBox';
+import Badge from '../../shared/components/display/Badge';
+import FlexBox from '../../shared/components/foundation/FlexBox';
 
 interface RetrospectSummaryBoxProps {
   title: string;

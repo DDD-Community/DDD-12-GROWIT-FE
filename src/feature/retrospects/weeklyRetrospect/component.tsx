@@ -1,6 +1,6 @@
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
-import { WeeklyRetrospectBox } from '@/shared/components/display/WeeklyRetrospectBox';
+import { WeeklyRetrospectBox } from '@/feature/retrospects/WeeklyRetrospectBox';
 import { Plan, Retrospect } from '@/composite/retrospect/type';
 
 interface WeeklyRetrospectProps {

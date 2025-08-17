@@ -5,7 +5,7 @@ import Button from '@/shared/components/input/Button';
 import { useRouter } from 'next/navigation';
 import { RetrospectLocked } from '@/composite/retrospect/inProgress/components/RetrospectLocked';
 
-import { RetrospectSummaryBox, RetrospectBox } from '@/shared/components/display/RetrospectBox';
+import { RetrospectSummaryBox, RetrospectBox } from '@/feature/retrospects/RetrospectBox';
 
 export const EntireRetrospect = ({ isSummaryVisible }: { isSummaryVisible: boolean }) => {
   return (

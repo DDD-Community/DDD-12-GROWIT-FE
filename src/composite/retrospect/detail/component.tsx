@@ -2,11 +2,8 @@
 
 import { useParams } from 'next/navigation';
 import { CompletedTaskBox } from '../done/components/CompletedTaskBox';
-import { Duration, Plan, Retrospect } from '../type';
-import { Accordion } from '@/shared/components/layout/Accordion';
-import Image from 'next/image';
+import { Duration } from '../type';
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import { RetrospectOpen } from './components/RetrospectOpen';
 import { useWeekylRetrospect } from './hook';
 //import { useEntireRetrospect } from './hook';
 import { WeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/component';

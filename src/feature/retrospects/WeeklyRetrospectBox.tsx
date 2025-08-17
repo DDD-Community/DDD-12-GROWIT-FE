@@ -4,7 +4,7 @@ import Badge from '@/shared/components/display/Badge';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { useState } from 'react';
-import { useToast } from '../feedBack/toast';
+import { useToast } from '../../shared/components/feedBack/toast';
 
 interface LockedWeeklyRetrospect {
   week: number;
