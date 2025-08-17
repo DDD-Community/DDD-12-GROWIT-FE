@@ -5,12 +5,13 @@ import { usePlanSelector } from '@/model/todo/planSelector';
 import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
 import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
 import { useGoalSelector } from '@/model/goal/context';
-import { WeeklyGoalProgress } from '@/feature/goal';
 import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { useDesktopWeekendToggle } from './hooks';
 import { Goal } from '@/shared/type/goal';
+import { AddPlanModal } from '@/feature/plan/addPlanModal';
+import { AddRetroSpectButton } from '@/feature/retrospects';
 
 export const WeeklyPlanBoard = () => {
   const { selectedGoal } = useGoalSelector();
@@ -99,17 +100,15 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
   return (
     <>
       <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
-        <div className="flex items-center flex-1 max-sm:flex-col max-sm:gap-2 max-sm:items-start justify-between pb-4 border-b-[1px] border-b-[#70737C52]">
-          <div className="flex flex-1 items-end gap-2 sm:flex-row-reverse sm:justify-between max-sm:w-full max-sm:justify-between max-sm:flex-col">
-            <PlanSelect />
-            <WeeklyGoalProgress
-              goal={goal}
-              selectedPlanContent={selectedPlanContent}
-              selectedPlanId={selectedPlanId}
-              selectedWeekIndex={selectedWeekIndex}
-            />
-          </div>
+        <div className="flex flex-1 justify-between items-end gap-2">
+          <PlanSelect />
+          <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
         </div>
+        <AddPlanModal
+          selectedPlanContent={selectedPlanContent}
+          selectedPlanIndex={selectedWeekIndex}
+          onSubmit={() => {}}
+        />
         {todoList && (
           <WeeklyTodoList
             weeklyTodos={todoList}

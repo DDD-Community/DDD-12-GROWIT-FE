@@ -1,11 +1,13 @@
-import { useState, useCallback, useEffect } from 'react';
-import Image from 'next/image';
+'use client';
+
+import { useState, useCallback } from 'react';
 import Button from '@/shared/components/input/Button';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { ToolTip } from '@/shared/components/display/ToolTip';
-import { Goal } from '@/shared/type/goal';
 import { useFetchAddRetrospect, useFetchRetrospects, useFetchEditRetrospect } from './hooks';
+import { Goal } from '@/shared/type/goal';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 interface AddRetroSpectButtonProps {
   goal: Goal;
@@ -18,27 +20,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
-
-  const { addRetrospect, isLoading: isAddingRetrospect } = useFetchAddRetrospect({
-    onSuccess: () => {
-      handleModalClose();
-      fetchRetrospects();
-    },
-    onError: err => {
-      // 에러 핸들링 (필요시)
-      console.error('회고 등록 실패:', err);
-    },
-  });
-
-  const { editRetrospect, isLoading: isEditingRetrospect } = useFetchEditRetrospect({
-    onSuccess: () => {
-      handleModalClose();
-      fetchRetrospects();
-    },
-    onError: err => {
-      console.error('회고 수정 실패:', err);
-    },
-  });
+  const { showToast } = useToast();
 
   const {
     retrospect,
@@ -56,13 +38,37 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     }
   );
 
+  console.log('retrospect>>', retrospect);
+
+  const { addRetrospect, isLoading: isAddingRetrospect } = useFetchAddRetrospect({
+    onSuccess: () => {
+      handleModalClose();
+      fetchRetrospects();
+    },
+    onError: err => {
+      showToast('회고 등록에 성공했습니다.', 'success');
+      console.error('회고 등록 실패:', err);
+    },
+  });
+
+  const { editRetrospect, isLoading: isEditingRetrospect } = useFetchEditRetrospect({
+    onSuccess: () => {
+      handleModalClose();
+      fetchRetrospects();
+    },
+    onError: err => {
+      showToast('회고 수정에 실패했습니다.', 'error');
+      console.error('회고 수정 실패:', err);
+    },
+  });
+
   const handleSubmit = useCallback(async () => {
     if (!isFormValid() || isAddingRetrospect || isEditingRetrospect) return;
 
     try {
       if (isEditMode && retrospect) {
         await editRetrospect({
-          retrospectId: retrospect.id,
+          retrospectId: retrospect?.retrospect?.id,
           planId: selectedPlanId,
           content,
         });
@@ -90,7 +96,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     setIsModalOpen(true);
     if (retrospect) {
       setIsEditMode(true);
-      setContent(retrospect.content);
+      setContent(retrospect?.retrospect?.content);
       setContentError('');
     } else {
       setIsEditMode(false);
@@ -117,7 +123,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   }, []);
 
   const isFormValid = useCallback(() => {
-    return content.length >= 10 && !contentError;
+    return content?.length >= 10 && !contentError;
   }, [content, contentError]);
 
   const modalTitle = isEditMode ? `${currentWeekIndex}주차 회고 편집` : `${currentWeekIndex}주차 회고 작성`;
@@ -129,10 +135,21 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
       <div className="relative min-w-[44px]">
         <Button
           variant="tertiary"
-          size="lg"
-          layout="icon-only"
+          text="주간 회고"
+          size="sm"
+          layout="icon-left"
           onClick={() => showModal()}
-          icon={<Image src={'/icon/growit-comment.svg'} alt={'회고록 작성 아이콘'} width={20} height={20} />}
+          icon={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M9.99935 4.16663V15.8333M4.16602 9.99996H15.8327"
+                stroke="white"
+                strokeWidth="1.67"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          }
         />
         {!isLoadingRetrospects && !retrospect && (
           <>
