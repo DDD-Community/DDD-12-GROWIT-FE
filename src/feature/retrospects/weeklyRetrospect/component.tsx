@@ -1,6 +1,6 @@
-import { RetrospectBox } from '@/composite/retrospect/inProgress/components/RetrospectBox';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
+import { WeeklyRetrospectBox } from '@/shared/components/display/WeeklyRetrospectBox';
 import { Plan, Retrospect } from '@/composite/retrospect/type';
 
 interface WeeklyRetrospectProps {
@@ -23,7 +23,7 @@ export const WeeklyRetrospect = ({ weeklyRetrospect, plans }: WeeklyRetrospectPr
           const currentPlan = plans[idx];
 
           return (
-            <RetrospectBox
+            <WeeklyRetrospectBox
               key={currentPlan.id}
               week={currentPlan.weekOfMonth}
               isLocked={currentRetrospect === null}
