@@ -4,8 +4,7 @@ import { useParams } from 'next/navigation';
 import { CompletedTaskBox } from '../done/components/CompletedTaskBox';
 import { Duration } from '../type';
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import { useWeekylRetrospect } from './hook';
-//import { useEntireRetrospect } from './hook';
+import { useWeeklyRetrospect } from '../hooks';
 import { WeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/component';
 import { EntireRetrospect } from '@/feature/retrospects/entireRetrospect/component';
 
@@ -16,7 +15,7 @@ const dummyDuration: Duration = {
 
 export const CompletedDetailRetrospect = () => {
   const params = useParams<{ id: string }>();
-  const { weeklyRetrospect, plans } = useWeekylRetrospect(params.id);
+  const { weeklyRetrospect, plans, updateWeeklyRetrospect } = useWeeklyRetrospect(params.id);
   //const { todoCompletedRate, analysis, content } = useEntireRetrospect(params.id);
 
   return (
@@ -25,7 +24,11 @@ export const CompletedDetailRetrospect = () => {
       {/** 전체 회고 (AI) */}
       <EntireRetrospect isSummaryVisible={true} />
       {/** 주간 회고 */}
-      <WeeklyRetrospect weeklyRetrospect={weeklyRetrospect} plans={plans} />
+      <WeeklyRetrospect
+        weeklyRetrospect={weeklyRetrospect}
+        plans={plans}
+        updateWeeklyRetrospect={updateWeeklyRetrospect}
+      />
     </FlexBox>
   );
 };

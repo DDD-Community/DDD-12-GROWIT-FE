@@ -6,8 +6,13 @@ import { Plan, Retrospect } from '@/composite/retrospect/type';
 interface WeeklyRetrospectProps {
   weeklyRetrospect: (Retrospect | null)[];
   plans: Plan[];
+  updateWeeklyRetrospect: (
+    e: React.FormEvent<HTMLFormElement>,
+    weeklyRetrospectId: string,
+    newRetrospect: string
+  ) => Promise<void>;
 }
-export const WeeklyRetrospect = ({ weeklyRetrospect, plans }: WeeklyRetrospectProps) => {
+export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospect }: WeeklyRetrospectProps) => {
   const totalWeekCount = plans.length;
   return (
     <>
@@ -25,12 +30,14 @@ export const WeeklyRetrospect = ({ weeklyRetrospect, plans }: WeeklyRetrospectPr
           return (
             <WeeklyRetrospectBox
               key={currentPlan.id}
+              id={currentRetrospect?.id ? currentRetrospect.id : null}
               week={currentPlan.weekOfMonth}
               isLocked={currentRetrospect === null}
               isCompleted={currentRetrospect !== null && currentRetrospect.content.length > 0}
               isThisWeek={currentPlan.isCurrentWeek}
               weeklyGoal={currentPlan.content}
               content={currentRetrospect ? currentRetrospect.content : ''}
+              updateWeeklyRetrospect={updateWeeklyRetrospect}
             />
           );
         })}

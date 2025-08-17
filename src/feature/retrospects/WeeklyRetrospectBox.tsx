@@ -5,6 +5,7 @@ import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { useState } from 'react';
 import { useToast } from '../../shared/components/feedBack/toast';
+import { putWeeklyRetrospect } from './weeklyRetrospect/api';
 
 interface LockedWeeklyRetrospect {
   week: number;
@@ -13,29 +14,43 @@ interface LockedWeeklyRetrospect {
 }
 
 interface WeeklyRetrospectBoxProps extends LockedWeeklyRetrospect {
+  id: string | null;
   isLocked: boolean;
   isCompleted: boolean;
   content: string;
-  onSubmit?: () => void;
+  updateWeeklyRetrospect: (
+    e: React.FormEvent<HTMLFormElement>,
+    weeklyRetrospectId: string,
+    newRetrospect: string
+  ) => Promise<void>;
 }
 
 export const WeeklyRetrospectBox = ({
+  id,
   week,
   isLocked,
   isCompleted,
   isThisWeek = false,
   weeklyGoal,
   content,
-  onSubmit,
+  updateWeeklyRetrospect,
 }: WeeklyRetrospectBoxProps) => {
   const [isEditable, setIsEditable] = useState(false);
+  const [weeklyRetrospect, setWeeklyRetrospect] = useState(content);
   const { showToast } = useToast();
 
   if (isLocked) return <LockedWeeklyRetrospectBox week={week} isThisWeek={isThisWeek} weeklyGoal={weeklyGoal} />;
 
-  const handleEditRetrospect = () => {
-    if (onSubmit) onSubmit();
-    else showToast('회고 수정에 실패했습니다', 'error', 1000);
+  const handleUpdateRetrospect = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      if (id) {
+        await updateWeeklyRetrospect(e, id, weeklyRetrospect);
+        showToast('주간 회고를 수정했습니다', 'success', 1000);
+      } else showToast('해당 주차의 주간 회고가 존재하지 않습니다', 'error');
+    } catch (error) {
+      showToast('주간 회고 수정에 실패했습니다' + error, 'error', 1000);
+      console.error(error);
+    }
     setIsEditable(false);
   };
   return (
@@ -74,17 +89,18 @@ export const WeeklyRetrospectBox = ({
         {isCompleted && !isEditable ? (
           <p className="body-1-normal text-label-neutral">{content}</p>
         ) : (
-          <div className="flex flex-col gap-4 w-full">
+          <form className="flex flex-col gap-4 w-full" onSubmit={handleUpdateRetrospect}>
             <TextArea
               placeholder="회고 내용을 작성해주세요."
               className="min-h-[100px]"
-              content={content}
+              value={weeklyRetrospect}
+              onChange={e => setWeeklyRetrospect(e.target.value)}
               onClick={e => e.preventDefault()}
             />
             <FlexBox className="ml-auto w-[72px]">
-              <Button size="sm" text="완료" variant="tertiary" onClick={handleEditRetrospect} />
+              <Button size="sm" text="완료" variant="tertiary" />
             </FlexBox>
-          </div>
+          </form>
         )}
 
         {!isEditable && (

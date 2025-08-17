@@ -24,13 +24,14 @@ export const RetrospectSummaryBox = ({ title, content }: RetrospectSummaryBoxPro
 
 interface RetrospectBoxProps {
   title: string;
+  renderLeftSide: () => React.ReactNode;
   renderContent: () => React.ReactNode;
 }
 
-export const RetrospectBox = ({ title, renderContent }: RetrospectBoxProps) => {
+export const RetrospectBox = ({ title, renderLeftSide, renderContent }: RetrospectBoxProps) => {
   return (
     <div className="flex items-start gap-4 pt-6">
-      <div className="w-[72px] h-[64px]" />
+      {renderLeftSide()}
       <div className="flex flex-col gap-4 w-full bg-elevated-normal py-5 px-6 pb-8 rounded-lg">
         <p className="headline-1-bold text-label-normal">{title}</p>
         {renderContent()}
