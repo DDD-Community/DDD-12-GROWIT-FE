@@ -14,7 +14,7 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { getWeekStartDate, getAllWeekDates, getDateString, isToday } from '@/model/todo/selectedDay/utils';
+import { getDateString, isToday } from '@/model/todo/selectedDay/utils';
 import EditTodoModal from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import DeleteTodoModal from './components/DeleteTodoModal';
@@ -53,21 +53,20 @@ export const WeeklyTodoList = ({
   onWeekChange,
   onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
-  const { selectedDay } = useSelectedDayState();
-  const { setSelectedDay } = useSelectedDayActions();
+  const { selectedDay, weekDates, selectedDate } = useSelectedDayState();
+  const { setSelectedDayWithDate, resetToToday, updateWeekDates } = useSelectedDayActions();
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
-  const weekStart = getWeekStartDate(goal.duration.startDate, currentWeekIndex - 1);
-  const days = getAllWeekDates(weekStart); // 모바일에서는 평일과 주말 모두 포함
   const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
 
+  // Update week dates when goal or week changes
   useEffect(() => {
+    updateWeekDates(goal.duration.startDate, currentWeekIndex);
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
-  }, [goal.id, currentWeekIndex]);
+  }, [goal.id, goal.duration.startDate, currentWeekIndex, updateWeekDates]);
 
-  const { resetToToday } = useSelectedDayActions();
   useEffect(() => {
     resetToToday();
   }, [currentWeekIndex, resetToToday]);
@@ -103,15 +102,14 @@ export const WeeklyTodoList = ({
       />
 
       <div className="grid grid-cols-7 gap-2 mb-[20px]">
-        {days.map((day, index) => {
+        {weekDates.map((day, index) => {
           const isSelected = selectedDay === day.key;
           const isTodayDate = isToday(day.date);
           const goalStartDate = new Date(goal.duration.startDate);
           const goalEndDate = new Date(goal.duration.endDate);
-          const currentDayDate = new Date(day.date);
 
-          const isBeforeStart = currentDayDate < goalStartDate;
-          const isAfterEnd = currentDayDate > goalEndDate;
+          const isBeforeStart = day.date < goalStartDate;
+          const isAfterEnd = day.date > goalEndDate;
           const isDisabled = isBeforeStart || isAfterEnd;
 
           const tooltipMessage = isBeforeStart ? '아직 목표가 시작되지 않은 날이에요.' : '목표가 종료된 이후예요.';
@@ -126,7 +124,7 @@ export const WeeklyTodoList = ({
           return (
             <div key={day.key} className="relative group">
               <button
-                onClick={() => !isDisabled && setSelectedDay(day.key)}
+                onClick={() => !isDisabled && setSelectedDayWithDate(day.key, day.date)}
                 disabled={isDisabled}
                 className={cn(
                   'relative flex flex-col items-center justify-center gap-[4px] w-full',
@@ -169,6 +167,7 @@ export const WeeklyTodoList = ({
         <AddTodoModal
           goal={goal}
           selectedPlanId={selectedPlanId}
+          selectedDate={selectedDate}
           onSuccessAddTodo={() => refreshTodoList?.()}
           onWeekChange={onWeekChange}
           onToggleWeekend={onToggleWeekend}
