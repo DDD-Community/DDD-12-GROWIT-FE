@@ -2,15 +2,15 @@ import Image from 'next/image';
 import React from 'react';
 
 export interface GoalProgressProps {
-  totalSteps: 4 | 8 | 12;
+  totalSteps: number;
   currentStep: number;
 }
 
 export const GoalProgressBar = ({ totalSteps, currentStep }: GoalProgressProps) => {
-  const progressPercent = (currentStep / (totalSteps - 1)) * 100;
+  const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
 
   const calculateStep = (index: number, currentStep: number, totalSteps: number) => {
-    const isCurrentOrCompleted = index <= currentStep;
+    const isCurrentOrCompleted = index < currentStep;
 
     if (isCurrentOrCompleted) {
       // 현재 주차이거나 완료된 주차
@@ -33,7 +33,7 @@ export const GoalProgressBar = ({ totalSteps, currentStep }: GoalProgressProps) 
         {/* 백그라운드 프로그래스 바 */}
         <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
           <div
-            className="h-full  bg-gradient-to-r from-brand-neon to-accent-blue rounded-full"
+            className="h-full bg-gradient-to-r from-brand-neon to-accent-blue rounded-full"
             style={{ width: `${Math.max(0, progressPercent + 1)}%` }}
           />
         </div>
@@ -49,7 +49,7 @@ export const GoalProgressBar = ({ totalSteps, currentStep }: GoalProgressProps) 
             style={{ left: `${(index / (totalSteps - 1)) * 100}%` }}
           />
         ))}
-        {currentStep === totalSteps - 1 ? (
+        {currentStep === totalSteps ? (
           <Image
             src="/final-gradient.svg"
             alt="last-step"

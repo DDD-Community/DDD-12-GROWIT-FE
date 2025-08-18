@@ -1,72 +1,37 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { HttpResponse, http } from 'msw';
+import { Duration, Retrospect, Plan } from '../type';
 
-interface Retrospect {
-  id: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
+interface InprogressRetrospectResponse {
+  data: {
+    id: string;
+    userId: string;
+    name: string;
+    duration: Duration;
+    toBe: string;
+    plans: Plan[];
+  }[];
 }
-
-interface RetrospectResponse {
-  id: string;
-  isCompleted: boolean;
-  goal: Retrospect;
-}
-
-interface Plan {
-  id: string;
-  weekOfMonth: number;
-  content: string;
-}
-
 export interface WeeklyRetrospectResponse {
-  id: string;
-  goalId: string;
-  plan: Plan;
-  content: string;
+  data: {
+    plan: Plan;
+    retrospect: Retrospect;
+  }[];
 }
 
-const mockRetrospects: RetrospectResponse[] = [
-  {
-    id: '1',
-    isCompleted: false,
-    goal: {
-      id: 'goal1',
-      name: '그로잇 서비스 출시',
-      duration: {
-        startDate: '2025-07-01',
-        endDate: '2025-08-31',
-      },
-    },
-  },
-];
-
-export const mockRetrospectHandler = http.get('https://api.grow-it.me/goal-retrospects', () => {
-  return HttpResponse.json(mockRetrospects, {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-});
-
-export const getRetrospects = async (year: number) => {
+export const getProgressRetrospect = async () => {
   try {
-    const response = await apiClient.get<RetrospectResponse>(`/goal-retrospects?year=${year}`);
+    const response = await apiClient.get<InprogressRetrospectResponse>('/goals?status=PROGRESS');
     const data = response.data;
     return data;
   } catch (error) {
-    console.error('Error fetching retrospects:', error);
+    console.log('진행중인 목표 조회 과정 중 오류가 발생했습니다', error);
     throw error;
   }
 };
 
-export const getWeeklyRetrospect = async (goalId: string) => {
+export const getWeeklyRetrospectByGoalId = async (goalId: string) => {
   try {
-    const response = await apiClient.get<WeeklyRetrospectResponse[]>(`/retrospects?goalId=${goalId}`);
+    const response = await apiClient.get<WeeklyRetrospectResponse>(`/retrospects?goalId=${goalId}`);
     const data = response.data;
     return data;
   } catch (error) {

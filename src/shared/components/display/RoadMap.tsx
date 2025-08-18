@@ -3,7 +3,7 @@ import FlexBox from '../foundation/FlexBox';
 import { GoalProgressBar } from './GoalProgressBar';
 
 interface RoadMapProps {
-  totalSteps: 4 | 8 | 12;
+  totalSteps: number;
   currentStep: number;
   duration: {
     startDate: string;

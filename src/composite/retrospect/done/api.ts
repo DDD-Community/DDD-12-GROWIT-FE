@@ -1,24 +1,14 @@
 import { apiClient } from '@/shared/lib/apiClient';
+import { CompletedGoals } from './type';
 
-interface Goal {
-  id: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-export interface CompletedRetrospects {
-  id: string;
-  isCompleted: boolean;
-  goal: Goal;
+interface CompletedGoalsResponse {
+  data: CompletedGoals[];
 }
 
 export const getCompletedRetrospects = async (year: number) => {
   try {
-    const response = await apiClient.get<CompletedRetrospects[]>(`/goal-retrospects?year=${year}`);
-    return response.data;
+    const response = await apiClient.get<CompletedGoalsResponse>(`/goal-retrospects?year=${year}`);
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching completed retrospects:', error);
     throw error;

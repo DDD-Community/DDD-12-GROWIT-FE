@@ -18,6 +18,7 @@
   --color-label-button-disable: rgba(55, 56, 60, 0.16);
   --color-normal: #1b1c1e;
   --color-normal-alternative: #0f0f10;
+  --color-normal-assistive: rgba(33, 34, 37, 1);
   --color-elevated-normal: #212225;
   --color-elevated-alternative: #141415;
   --color-elevated-assistive: rgba(46, 47, 51, 1);
