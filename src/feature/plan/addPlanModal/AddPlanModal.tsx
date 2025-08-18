@@ -6,6 +6,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { InputField } from '@/shared/components/input/InputField';
 import Button from '@/shared/components/input/Button';
 import { useFetchEditPlan } from './hooks';
+import { TextArea } from '@/shared/components/input/TextArea';
 
 interface AddPlanModalProps {
   onSuccessAddPlan: () => void;
@@ -95,11 +96,11 @@ export const AddPlanModal = ({
       <Modal
         open={open}
         onClose={handleCancel}
-        title="새 계획 추가"
+        title="주차 목표"
         renderContent={() => (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 min-w-[300px] md:min-w-[500px]">
             <div>
-              <InputField
+              <TextArea
                 label=""
                 placeholder="ex. 책 100페이지 읽기"
                 isError={Boolean(errors.description)}
