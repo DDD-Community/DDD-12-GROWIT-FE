@@ -32,7 +32,7 @@ export const CompletedDetailRetrospect = () => {
       <FlexBox direction="col" className="gap-5 p-4">
         <CompletedTaskBox id={''} isCompleted={false} content={'그로잇 서비스 출시'} duration={dummyDuration} />
         {/** 전체 회고 (AI) */}
-        <EntireRetrospect isSummaryVisible={true} />
+        <EntireRetrospect goalId={params.id} isSummaryVisible={true} />
         {/** 주간 회고 */}
         <WeeklyRetrospect
           weeklyRetrospect={weeklyRetrospect}

@@ -39,6 +39,7 @@ export const WeeklyRetrospectBox = ({
   if (isLocked) return <LockedWeeklyRetrospectBox week={week} isThisWeek={isThisWeek} weeklyGoal={weeklyGoal} />;
 
   const handleUpdateRetrospect = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (id) {
       updateWeeklyRetrospect(e, id, weeklyRetrospect);
     }
@@ -94,7 +95,7 @@ export const WeeklyRetrospectBox = ({
           </form>
         )}
 
-        {!isEditable && (
+        {isCompleted && !isEditable && (
           <button
             onClick={() => setIsEditable(true)}
             className="absolute bottom-4 right-4 p-2 rounded-2xl w-[36px] bg-label-button-neutral hover:bg-gray-600 border border-line-normal cursor-pointer"
@@ -109,9 +110,7 @@ export const WeeklyRetrospectBox = ({
 
 export const LockedWeeklyRetrospectBox = ({ week, isThisWeek = false, weeklyGoal }: LockedWeeklyRetrospect) => {
   return (
-    <div
-      className={`flex gap-3 flex-1 w-full bg-elevated-normal p-5 rounded-lg mt-4 shadow-xs ${isThisWeek ? 'border border-white/50' : ''}`}
-    >
+    <div className={`flex gap-3 flex-1 w-full bg-elevated-normal p-5 rounded-lg mt-4 shadow-xs`}>
       {/* 왼쪽 아이콘 + 선 */}
       <div className="flex flex-col items-center gap-4">
         <div className="heading-2-bold border border-label-normal text-label-normal py-1 px-3 rounded-full">{week}</div>

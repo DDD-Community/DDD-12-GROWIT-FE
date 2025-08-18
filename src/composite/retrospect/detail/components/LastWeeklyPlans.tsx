@@ -3,15 +3,16 @@
 import { CircularProgress } from '@/shared/components/display/CircluarProgress';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import Button from '@/shared/components/input/Button';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Checkbox from '@/shared/components/input/Checkbox';
 
 const week = ['월', '화', '수', '목', '금', '토', '일'];
 export const LastWeeklyPlans = () => {
+  const router = useRouter();
   return (
     <>
       <FlexBox className="w-full justify-center pb-4">
-        <Link href="/retrospect">
+        <button onClick={() => router.back()}>
           <svg
             width="12"
             height="12"
@@ -28,7 +29,7 @@ export const LastWeeklyPlans = () => {
               strokeLinejoin="round"
             />
           </svg>
-        </Link>
+        </button>
         <h1 className="title-3-bold text-label-normal px-4 py-4 md:p-5">지난 주간 플랜</h1>
       </FlexBox>
 
