@@ -105,9 +105,11 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
           <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
         </div>
         <AddPlanModal
+          goalId={goal.id}
+          planId={selectedPlanId}
           selectedPlanContent={selectedPlanContent}
           selectedPlanIndex={selectedWeekIndex}
-          onSubmit={() => {}}
+          onSuccessAddPlan={handleRefreshTodoList}
         />
         {todoList && (
           <WeeklyTodoList
