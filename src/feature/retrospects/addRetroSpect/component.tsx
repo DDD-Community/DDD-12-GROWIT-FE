@@ -38,8 +38,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     }
   );
 
-  console.log('retrospect>>', retrospect);
-
   const { addRetrospect, isLoading: isAddingRetrospect } = useFetchAddRetrospect({
     onSuccess: () => {
       handleModalClose();

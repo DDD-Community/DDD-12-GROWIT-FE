@@ -14,17 +14,21 @@ import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AddRetroSpectButton } from '@/feature/retrospects';
 
 export const WeeklyPlanBoard = () => {
-  const { selectedGoal } = useGoalSelector();
+  const { selectedGoal, fetchGoal } = useGoalSelector();
   if (!selectedGoal) return null;
-  return <WeeklyPlanBoardInner goal={selectedGoal} />;
+  return <WeeklyPlanBoardInner goal={selectedGoal} fetchGoal={fetchGoal} />;
 };
 
-const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
+const WeeklyPlanBoardInner = ({ goal, fetchGoal }: { goal: Goal; fetchGoal: () => void }) => {
   const { todoList } = useTodoBoardState();
   const { toggleWeekend } = useDesktopWeekendToggle();
   const { refetchTodayList } = useTodayTodoListActions();
   const { fetchWeeklyTodos, toggleTodoStatus } = useTodoBoardActions();
   const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
+
+  const handleRefreshGoal = useCallback(() => {
+    fetchGoal();
+  }, [fetchGoal]);
 
   const handleRefreshTodoList = useCallback(() => {
     if (goal?.id && selectedPlanId) {
@@ -109,7 +113,7 @@ const WeeklyPlanBoardInner = ({ goal }: { goal: Goal }) => {
           planId={selectedPlanId}
           selectedPlanContent={selectedPlanContent}
           selectedPlanIndex={selectedWeekIndex}
-          onSuccessAddPlan={handleRefreshTodoList}
+          onSuccessAddPlan={handleRefreshGoal}
         />
         {todoList && (
           <WeeklyTodoList

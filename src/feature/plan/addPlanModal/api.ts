@@ -11,7 +11,7 @@ interface UpdatePlanResponse extends CommonResponse<string> {}
 
 export async function putUpdatePlan(request: UpdatePlanRequest) {
   const { goalId, planId, content } = request;
-  const { data } = await apiClient.put<UpdatePlanResponse>(`/me/updatePlan?goalId=${goalId}&planId=${planId}`, {
+  const { data } = await apiClient.put<UpdatePlanResponse>(`/goals/me/updatePlan?goalId=${goalId}&planId=${planId}`, {
     content,
   });
   return data.data;

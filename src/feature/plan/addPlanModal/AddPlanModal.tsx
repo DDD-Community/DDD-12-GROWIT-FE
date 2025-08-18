@@ -37,7 +37,7 @@ export const AddPlanModal = ({
   } = useForm<PlanFormData>({
     mode: 'onChange',
     defaultValues: {
-      description: selectedPlanContent || '',
+      description: '',
     },
   });
 
@@ -66,7 +66,10 @@ export const AddPlanModal = ({
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          reset({ description: selectedPlanContent || '' });
+          setOpen(true);
+        }}
         className="flex items-center justify-between w-full p-4 bg-elevated-normal rounded-lg hover:bg-elevated-alternative transition-colors duration-200 border border-line-normal"
       >
         <div className="flex flex-1 flex-col min-w-0">
@@ -119,7 +122,7 @@ export const AddPlanModal = ({
         )}
         renderFooter={() => (
           <Button
-            text={'목표 추가'}
+            text={'완료'}
             size="xl"
             onClick={handleSubmit(onSubmit)}
             disabled={!watchDescription?.trim() || loading}
