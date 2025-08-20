@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { patchTodoStatus, postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { AxiosError } from 'axios';
@@ -72,10 +72,11 @@ interface ExtendedGoal {
 export function useAddTodoForm(
   goal: ExtendedGoal,
   selectedPlanId: string,
+  selectedDate: Date | null,
   onWeekChange?: (weekOfMonth: number) => void,
   onToggleWeekend?: (showWeekend: boolean) => void
 ) {
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date | undefined>(selectedDate || undefined);
   const [content, setContent] = useState('');
   const [contentError, setContentError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,6 +86,13 @@ export function useAddTodoForm(
   // Goal의 시작일과 종료일을 Date 객체로 변환
   const startDate = new Date(goal.duration.startDate);
   const endDate = new Date(goal.duration.endDate);
+
+  // Update date when selectedDate prop changes
+  useEffect(() => {
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  }, [selectedDate]);
 
   // 날짜 선택 핸들러
   const handleDateSelect = useCallback((selectedDate: Date) => {
@@ -135,10 +143,13 @@ export function useAddTodoForm(
         content,
       });
 
-      // 성공 시 상태 초기화
-      setDate(undefined);
+      // 성공 시 content만 초기화, date는 selectedDate 유지
       setContent('');
       setContentError(null);
+      // Keep the date as selectedDate for next todo
+      if (selectedDate) {
+        setDate(selectedDate);
+      }
 
       showToast('투두가 성공적으로 추가되었습니다.', 'success');
 
@@ -165,12 +176,12 @@ export function useAddTodoForm(
     }
   }, [date, content, addTodo, goal.id, selectedPlanId, showToast, onWeekChange, onToggleWeekend]);
 
-  // 폼 초기화
+  // 폼 초기화 - selectedDate가 있으면 그 값으로, 없으면 undefined로 초기화
   const resetForm = useCallback(() => {
-    setDate(undefined);
+    setDate(selectedDate || undefined);
     setContent('');
     setContentError(null);
-  }, []);
+  }, [selectedDate]);
 
   // 폼 유효성 검사
   const isFormValid = useCallback(() => {

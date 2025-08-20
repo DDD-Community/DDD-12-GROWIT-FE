@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
+import { BooleanOptional } from 'qs';
 
 interface AddRetrospectRequest {
   goalId: string;
@@ -24,17 +25,20 @@ interface PutRetrospectRequest {
 
 interface AddRetrospectResponse extends CommonResponse<{ id: string }> {}
 
-interface GetRetrospectResponse
-  extends CommonResponse<{
-    id: string;
-    goalId: string;
-    plan: {
-      id: string;
-      weekOfMonth: number;
-      content: string;
-    };
+export interface GetRetroSpectDto {
+  plan: {
     content: string;
-  }> {}
+    id: string;
+    isCurrentWeek: boolean;
+    weekOfMonth: number;
+  };
+  retrospect: {
+    content: string;
+    id: string;
+  };
+}
+
+interface GetRetrospectResponse extends CommonResponse<GetRetroSpectDto[]> {}
 
 export async function postAddRetrospect(req: AddRetrospectRequest) {
   const { data } = await apiClient.post<AddRetrospectResponse, AddRetrospectRequest>('/retrospects', req);
