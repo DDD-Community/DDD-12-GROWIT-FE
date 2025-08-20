@@ -12,7 +12,7 @@ export interface GoalRetrospect {
   isCompleted: boolean; // 회고 생성은 했지만 회고 내용을 작성 안함 (true일때)
 }
 
-export interface CompletedGoals {
+export interface CompletedGoal {
   goal: Goal;
   goalRetrospect: GoalRetrospect;
 }

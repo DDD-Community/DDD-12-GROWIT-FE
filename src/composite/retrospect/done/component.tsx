@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { getCompletedRetrospects } from './api';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { CompletedTaskBox } from './components/CompletedTaskBox';
-import { CompletedGoals } from './type';
+import { CompletedGoal } from './type';
 
 export const CompletedTasks = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [completedItems, setCompletedItems] = useState<CompletedGoals[]>([]);
+  const [completedItems, setCompletedItems] = useState<CompletedGoal[]>([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,6 +31,7 @@ export const CompletedTasks = () => {
             <CompletedTaskBox
               key={item.goal.id}
               id={item.goal.id}
+              completedGoal={currentItem}
               isCompleted={isCompleted}
               content={item.goal.name}
               duration={item.goal.duration}

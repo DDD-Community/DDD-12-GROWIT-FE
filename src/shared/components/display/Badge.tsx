@@ -23,7 +23,7 @@ const Badge = ({
   className,
 }: BadgeProps) => {
   const baseClass = clsx(
-    `inline-flex items-center gap-2 label-1-normal ${color} ${textColor} ${className}`,
+    `inline-flex items-center gap-2 label-1-normal whitespace-nowrap ${color} ${textColor} ${className}`,
     type === 'icon-only'
       ? 'rounded-full p-2'
       : size === 'sm'

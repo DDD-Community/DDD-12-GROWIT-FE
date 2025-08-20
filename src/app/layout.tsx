@@ -3,6 +3,7 @@ import { startMSWServer } from '@/mocks/server';
 import localFont from 'next/font/local';
 import MSWClientProvider from '@/mocks/mswClientProvider';
 import './globals.css';
+import { BottomNavigation } from '@/shared/components/layout/BottomNavigation';
 import { ToastProvider } from '@/shared/components/feedBack/toast';
 
 /** 루트 레이아웃 컴포넌트는 서버 컴포넌트이니 서버용 MSW 초기화 코드는 여기 맨위에서 실행하도록 했습니다 */
@@ -34,10 +35,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${pretendard.variable} font-pretendard pretendard bg-[#1C1C1E]`}>
+      <body className={`${pretendard.variable} font-pretendard pretendard bg-[#1C1C1E] h-[calc(100vh-80px)]`}>
         <MSWClientProvider>
           <ToastProvider>{children}</ToastProvider>
         </MSWClientProvider>
+        <BottomNavigation />
       </body>
     </html>
   );

@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Plan, Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 export const useWeeklyRetrospect = (id: string) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -38,8 +40,12 @@ export const useWeeklyRetrospect = (id: string) => {
   ) => {
     e.preventDefault();
     try {
-      await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
-      if (id) fetchWeeklyRetrosepct();
+      const response = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
+      if ('message' in response) {
+        showToast(response.message, 'error');
+      } else {
+        if (id) fetchWeeklyRetrosepct();
+      }
     } catch (error) {
       console.error(error);
       throw error;

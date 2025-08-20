@@ -35,11 +35,11 @@ export const EditProfile = () => {
       <div className="flex flex-col md:flex-row md:items-center w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
         <FlexBox className="gap-4">
           <Image
-            src={'/growit-cat.png'}
-            alt={'growit-cat'}
-            width={100}
-            height={100}
-            className="border-[2px] min-w-[100px] h-[100px] border-line-normal rounded-[200px]"
+            src={'/Avatar.png'}
+            alt={'my-avatar'}
+            width={64}
+            height={64}
+            className="border-[2px] w-[64px] h-[64px] md:w-[100px] md:h-[100px] border-line-normal rounded-[200px]"
           />
           <div className="flex flex-col gap-2">
             <h2 className="heading-2-bold">{profile.userName}</h2>

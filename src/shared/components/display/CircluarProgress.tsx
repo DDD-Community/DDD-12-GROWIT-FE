@@ -7,7 +7,7 @@ interface CircularProgressProps {
   dayOfWeek: string;
 }
 
-export const CircularProgress = ({ progress, size = 50, strokeWidth = 4, dayOfWeek }: CircularProgressProps) => {
+export const CircularProgress = ({ progress, size = 40, strokeWidth = 4, dayOfWeek }: CircularProgressProps) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
