@@ -1,7 +1,7 @@
 'use client';
 
 import { Goal } from '@/shared/type/goal';
-import { calculateCurrentWeek } from './utils';
+import { calculateCurrentWeek } from '../utils';
 import Image from 'next/image';
 import { ToolTip } from '@/shared/components/display/ToolTip';
 
@@ -72,8 +72,11 @@ export const WeeklyGoalBannerDesktop = ({ goal }: WeeklyGoalBannerProps) => {
 
       {/* 진행률 바 */}
       <div className="mt-2 relative">
-        <div className="h-[6px] w-full bg-[#2A2B31] rounded-full overflow-hidden">
-          <div className={`h-[6px] bg-gradient-to-r ${colorTheme.progress}`} style={{ width: `${progressPercent}%` }} />
+        <div className="h-[6px] my-[12px] w-full bg-[#2A2B31] rounded-full overflow-hidden">
+          <div
+            className={`h-[6px] bg-gradient-to-r rounded-full ${colorTheme.progress}`}
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
 
         {/* 주차별 포인트 마커 */}
@@ -109,17 +112,21 @@ export const WeeklyGoalBannerDesktop = ({ goal }: WeeklyGoalBannerProps) => {
                 ) : weekNumber === totalWeeks ? (
                   // 마지막 주차는 메테오 아이콘 (활성화 상태에 따라 색상 변경)
                   <div
-                    className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    className={`w-[32px] h-[32px] rounded-full flex items-center justify-center ${
                       isCompleted
                         ? colorTheme.primary === '#39D98A'
                           ? 'bg-green-500'
                           : colorTheme.primary === '#0EA5E9'
                             ? 'bg-blue-500'
                             : 'bg-yellow-500'
-                        : 'bg-gray-400'
+                        : 'bg-elevated-assistive'
                     }`}
                   >
-                    <Image src="/meteor.svg" alt="meteor" width={16} height={16} className="text-white" />
+                    {isCompleted ? (
+                      <Image src="/meteor.svg" alt="meteor" width={20} height={20} className="text-white" />
+                    ) : (
+                      <Image src="/meteor-gray.svg" alt="meteor" width={20} height={20} className="text-white" />
+                    )}
                   </div>
                 ) : (
                   <div className={`w-3 h-3 rounded-full ${pointColor}`} />
@@ -131,11 +138,11 @@ export const WeeklyGoalBannerDesktop = ({ goal }: WeeklyGoalBannerProps) => {
                 <div
                   className={`absolute left-1/2 transform -translate-x-1/2 text-xs font-medium text-center whitespace-nowrap ${
                     weekNumber === totalWeeks
-                      ? 'bottom-8' // 마지막 주차는 아래
+                      ? 'bottom-9' // 마지막 주차는 아래
                       : 'top-4' // 나머지는 위
                   } ${isCompleted ? 'text-white' : 'text-gray-400'}`}
                 >
-                  {weekNumber === totalWeeks ? '달성' : `${weekNumber}주`}
+                  {weekNumber === totalWeeks ? '달성!' : `${weekNumber}주`}
                 </div>
               </div>
             );

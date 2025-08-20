@@ -1,6 +1,6 @@
 import { Goal } from '@/shared/type/goal';
-import { WeeklyGoalBannerMobile } from './WeeklyGoalBanner.mobile';
-import { WeeklyGoalBannerDesktop } from './WeeklyGoalBanner.desktop';
+import { WeeklyGoalBannerMobile } from './components/WeeklyGoalBanner.mobile';
+import { WeeklyGoalBannerDesktop } from './components/WeeklyGoalBanner.desktop';
 
 interface WeeklyGoalBannerProps {
   goal: Goal;

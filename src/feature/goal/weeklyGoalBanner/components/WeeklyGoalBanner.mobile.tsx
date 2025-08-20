@@ -1,7 +1,7 @@
 'use client';
 
 import { Goal } from '@/shared/type/goal';
-import { calculateCurrentWeek } from './utils';
+import { calculateCurrentWeek } from '../utils';
 import Image from 'next/image';
 
 interface WeeklyGoalBannerMobileProps {
@@ -16,7 +16,7 @@ const getColorTheme = (plansLength: number) => {
       primary: '#39D98A',
       secondary: '#0EA5E9',
       badge: 'bg-accent-fg-green',
-      progress: 'from-[#39D98A] via-[#0EA5E9] to-[#2A2B31]',
+      progress: 'from-[#39D98A] to-[#0EA5E9]',
     };
   } else if (plansLength <= 8) {
     // 5-8주: 파란색 테마
@@ -70,23 +70,23 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
       </div>
 
       {/* 진행률 바 */}
-      <div className="mt-2 relative">
-        <div className="h-[6px] w-full bg-[#2A2B31] rounded-full overflow-hidden">
-          <div className={`h-[6px] bg-gradient-to-r ${colorTheme.progress}`} style={{ width: `${progressPercent}%` }} />
+      <div className="flex items-center gap-[12px]">
+        <div className="flex min-w-[28px] min-h-[28px] rounded-[4px] bg-black items-center justify-center">
+          <Image src="/meteor.svg" alt="meteor" width={22} height={22} />
         </div>
 
-        {/* 시작점 메테오 아이콘 (이미지와 동일) */}
-        <div className="absolute left-0 top-1/2 transform -translate-y-1/2">
-          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-            <Image src="/meteor.svg" alt="meteor" width={16} height={16} />
+        <div className="h-[10px] w-full bg-[#2A2B31] rounded-full overflow-visible">
+          <div
+            className={`relative h-[8px] my-[1px] bg-gradient-to-r rounded-full ${colorTheme.progress}`}
+            style={{ width: `${progressPercent}%` }}
+          >
+            <div className={`absolute top-[-4px] right-[-4px] w-[16px] h-[16px] rounded-full bg-white blur-md`} />
           </div>
         </div>
 
-        {/* 우측 진행 상황 표시 (이미지와 동일) */}
-        <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-          <span className="text-white text-sm font-medium">
-            {currentWeek}/{totalWeeks}주
-          </span>
+        <div className="flex items-center min-w-[38px]">
+          <span className="text-white text-sm font-medium">{`${currentWeek} `}</span>
+          <span className="text-label-neutral text-sm font-medium">/{totalWeeks}주</span>
         </div>
       </div>
     </div>
