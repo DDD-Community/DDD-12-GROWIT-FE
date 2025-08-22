@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { NavigationMenu } from '../NavigationMenu';
 
-export const SideBarDesktop = ({ children }: { children?: React.ReactNode }) => {
+export const SideNaviagation = ({ children }: { children?: React.ReactNode }) => {
   return (
     <aside className="max-sm:hidden flex min-h-screen min-w-[88px] gap-[24px] bg-fill-normal flex-col items-center py-8 shadow-lg">
       <Link href={'/home'}>

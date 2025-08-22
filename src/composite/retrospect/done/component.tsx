@@ -31,7 +31,6 @@ export const CompletedTasks = () => {
             <CompletedTaskBox
               key={item.goal.id}
               id={item.goal.id}
-              completedGoal={currentItem}
               isCompleted={isCompleted}
               content={item.goal.name}
               duration={item.goal.duration}

@@ -1,8 +1,8 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { CompletedGoals } from './type';
+import { CompletedGoal } from './type';
 
 interface CompletedGoalsResponse {
-  data: CompletedGoals[];
+  data: CompletedGoal[];
 }
 
 export const getCompletedRetrospects = async (year: number) => {
