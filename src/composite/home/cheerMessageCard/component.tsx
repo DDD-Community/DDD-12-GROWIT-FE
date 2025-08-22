@@ -9,7 +9,7 @@ export const CheerMessageCard = () => {
   return (
     <div className="flex gap-[16px] sm:gap-[16px]">
       <Image
-        src={'/image/growit-character.jpeg'}
+        src={'/image/grorong-avatar-default.png'}
         alt={'growit-cat'}
         width={60}
         height={60}

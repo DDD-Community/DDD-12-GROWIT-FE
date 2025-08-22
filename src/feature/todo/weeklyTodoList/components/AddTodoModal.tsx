@@ -12,6 +12,7 @@ import Button from '@/shared/components/input/Button';
 interface AddTodoModalProps {
   goal: Goal;
   selectedPlanId: string;
+  selectedDate: Date | null;
   onSuccessAddTodo: () => void;
   onWeekChange?: (weekOfMonth: number) => void;
   onToggleWeekend?: (showWeekend: boolean) => void;
@@ -20,6 +21,7 @@ interface AddTodoModalProps {
 export const AddTodoModal = ({
   goal,
   selectedPlanId,
+  selectedDate,
   onSuccessAddTodo,
   onWeekChange,
   onToggleWeekend,
@@ -38,9 +40,13 @@ export const AddTodoModal = ({
     handleAddTodo,
     resetForm,
     isFormValid,
-  } = useAddTodoForm(goal, selectedPlanId, onWeekChange, onToggleWeekend);
+  } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange, onToggleWeekend);
 
   const showModal = () => {
+    // Reset form with selectedDate when modal opens
+    if (selectedDate) {
+      handleDateSelect(selectedDate);
+    }
     setIsModalOpen(true);
   };
 

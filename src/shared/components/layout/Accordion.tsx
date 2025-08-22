@@ -21,11 +21,11 @@ export const Accordion: React.FC<AccordionProps> = ({ renderTitle, children, ...
   }, [isOpen, children]);
 
   return (
-    <div className="py-3" {...props}>
+    <div className="py-3 w-full" {...props}>
       <FlexBox className="cursor-pointer justify-between items-center">
         <div>{renderTitle()}</div>
         <div
-          className={`transform transition-transform ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+          className={`transform transition-transform ${isOpen ? 'rotate-0' : 'rotate-180'}`}
           onClick={toggleAccordion}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

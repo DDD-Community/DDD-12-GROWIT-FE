@@ -10,7 +10,14 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   description?: string;
 }
 
-export function TextArea({ label, isError, errorMessage, description, className = '', ...props }: TextAreaProps) {
+export function TextArea({
+  label,
+  isError = false,
+  errorMessage,
+  description,
+  className = '',
+  ...props
+}: TextAreaProps) {
   const [wordCount, setWordCount] = useState(() => {
     return typeof props.value === 'string' ? props.value.length : 0;
   });

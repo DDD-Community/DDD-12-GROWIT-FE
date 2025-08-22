@@ -3,7 +3,7 @@ import FlexBox from '../foundation/FlexBox';
 import { GoalProgressBar } from './GoalProgressBar';
 
 interface RoadMapProps {
-  totalSteps: 4 | 8 | 12;
+  totalSteps: number;
   currentStep: number;
   duration: {
     startDate: string;
@@ -12,7 +12,7 @@ interface RoadMapProps {
 }
 export const RoadMap = ({ totalSteps, currentStep, duration }: RoadMapProps) => {
   return (
-    <div className="bg-black pt-7 px-6 pb-9 rounded-xl space-y-4 bg-center bg-cover bg-[url(/interaction.png))]">
+    <div className="bg-black p-6 rounded-xl space-y-4 bg-center bg-cover bg-[url(/interaction.png))]">
       <FlexBox className="gap-2">
         <Badge
           type={'default'}
@@ -22,7 +22,7 @@ export const RoadMap = ({ totalSteps, currentStep, duration }: RoadMapProps) => 
           label={`${totalSteps}주`}
           className="font-bold"
         />
-        <div className="py-1 px-4 body-1-normal text-label-neutral bg-fill-normal rounded-xl">
+        <div className="py-1 px-4 text-sm text-label-neutral bg-fill-normal rounded-2xl">
           {duration.startDate} ~ {duration.endDate}
         </div>
       </FlexBox>
