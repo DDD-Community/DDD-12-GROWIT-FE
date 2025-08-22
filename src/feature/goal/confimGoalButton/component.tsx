@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import Button from '@/shared/components/input/Button';
 import { useFetchPostCreateGoal } from './hook';
 
-export const ConfirmGoalBottomBar = () => {
+export const ConfirmGoalButton = () => {
   const router = useRouter();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { handleSubmit, getValues } = useFormContext<GoalFormData>();

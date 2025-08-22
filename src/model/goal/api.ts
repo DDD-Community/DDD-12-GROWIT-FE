@@ -10,6 +10,6 @@ export async function getGoalList() {
 }
 
 export async function getCurrentProgressGoal() {
-  const { data } = await apiClient.get<GoalListResponse>('/goals?status=progress');
+  const { data } = await apiClient.get<GoalListResponse>('/goals?status=PROGRESS');
   return data.data;
 }

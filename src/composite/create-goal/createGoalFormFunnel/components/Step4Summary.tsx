@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
 import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
-import { ConfirmGoalBottomBar } from '../../confimGoalBottomBar/component';
+import { ConfirmGoalButton } from '@/feature/goal/confimGoalButton';
 
 interface Step4SummaryProps {}
 
@@ -53,7 +53,7 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
             </div>
           </div>
         </div>
-        <ConfirmGoalBottomBar />
+        <ConfirmGoalButton />
       </div>
     </div>
   );

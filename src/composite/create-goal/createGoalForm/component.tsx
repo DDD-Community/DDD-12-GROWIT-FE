@@ -64,7 +64,6 @@ export const CreateGoalForm = ({ mobileHeader, confirmFooter }: Props) => {
                       </FlexBox>
                     </div>
                     <p className="heading-2-bold text-white">시작 날짜</p>
-                    <CreateGoalFormElement.DurationDate />
                     <p className="caption-1-regular text-neutral-400">* 월요일 고정, 시작일 기준 4주 후 자동 설정</p>
                   </div>
                   <div className="mb-[20px]">
