@@ -1,14 +1,19 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import FlexBox from '@/shared/components/foundation/FlexBox';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { InputField } from '@/shared/components/input/InputField';
-import { formatDateToYYYYMMDD, getEndDate, getNextMonday, parseDateFromYYYYMMDD } from './utils';
+import {
+  formatDateToYYYYMMDD,
+  getEndDate,
+  getEndDateByWeeks,
+  getNextMonday,
+  getTodayDate,
+  parseDateFromYYYYMMDD,
+} from './utils';
 
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
@@ -18,10 +23,16 @@ interface CreateGoalFormContainerProps {
   children: React.ReactNode;
 }
 
+interface CreateGoalFormDurationProps {
+  weeks: number;
+}
+
 const defaultValues: GoalFormData = {
+  category: '',
   name: '',
-  duration: { startDate: '', endDate: '' },
-  beforeAfter: { asIs: '', toBe: '' },
+  duration: 4, // 기본 4주 선택
+  durationDate: { startDate: '', endDate: '' },
+  toBe: '목표 달성', // 기본값 설정
   plans: [
     { content: '', weekOfMonth: 1 },
     { content: '', weekOfMonth: 2 },
@@ -43,63 +54,76 @@ const FormContainer = ({ children }: CreateGoalFormContainerProps) => {
   return <form>{children}</form>;
 };
 
-const DurationDate = () => {
+const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
   const { control, watch, setValue } = useFormContext<GoalFormData>();
-  const startDate = watch('duration.startDate');
+  const startDate = watch('durationDate.startDate');
 
-  // 시작날짜가 변경될 때 종료날짜 자동 설정
   useEffect(() => {
-    if (startDate) {
+    if (startDate && weeks) {
       const startDateObj = parseDateFromYYYYMMDD(startDate);
-      const endDateObj = getEndDate(startDateObj);
-      setValue('duration.endDate', formatDateToYYYYMMDD(endDateObj));
+      const endDateObj = getEndDateByWeeks(startDateObj, weeks);
+      setValue('durationDate.endDate', formatDateToYYYYMMDD(endDateObj));
     }
-  }, [startDate, setValue]);
+  }, [startDate, weeks, setValue]);
 
   return (
-    <FlexBox className="gap-2">
-      <Controller
-        control={control}
-        name="duration.startDate"
-        rules={{
-          required: '시작일을 선택해주세요.',
-          validate: value => {
-            if (!value) return '시작일을 선택해주세요.';
-            return true;
-          },
-        }}
-        render={({ field }) => (
-          <DatePicker
-            placeholder="시작일"
-            selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
-            onDateSelect={date => {
-              field.onChange(formatDateToYYYYMMDD(date));
-            }}
-            allowedDaysOfWeek={[1]} // 월요일만 선택 가능 (1: 월요일)
-            minDate={getNextMonday()} // 오늘 이후의 다음 월요일부터 선택 가능
-          />
-        )}
-      />
-      <span className="text-white">-</span>
-      <Controller
-        control={control}
-        name="duration.endDate"
-        rules={{
-          required: '종료일이 필요합니다.',
-          validate: value => {
-            if (!value) return '종료일이 필요합니다.';
-            return true;
-          },
-        }}
-        render={({ field }) => (
-          <DatePicker
-            selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
-            placeholder="종료일"
-            disabled={true}
-          />
-        )}
-      />
-    </FlexBox>
+    <div className="flex flex-col gap-4">
+      <div className="w-full">
+        <Controller
+          control={control}
+          name="durationDate.startDate"
+          rules={{
+            required: '시작일을 선택해주세요.',
+            validate: value => {
+              if (!value) return '시작일을 선택해주세요.';
+              return true;
+            },
+          }}
+          render={({ field }) => (
+            <DatePicker
+              placeholder="시작일"
+              selectedDate={field.value ? parseDateFromYYYYMMDD(field.value) : undefined}
+              onDateSelect={date => {
+                field.onChange(formatDateToYYYYMMDD(date));
+              }}
+              minDate={getTodayDate()} // 오늘 이후의 다음 월요일부터 선택 가능
+            />
+          )}
+        />
+      </div>
+
+      <div className="w-full">
+        <div className="w-full h-full flex items-center gap-2 p-[20px] rounded-lg bg-[#0F0F10] text-white body-1-normal ">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6.66667 1.66666V4.16666M13.3333 1.66666V4.16666M2.5 6.66666H17.5M4.16667 3.33333C3.24619 3.33333 2.5 4.07952 2.5 5V16.6667C2.5 17.5871 3.24619 18.3333 4.16667 18.3333H15.8333C16.7538 18.3333 17.5 17.5871 17.5 16.6667V5C17.5 4.07952 16.7538 3.33333 15.8333 3.33333H4.16667Z"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="flex-1 text-left body-2-regular">
+            {startDate ? (
+              <span>
+                종료 예정일{' '}
+                <span className="text-[#3AEE49]">
+                  {(() => {
+                    const endDate = getEndDateByWeeks(parseDateFromYYYYMMDD(startDate), weeks);
+                    const dateStr = formatDateToYYYYMMDD(endDate);
+                    const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                    const dayOfWeek = dayNames[endDate.getDay()];
+                    return `${dateStr} (${dayOfWeek})`;
+                  })()}
+                </span>
+              </span>
+            ) : (
+              '종료 예정일'
+            )}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -126,27 +150,17 @@ const MainGoal = () => {
     formState: { errors },
   } = useFormContext<GoalFormData>();
   return (
-    <FlexBox className="mt-6 gap-4">
+    <div className="mt-6">
       <TextArea
-        label="목표 설정 (AS IS)"
-        placeholder="현재 상태를 간단히 입력해주세요."
-        className="flex-1"
-        isError={!!errors.beforeAfter?.asIs}
-        errorMessage={errors.beforeAfter?.asIs?.message}
-        {...register('beforeAfter.asIs', { required: '현재 상태를 입력해주세요.' })}
+        label="목표 설정"
+        placeholder="이루고 싶은 목표를 간단히 입력해주세요."
+        className="w-full"
+        isError={!!errors.toBe}
+        errorMessage={errors.toBe?.message}
+        {...register('toBe', { required: '목표를 입력해주세요.' })}
         maxLength={30}
       />
-      <Image src="/icon/arrow-right.svg" alt="Dashboard Preview" width={24} height={24} />
-      <TextArea
-        label="목표 설정 (TO BE)"
-        placeholder="4주 후 이루고 싶은 목표를 간단히 입력해주세요."
-        className="flex-1"
-        isError={!!errors.beforeAfter?.toBe}
-        errorMessage={errors.beforeAfter?.toBe?.message}
-        {...register('beforeAfter.toBe', { required: '4주 후 목표를 입력해주세요.' })}
-        maxLength={30}
-      />
-    </FlexBox>
+    </div>
   );
 };
 
@@ -165,7 +179,7 @@ const WeekendGoal = () => {
           isError={!!errors.plans?.[idx]?.content}
           errorMessage={errors.plans?.[idx]?.content?.message}
           maxLength={30}
-          {...register(`plans.${idx}.content`, { required: '주간 목표를 입력해주세요.' })}
+          {...register(`plans.${idx}.content`)}
         />
       ))}
     </div>

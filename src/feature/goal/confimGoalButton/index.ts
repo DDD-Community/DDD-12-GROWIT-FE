@@ -1,0 +1,1 @@
+export { ConfirmGoalButton } from './component';
