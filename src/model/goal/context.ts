@@ -102,7 +102,7 @@ export function GoalProvider({ children }: GoalProviderProps) {
   useEffect(() => {
     fetchGoalList();
     fetchCurrentGoal();
-  }, [fetchGoalList, fetchCurrentGoal]);
+  }, []);
 
   const selectedGoal = goalList.find(goal => goal.id === selectedGoalId) || null;
   const selectedPlans = selectedGoal?.plans || [];

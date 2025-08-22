@@ -53,9 +53,11 @@ export const ConfirmGoalBottomBar = () => {
               </svg>
             </div>
             <DialogTitle className="text-center">축하한다냥 🐱</DialogTitle>
-            <DialogDescription className="text-center">드디어 4주간 여정의 도착지가 정해졌다냥!</DialogDescription>
+            <DialogDescription className="text-center">
+              드디어 {formValues.duration}주간 여정의 도착지가 정해졌다냥!
+            </DialogDescription>
           </DialogHeader>
-          <Button size={'ml'} text={'4주 여정 시작하기'} onClick={handleSuccessConfirm} />
+          <Button size={'ml'} text={`${formValues.duration}주 여정 시작하기`} onClick={handleSuccessConfirm} />
         </DialogContent>
       </Dialog>
     </>
