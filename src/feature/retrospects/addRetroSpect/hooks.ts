@@ -85,7 +85,6 @@ export function useFetchRetrospects(req: { goalId: string; planId: string }, opt
   const [error, setError] = useState<unknown>(null);
 
   const fetchRetrospects = useCallback(async () => {
-    // 이미 로딩 중이면 중복 호출 방지
     if (isLoading) return;
 
     setIsLoading(true);
