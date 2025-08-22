@@ -43,7 +43,7 @@ export const NavigationMenu = () => {
         onClick={() => router.push('/retrospect')}
       />
       {/** 회고 행성 페이지 부분 추후 실제 페이지로 라우팅 경로 수정 예정 */}
-      <Button
+      {/* <Button
         size={'sm'}
         variant="tertiary"
         layout="icon-only"
@@ -66,7 +66,7 @@ export const NavigationMenu = () => {
           </svg>
         }
         onClick={() => router.push('/mypage')}
-      />
+      /> */}
       <Button
         variant="tertiary"
         layout="icon-only"
