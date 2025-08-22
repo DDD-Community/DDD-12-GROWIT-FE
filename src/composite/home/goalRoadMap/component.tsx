@@ -8,13 +8,13 @@ import { useGoalSelector } from '@/model/goal/context';
 import { EarthIcon, MoveIcon } from './icons';
 
 const GoalRoadMapDesktop = () => {
-  const { selectedGoal } = useGoalSelector();
+  const { currentGoal } = useGoalSelector();
 
-  if (!selectedGoal) {
+  if (!currentGoal) {
     return null;
   }
 
-  const { beforeAfter, plans } = selectedGoal;
+  const { beforeAfter, plans } = currentGoal;
 
   return (
     <aside className="hidden md:block w-full p-6">
@@ -31,13 +31,13 @@ const GoalRoadMapDesktop = () => {
 
 const GoalRoadMapMobile = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { selectedGoal } = useGoalSelector();
+  const { currentGoal } = useGoalSelector();
 
-  if (!selectedGoal) {
+  if (!currentGoal) {
     return null;
   }
 
-  const { beforeAfter, plans } = selectedGoal;
+  const { beforeAfter, plans } = currentGoal;
 
   return (
     <>

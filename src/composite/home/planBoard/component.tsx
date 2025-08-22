@@ -14,9 +14,9 @@ import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AddRetroSpectButton } from '@/feature/retrospects';
 
 export const WeeklyPlanBoard = () => {
-  const { selectedGoal, fetchCurrentGoal } = useGoalSelector();
-  if (!selectedGoal) return null;
-  return <WeeklyPlanBoardInner goal={selectedGoal} fetchGoal={fetchCurrentGoal} />;
+  const { currentGoal, fetchCurrentGoal } = useGoalSelector();
+  if (!currentGoal) return null;
+  return <WeeklyPlanBoardInner goal={currentGoal} fetchGoal={fetchCurrentGoal} />;
 };
 
 const WeeklyPlanBoardInner = ({ goal, fetchGoal }: { goal: Goal; fetchGoal: () => void }) => {

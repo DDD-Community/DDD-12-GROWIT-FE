@@ -26,7 +26,7 @@ interface TodoBoardContextValue {
 const TodoBoardContext = createContext<TodoBoardContextValue | undefined>(undefined);
 
 export function TodoListProvider({ children }: { children: React.ReactNode }) {
-  const { selectedGoal } = useGoalSelector();
+  const { currentGoal } = useGoalSelector();
   const { selectedPlanId } = usePlanSelector();
 
   const [weeklyTodos, setWeeklyTodos] = useState<Record<DAY_OF_THE_WEEK, Todo[]> | null>(null);
@@ -54,12 +54,12 @@ export function TodoListProvider({ children }: { children: React.ReactNode }) {
 
   // 초기 로드 및 의존성 변경 시 재조회
   useEffect(() => {
-    const goalId = selectedGoal?.id;
+    const goalId = currentGoal?.id;
     const planId = selectedPlanId;
     if (goalId && planId) {
       fetchWeeklyTodos({ goalId, planId });
     }
-  }, [selectedGoal?.id, selectedPlanId, fetchWeeklyTodos]);
+  }, [currentGoal?.id, selectedPlanId, fetchWeeklyTodos]);
 
   // 파생 상태 제어 함수들
   const toggleTodoStatus = useCallback((dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {

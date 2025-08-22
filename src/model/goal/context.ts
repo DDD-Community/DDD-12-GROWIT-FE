@@ -9,10 +9,7 @@ interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
   currentGoal: Goal | null;
-  selectedGoal: Goal | null;
-  selectedPlans: Goal['plans'];
-  selectedGoalId: string;
-  setSelectedGoalId: (id: string) => void;
+  currentPlans: Goal['plans'];
   fetchGoalList: (shouldThrow?: boolean) => Promise<void>;
   fetchCurrentGoal: (shouldThrow?: boolean) => Promise<void>;
 }
@@ -28,7 +25,6 @@ export function GoalProvider({ children }: GoalProviderProps) {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
   const [currentGoal, setCurrentGoal] = useState<Goal | null>(null);
-  const [selectedGoalId, setSelectedGoalId] = useState<string>('');
 
   const fetchGoalList = useCallback(
     async (shouldThrow = false) => {
@@ -70,7 +66,6 @@ export function GoalProvider({ children }: GoalProviderProps) {
         const goals = await getCurrentProgressGoal();
         if (goals && goals.length > 0) {
           setCurrentGoal(goals[0]);
-          setSelectedGoalId(goals[0].id);
         } else {
           setCurrentGoal(null);
         }
@@ -104,17 +99,13 @@ export function GoalProvider({ children }: GoalProviderProps) {
     fetchCurrentGoal();
   }, []);
 
-  const selectedGoal = goalList.find(goal => goal.id === selectedGoalId) || null;
-  const selectedPlans = selectedGoal?.plans || [];
+  const currentPlans = currentGoal?.plans || [];
 
   const value: GoalContextType = {
     isLoading,
     goalList,
     currentGoal,
-    selectedGoal,
-    selectedPlans,
-    selectedGoalId,
-    setSelectedGoalId,
+    currentPlans,
     fetchGoalList,
     fetchCurrentGoal,
   };
