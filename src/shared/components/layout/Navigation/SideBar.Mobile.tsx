@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { LogoutButton } from '@/feature/auth/logoutButton/component';
 import Button from '../../input/Button';
 
+/**
+ * @deprecated
+ */
 export const SideBarMobile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
