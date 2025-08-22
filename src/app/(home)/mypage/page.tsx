@@ -6,7 +6,7 @@ const MyPage = () => {
   return (
     <div className="flex flex-col w-full px-8 pt-8 h-full justify-between">
       <div className="flex flex-col gap-5">
-        <h2 className="title-3-bold text-label-normal hidden md:block">마이 페이지</h2>
+        <h2 className="title-3-bold text-label-normal border-b pb-4 border-line-normal">마이 페이지</h2>
         <EditProfile />
         <LogoutDarkButton />
       </div>

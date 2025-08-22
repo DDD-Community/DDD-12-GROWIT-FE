@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { postAddRetrospect, getRetrospects, putRetrospect } from './api';
+import { postAddRetrospect, getRetrospects, putRetrospect, GetRetroSpectDto } from './api';
 
 interface UseAddRetrospectOptions {
   onSuccess?: (data: { id: string }) => void;
@@ -80,7 +80,7 @@ interface UseFetchRetrospectsOptions {
 }
 
 export function useFetchRetrospects(req: { goalId: string; planId: string }, options?: UseFetchRetrospectsOptions) {
-  const [retrospect, setData] = useState<any>(null);
+  const [retrospect, setData] = useState<GetRetroSpectDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
 
@@ -93,8 +93,8 @@ export function useFetchRetrospects(req: { goalId: string; planId: string }, opt
     try {
       const { goalId, planId } = req;
       const result = await getRetrospects({ goalId, planId });
-      setData(result);
-      options?.onSuccess?.(result);
+      setData(result[0]);
+      options?.onSuccess?.(result[0]);
       return result;
     } catch (err) {
       setError(err);

@@ -2,17 +2,17 @@ import Image from 'next/image';
 import Badge from '@/shared/components/display/Badge';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { Duration } from '../../type';
 
-interface Duration {
-  startDate: string;
-  endDate: string;
-}
 interface CompletedTaskBoxProps {
+  id?: string;
   isCompleted: boolean;
   content: string;
   duration: Duration;
 }
-export const CompletedTaskBox = ({ isCompleted, content, duration }: CompletedTaskBoxProps) => {
+export const CompletedTaskBox = ({ id, isCompleted, content, duration }: CompletedTaskBoxProps) => {
+  const router = useRouter();
   const getWeeksBetween = useCallback((startDate: string, endDate: string): number => {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -27,7 +27,9 @@ export const CompletedTaskBox = ({ isCompleted, content, duration }: CompletedTa
   const week = getWeeksBetween(duration.startDate, duration.endDate) - 1; // 시작 주는 제외
 
   return (
-    <div className="md:w-[700px] bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg hover:outline-2 outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs">
+    <div
+      className={`w-full bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg ${id && 'hover:outline-2'} outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs`}
+    >
       <div className="flex flex-col gap-4">
         <FlexBox className="gap-2">
           <Badge
@@ -55,7 +57,16 @@ export const CompletedTaskBox = ({ isCompleted, content, duration }: CompletedTa
           {duration.startDate} ~ {duration.endDate}
         </p>
       </div>
-      <Image src="/chevron-right.svg" alt="right-arrow" width={24} height={24} className="cursor-pointer" />
+      {id && (
+        <Image
+          src="/chevron-right.svg"
+          alt="right-arrow"
+          width={24}
+          height={24}
+          className="cursor-pointer"
+          onClick={() => router.push(`/retrospect/${id}`)}
+        />
+      )}
     </div>
   );
 };
