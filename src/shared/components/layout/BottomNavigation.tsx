@@ -42,7 +42,8 @@ export const BottomNavigation = () => {
         }
         onClick={() => router.push('/retrospect')}
       />
-      <Button
+      {/* 추후 추가 예정 및 임시 비활성화 */}
+      {/* <Button
         size={'sm'}
         variant="tertiary"
         layout="icon-only"
@@ -65,7 +66,7 @@ export const BottomNavigation = () => {
           </svg>
         }
         onClick={() => router.push('/mypage')}
-      />
+      /> */}
       <Button
         size={'sm'}
         variant="tertiary"
