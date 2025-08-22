@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { postCreateGoal } from './api';
+import { AxiosError } from 'axios';
+import { CommonError, CommonResponse } from '@/shared/type/response';
 
 interface UseFetchPostCreateGoalReturn {
   isLoading: boolean;
@@ -32,7 +34,16 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
       setIsSuccess(true);
     } catch (err) {
       setIsError(true);
-      const errorMessage = err instanceof Error ? err.message : '목표 생성에 실패했습니다.';
+      let errorMessage = '목표 생성에 실패했습니다.';
+      if (
+        typeof AxiosError !== 'undefined' &&
+        err &&
+        typeof err === 'object' &&
+        'isAxiosError' in err &&
+        (err as AxiosError<CommonError>).isAxiosError
+      ) {
+        errorMessage = (err as AxiosError<CommonError>).response?.data?.message ?? errorMessage;
+      }
       setError(errorMessage);
       showToast(errorMessage, 'error');
     } finally {
@@ -56,19 +67,3 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
     reset,
   };
 };
-
-export function useProgressPercentage(formWatch: () => GoalFormData) {
-  return useMemo(() => {
-    let filled = 0;
-    const formValues = formWatch();
-
-    if (formValues.duration.startDate && formValues.duration.endDate) filled++;
-    if (formValues.name) filled++;
-    if (formValues.beforeAfter.asIs) filled++;
-    if (formValues.beforeAfter.toBe) filled++;
-    formValues.plans.forEach((p: { content: string }) => {
-      if (p?.content) filled++;
-    });
-    return Math.round((filled / 8) * 100);
-  }, [formWatch()]);
-}

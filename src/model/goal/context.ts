@@ -3,24 +3,18 @@ import { useCallback, useEffect, useState, createContext, useContext, ReactNode,
 import { Goal } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { apiClient } from '@/shared/lib/apiClient';
-import { CommonResponse } from '@/shared/type/response';
-
-interface GoalListResponse extends CommonResponse<Goal[]> {}
-
-async function getGoalList() {
-  const { data } = await apiClient.get<GoalListResponse>('/goals');
-  return data.data;
-}
+import { getGoalList, getCurrentProgressGoal } from './api';
 
 interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
+  currentGoal: Goal | null;
   selectedGoal: Goal | null;
   selectedPlans: Goal['plans'];
   selectedGoalId: string;
   setSelectedGoalId: (id: string) => void;
-  fetchGoal: (shouldThrow?: boolean) => Promise<void>;
+  fetchGoalList: (shouldThrow?: boolean) => Promise<void>;
+  fetchCurrentGoal: (shouldThrow?: boolean) => Promise<void>;
 }
 
 const GoalContext = createContext<GoalContextType | null>(null);
@@ -33,9 +27,10 @@ export function GoalProvider({ children }: GoalProviderProps) {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
+  const [currentGoal, setCurrentGoal] = useState<Goal | null>(null);
   const [selectedGoalId, setSelectedGoalId] = useState<string>('');
 
-  const fetchGoal = useCallback(
+  const fetchGoalList = useCallback(
     async (shouldThrow = false) => {
       try {
         setLoading(true);
@@ -67,15 +62,47 @@ export function GoalProvider({ children }: GoalProviderProps) {
     [showToast]
   );
 
-  useEffect(() => {
-    fetchGoal();
-  }, []);
+  const fetchCurrentGoal = useCallback(
+    async (shouldThrow = false) => {
+      try {
+        setLoading(true);
+
+        const goals = await getCurrentProgressGoal();
+        if (goals && goals.length > 0) {
+          setCurrentGoal(goals[0]);
+          setSelectedGoalId(goals[0].id);
+        } else {
+          setCurrentGoal(null);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        const axiosError = err as AxiosError<CommonError>;
+        let errorMessage = '현재 진행 중인 목표를 불러오는데 실패했습니다.';
+
+        if (axiosError.isAxiosError && axiosError.response?.data.message) {
+          errorMessage = axiosError.response.data.message;
+        }
+
+        setLoading(false);
+        setCurrentGoal(null);
+
+        if (!shouldThrow) {
+          showToast(errorMessage);
+        }
+
+        if (shouldThrow) {
+          throw new Error(errorMessage);
+        }
+      }
+    },
+    [showToast]
+  );
 
   useEffect(() => {
-    if (goalList.length > 0 && !selectedGoalId) {
-      setSelectedGoalId(goalList[0].id);
-    }
-  }, [goalList, selectedGoalId]);
+    fetchGoalList();
+    fetchCurrentGoal();
+  }, []);
 
   const selectedGoal = goalList.find(goal => goal.id === selectedGoalId) || null;
   const selectedPlans = selectedGoal?.plans || [];
@@ -83,11 +110,13 @@ export function GoalProvider({ children }: GoalProviderProps) {
   const value: GoalContextType = {
     isLoading,
     goalList,
+    currentGoal,
     selectedGoal,
     selectedPlans,
     selectedGoalId,
     setSelectedGoalId,
-    fetchGoal,
+    fetchGoalList,
+    fetchCurrentGoal,
   };
 
   return createElement(GoalContext.Provider, { value }, children);

@@ -1,13 +1,12 @@
 export interface GoalFormData {
+  category: string;
   name: string;
-  duration: {
+  duration: number; // 4, 8, 12 중 선택된 주차
+  durationDate: {
     startDate: string;
     endDate: string;
   };
-  beforeAfter: {
-    asIs: string;
-    toBe: string;
-  };
+  toBe: string;
   plans: {
     content: string;
     weekOfMonth: number;

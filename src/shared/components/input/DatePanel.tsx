@@ -199,7 +199,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
     return (
       <div
         ref={ref}
-        className="min-w-[308px] absolute top-full left-0 right-0 mt-2 bg-label-button-neutral text-white border border-label-assistive rounded-lg shadow-lg z-50"
+        className="min-w-[308px] absolute top-full left-0 right-0 mt-2 bg-elevated-normal text-white border border-label-assistive rounded-lg shadow-lg z-50"
         role="dialog"
         aria-label="날짜 선택"
       >
@@ -208,7 +208,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
           <button
             type="button"
             onClick={() => navigateMonth('prev')}
-            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
+            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
             aria-label="이전 달"
           >
             <svg
@@ -236,7 +236,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
           <button
             type="button"
             onClick={() => navigateMonth('next')}
-            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:accent-violet"
+            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
             aria-label="다음 달"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -265,7 +265,7 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
         {/* 날짜 그리드 */}
         <div
           ref={gridRef}
-          className="grid grid-cols-7 gap-1 px-2 py-3 pt-0"
+          className="grid grid-cols-7 gap-1 px-2 py-3 pt-0 items-center"
           role="grid"
           aria-label="날짜 그리드"
           tabIndex={0}
@@ -279,37 +279,38 @@ const DatePanel = React.forwardRef<HTMLDivElement, DatePanelProps>(
             const isSelectable = isDateSelectable(day);
 
             return (
-              <button
-                key={index}
-                type="button"
-                onClick={() => {
-                  if (isSelectable) {
-                    onDateSelect(day);
-                    onFocusedDateChange(day);
-                  }
-                }}
-                className={`
-                relative p-2 label-1-regular rounded-full transition-colors
+              <div className="flex w-full items-center justify-center">
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => {
+                    if (isSelectable) {
+                      onDateSelect(day);
+                      onFocusedDateChange(day);
+                    }
+                  }}
+                  className={`
+                relative w-10 h-10 flex items-center justify-center label-1-regular rounded-full transition-colors
                 ${!isSelectable ? 'pointer-events-none text-label-assistive opacity-50' : ''}
                 ${isStartDate && day.getDay() !== 0 && 'pointer-events-none text-label-assistive'} 
-                ${isSelected ? 'bg-accent-violet text-primary-normal' : ''}
+                ${isSelected ? 'bg-[var(--color-brand-neon)] text-black' : ''}
                 ${isFocused && !isSelected ? 'bg-gray-700 text-primary-normal' : ''}
                 ${!isInCurrentMonth ? 'text-gray-500' : ''}
                 ${isToday && !isSelected ? 'bg-gray-600' : ''}
                 ${isSelectable ? 'hover:bg-gray-700' : ''}
-                focus:outline-none focus:ring-2 focus:accent-violet
               `}
-                role="gridcell"
-                aria-label={`${day.getFullYear()}년 ${day.getMonth() + 1}월 ${day.getDate()}일${isSelected ? ', 선택됨' : ''}${isToday ? ', 오늘' : ''}${!isSelectable ? ', 선택 불가' : ''}`}
-                aria-selected={isSelected}
-                aria-disabled={!isSelectable}
-                tabIndex={-1}
-              >
-                {day.getDate()}
-                {isToday && (
-                  <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-accent-violet rounded-full"></span>
-                )}
-              </button>
+                  role="gridcell"
+                  aria-label={`${day.getFullYear()}년 ${day.getMonth() + 1}월 ${day.getDate()}일${isSelected ? ', 선택됨' : ''}${isToday ? ', 오늘' : ''}${!isSelectable ? ', 선택 불가' : ''}`}
+                  aria-selected={isSelected}
+                  aria-disabled={!isSelectable}
+                  tabIndex={-1}
+                >
+                  {day.getDate()}
+                  {isToday && (
+                    <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-[var(--color-brand-neon)] rounded-full"></span>
+                  )}
+                </button>
+              </div>
             );
           })}
         </div>

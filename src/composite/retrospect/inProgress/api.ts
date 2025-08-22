@@ -18,6 +18,7 @@ export interface WeeklyRetrospectResponse {
   }[];
 }
 
+// FIX : model/goal 의 Context 를 적용 필요 -> 붎필요 fetch 함수
 export const getProgressRetrospect = async () => {
   try {
     const response = await apiClient.get<InprogressRetrospectResponse>('/goals?status=PROGRESS');

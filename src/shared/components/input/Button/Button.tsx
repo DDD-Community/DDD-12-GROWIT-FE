@@ -25,6 +25,7 @@ const Button = ({
   disabled = false,
   status = 'idle',
   className = '',
+  type,
 }: ButtonProps) => {
   const [isDone, setIsDone] = useState(false);
 
@@ -51,6 +52,7 @@ const Button = ({
        ${className}`}
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
+      type={type}
     >
       {layout === 'normal' ? (
         <AnimatePresence mode="wait" initial={false}>

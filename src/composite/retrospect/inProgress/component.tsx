@@ -9,6 +9,7 @@ import { useWeeklyRetrospect } from '../hooks';
 import { useEffect, useState } from 'react';
 import { Duration } from '../type';
 import { getProgressRetrospect } from './api';
+import { CreateGoalButton } from '@/feature/goal';
 
 export const InProgress = () => {
   const [goalId, setGoalId] = useState<string>('');
@@ -59,22 +60,7 @@ export const InProgress = () => {
         <FlexBox direction="col" className="justify-center space-y-4">
           <p className="text-label-neutral">진행중인 목표가 없습니다</p>
           <div className="w-[113px]">
-            <Button
-              text="목표 추가"
-              size={'ml'}
-              layout="icon-right"
-              icon={
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M10.0003 4.16602V15.8327M4.16699 9.99935H15.8337"
-                    stroke="#171719"
-                    strokeWidth="1.67"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              }
-            />
+            <CreateGoalButton />
           </div>
         </FlexBox>
       )}

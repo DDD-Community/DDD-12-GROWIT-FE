@@ -1,0 +1,27 @@
+import { apiClient } from '@/shared/lib/apiClient';
+import { GoalFormData } from '@/shared/type/form';
+
+// API Request DTO - duration 필드 제외
+export interface CreateGoalRequestDto {
+  category: string;
+  name: string;
+  duration: {
+    startDate: string;
+    endDate: string;
+  };
+  toBe: string;
+  plans: {
+    content: string;
+    weekOfMonth: number;
+  }[];
+}
+
+export async function postCreateGoal(formData: GoalFormData) {
+  const { duration, durationDate, ...rest } = formData;
+  const dto: CreateGoalRequestDto = {
+    ...rest,
+    duration: durationDate
+  };
+  
+  return await apiClient.post<CreateGoalRequestDto>('/goals', dto);
+}
