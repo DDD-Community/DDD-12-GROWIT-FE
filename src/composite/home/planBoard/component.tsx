@@ -12,30 +12,33 @@ import { useDesktopWeekendToggle } from './hooks';
 import { Goal } from '@/shared/type/goal';
 import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AddRetroSpectButton } from '@/feature/retrospects';
+import { useSelectedDay } from '@/model/todo/selectedDay';
 
 export const WeeklyPlanBoard = () => {
-  const { currentGoal, fetchCurrentGoal } = useGoalSelector();
+  const { currentGoal, refetchCurrentGoal } = useGoalSelector();
   if (!currentGoal) return null;
-  return <WeeklyPlanBoardInner goal={currentGoal} fetchGoal={fetchCurrentGoal} />;
+  return <WeeklyPlanBoardInner goal={currentGoal} refetchGoal={refetchCurrentGoal} />;
 };
 
-const WeeklyPlanBoardInner = ({ goal, fetchGoal }: { goal: Goal; fetchGoal: () => void }) => {
+const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: () => void }) => {
   const { todoList } = useTodoBoardState();
   const { toggleWeekend } = useDesktopWeekendToggle();
   const { refetchTodayList } = useTodayTodoListActions();
-  const { fetchWeeklyTodos, toggleTodoStatus } = useTodoBoardActions();
-  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
+  const { updateDateInfo } = useSelectedDay();
+  const { toggleTodoStatus, refreshTodoList } = useTodoBoardActions();
+  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId, changePlanByDate } =
+    usePlanSelector();
 
   const handleRefreshGoal = useCallback(() => {
-    fetchGoal();
-  }, [fetchGoal]);
+    refetchGoal();
+  }, []);
 
   const handleRefreshTodoList = useCallback(() => {
     if (goal?.id && selectedPlanId) {
-      fetchWeeklyTodos({ goalId: goal.id, planId: selectedPlanId });
+      refreshTodoList();
       refetchTodayList();
     }
-  }, [goal?.id, selectedPlanId, fetchWeeklyTodos, refetchTodayList]);
+  }, [goal?.id, selectedPlanId]);
 
   const handleWeekChange = useCallback(
     (weekOfMonth: number) => {
@@ -54,44 +57,20 @@ const WeeklyPlanBoardInner = ({ goal, fetchGoal }: { goal: Goal; fetchGoal: () =
     [toggleWeekend]
   );
 
-  const handleEdit = useCallback(
-    (updatedTodo: Todo) => {
+  const handleEdit = useCallback((updatedTodo: Todo) => {
+    if (updatedTodo.date) {
+      changePlanByDate(updatedTodo.date);
+      updateDateInfo(updatedTodo.date);
       handleRefreshTodoList();
+    }
+  }, []);
 
-      if (updatedTodo.date) {
-        const todoDate = new Date(updatedTodo.date);
-        const goalStartDate = new Date(goal.duration.startDate);
-
-        const timeDiff = todoDate.getTime() - goalStartDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        const weekOfMonth = Math.floor(daysDiff / 7) + 1;
-
-        if (weekOfMonth !== selectedWeekIndex && weekOfMonth >= 1 && weekOfMonth <= goal.plans.length) {
-          handleWeekChange(weekOfMonth);
-        }
-      }
-    },
-    [handleRefreshTodoList, goal.duration.startDate, goal.plans.length, selectedWeekIndex, handleWeekChange]
-  );
-
-  const handleDelete = useCallback(
-    (deletedTodo: Todo) => {
+  const handleDelete = useCallback((deletedTodo: Todo) => {
+    if (deletedTodo.date) {
+      changePlanByDate(deletedTodo.date);
       handleRefreshTodoList();
-
-      if (deletedTodo.date) {
-        const todoDate = new Date(deletedTodo.date);
-        const goalStartDate = new Date(goal.duration.startDate);
-        const timeDiff = todoDate.getTime() - goalStartDate.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        const weekOfMonth = Math.floor(daysDiff / 7) + 1;
-
-        if (weekOfMonth !== selectedWeekIndex && weekOfMonth >= 1 && weekOfMonth <= goal.plans.length) {
-          handleWeekChange(weekOfMonth);
-        }
-      }
-    },
-    [handleRefreshTodoList, goal.duration.startDate, goal.plans.length, selectedWeekIndex, handleWeekChange]
-  );
+    }
+  }, []);
 
   const handleToggleTodo = useCallback(
     (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
@@ -121,7 +100,6 @@ const WeeklyPlanBoardInner = ({ goal, fetchGoal }: { goal: Goal; fetchGoal: () =
             goal={goal}
             currentWeekIndex={selectedWeekIndex}
             onToggleTodo={handleToggleTodo}
-            refreshTodoList={handleRefreshTodoList}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onWeekChange={handleWeekChange}

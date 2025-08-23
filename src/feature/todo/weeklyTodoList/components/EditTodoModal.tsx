@@ -8,6 +8,7 @@ import { putTodo } from '../api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { Goal } from '@/shared/type/goal';
+import { useSelectedDayActions } from '@/model/todo/selectedDay';
 
 interface EditTodoModalProps {
   open: boolean;
@@ -15,11 +16,10 @@ interface EditTodoModalProps {
   goal: Goal;
   onClose: () => void;
   onSubmit: (updated: Todo) => void;
-  onWeekChange?: (weekOfMonth: number) => void;
   onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onWeekChange, onToggleWeekend }: EditTodoModalProps) => {
+const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onToggleWeekend }: EditTodoModalProps) => {
   const [content, setContent] = useState(todo?.content || '');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -80,11 +80,6 @@ const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onWeekChange, onTo
 
       showToast('투두가 성공적으로 수정되었습니다.', 'success');
       onSubmit(updatedTodo);
-
-      // weekOfMonth 정보가 있으면 해당 주차로 이동
-      if (updatedTodoResponse.plan?.weekOfMonth && onWeekChange) {
-        onWeekChange(updatedTodoResponse.plan.weekOfMonth);
-      }
 
       // 날짜가 주말로 변경되었는지 확인하고 주말 표시 토글
       const dayOfWeek = selectedDate.getDay(); // 0: 일요일, 6: 토요일

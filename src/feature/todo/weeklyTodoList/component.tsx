@@ -35,7 +35,6 @@ interface MobileWeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
-  refreshTodoList?: () => void;
   onEdit?: (todo: Todo) => void;
   onDelete?: (todo: Todo) => void;
   onWeekChange?: (weekOfMonth: number) => void;
@@ -47,29 +46,23 @@ export const WeeklyTodoList = ({
   goal,
   currentWeekIndex,
   onToggleTodo,
-  refreshTodoList,
   onEdit,
   onDelete,
   onWeekChange,
   onToggleWeekend,
 }: MobileWeeklyTodoListProps) => {
   const { selectedDay, weekDates, selectedDate } = useSelectedDayState();
-  const { setSelectedDayWithDate, resetToToday, updateWeekDates } = useSelectedDayActions();
+  const { setSelectedDayWithDate, updateWeekDates } = useSelectedDayActions();
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
   const selectedPlanId = goal.plans.find(p => p.weekOfMonth === currentWeekIndex)?.id ?? '';
 
-  // Update week dates when goal or week changes
   useEffect(() => {
     updateWeekDates(goal.duration.startDate, currentWeekIndex);
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
-  }, [goal.id, goal.duration.startDate, currentWeekIndex, updateWeekDates]);
-
-  useEffect(() => {
-    resetToToday();
-  }, [currentWeekIndex, resetToToday]);
+  }, [goal.id, goal.duration.startDate, currentWeekIndex]);
 
   const selectedDayTodos = weeklyTodos[selectedDay] || [];
 
@@ -83,6 +76,7 @@ export const WeeklyTodoList = ({
     onDelete?.(todo);
   };
 
+
   return (
     <div className="flex flex-col">
       <EditTodoModal
@@ -91,7 +85,6 @@ export const WeeklyTodoList = ({
         goal={goal}
         onClose={() => setEditModal({ open: false, todo: null })}
         onSubmit={handleEditSubmit}
-        onWeekChange={onWeekChange}
         onToggleWeekend={onToggleWeekend}
       />
       <DeleteTodoModal
@@ -168,7 +161,6 @@ export const WeeklyTodoList = ({
           goal={goal}
           selectedPlanId={selectedPlanId}
           selectedDate={selectedDate}
-          onSuccessAddTodo={() => refreshTodoList?.()}
           onWeekChange={onWeekChange}
           onToggleWeekend={onToggleWeekend}
         />

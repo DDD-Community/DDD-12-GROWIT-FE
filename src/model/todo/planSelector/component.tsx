@@ -60,7 +60,7 @@ export const PlanSelect = () => {
 };
 
 export const PlanProvider = ({ children }: PlanProviderProps) => {
-  const { isLoading, goalList, currentGoal, currentPlans } = useGoalSelector();
+  const { isLoading, goalList, currentGoal } = useGoalSelector();
 
   useRedirectToOnboarding({
     isLoading,
@@ -71,9 +71,5 @@ export const PlanProvider = ({ children }: PlanProviderProps) => {
     return <CreateNewGoal />;
   }
 
-  return (
-    <PlanSelectorProvider plans={currentPlans} goal={currentGoal!}>
-      {children}
-    </PlanSelectorProvider>
-  );
+  return <PlanSelectorProvider goal={currentGoal!}>{children}</PlanSelectorProvider>;
 };
