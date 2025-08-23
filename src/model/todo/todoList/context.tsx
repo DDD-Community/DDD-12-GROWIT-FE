@@ -12,6 +12,7 @@ interface TodoBoardContextValue {
   isLoading: boolean;
   error: string | null;
   fetchWeeklyTodos: (params: TodoWeeklyListRequest) => Promise<void>;
+  refreshTodoList: () => void;
 
   // 파생 상태 및 제어 함수
   todoList: Record<DAY_OF_THE_WEEK, Todo[]> | null;
@@ -26,10 +27,12 @@ interface TodoBoardContextValue {
 const TodoBoardContext = createContext<TodoBoardContextValue | undefined>(undefined);
 
 export function TodoListProvider({ children }: { children: React.ReactNode }) {
-  const { selectedGoal } = useGoalSelector();
+  const { currentGoal } = useGoalSelector();
   const { selectedPlanId } = usePlanSelector();
 
   const [weeklyTodos, setWeeklyTodos] = useState<Record<DAY_OF_THE_WEEK, Todo[]> | null>(null);
+  const [refreshTimeTodoList, setRefreshTimeTodoList] = useState<Date | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,14 +55,19 @@ export function TodoListProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const refreshTodoList = useCallback(() => {
+    const date = new Date();
+    setRefreshTimeTodoList(date);
+  }, []);
+
   // 초기 로드 및 의존성 변경 시 재조회
   useEffect(() => {
-    const goalId = selectedGoal?.id;
+    const goalId = currentGoal?.id;
     const planId = selectedPlanId;
     if (goalId && planId) {
       fetchWeeklyTodos({ goalId, planId });
     }
-  }, [selectedGoal?.id, selectedPlanId, fetchWeeklyTodos]);
+  }, [currentGoal, selectedPlanId, refreshTimeTodoList]);
 
   // 파생 상태 제어 함수들
   const toggleTodoStatus = useCallback((dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
@@ -116,6 +124,7 @@ export function TodoListProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       error,
       fetchWeeklyTodos,
+      refreshTodoList,
       todoList,
       toggleTodoStatus,
       addTodo,
@@ -129,6 +138,7 @@ export function TodoListProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       error,
       fetchWeeklyTodos,
+      refreshTodoList,
       todoList,
       toggleTodoStatus,
       addTodo,
@@ -158,6 +168,6 @@ export function useTodoBoardState() {
 // 액션 전용 훅
 export function useTodoBoardActions() {
   const ctx = useTodoBoard();
-  const { fetchWeeklyTodos, toggleTodoStatus, addTodo, removeTodo, updateTodo, resetTodoList } = ctx;
-  return { fetchWeeklyTodos, toggleTodoStatus, addTodo, removeTodo, updateTodo, resetTodoList };
+  const { fetchWeeklyTodos, toggleTodoStatus, addTodo, removeTodo, updateTodo, resetTodoList, refreshTodoList } = ctx;
+  return { fetchWeeklyTodos, toggleTodoStatus, addTodo, removeTodo, updateTodo, resetTodoList, refreshTodoList };
 }

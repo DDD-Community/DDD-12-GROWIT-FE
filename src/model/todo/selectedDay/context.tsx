@@ -11,9 +11,7 @@ interface SelectedDayState {
 }
 
 interface SelectedDayActions {
-  setSelectedDay: (day: DAY_OF_THE_WEEK) => void;
-  setSelectedDate: (date: Date) => void;
-  setSelectedDayWithDate: (day: DAY_OF_THE_WEEK, date: Date) => void;
+  updateDateInfo: (date: Date | string) => void;
   resetToToday: () => void;
   updateWeekDates: (startDate: string, weekIndex: number) => void;
 }
@@ -52,19 +50,16 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
   const [selectedDate, setSelectedDateState] = useState<Date | null>(new Date());
   const [weekDates, setWeekDates] = useState<Array<{ key: DAY_OF_THE_WEEK; label: string; date: Date }>>([]);
 
-  const setSelectedDay = useCallback((day: DAY_OF_THE_WEEK) => {
-    setSelectedDayState(day);
-    // Update selectedDate based on current week dates
-    const dayDate = weekDates.find(d => d.key === day);
-    if (dayDate) {
-      setSelectedDateState(dayDate.date);
+  const updateDateInfo = useCallback((date: Date | string) => {
+    let dateObj: Date;
+    if (typeof date === 'string') {
+      dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) return;
+    } else {
+      dateObj = date;
     }
-  }, [weekDates]);
-
-  const setSelectedDate = useCallback((date: Date) => {
-    setSelectedDateState(date);
-    // Update selectedDay based on the date's day of week
-    const dayOfWeek = date.getDay();
+    setSelectedDateState(dateObj);
+    const dayOfWeek = dateObj.getDay();
     const dayMap: Record<number, DAY_OF_THE_WEEK> = {
       0: 'SUNDAY',
       1: 'MONDAY',
@@ -77,28 +72,26 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
     setSelectedDayState(dayMap[dayOfWeek] || 'MONDAY');
   }, []);
 
-  const setSelectedDayWithDate = useCallback((day: DAY_OF_THE_WEEK, date: Date) => {
-    setSelectedDayState(day);
-    setSelectedDateState(date);
-  }, []);
+  const updateWeekDates = useCallback(
+    (startDate: string, weekIndex: number) => {
+      const weekStart = getWeekStartDate(startDate, weekIndex - 1);
+      const dates = getAllWeekDates(weekStart);
+      setWeekDates(dates);
+
+      // Update selectedDate if it's in the new week
+      const currentDayDate = dates.find(d => d.key === selectedDay);
+      if (currentDayDate) {
+        setSelectedDateState(currentDayDate.date);
+      }
+    },
+    [selectedDay]
+  );
 
   const resetToToday = useCallback(() => {
     const today = new Date();
     setSelectedDayState(getTodayDayOfWeek());
     setSelectedDateState(today);
   }, []);
-
-  const updateWeekDates = useCallback((startDate: string, weekIndex: number) => {
-    const weekStart = getWeekStartDate(startDate, weekIndex - 1);
-    const dates = getAllWeekDates(weekStart);
-    setWeekDates(dates);
-    
-    // Update selectedDate if it's in the new week
-    const currentDayDate = dates.find(d => d.key === selectedDay);
-    if (currentDayDate) {
-      setSelectedDateState(currentDayDate.date);
-    }
-  }, [selectedDay]);
 
   const state: SelectedDayState = {
     selectedDay,
@@ -107,11 +100,9 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
   };
 
   const actions: SelectedDayActions = {
-    setSelectedDay,
-    setSelectedDate,
-    setSelectedDayWithDate,
-    resetToToday,
+    updateDateInfo,
     updateWeekDates,
+    resetToToday,
   };
 
   return (

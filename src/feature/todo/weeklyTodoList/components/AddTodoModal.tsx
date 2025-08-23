@@ -8,25 +8,22 @@ import { TextArea } from '@/shared/components/input/TextArea';
 import { useAddTodoForm } from '../hooks';
 import DatePicker from '@/shared/components/input/DatePicker';
 import Button from '@/shared/components/input/Button';
+import { useSelectedDayActions, useSelectedDayState } from '@/model/todo/selectedDay';
+import { usePlanSelector } from '@/model/todo/planSelector';
+import { useTodoBoardActions } from '@/model/todo/todoList';
 
 interface AddTodoModalProps {
   goal: Goal;
   selectedPlanId: string;
   selectedDate: Date | null;
-  onSuccessAddTodo: () => void;
   onWeekChange?: (weekOfMonth: number) => void;
-  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const AddTodoModal = ({
-  goal,
-  selectedPlanId,
-  selectedDate,
-  onSuccessAddTodo,
-  onWeekChange,
-  onToggleWeekend,
-}: AddTodoModalProps) => {
+export const AddTodoModal = ({ goal, selectedPlanId, selectedDate, onWeekChange }: AddTodoModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { changePlanByDate } = usePlanSelector();
+  const { updateDateInfo } = useSelectedDayActions();
+  const { refreshTodoList } = useTodoBoardActions();
 
   const {
     date,
@@ -40,7 +37,7 @@ export const AddTodoModal = ({
     handleAddTodo,
     resetForm,
     isFormValid,
-  } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange, onToggleWeekend);
+  } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange);
 
   const showModal = () => {
     // Reset form with selectedDate when modal opens
@@ -59,7 +56,9 @@ export const AddTodoModal = ({
     const success = await handleAddTodo();
     if (success) {
       setIsModalOpen(false);
-      onSuccessAddTodo();
+      changePlanByDate(date!);
+      updateDateInfo(date!);
+      refreshTodoList();
     }
   };
 

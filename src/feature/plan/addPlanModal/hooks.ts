@@ -21,10 +21,10 @@ export function useFetchEditPlan(options?: UseFetchEditPlanOptions) {
       setError(null);
 
       try {
-        const result = await putUpdatePlan({ goalId, planId, content });
-        showToast('주간 목표가 성공적으로 수정되었습니다.', 'success');
-        options?.onSuccess?.(result);
-        return result;
+        const message = await putUpdatePlan({ goalId, planId, content });
+        showToast(message, 'success');
+        options?.onSuccess?.(message);
+        return message;
       } catch (err: unknown) {
         const error = err as Error;
         if (err instanceof AxiosError) {

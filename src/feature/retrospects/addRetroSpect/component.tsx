@@ -8,6 +8,7 @@ import { ToolTip } from '@/shared/components/display/ToolTip';
 import { useFetchAddRetrospect, useFetchRetrospects, useFetchEditRetrospect } from './hooks';
 import { Goal } from '@/shared/type/goal';
 import { useToast } from '@/shared/components/feedBack/toast';
+import Image from 'next/image';
 
 interface AddRetroSpectButtonProps {
   goal: Goal;
@@ -29,9 +30,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
-      onSuccess: () => {
-        // 성공 시 처리 (필요시)
-      },
       onError: err => {
         console.error('회고 목록 조회 실패:', err);
       },
@@ -137,17 +135,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
           size="sm"
           layout="icon-left"
           onClick={() => showModal()}
-          icon={
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M9.99935 4.16663V15.8333M4.16602 9.99996H15.8327"
-                stroke="white"
-                strokeWidth="1.67"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          }
+          icon={<ButtonIcon needCreate={!retrospect} />}
         />
         {!isLoadingRetrospects && !retrospect && (
           <>
@@ -155,7 +143,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
             <ToolTip text="회고를 입력하세요" position="bottom-right" className="block sm:hidden" />
           </>
         )}
-        {retrospect && (
+        {!retrospect && (
           <div className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-[6px] bg-accent-fg-lime" />
         )}
       </div>
@@ -182,4 +170,25 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
       />
     </>
   );
+};
+
+interface ButtonIconProps {
+  needCreate: boolean;
+}
+
+const ButtonIcon = ({ needCreate }: ButtonIconProps) => {
+  if (needCreate) {
+    return (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9.99935 4.16663V15.8333M4.16602 9.99996H15.8327"
+          stroke="white"
+          strokeWidth="1.67"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  return <Image src="/icon/check-green.svg" alt="check-creaeIcon" width={20} height={20} />;
 };
