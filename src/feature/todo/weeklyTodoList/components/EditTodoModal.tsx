@@ -16,10 +16,9 @@ interface EditTodoModalProps {
   goal: Goal;
   onClose: () => void;
   onSubmit: (updated: Todo) => void;
-  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onToggleWeekend }: EditTodoModalProps) => {
+const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoModalProps) => {
   const [content, setContent] = useState(todo?.content || '');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -80,13 +79,6 @@ const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onToggleWeekend }:
 
       showToast('투두가 성공적으로 수정되었습니다.', 'success');
       onSubmit(updatedTodo);
-
-      // 날짜가 주말로 변경되었는지 확인하고 주말 표시 토글
-      const dayOfWeek = selectedDate.getDay(); // 0: 일요일, 6: 토요일
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      if (onToggleWeekend) {
-        onToggleWeekend(isWeekend); // 주말이면 true, 평일이면 false
-      }
 
       onClose();
     } catch (error: any) {

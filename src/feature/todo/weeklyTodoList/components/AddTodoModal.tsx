@@ -17,19 +17,12 @@ interface AddTodoModalProps {
   selectedPlanId: string;
   selectedDate: Date | null;
   onWeekChange?: (weekOfMonth: number) => void;
-  onToggleWeekend?: (showWeekend: boolean) => void;
 }
 
-export const AddTodoModal = ({
-  goal,
-  selectedPlanId,
-  selectedDate,
-  onWeekChange,
-  onToggleWeekend,
-}: AddTodoModalProps) => {
+export const AddTodoModal = ({ goal, selectedPlanId, selectedDate, onWeekChange }: AddTodoModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { changePlanByDate } = usePlanSelector();
-  const { setSelectedDate } = useSelectedDayActions();
+  const { updateDateInfo } = useSelectedDayActions();
   const { refreshTodoList } = useTodoBoardActions();
 
   const {
@@ -44,7 +37,7 @@ export const AddTodoModal = ({
     handleAddTodo,
     resetForm,
     isFormValid,
-  } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange, onToggleWeekend);
+  } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange);
 
   const showModal = () => {
     // Reset form with selectedDate when modal opens
@@ -64,7 +57,7 @@ export const AddTodoModal = ({
     if (success) {
       setIsModalOpen(false);
       changePlanByDate(date!);
-      setSelectedDate(date!);
+      updateDateInfo(date!);
       refreshTodoList();
     }
   };

@@ -2,17 +2,15 @@
 
 import { useCallback } from 'react';
 import { usePlanSelector } from '@/model/todo/planSelector';
-import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
+import { useTodoBoardActions } from '@/model/todo/todoList';
 import { useTodayTodoListActions } from '@/model/todo/todayTodoList';
 import { useGoalSelector } from '@/model/goal/context';
 import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
-import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { useDesktopWeekendToggle } from './hooks';
+import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
 import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AddRetroSpectButton } from '@/feature/retrospects';
-import { useSelectedDay } from '@/model/todo/selectedDay';
 
 export const WeeklyPlanBoard = () => {
   const { currentGoal, refetchCurrentGoal } = useGoalSelector();
@@ -21,13 +19,9 @@ export const WeeklyPlanBoard = () => {
 };
 
 const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: () => void }) => {
-  const { todoList } = useTodoBoardState();
-  const { toggleWeekend } = useDesktopWeekendToggle();
   const { refetchTodayList } = useTodayTodoListActions();
-  const { updateDateInfo } = useSelectedDay();
   const { toggleTodoStatus, refreshTodoList } = useTodoBoardActions();
-  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId, changePlanByDate } =
-    usePlanSelector();
+  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
 
   const handleRefreshGoal = useCallback(() => {
     refetchGoal();
@@ -49,28 +43,6 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
     },
     [goal.plans, setSelectedPlanId]
   );
-
-  const handleToggleWeekend = useCallback(
-    (showWeekend: boolean) => {
-      toggleWeekend(showWeekend);
-    },
-    [toggleWeekend]
-  );
-
-  const handleEdit = useCallback((updatedTodo: Todo) => {
-    if (updatedTodo.date) {
-      changePlanByDate(updatedTodo.date);
-      updateDateInfo(updatedTodo.date);
-      handleRefreshTodoList();
-    }
-  }, []);
-
-  const handleDelete = useCallback((deletedTodo: Todo) => {
-    if (deletedTodo.date) {
-      changePlanByDate(deletedTodo.date);
-      handleRefreshTodoList();
-    }
-  }, []);
 
   const handleToggleTodo = useCallback(
     (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
@@ -94,18 +66,13 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
           selectedPlanIndex={selectedWeekIndex}
           onSuccessAddPlan={handleRefreshGoal}
         />
-        {todoList && (
-          <WeeklyTodoList
-            weeklyTodos={todoList}
-            goal={goal}
-            currentWeekIndex={selectedWeekIndex}
-            onToggleTodo={handleToggleTodo}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onWeekChange={handleWeekChange}
-            onToggleWeekend={handleToggleWeekend}
-          />
-        )}
+        <WeeklyTodoList
+          goal={goal}
+          currentWeekIndex={selectedWeekIndex}
+          onRefreshTodoList={handleRefreshTodoList}
+          onToggleTodo={handleToggleTodo}
+          onWeekChange={handleWeekChange}
+        />
       </div>
     </>
   );
