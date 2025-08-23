@@ -8,10 +8,10 @@ import { ContributionGrid } from './components/ContributionGrid';
 import { ContributionSkeleton } from './components/ContributionSkeleton';
 
 export const ContributionGraph = () => {
-  const { selectedGoal } = useGoalSelector();
-  const { contributionList, isLoading } = useFetchContributionList(selectedGoal?.id || '');
+  const { currentGoal } = useGoalSelector();
+  const { contributionList, isLoading } = useFetchContributionList(currentGoal?.id || '');
 
-  if (!selectedGoal) {
+  if (!currentGoal) {
     return null;
   }
 

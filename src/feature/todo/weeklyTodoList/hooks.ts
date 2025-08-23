@@ -74,7 +74,6 @@ export function useAddTodoForm(
   selectedPlanId: string,
   selectedDate: Date | null,
   onWeekChange?: (weekOfMonth: number) => void,
-  onToggleWeekend?: (showWeekend: boolean) => void
 ) {
   const [date, setDate] = useState<Date | undefined>(selectedDate || undefined);
   const [content, setContent] = useState('');
@@ -158,13 +157,6 @@ export function useAddTodoForm(
         onWeekChange(data.plan.weekOfMonth);
       }
 
-      // 날짜가 주말인지 확인하고 주말 표시 토글
-      const dayOfWeek = date.getDay(); // 0: 일요일, 6: 토요일
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      if (onToggleWeekend) {
-        onToggleWeekend(isWeekend); // 주말이면 true, 평일이면 false
-      }
-
       return true; // 성공 시 true 반환
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -174,7 +166,7 @@ export function useAddTodoForm(
     } finally {
       setIsSubmitting(false);
     }
-  }, [date, content, addTodo, goal.id, selectedPlanId, showToast, onWeekChange, onToggleWeekend]);
+  }, [date, content, addTodo, goal.id, selectedPlanId, showToast, onWeekChange]);
 
   // 폼 초기화 - selectedDate가 있으면 그 값으로, 없으면 undefined로 초기화
   const resetForm = useCallback(() => {
