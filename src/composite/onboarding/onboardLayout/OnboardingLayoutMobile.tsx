@@ -3,30 +3,32 @@
 import React from 'react';
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
+import { ProgressIndicator } from './components/ProgressIndicator';
 
 interface OnboardingLayoutMobileProps {
   currentStep: number;
   totalSteps: number;
   guideMessage: string;
+  subMessage: string;
   onNext: () => void;
   onSkip?: () => void;
   onStepClick?: (step: number) => void;
   children: React.ReactNode;
   isLastStep: boolean;
-  characterDesktopImage?: string;
-  characterMobileImage?: string;
+  characterImage?: string;
 }
 
 export function OnboardingLayoutMobile({
   currentStep,
   totalSteps,
   guideMessage,
+  subMessage,
   onNext,
   onSkip,
   onStepClick,
   children,
   isLastStep,
-  characterMobileImage,
+  characterImage,
 }: OnboardingLayoutMobileProps) {
   return (
     <div className="fixed inset-0 w-full h-full bg-[#1C1C1E] flex flex-col md:hidden overflow-hidden">
@@ -34,48 +36,24 @@ export function OnboardingLayoutMobile({
       <div className="px-6 pt-12 pb-4 flex-shrink-0">
         {/* Guide message with character */}
         <div className="flex items-center justify-center gap-4">
-          {characterMobileImage && (
+          {characterImage && (
             <div className="relative w-[60px] h-[60px] flex-shrink-0">
-              <Image
-                src={characterMobileImage}
-                alt="캐릭터"
-                fill
-                className="object-contain"
-                priority
-              />
+              <Image src={characterImage} alt="캐릭터" fill className="object-contain" priority />
             </div>
           )}
-          <p className="text-white text-lg font-medium text-center whitespace-pre-line">
-            {guideMessage}
-          </p>
+          <div className="flex flex-col">
+            <p className="text-white text-lg font-medium text-center whitespace-pre-line">{guideMessage}</p>
+            <p className="text-white text-lg font-medium text-center whitespace-pre-line">{subMessage}</p>
+          </div>
         </div>
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex items-center justify-center px-4 min-h-0">
-        {children}
-      </div>
+      <div className="flex-1 flex items-center justify-center px-4 min-h-0">{children}</div>
 
       {/* Progress indicators below content */}
       <div className="px-6 pb-24 flex-shrink-0">
-        <div className="flex justify-center gap-2">
-          {Array.from({ length: totalSteps }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => onStepClick?.(index)}
-              className="p-2 -m-2 cursor-pointer"
-              aria-label={`Go to step ${index + 1}`}
-            >
-              <div
-                className={`h-2 rounded-full transition-all duration-300 hover:bg-gray-400 ${
-                  index === currentStep
-                    ? 'w-10 bg-white hover:bg-white'
-                    : 'w-2 bg-gray-600'
-                }`}
-              />
-            </button>
-          ))}
-        </div>
+        <ProgressIndicator currentStep={currentStep} totalSteps={totalSteps} onStepClick={onStepClick} />
       </div>
 
       {/* Bottom fixed button area */}
@@ -83,10 +61,7 @@ export function OnboardingLayoutMobile({
         <div className="flex justify-center gap-4">
           {!isLastStep ? (
             <>
-              <button
-                onClick={onSkip}
-                className="px-6 py-3 text-gray-400 hover:text-gray-300 transition-colors"
-              >
+              <button onClick={onSkip} className="px-6 py-3 text-gray-400 hover:text-gray-300 transition-colors">
                 건너뛰기
               </button>
               <button
