@@ -2,22 +2,29 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { CompletedTaskBox } from '../done/components/CompletedTaskBox';
-import { Duration } from '../type';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useWeeklyRetrospect } from '../hooks';
 import { WeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/component';
 import { EntireRetrospect } from '@/feature/retrospects/entireRetrospect/component';
-
-const dummyDuration: Duration = {
-  startDate: '2025/7/1',
-  endDate: '2025/7/31',
-};
+import { useEffect, useState } from 'react';
+import { getCompletedGoals } from './api';
+import { Goal } from '@/shared/type/goal';
 
 export const CompletedDetailRetrospect = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const [completedGoal, setCompletedGoal] = useState<Goal | null>(null);
+
+  useEffect(() => {
+    const initData = async () => {
+      const res = await getCompletedGoals();
+      const completedGoals = res.data;
+      const targetGoal = completedGoals.find(goal => goal.id === params.id) || null;
+      setCompletedGoal(targetGoal);
+    };
+    initData();
+  }, []);
   const { weeklyRetrospect, plans, updateWeeklyRetrospect } = useWeeklyRetrospect(params.id);
-  //const { todoCompletedRate, analysis, content } = useEntireRetrospect(params.id);
 
   return (
     <>
@@ -30,9 +37,17 @@ export const CompletedDetailRetrospect = () => {
       </div>
 
       <FlexBox direction="col" className="gap-5 p-4">
-        <CompletedTaskBox id={''} isCompleted={false} content={'그로잇 서비스 출시'} duration={dummyDuration} />
+        {completedGoal && (
+          <CompletedTaskBox
+            id={completedGoal.id}
+            isCompleted={true}
+            content={completedGoal.name}
+            duration={completedGoal.duration}
+          />
+        )}
+
         {/** 전체 회고 (AI) */}
-        <EntireRetrospect goalId={params.id} isSummaryVisible={true} />
+        <EntireRetrospect goalId={params.id} />
         {/** 주간 회고 */}
         <WeeklyRetrospect
           weeklyRetrospect={weeklyRetrospect}

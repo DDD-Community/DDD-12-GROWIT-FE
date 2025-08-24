@@ -30,13 +30,8 @@ export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospe
           return (
             <WeeklyRetrospectBox
               key={currentPlan.id}
-              id={currentRetrospect?.id ? currentRetrospect.id : null}
-              week={currentPlan.weekOfMonth}
-              isLocked={currentRetrospect === null && !currentPlan.isCurrentWeek}
-              isCompleted={currentRetrospect !== null && currentRetrospect.content.length > 0}
-              isThisWeek={currentPlan.isCurrentWeek}
-              weeklyGoal={currentPlan.content}
-              content={currentRetrospect ? currentRetrospect.content : ''}
+              retrospect={currentRetrospect || null}
+              plan={currentPlan}
               updateWeeklyRetrospect={updateWeeklyRetrospect}
             />
           );

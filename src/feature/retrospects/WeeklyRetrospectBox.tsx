@@ -3,7 +3,9 @@ import FlexBox from '@/shared/components/foundation/FlexBox';
 import Badge from '@/shared/components/display/Badge';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Plan, Retrospect } from '@/composite/retrospect/type';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 interface LockedWeeklyRetrospect {
   week: number;
@@ -11,11 +13,9 @@ interface LockedWeeklyRetrospect {
   weeklyGoal: string;
 }
 
-interface WeeklyRetrospectBoxProps extends LockedWeeklyRetrospect {
-  id: string | null;
-  isLocked: boolean;
-  isCompleted: boolean;
-  content: string;
+interface WeeklyRetrospectBoxProps {
+  retrospect: Retrospect | null;
+  plan: Plan;
   updateWeeklyRetrospect: (
     e: React.FormEvent<HTMLFormElement>,
     weeklyRetrospectId: string,
@@ -23,39 +23,43 @@ interface WeeklyRetrospectBoxProps extends LockedWeeklyRetrospect {
   ) => Promise<void>;
 }
 
-export const WeeklyRetrospectBox = ({
-  id,
-  week,
-  isLocked,
-  isCompleted,
-  isThisWeek = false,
-  weeklyGoal,
-  content,
-  updateWeeklyRetrospect,
-}: WeeklyRetrospectBoxProps) => {
+export const WeeklyRetrospectBox = ({ retrospect, plan, updateWeeklyRetrospect }: WeeklyRetrospectBoxProps) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [weeklyRetrospect, setWeeklyRetrospect] = useState(content);
+  const [weeklyRetrospect, setWeeklyRetrospect] = useState(retrospect ? retrospect.content : '');
+  const { showToast } = useToast();
 
-  if (isLocked) return <LockedWeeklyRetrospectBox week={week} isThisWeek={isThisWeek} weeklyGoal={weeklyGoal} />;
+  const isLocked = useMemo(() => {
+    return retrospect === null && !false;
+  }, [retrospect]);
 
-  const handleUpdateRetrospect = (e: React.FormEvent<HTMLFormElement>) => {
+  const isWeelyRetrosepectCompleted = useMemo(() => {
+    return retrospect !== null && retrospect.content.length > 0;
+  }, [retrospect]);
+
+  if (isLocked)
+    return (
+      <LockedWeeklyRetrospectBox week={plan.weekOfMonth} isThisWeek={plan.isCurrentWeek} weeklyGoal={plan.content} />
+    );
+
+  const handleUpdateRetrospect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (id) {
-      updateWeeklyRetrospect(e, id, weeklyRetrospect);
+    if (retrospect) {
+      await updateWeeklyRetrospect(e, retrospect.id, weeklyRetrospect);
     }
     setIsEditable(false);
   };
+
   return (
     <div
-      className={`relative flex gap-3 flex-1 w-full bg-elevated-normal py-5 px-6 rounded-lg mt-4 shadow-xs ${isThisWeek ? 'border border-white/50' : ''}`}
+      className={`relative flex gap-3 flex-1 w-full bg-elevated-normal py-5 px-6 rounded-lg mt-4 shadow-xs ${plan.isCurrentWeek ? 'border border-white/50' : ''}`}
     >
       {/* 왼쪽 아이콘 + 선 */}
       <div className="flex flex-col items-center gap-4">
-        {isCompleted ? (
+        {plan.content ? (
           <Image src="/checked.svg" alt="checked" width={32} height={32} />
         ) : (
           <div className="heading-2-bold border border-label-normal text-label-normal py-1 px-3 rounded-full">
-            {week}
+            {plan.weekOfMonth}
           </div>
         )}
 
@@ -65,21 +69,21 @@ export const WeeklyRetrospectBox = ({
       {/* 오른쪽 내용 */}
       <div className="flex flex-col flex-1 gap-4 pt-1">
         <FlexBox className="gap-2">
-          <p className="headline-1-bold text-label-normal">{week}주차</p>
+          <p className="headline-1-bold text-label-normal">{plan.weekOfMonth}주차</p>
           <Badge
             type="default"
             size="sm"
-            textColor={isCompleted ? 'text-label-neutral' : 'text-brand-neon'}
-            color={isCompleted ? 'bg-fill-normal' : 'bg-green-500/20'}
-            label={isCompleted ? '작성완료' : '진행 중'}
+            textColor={isWeelyRetrosepectCompleted ? 'text-label-neutral' : 'text-brand-neon'}
+            color={isWeelyRetrosepectCompleted ? 'bg-fill-normal' : 'bg-green-500/20'}
+            label={isWeelyRetrosepectCompleted ? '작성완료' : '진행 중'}
           />
         </FlexBox>
         <FlexBox className="w-full rounded-lg gap-4 body-1-bold">
           <span className="text-label-alternative">주차 목표</span>
-          <span className="text-label-neutral body-1-normal">"{weeklyGoal}"</span>
+          <span className="text-label-neutral body-1-normal">"{plan.content}"</span>
         </FlexBox>
-        {isCompleted && !isEditable ? (
-          <p className="body-1-normal text-label-neutral">{content}</p>
+        {isWeelyRetrosepectCompleted && !isEditable ? (
+          <p className="body-1-normal text-label-neutral">{retrospect?.content}</p>
         ) : (
           <form className="flex flex-col gap-2 w-full" onSubmit={handleUpdateRetrospect}>
             <TextArea
@@ -95,7 +99,7 @@ export const WeeklyRetrospectBox = ({
           </form>
         )}
 
-        {isCompleted && !isEditable && (
+        {isWeelyRetrosepectCompleted && !isEditable && (
           <button
             onClick={() => setIsEditable(true)}
             className="absolute bottom-4 right-4 p-2 rounded-2xl w-[36px] bg-label-button-neutral hover:bg-gray-600 border border-line-normal cursor-pointer"
