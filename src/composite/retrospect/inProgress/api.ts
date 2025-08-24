@@ -1,8 +1,10 @@
-import { InProgress } from './component';
 import { apiClient } from '@/shared/lib/apiClient';
-import { Duration, Retrospect, Plan } from '../type';
+import { Retrospect, Plan } from '../type';
 import { Goal } from '@/shared/type/goal';
 
+/**
+ * @deprecated - Goal 타입으로 대체
+ */
 // interface InprogressRetrospectResponse {
 //   data: {
 //     id: string;
