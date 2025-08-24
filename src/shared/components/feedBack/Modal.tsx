@@ -44,7 +44,7 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
   return (
     <dialog
       ref={dialogRef}
-      className={`max-w-[338px] md:max-w-[560px] bg-elevated-assistive rounded-lg shadow-xl border-0 fixed inset-0 m-auto ${className}`}
+      className={`max-w-[338px] md:max-w-[560px] bg-elevated-assistive rounded-[20px] shadow-xl border-0 fixed inset-0 m-auto ${className}`}
     >
       {title && (
         <>
@@ -72,11 +72,13 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
           />
         </>
       )}
-      <FlexBox direction="col" className="py-5 px-8 gap-5 overflow-y-visible">
+      <FlexBox direction="col" className="py-[20px] px-[24px] gap-5 overflow-y-visible">
         {!renderContent ? <></> : renderContent()}
       </FlexBox>
       <div id="modal-portal-layer" className="relative" />
-      <FlexBox className="w-full py-4 px-8 justify-end gap-2">{!renderFooter ? <></> : renderFooter()}</FlexBox>
+      <FlexBox className="w-full pt-[16px] pb-[24px] px-[24px] justify-end gap-2">
+        {!renderFooter ? <></> : renderFooter()}
+      </FlexBox>
     </dialog>
   );
 };
