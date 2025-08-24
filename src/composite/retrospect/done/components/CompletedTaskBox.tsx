@@ -64,7 +64,7 @@ export const CompletedTaskBox = ({ id, isCompleted, content, duration }: Complet
           width={24}
           height={24}
           className="cursor-pointer"
-          onClick={() => router.push(`/retrospect/${id}`)}
+          onClick={() => router.push(`/retrospect/completed/${id}`)}
         />
       )}
     </div>

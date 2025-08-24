@@ -3,6 +3,7 @@ import { Plan, Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { AxiosError } from 'axios';
 
 export const useWeeklyRetrospect = (id: string) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
@@ -40,15 +41,17 @@ export const useWeeklyRetrospect = (id: string) => {
   ) => {
     e.preventDefault();
     try {
-      const response = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
-      if ('message' in response) {
-        showToast(response.message, 'error');
-      } else {
-        if (id) fetchWeeklyRetrosepct();
-      }
-    } catch (error) {
+      await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
+      if (weeklyRetrospectId) fetchWeeklyRetrosepct();
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
       console.error(error);
-      throw error;
+
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+
+      throw new Error('알 수 없는 오류가 발생했습니다.');
     }
   };
 

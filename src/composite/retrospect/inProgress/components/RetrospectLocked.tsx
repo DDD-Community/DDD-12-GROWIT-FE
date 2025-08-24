@@ -2,11 +2,13 @@ import FlexBox from '@/shared/components/foundation/FlexBox';
 
 interface RetrospectLockedProps {
   title: string;
+  label?: string;
 }
-export const RetrospectLocked = ({ title }: RetrospectLockedProps) => {
+export const RetrospectLocked = ({ title, label = '' }: RetrospectLockedProps) => {
   return (
     <div className="flex flex-col gap-4 w-full bg-elevated-normal py-5 px-6 pb-8 rounded-lg">
       <p className="headline-1-bold text-label-normal">{title}</p>
+      <label className="text-primary-normal">{label}</label>
       <FlexBox className="bg-inverse-primary/5 py-3 px-4 w-full rounded-lg gap-4">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path

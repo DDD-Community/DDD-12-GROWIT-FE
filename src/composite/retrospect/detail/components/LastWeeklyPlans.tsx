@@ -3,23 +3,85 @@
 import { CircularProgress } from '@/shared/components/display/CircluarProgress';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import Button from '@/shared/components/input/Button';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Checkbox from '@/shared/components/input/Checkbox';
+import { useEffect, useState } from 'react';
+import { getGoalById, getWeeklyTodos, WeeklyTodosData } from '../api';
+import { Goal, Plan } from '@/shared/type/goal';
+import { useWeeklyTodos } from '../hooks/useWeeklyTodos';
 
-const week = ['월', '화', '수', '목', '금', '토', '일'];
+const weekDays = ['월', '화', '수', '목', '금', '토', '일'] as const;
 export const LastWeeklyPlans = () => {
   const router = useRouter();
+  const goalId = useParams<{ id: string }>().id;
+  const [goal, setGoal] = useState<Goal | null>(null);
+  const [totalWeeklyTodos, setTotalWeeklyTodos] = useState<WeeklyTodosData[]>([]); // 모든 주차의 todos를 담는 상태
+  const [currentWeek, setCurrentWeek] = useState(1);
+
+  // 현재 주차의 todos 데이터 (빈 객체로 초기화)
+  const currentWeekTodos = totalWeeklyTodos[currentWeek - 1] || {
+    MONDAY: [],
+    TUESDAY: [],
+    WEDNESDAY: [],
+    THURSDAY: [],
+    FRIDAY: [],
+    SATURDAY: [],
+    SUNDAY: [],
+  };
+
+  const { weeklyStates, selectedDay, setSelectedDay, selectedDayTodos } = useWeeklyTodos(currentWeekTodos);
+
+  const getAllWeeklyTodos = async (goalId: string, plansData: Plan[]) => {
+    // 모든 주차 데이터를 병렬로 가져오기
+    const allWeeklyTodos = await Promise.all(
+      plansData.map(async plan => {
+        try {
+          const todoResponse = await getWeeklyTodos(goalId, plan.id);
+          return todoResponse.data;
+        } catch (error) {
+          console.error(`Failed to fetch todos for plan ${plan.id}:`, error);
+          return {};
+        }
+      })
+    );
+    return allWeeklyTodos;
+  };
+
+  useEffect(() => {
+    const initData = async () => {
+      const res = await getGoalById(goalId);
+      const goalData = res.data;
+      const plansData = goalData.plans;
+      setGoal(goalData);
+
+      const weeklyTodos = await getAllWeeklyTodos(goalId, plansData);
+      setTotalWeeklyTodos(weeklyTodos);
+    };
+    initData();
+  }, []);
+
+  // 주차 변경 핸들러
+  const handleWeekChange = (direction: number) => {
+    const newWeek = currentWeek + direction;
+    const maxWeeks = totalWeeklyTodos.length;
+
+    if (newWeek >= 1 && newWeek <= maxWeeks) {
+      setCurrentWeek(newWeek);
+      setSelectedDay(null); // 주차 변경 시 선택된 요일 초기화
+    }
+  };
+
   return (
     <>
       <FlexBox className="w-full justify-center pb-4">
-        <button onClick={() => router.back()}>
+        <button onClick={() => router.back()} className="cursor-pointer">
           <svg
-            width="12"
-            height="12"
+            width="14"
+            height="14"
             viewBox="0 0 8 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="rotate-180 hidden md:block"
+            className="rotate-180"
           >
             <path
               d="M1.5 11L6.5 6L1.5 1"
@@ -36,6 +98,7 @@ export const LastWeeklyPlans = () => {
       <FlexBox direction="col" className="gap-4 text-primary-normal">
         <FlexBox className="gap-4 font-semibold">
           <Button
+            onClick={() => handleWeekChange(-1)}
             variant="tertiary"
             layout="icon-only"
             size="xl"
@@ -50,7 +113,7 @@ export const LastWeeklyPlans = () => {
               >
                 <path
                   d="M1.5 11L6.5 6L1.5 1"
-                  stroke={`gray`}
+                  stroke={`white`}
                   strokeWidth="1.67"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -58,8 +121,9 @@ export const LastWeeklyPlans = () => {
               </svg>
             }
           />
-          <span className="body-1-normal">1주차</span>
+          <span className="body-1-normal">{currentWeek}주차</span>
           <Button
+            onClick={() => handleWeekChange(1)}
             variant="tertiary"
             layout="icon-only"
             size={'xl'}
@@ -79,26 +143,46 @@ export const LastWeeklyPlans = () => {
         <FlexBox className="gap-4 w-full">
           <div className="flex-1 border border-line-normal rounded-lg bg-normal-assistive py-4 px-5">
             <p className="label-2-bold text-label-alternative">주차 목표</p>
-            <p className="body-1-normal text-label-normal">'그로잇 서비스 출시'</p>
+            {goal && <p className="body-1-normal text-label-normal">'{goal.name}'</p>}
           </div>
           <div className="flex-1 border border-line-normal rounded-lg bg-normal-assistive py-4 px-5">
             <p className="label-2-bold text-label-alternative">주차 완료율</p>
-            <p className="body-1-bold text-brand-neon">67%</p>
+            <p className="body-1-bold text-brand-neon">{weeklyStates[0].progress}%</p>
           </div>
         </FlexBox>
         <FlexBox className="w-full justify-between">
-          {week.map(e => (
-            <FlexBox key={e} direction="col" className="gap-1">
-              <CircularProgress progress={40} dayOfWeek={e} />
-              <span className="font-semibold">8/1</span>
+          {weeklyStates.map(state => (
+            <FlexBox key={state.korDay} direction="col" className={`gap-1`}>
+              <CircularProgress
+                progress={state.progress}
+                dayOfWeek={state.korDay}
+                isSelected={selectedDay === state.korDay}
+                onClick={() => setSelectedDay(state.korDay)}
+              />
+              {/* <span className="font-semibold">{state.date}</span> */}
             </FlexBox>
           ))}
         </FlexBox>
-        <div className="grid grid-cols-2 w-full justify-between gap-8 bg-normal-assistive border border-line-normal py-5 px-4 rounded-lg text-sm">
-          <FlexBox className="gap-2 cursor-pointer">
-            <Checkbox />
-            <p className="text-label-normal">UI 구성 (이메일/비번, 버튼, 에러 문구) 민트초코</p>
-          </FlexBox>
+        <div className="grid grid-cols-1 md:grid-cols-2 w-full justify-between gap-8 bg-normal-assistive border border-line-normal py-5 px-4 rounded-lg text-sm">
+          {/* 선택된 요일의 todo 리스트 */}
+          {selectedDay ? (
+            selectedDayTodos.length > 0 ? (
+              selectedDayTodos.map(todo => (
+                <FlexBox key={todo.id} className="gap-2 cursor-pointer">
+                  <Checkbox checked={todo.isCompleted} readOnly />
+                  <p
+                    className={`text-sm ${todo.isCompleted ? 'text-label-alternative line-through' : 'text-label-normal'}`}
+                  >
+                    {todo.content}
+                  </p>
+                </FlexBox>
+              ))
+            ) : (
+              <p className="text-label-alternative">{selectedDay}요일에 등록된 할 일이 없습니다.</p>
+            )
+          ) : (
+            <p className="text-label-alternative">요일을 선택하면 해당 요일의 할 일을 확인할 수 있습니다.</p>
+          )}
         </div>
       </FlexBox>
     </>

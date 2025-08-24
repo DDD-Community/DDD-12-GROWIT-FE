@@ -4,18 +4,16 @@ import { RoadMap } from '@/shared/components/display/RoadMap';
 import { WeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/component';
 import { EntireRetrospect } from '@/feature/retrospects/entireRetrospect/component';
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import Button from '@/shared/components/input/Button';
 import { useWeeklyRetrospect } from '../hooks';
 import { useEffect, useState } from 'react';
-import { Duration } from '../type';
 import { getProgressRetrospect } from './api';
 import { CreateGoalButton } from '@/feature/goal';
+import { WeeklyGoalBanner } from '@/feature/goal/weeklyGoalBanner';
+import { Goal } from '@/shared/type/goal';
 
 export const InProgress = () => {
+  const [ingGoal, setIngGoal] = useState<Goal | null>(null);
   const [goalId, setGoalId] = useState<string>('');
-  const [duration, setDuration] = useState<Duration>();
-  const [currentWeekOfMonth, setCurrentWeekOfMonth] = useState<number>();
-  const [totalWeek, setTotalWeek] = useState<number>();
 
   // 1. Goal과 Duration 가져오기
   useEffect(() => {
@@ -23,8 +21,8 @@ export const InProgress = () => {
       const res = await getProgressRetrospect();
       const currentGoal = res.data[0];
       if (currentGoal) {
+        setIngGoal(currentGoal);
         setGoalId(currentGoal.id);
-        setDuration(currentGoal.duration);
       }
     };
     fetchGoal();
@@ -33,21 +31,12 @@ export const InProgress = () => {
   // 2. goalId를 useWeeklyRetrospect에 전달
   const { weeklyRetrospect, plans, updateWeeklyRetrospect } = useWeeklyRetrospect(goalId);
 
-  // 3. plans가 바뀌면 currentWeekOfMonth와 totalWeek 계산
-  useEffect(() => {
-    if (plans.length > 0) {
-      const currentPlan = plans.find(plan => plan.isCurrentWeek);
-      setCurrentWeekOfMonth(currentPlan?.weekOfMonth);
-      setTotalWeek(plans.length);
-    }
-  }, [plans]);
-
   return (
     <>
-      {currentWeekOfMonth && totalWeek && duration ? (
+      {ingGoal ? (
         <>
-          <RoadMap currentStep={currentWeekOfMonth} totalSteps={totalWeek} duration={duration} />
-          <EntireRetrospect isSummaryVisible={false} />
+          <WeeklyGoalBanner goal={ingGoal} />
+          <EntireRetrospect goalId={goalId} />
           {weeklyRetrospect && (
             <WeeklyRetrospect
               weeklyRetrospect={weeklyRetrospect}
