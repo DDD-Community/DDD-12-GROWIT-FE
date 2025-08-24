@@ -61,7 +61,7 @@ export function OnboardingLayoutDesktop({
                     icon={<ChevronRight className="w-5 h-5" />}
                   />
                 ) : (
-                  <Button size="sm" layout="icon-right" text="시작하기" onClick={onNext} />
+                  <Button size="sm" text="목표 추가하기" onClick={onNext} />
                 )}
               </div>
             </div>

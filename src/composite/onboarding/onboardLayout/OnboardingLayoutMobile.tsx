@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { ChevronRight } from 'lucide-react';
 import { ProgressIndicator } from './components/ProgressIndicator';
+import Button from '@/shared/components/input/Button';
 
 interface OnboardingLayoutMobileProps {
   currentStep: number;
@@ -31,19 +31,17 @@ export function OnboardingLayoutMobile({
   characterImage,
 }: OnboardingLayoutMobileProps) {
   return (
-    <div className="fixed inset-0 w-full h-full bg-[#1C1C1E] flex flex-col md:hidden overflow-hidden">
-      {/* Top area with guide message and character */}
-      <div className="px-6 pt-12 pb-4 flex-shrink-0">
-        {/* Guide message with character */}
-        <div className="flex items-center justify-center gap-4">
-          {characterImage && (
-            <div className="relative w-[60px] h-[60px] flex-shrink-0">
-              <Image src={characterImage} alt="캐릭터" fill className="object-contain" priority />
-            </div>
-          )}
-          <div className="flex flex-col">
-            <p className="text-white text-lg font-medium text-center whitespace-pre-line">{guideMessage}</p>
-            <p className="text-white text-lg font-medium text-center whitespace-pre-line">{subMessage}</p>
+    <div className="fixed inset-0 w-full bg-[#1C1C1E] flex flex-col md:hidden overflow-hidden">
+      <div className="px-6 pt-4 pb-4 flex justify-center items-end gap-2">
+        {characterImage && (
+          <div className="relative min-w-[80px] min-h-[80px]">
+            <Image src={characterImage} alt="캐릭터" fill className="object-contain" priority />
+          </div>
+        )}
+        <div className="bg-[#2C2C2E] p-[16px] rounded-t-2xl rounded-r-2xl rounded-bl-none rounded-br-2xl shadow-md">
+          <div className="flex flex-col flex-1 gap-[8px]">
+            <p className="text-white text-[14px] whitespace-pre-line">{guideMessage}</p>
+            <p className="text-primary-heavy caption-1-regular leading-relaxed">{subMessage}</p>
           </div>
         </div>
       </div>
@@ -60,25 +58,9 @@ export function OnboardingLayoutMobile({
       <div className="fixed bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[#1C1C1E] via-[#1C1C1E] to-[#1C1C1E]/80">
         <div className="flex justify-center gap-4">
           {!isLastStep ? (
-            <>
-              <button onClick={onSkip} className="px-6 py-3 text-gray-400 hover:text-gray-300 transition-colors">
-                건너뛰기
-              </button>
-              <button
-                onClick={onNext}
-                className="flex items-center gap-2 px-8 py-3 bg-white text-black rounded-full hover:bg-gray-100 transition-colors font-medium"
-              >
-                다음
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </>
+            <Button size="lg" layout="icon-right" text="다음" onClick={onNext} />
           ) : (
-            <button
-              onClick={onNext}
-              className="px-12 py-3 bg-white text-black rounded-full hover:bg-gray-100 transition-colors font-medium w-full max-w-[300px]"
-            >
-              시작하기
-            </button>
+            <Button size="lg" text="목표 추가하기" onClick={onNext} />
           )}
         </div>
       </div>
