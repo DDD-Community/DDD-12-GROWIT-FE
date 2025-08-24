@@ -1,5 +1,5 @@
 'use client';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
 import { SignupDialogButton, SelectJobButtonGroup } from '@/feature/auth';
@@ -32,6 +32,7 @@ export const SignUpForm = () => {
     watch,
     setValue,
     register,
+    control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<SignupFormData>({
@@ -42,6 +43,8 @@ export const SignUpForm = () => {
       name: '',
       jobRoleId: '',
       careerYear: '',
+      privacyPolicy: false,
+      termsOfService: false,
     },
   });
   const jobRoleId = watch('jobRoleId');
@@ -132,12 +135,32 @@ export const SignUpForm = () => {
 
       <div className="space-y-2">
         <label className="flex items-center space-x-2">
-          <Checkbox {...register('privacyPolicy', { required: '개인정보 수집에 동의해주세요.' })} />
+          <Controller
+            name="privacyPolicy"
+            control={control}
+            rules={{ required: '개인정보 수집에 동의해주세요.' }}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
           <span className="text-gray-400 text-sm">개인정보 수집 동의</span>
         </label>
         {errors.privacyPolicy && <p className="text-xs text-red-500">{errors.privacyPolicy.message as string}</p>}
         <label className="flex items-center space-x-2">
-          <Checkbox {...register('termsOfService', { required: '이용 약관에 동의해주세요.' })} />
+          <Controller
+            name="termsOfService"
+            control={control}
+            rules={{ required: '이용 약관에 동의해주세요.' }}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
           <span className="text-gray-400 text-sm">이용 약관 동의</span>
         </label>
         {errors.termsOfService && <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>}
