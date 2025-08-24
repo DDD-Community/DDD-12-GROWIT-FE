@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { OnboardingLayout } from '@/composite/onboarding/onboardLayout';
 import { OnboardingContent, onboardingSteps } from '@/composite/onboarding/onboardContent';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function OnBoardingPage() {
   const router = useRouter();
@@ -13,12 +14,12 @@ export default function OnBoardingPage() {
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      router.push('/home');
+      router.push(ROUTES.CREATE_GOAL);
     }
   };
 
   const handleSkip = () => {
-    router.push('/home');
+    router.push(ROUTES.CREATE_GOAL);
   };
 
   const handleStepClick = (stepIndex: number) => {
