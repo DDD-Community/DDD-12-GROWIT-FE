@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getJobRoles } from '@/feature/auth/selectJobButtonGroup/api';
 import { JobRole } from '@/feature/auth/selectJobButtonGroup/type';
+import Button from '@/shared/components/input/Button/Button';
 
 interface SelectJobButtonGroupProps {
   selectedJobId: string;
@@ -49,18 +50,14 @@ export const SelectJobButtonGroup = ({ selectedJobId, onJobSelect }: SelectJobBu
   return (
     <div className="grid grid-cols-3 gap-3">
       {jobRoles.map(job => (
-        <button
+        <Button
           key={job.id}
           type="button"
           onClick={() => onJobSelect(job.id)}
-          className={`h-12 px-4 rounded-lg border transition-all duration-200 ${
-            selectedJobId === job.id
-              ? 'bg-[#8C7FF7] border-[#8C7FF7] text-white'
-              : 'bg-transparent border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
-          }`}
-        >
-          {job.name}
-        </button>
+          variant={selectedJobId === job.id ? 'primary' : 'secondary'}
+          size="ml"
+          text={job.name}
+        />
       ))}
     </div>
   );
