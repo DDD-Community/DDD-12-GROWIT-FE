@@ -31,7 +31,7 @@ export const NotifyOnboardModal = () => {
           <Image src="/image/grorong-welcome-m.png" alt="onboard" width={120} height={120} />
           <FlexBox direction="col" className="gap-3">
             <p className="text-white text-[16px] whitespace-pre-line">
-              {`${fullUserName}, 반가워 👋\n나는 네 목표 여정을 함께할 그로롱이야.\n이제 우리만의 특별한 목표를 시작해볼까?`}
+              {`${fullUserName}, 반가워 👋\n나는 네 여정을 함께할 그로롱이야.\n이제 우리만의 이야기를 시작해볼까?`}
             </p>
           </FlexBox>
         </FlexBox>
