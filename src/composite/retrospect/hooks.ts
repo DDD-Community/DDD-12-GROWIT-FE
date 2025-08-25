@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react';
 import { Plan, Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
-import { useToast } from '@/shared/components/feedBack/toast';
-import { AxiosError } from 'axios';
 
-export const useWeeklyRetrospect = (id: string) => {
+export const useWeeklyRetrospect = (id: string | null) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { showToast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -29,7 +26,6 @@ export const useWeeklyRetrospect = (id: string) => {
     } catch (error) {
       setIsError(true);
       console.error(error);
-      throw Error;
     }
     setIsLoading(false);
   };
@@ -43,15 +39,8 @@ export const useWeeklyRetrospect = (id: string) => {
     try {
       await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
       if (weeklyRetrospectId) fetchWeeklyRetrosepct();
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
+    } catch (error) {
       console.error(error);
-
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
-      }
-
-      throw new Error('알 수 없는 오류가 발생했습니다.');
     }
   };
 

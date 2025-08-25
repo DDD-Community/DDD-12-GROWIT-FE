@@ -31,7 +31,6 @@ export const getGoalRetrosepctById = async (id: string) => {
     const data = response.data;
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -42,7 +41,6 @@ export const getCompletedGoals = async () => {
     const data = response.data;
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -53,7 +51,6 @@ export const getGoalById = async (goalId: string) => {
     const data = response.data;
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -63,7 +60,6 @@ export const getWeeklyTodos = async (goalId: string, planId: string) => {
     const response = await apiClient.get<WeeklyTodosResponse>(`/todos?goalId=${goalId}&planId=${planId}`);
     return response.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

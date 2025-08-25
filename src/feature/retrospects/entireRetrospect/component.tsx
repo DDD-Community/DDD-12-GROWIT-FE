@@ -3,8 +3,8 @@ import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
 import { AISummaryBox } from './components/AISummaryBox';
 import { AISummaryButton } from './components/AISummaryButton';
-import Badge from '@/shared/components/display/Badge';
 import { useRetrospectAI } from './hook';
+import Badge from '@/shared/components/display/Badge';
 
 interface EntireRetrospectProps {
   goalId?: string;
