@@ -38,13 +38,7 @@ export const NotifyOnboardModal = () => {
       )}
       renderFooter={() => (
         <FlexBox className="gap-2 w-full">
-          <Button
-            variant="primary"
-            size="lg"
-            text="온보딩 시작하기"
-            onClick={handleOnboardingClick}
-            className="flex-1"
-          />
+          <Button variant="primary" size="lg" text="시작하기" onClick={handleOnboardingClick} className="flex-1" />
         </FlexBox>
       )}
     />
