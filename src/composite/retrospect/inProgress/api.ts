@@ -2,21 +2,6 @@ import { apiClient } from '@/shared/lib/apiClient';
 import { Retrospect, Plan } from '../type';
 import { Goal } from '@/shared/type/goal';
 
-/**
- * @deprecated - Goal 타입으로 대체
- */
-// interface InprogressRetrospectResponse {
-//   data: {
-//     id: string;
-//     userName: string;
-//     name: string;
-//     duration: Duration;
-//     toBe: string;
-//     categoray: string;
-//     plans: Plan[];
-//   }[];
-// }
-
 interface InProgressRetrospectResponse {
   data: Goal[];
 }
