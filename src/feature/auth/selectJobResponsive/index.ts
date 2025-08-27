@@ -1,0 +1,1 @@
+export { SelectJobResponsive } from './component';
