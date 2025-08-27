@@ -29,6 +29,7 @@ export const InProgress = () => {
       <WeeklyGoalBanner goal={currentGoal} />
       <RetrospectLocked />
       <WeeklyRetrospect
+        goalId={goalId}
         weeklyRetrospect={weeklyRetrospect}
         plans={plans}
         updateWeeklyRetrospect={updateWeeklyRetrospect}
