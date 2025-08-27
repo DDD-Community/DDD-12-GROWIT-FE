@@ -3,14 +3,14 @@
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Button from '../../input/Button';
-import { NAVIGATION_ROUTES, ROUTES } from '@/shared/constants/routes';
+import { NAVIGATION_ROUTES, ROUTES, shouldHiddenNavigation } from '@/shared/constants/routes';
 
 export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
 
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
-  const shouldShowNavigation = pathSegments.length <= 1;
+  const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
   const iconConfig = {
     size: 22,
     activeColor: '#FFFFFF',
@@ -19,9 +19,7 @@ export const BottomNavigation = () => {
   };
 
   const isActive = (path: string) => {
-    // RETROSPECT는 하위 경로도 포함
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
-    // 나머지는 정확히 일치
     return pathname === path;
   };
 

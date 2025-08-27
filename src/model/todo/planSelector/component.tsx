@@ -1,7 +1,6 @@
 'use client';
 
 import { PlanSelectorProvider, usePlanSelector } from './hooks';
-import { useRedirectToOnboarding } from '@/shared/hooks';
 import { useGoalSelector } from '@/model/goal/context';
 import { CreateNewGoal } from './components/CreateNewGoal';
 
@@ -61,11 +60,6 @@ export const PlanSelect = () => {
 
 export const PlanProvider = ({ children }: PlanProviderProps) => {
   const { isLoading, goalList, currentGoal } = useGoalSelector();
-
-  useRedirectToOnboarding({
-    isLoading,
-    goalListLength: goalList.length,
-  });
 
   if (!isLoading && goalList.length === 0) {
     return <CreateNewGoal />;

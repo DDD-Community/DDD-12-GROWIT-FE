@@ -57,6 +57,6 @@ export async function deleteRetrospect(req: DeleteRetrospectRequest) {
 }
 
 export async function putRetrospect(req: PutRetrospectRequest) {
-  const { data } = await apiClient.put<CommonResponse>(`/retrospects/${req.retrospectId}`, req);
+  const { data } = await apiClient.put<CommonResponse<string>>(`/retrospects/${req.retrospectId}`, req);
   return data.data;
 }

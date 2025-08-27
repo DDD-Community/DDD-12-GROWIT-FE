@@ -49,6 +49,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
 
   const { editRetrospect, isLoading: isEditingRetrospect } = useFetchEditRetrospect({
     onSuccess: () => {
+      showToast('회고 수정에 성공했습니다.', 'success');
       handleModalClose();
       fetchRetrospects();
     },

@@ -1,16 +1,11 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { Duration, Retrospect, Plan } from '../type';
+import { Retrospect, Plan } from '../type';
+import { Goal } from '@/shared/type/goal';
 
-interface InprogressRetrospectResponse {
-  data: {
-    id: string;
-    userId: string;
-    name: string;
-    duration: Duration;
-    toBe: string;
-    plans: Plan[];
-  }[];
+interface InProgressRetrospectResponse {
+  data: Goal[];
 }
+
 export interface WeeklyRetrospectResponse {
   data: {
     plan: Plan;
@@ -21,7 +16,7 @@ export interface WeeklyRetrospectResponse {
 // FIX : model/goal 의 Context 를 적용 필요 -> 붎필요 fetch 함수
 export const getProgressRetrospect = async () => {
   try {
-    const response = await apiClient.get<InprogressRetrospectResponse>('/goals?status=PROGRESS');
+    const response = await apiClient.get<InProgressRetrospectResponse>('/goals?status=PROGRESS');
     const data = response.data;
     return data;
   } catch (error) {

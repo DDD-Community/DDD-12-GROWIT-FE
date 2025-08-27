@@ -25,10 +25,10 @@ export const useWeeklyRetrospect = (id: string) => {
       setWeeklyRetrospect(totalWeeklyRetrospect);
       setPlans(totalPlans);
       setIsError(false);
-    } catch (error) {
+    } catch (error: any) {
       setIsError(true);
+      showToast(error?.response?.data?.message || error?.message || '주간 회고 조회에 실패했습니다.', 'error');
       console.error(error);
-      throw Error;
     }
     setIsLoading(false);
   };
@@ -40,15 +40,16 @@ export const useWeeklyRetrospect = (id: string) => {
   ) => {
     e.preventDefault();
     try {
-      const response = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
-      if ('message' in response) {
-        showToast(response.message, 'error');
+      const result = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
+      if (result.isSuccess) {
+        showToast('성공적으로 수정되었습니다.', 'success');
+        if (weeklyRetrospectId) fetchWeeklyRetrosepct();
       } else {
-        if (id) fetchWeeklyRetrosepct();
+        showToast(result.message || '수정에 실패했습니다.', 'error');
       }
-    } catch (error) {
+    } catch (error: any) {
+      showToast(error?.response?.data?.message || error?.message || '수정에 실패했습니다.', 'error');
       console.error(error);
-      throw error;
     }
   };
 

@@ -9,7 +9,7 @@ interface RetrospectSummaryBoxProps {
 export const RetrospectSummaryBox = ({ title, content }: RetrospectSummaryBoxProps) => {
   return (
     <div className="flex flex-col md:flex-row items-start gap-4 pt-6">
-      <Image src="/Avatar.png" alt="avatar" width={64} height={64} />
+      <Image src="/character.png" alt="growit-character" width={100} height={100} />
       <div className="flex flex-col gap-4 w-full bg-elevated-normal py-5 px-6 pb-8 rounded-lg">
         <p className="headline-1-bold text-label-normal">{title}</p>
         <FlexBox className="gap-4">
@@ -24,17 +24,15 @@ export const RetrospectSummaryBox = ({ title, content }: RetrospectSummaryBoxPro
 
 interface RetrospectBoxProps {
   title: string;
-  renderLeftSide: () => React.ReactNode;
-  renderContent: () => React.ReactNode;
+  children: React.ReactNode;
 }
 
-export const RetrospectBox = ({ title, renderLeftSide, renderContent }: RetrospectBoxProps) => {
+export const RetrospectBox = ({ title, children }: RetrospectBoxProps) => {
   return (
     <div className="flex flex-col md:flex-row items-start gap-4 pt-6">
-      {renderLeftSide()}
       <div className="flex flex-col gap-4 w-full bg-elevated-normal py-5 px-6 rounded-lg">
         <p className="headline-1-bold text-label-normal">{title}</p>
-        {renderContent()}
+        {children}
       </div>
     </div>
   );

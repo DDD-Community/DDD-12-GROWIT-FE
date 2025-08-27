@@ -6,6 +6,9 @@ interface UseRedirectToOnboardingProps {
   isLoading: boolean;
 }
 
+/**
+ * @deprecated 온보딩 페이지 이동 로직 대신 모달로 대체
+ */
 export function useRedirectToOnboarding({ goalListLength, isLoading }: UseRedirectToOnboardingProps) {
   const router = useRouter();
   const saveOnboardingVisit = useCallback(() => {
