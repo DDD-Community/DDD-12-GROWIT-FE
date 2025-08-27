@@ -3,7 +3,7 @@ import { Plan, Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
 
-export const useWeeklyRetrospect = (id: string | null) => {
+export const useWeeklyRetrospect = (id: string) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(false);

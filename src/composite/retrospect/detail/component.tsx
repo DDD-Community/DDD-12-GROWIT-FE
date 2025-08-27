@@ -11,8 +11,9 @@ import { getCompletedGoals } from './api';
 import { Goal } from '@/shared/type/goal';
 
 export const CompletedDetailRetrospect = () => {
-  const params = useParams<{ id: string }>();
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const { weeklyRetrospect, plans, updateWeeklyRetrospect } = useWeeklyRetrospect(params.id);
   const [completedGoal, setCompletedGoal] = useState<Goal | null>(null);
 
   useEffect(() => {
@@ -24,7 +25,6 @@ export const CompletedDetailRetrospect = () => {
     };
     initData();
   }, []);
-  const { weeklyRetrospect, plans, updateWeeklyRetrospect } = useWeeklyRetrospect(params.id);
 
   return (
     <>
