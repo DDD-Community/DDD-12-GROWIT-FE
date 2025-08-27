@@ -4,11 +4,17 @@ import { WeeklyRetrospectBox } from '@/feature/retrospects/weeklyRetrospect/comp
 import { Plan, Retrospect } from '@/composite/retrospect/type';
 
 interface WeeklyRetrospectProps {
+  goalId?: string;
   weeklyRetrospect: (Retrospect | null)[];
   plans: Plan[];
   updateWeeklyRetrospect: (weeklyRetrospectId: string, newRetrospect: string) => Promise<void>;
 }
-export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospect }: WeeklyRetrospectProps) => {
+export const WeeklyRetrospect = ({
+  goalId,
+  weeklyRetrospect,
+  plans,
+  updateWeeklyRetrospect,
+}: WeeklyRetrospectProps) => {
   const totalWeekCount = plans.length;
 
   const getCurrentWeekNumber = () => {
@@ -34,6 +40,7 @@ export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospe
 
           return (
             <WeeklyRetrospectBox
+              goalId={goalId}
               key={currentPlan.id}
               retrospect={currentRetrospect || null}
               plan={currentPlan}

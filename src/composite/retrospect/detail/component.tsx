@@ -50,6 +50,7 @@ export const CompletedDetailRetrospect = () => {
         <EntireRetrospect goalId={params.id} />
         {/** 주간 회고 */}
         <WeeklyRetrospect
+          goalId={params.id}
           weeklyRetrospect={weeklyRetrospect}
           plans={plans}
           updateWeeklyRetrospect={updateWeeklyRetrospect}

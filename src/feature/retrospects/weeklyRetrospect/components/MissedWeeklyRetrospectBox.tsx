@@ -8,18 +8,18 @@ import { Plan } from '@/shared/type/goal';
 import { useGoalSelector } from '@/model/goal/context';
 
 interface MissedWeeklyRetrospect {
+  goalId?: string;
   plan: Plan;
 }
 
 // 지나간 주차 미작성 컴포넌트 (새로 추가)
-export const MissedWeeklyRetrospectBox = ({ plan }: MissedWeeklyRetrospect) => {
-  const { currentGoal } = useGoalSelector();
+export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospect) => {
   const [isEditable, setIsEditable] = useState(false);
   const [weeklyRetrospect, setWeeklyRetrospect] = useState('');
 
   const addWeeklyRetrospect = async () => {
-    if (currentGoal && currentGoal.id) {
-      await postAddRetrospect({ goalId: currentGoal.id, planId: plan.id, content: weeklyRetrospect });
+    if (goalId) {
+      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
     }
     setIsEditable(false);
   };
@@ -54,7 +54,7 @@ export const MissedWeeklyRetrospectBox = ({ plan }: MissedWeeklyRetrospect) => {
             <FlexBox direction="col" className="gap-2 w-full">
               <TextArea
                 placeholder="회고 내용을 작성해주세요."
-                className="min-h-[100px]"
+                className="min-h-[100px] w-full"
                 value={weeklyRetrospect}
                 onChange={e => setWeeklyRetrospect(e.target.value)}
                 onClick={e => e.preventDefault()}

@@ -7,10 +7,10 @@ import { useMemo, useState } from 'react';
 import { Plan, Retrospect } from '@/composite/retrospect/type';
 import { MissedWeeklyRetrospectBox } from './MissedWeeklyRetrospectBox';
 import { LockedWeeklyRetrospectBox } from './LockedWeeklyRetrospectBox';
-import { useGoalSelector } from '@/model/goal/context';
 import { postAddRetrospect } from '../../addRetroSpect/api';
 
 interface WeeklyRetrospectBoxProps {
+  goalId?: string | undefined;
   retrospect: Retrospect | null;
   plan: Plan;
   isCurrentWeek: boolean;
@@ -19,6 +19,7 @@ interface WeeklyRetrospectBoxProps {
 }
 
 export const WeeklyRetrospectBox = ({
+  goalId,
   retrospect,
   plan,
   isCurrentWeek,
@@ -27,10 +28,9 @@ export const WeeklyRetrospectBox = ({
 }: WeeklyRetrospectBoxProps) => {
   const [isEditable, setIsEditable] = useState(false);
   const [weeklyRetrospect, setWeeklyRetrospect] = useState(retrospect ? retrospect.content : '');
-  const { currentGoal } = useGoalSelector();
 
   const isWeeklyRetrospectCompleted = useMemo(() => {
-    return retrospect !== null && retrospect.content.length > 0;
+    return retrospect !== null && retrospect.content.length;
   }, [retrospect]);
 
   // 상태 분기 로직
@@ -54,7 +54,7 @@ export const WeeklyRetrospectBox = ({
   // 각 상태별 컴포넌트 렌더링
   switch (retrospectiveState) {
     case 'MISSED':
-      return <MissedWeeklyRetrospectBox plan={plan} />;
+      return <MissedWeeklyRetrospectBox goalId={goalId} plan={plan} />;
     case 'FUTURE':
       return <LockedWeeklyRetrospectBox week={plan.weekOfMonth} weeklyGoal={plan.content} />;
     case 'WRITTEN':
@@ -70,8 +70,8 @@ export const WeeklyRetrospectBox = ({
       await updateWeeklyRetrospect(retrospect.id, weeklyRetrospect);
     }
     // 처음 작성하는 경우에는 새로운 회고 생성 (회고 데이터가 존재하지 않음)
-    else if (currentGoal && currentGoal.id) {
-      await postAddRetrospect({ goalId: currentGoal.id, planId: plan.id, content: weeklyRetrospect });
+    else if (goalId) {
+      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
     }
     setIsEditable(false);
   };
@@ -109,8 +109,8 @@ export const WeeklyRetrospectBox = ({
           <span className="text-label-alternative">주차 목표</span>
           <span className="text-label-neutral body-1-normal">"{plan.content}"</span>
         </FlexBox>
-        {isWeeklyRetrospectCompleted && !isEditable ? (
-          <p className="body-1-normal text-label-neutral">{retrospect?.content}</p>
+        {retrospect && !isEditable ? (
+          <p className="body-1-normal text-label-neutral">{retrospect.content}</p>
         ) : (
           <form className="flex flex-col gap-2 w-full" onSubmit={handleUpdateRetrospect}>
             <TextArea
