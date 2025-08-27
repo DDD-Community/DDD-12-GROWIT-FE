@@ -1,4 +1,4 @@
-import { HTMLAttributes, useState, ReactNode, forwardRef, useEffect, useRef } from 'react';
+import { HTMLAttributes, useState, ReactNode } from 'react';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 
 interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
@@ -8,17 +8,10 @@ interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Accordion: React.FC<AccordionProps> = ({ renderTitle, children, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   const toggleAccordion = () => {
     setIsOpen(prev => !prev);
   };
-
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.style.maxHeight = isOpen ? `${contentRef.current.scrollHeight}px` : '0px';
-    }
-  }, [isOpen, children]);
 
   return (
     <div className="py-3 w-full" {...props}>
@@ -36,8 +29,10 @@ export const Accordion: React.FC<AccordionProps> = ({ renderTitle, children, ...
           </svg>
         </div>
       </FlexBox>
-      <div ref={contentRef} className="overflow-hidden transition-all duration-300">
-        {children}
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+      >
+        <div className="overflow-hidden">{children}</div>
       </div>
     </div>
   );

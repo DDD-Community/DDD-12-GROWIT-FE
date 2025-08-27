@@ -31,7 +31,7 @@ const Badge = ({
         : size === 'md'
           ? 'py-1 px-4 text-sm rounded-2xl'
           : size === 'lg'
-            ? 'py-2 px-5 text-sm rounded-2xl'
+            ? 'py-2 px-5 rounded-2xl'
             : className
   );
 

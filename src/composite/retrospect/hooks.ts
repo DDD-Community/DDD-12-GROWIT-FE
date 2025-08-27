@@ -3,7 +3,6 @@ import { Plan, Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { AxiosError } from 'axios';
 
 export const useWeeklyRetrospect = (id: string) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
@@ -26,10 +25,10 @@ export const useWeeklyRetrospect = (id: string) => {
       setWeeklyRetrospect(totalWeeklyRetrospect);
       setPlans(totalPlans);
       setIsError(false);
-    } catch (error) {
+    } catch (error: any) {
       setIsError(true);
+      showToast(error?.response?.data?.message || error?.message || '주간 회고 조회에 실패했습니다.', 'error');
       console.error(error);
-      throw Error;
     }
     setIsLoading(false);
   };
@@ -41,17 +40,16 @@ export const useWeeklyRetrospect = (id: string) => {
   ) => {
     e.preventDefault();
     try {
-      await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
-      if (weeklyRetrospectId) fetchWeeklyRetrosepct();
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-      console.error(error);
-
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+      const result = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
+      if (result.isSuccess) {
+        showToast('성공적으로 수정되었습니다.', 'success');
+        if (weeklyRetrospectId) fetchWeeklyRetrosepct();
+      } else {
+        showToast(result.message || '수정에 실패했습니다.', 'error');
       }
-
-      throw new Error('알 수 없는 오류가 발생했습니다.');
+    } catch (error: any) {
+      showToast(error?.response?.data?.message || error?.message || '수정에 실패했습니다.', 'error');
+      console.error(error);
     }
   };
 

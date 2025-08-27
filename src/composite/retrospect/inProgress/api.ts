@@ -1,19 +1,6 @@
-import { InProgress } from './component';
 import { apiClient } from '@/shared/lib/apiClient';
-import { Duration, Retrospect, Plan } from '../type';
+import { Retrospect, Plan } from '../type';
 import { Goal } from '@/shared/type/goal';
-
-// interface InprogressRetrospectResponse {
-//   data: {
-//     id: string;
-//     userName: string;
-//     name: string;
-//     duration: Duration;
-//     toBe: string;
-//     categoray: string;
-//     plans: Plan[];
-//   }[];
-// }
 
 interface InProgressRetrospectResponse {
   data: Goal[];

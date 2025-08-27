@@ -10,26 +10,16 @@ import { getGoalById, getWeeklyTodos, WeeklyTodosData } from '../api';
 import { Goal, Plan } from '@/shared/type/goal';
 import { useWeeklyTodos } from '../hooks/useWeeklyTodos';
 
-const weekDays = ['월', '화', '수', '목', '금', '토', '일'] as const;
 export const LastWeeklyPlans = () => {
   const router = useRouter();
   const goalId = useParams<{ id: string }>().id;
   const [goal, setGoal] = useState<Goal | null>(null);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [totalWeeklyTodos, setTotalWeeklyTodos] = useState<WeeklyTodosData[]>([]); // 모든 주차의 todos를 담는 상태
-  const [currentWeek, setCurrentWeek] = useState(1);
-
-  // 현재 주차의 todos 데이터 (빈 객체로 초기화)
-  const currentWeekTodos = totalWeeklyTodos[currentWeek - 1] || {
-    MONDAY: [],
-    TUESDAY: [],
-    WEDNESDAY: [],
-    THURSDAY: [],
-    FRIDAY: [],
-    SATURDAY: [],
-    SUNDAY: [],
-  };
-
-  const { weeklyStates, selectedDay, setSelectedDay, selectedDayTodos } = useWeeklyTodos(currentWeekTodos);
+  const { weeklyStates, selectedDay, setSelectedDay, selectedDayTodos, handleWeekChange, currentWeek } = useWeeklyTodos(
+    totalWeeklyTodos,
+    plans
+  );
 
   const getAllWeeklyTodos = async (goalId: string, plansData: Plan[]) => {
     // 모든 주차 데이터를 병렬로 가져오기
@@ -53,23 +43,13 @@ export const LastWeeklyPlans = () => {
       const goalData = res.data;
       const plansData = goalData.plans;
       setGoal(goalData);
+      setPlans(plansData);
 
       const weeklyTodos = await getAllWeeklyTodos(goalId, plansData);
       setTotalWeeklyTodos(weeklyTodos);
     };
     initData();
   }, []);
-
-  // 주차 변경 핸들러
-  const handleWeekChange = (direction: number) => {
-    const newWeek = currentWeek + direction;
-    const maxWeeks = totalWeeklyTodos.length;
-
-    if (newWeek >= 1 && newWeek <= maxWeeks) {
-      setCurrentWeek(newWeek);
-      setSelectedDay(null); // 주차 변경 시 선택된 요일 초기화
-    }
-  };
 
   return (
     <>
@@ -159,7 +139,11 @@ export const LastWeeklyPlans = () => {
                 isSelected={selectedDay === state.korDay}
                 onClick={() => setSelectedDay(state.korDay)}
               />
-              {/* <span className="font-semibold">{state.date}</span> */}
+              <span
+                className={`caption-1-bold ${selectedDay === state.korDay ? 'text-white' : 'text-label-alternative'}`}
+              >
+                {state.dateString}
+              </span>
             </FlexBox>
           ))}
         </FlexBox>

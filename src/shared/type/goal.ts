@@ -16,4 +16,8 @@ export interface Plan {
   id: string;
   content: string;
   weekOfMonth: number;
+  duration?: {
+    startDate: string;
+    endDate: string;
+  };
 }
