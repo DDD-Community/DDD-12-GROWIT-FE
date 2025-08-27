@@ -1,6 +1,6 @@
 import { CommonResponse } from '@/shared/type/response';
 import { apiClient } from '@/shared/lib/apiClient';
-import { JobRole } from '@/feature/auth/selectJobButtonGroup/type';
+import { JobRole } from '@/feature/auth/selectJobResponsive/type';
 
 interface JobRolesResponse extends CommonResponse<{ jobRoles: JobRole[] }> {}
 

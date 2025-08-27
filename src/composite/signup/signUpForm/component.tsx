@@ -2,12 +2,12 @@
 import { useForm, Controller } from 'react-hook-form';
 import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
-import { SignupDialogButton, SelectJobButtonGroup } from '@/feature/auth';
+import { SignupDialogButton } from '@/feature/auth';
+import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
 import { SignupFormData } from './type';
 import { useFetchSignUp } from './hook';
 import { CareerYearType } from './type';
 import Checkbox from '@/shared/components/input/Checkbox';
-import SelectJobSelect from '@/feature/auth/selectJobSelect/component';
 
 const CAREER_YEAR_OPTIONS = [
   '선택',
@@ -96,18 +96,10 @@ export const SignUpForm = () => {
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-300">직무</label>
-        <div className="hidden md:block">
-          <SelectJobButtonGroup
-            selectedJobId={jobRoleId}
-            onJobSelect={jobId => setValue('jobRoleId', jobId, { shouldValidate: true })}
-          />
-        </div>
-        <div className="block md:hidden">
-          <SelectJobSelect
-            selectedJobId={jobRoleId}
-            onJobSelect={jobId => setValue('jobRoleId', jobId === '선택' ? '' : jobId, { shouldValidate: true })}
-          />
-        </div>
+        <SelectJobResponsive
+          selectedJobId={jobRoleId}
+          onJobSelect={jobId => setValue('jobRoleId', jobId, { shouldValidate: true })}
+        />
         {errors.jobRoleId && <p className="text-xs text-red-500">{errors.jobRoleId.message as string}</p>}
       </div>
 

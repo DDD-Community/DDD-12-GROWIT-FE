@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getJobRoles } from '@/feature/auth/selectJobButtonGroup/api';
-import { JobRole } from '@/feature/auth/selectJobButtonGroup/type';
+import { getJobRoles } from '@/feature/auth/selectJobResponsive/api';
+import { JobRole } from '@/feature/auth/selectJobResponsive/type';
 import { Select } from '@/shared/components/input/Select';
 
 interface SelectJobSelectProps {
