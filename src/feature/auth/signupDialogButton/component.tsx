@@ -45,9 +45,7 @@ export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmit
             <DialogDescription className="text-center">GROWIT 에 오신것을 환영해요!.</DialogDescription>
           </DialogHeader>
           <div className="flex justify-center">
-            <button onClick={handleSuccessConfirm} className="w-full">
-              확인
-            </button>
+            <Button size="ml" onClick={handleSuccessConfirm} text="확인" />
           </div>
         </DialogContent>
       </Dialog>
