@@ -10,7 +10,7 @@ interface EntireRetrospectProps {
   goalId?: string;
 }
 export const EntireRetrospect = ({ goalId = '' }: EntireRetrospectProps) => {
-  const { isLoading, isSuccess, getAISummary } = useRetrospectAI();
+  const { isLoading, isSuccess, postAISummary } = useRetrospectAI();
 
   return (
     <Accordion
@@ -49,7 +49,7 @@ export const EntireRetrospect = ({ goalId = '' }: EntireRetrospectProps) => {
               <div className="absolute inset-0 flex items-center justify-center pt-16">
                 <AISummaryButton
                   text="AI 분석 시작"
-                  onClick={() => getAISummary(goalId)}
+                  onClick={() => postAISummary(goalId)}
                   status={isLoading ? 'loading' : isSuccess ? 'success' : 'idle'}
                 />
               </div>

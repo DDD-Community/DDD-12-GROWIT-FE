@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getCompletedGoalRetrospect } from './api';
+import { postCompletedGoalRetrospect } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 
 export const useRetrospectAI = () => {
@@ -7,11 +7,11 @@ export const useRetrospectAI = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const { showToast } = useToast();
 
-  const getAISummary = async (goalId: string) => {
+  const postAISummary = async (goalId: string) => {
     setIsLoading(true);
     /** 아직 회고 정보가 존재하지 않는다고 뜸 */
     try {
-      await getCompletedGoalRetrospect(goalId);
+      const result = await postCompletedGoalRetrospect(goalId);
       setIsSuccess(true);
     } catch (error) {
       if (error instanceof Error) {
@@ -21,5 +21,5 @@ export const useRetrospectAI = () => {
     setIsLoading(false);
   };
 
-  return { isLoading, isSuccess, getAISummary };
+  return { isLoading, isSuccess, postAISummary };
 };

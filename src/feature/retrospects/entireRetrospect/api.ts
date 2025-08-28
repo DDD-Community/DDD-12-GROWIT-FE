@@ -17,9 +17,9 @@ interface CompletedGoalRetrospectResponse {
   content: string;
 }
 
-export const getCompletedGoalRetrospect = async (goalId: string) => {
+export const postCompletedGoalRetrospect = async (goalId: string) => {
   try {
-    const response = await apiClient.get<CompletedGoalRetrospectResponse>(`/goal-retrospects/${goalId}`);
+    const response = await apiClient.post<CompletedGoalRetrospectResponse>(`/goal-retrospects`, { goalId: goalId });
     const data = response.data;
     return data;
   } catch (err) {
