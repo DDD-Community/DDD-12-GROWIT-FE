@@ -44,13 +44,7 @@ export const EditProfile = () => {
           <div className="flex flex-col gap-2">
             <h2 className="heading-2-bold">{profile.userName}</h2>
             <FlexBox className="gap-2">
-              <Badge
-                type="default"
-                size="md"
-                label={profile.jobRole}
-                color="bg-[rgba(125,94,247,0.22)]"
-                textColor="text-accent-violet"
-              />
+              <Badge type="default" size="md" label={profile.jobRole} textColor="text-black" />
               <span className="body-1-normal text-label-neutral">{profile.careerMapDisplay[profile.careerYear]}</span>
             </FlexBox>
           </div>
