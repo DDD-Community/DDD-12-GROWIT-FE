@@ -3,14 +3,18 @@ import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
 import { AISummaryBox } from './components/AISummaryBox';
 import { AISummaryButton } from './components/AISummaryButton';
-import { useRetrospectAI } from './hook';
+import { usePostRetrospectAI, useGetRetrospectAI } from './hook';
 import Badge from '@/shared/components/display/Badge';
+import { GoalRetrospect } from '@/composite/retrospect/done/type';
 
 interface EntireRetrospectProps {
   goalId?: string;
+  goalRetrospect: GoalRetrospect | null;
 }
-export const EntireRetrospect = ({ goalId = '' }: EntireRetrospectProps) => {
-  const { isLoading, isSuccess, postAISummary } = useRetrospectAI();
+
+export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireRetrospectProps) => {
+  const { isLoading, isSuccess, postAISummary } = usePostRetrospectAI();
+  const { AISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
 
   return (
     <Accordion
@@ -25,8 +29,8 @@ export const EntireRetrospect = ({ goalId = '' }: EntireRetrospectProps) => {
         </FlexBox>
       )}
     >
-      {isSuccess ? (
-        <AISummaryBox goalId={goalId} />
+      {AISummary ? (
+        <AISummaryBox goalId={goalId} AISummary={AISummary} />
       ) : (
         <div className="flex flex-col gap-4">
           {/** 목표 진행 과정 요약 데이터가 없을 경우 */}

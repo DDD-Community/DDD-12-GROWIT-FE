@@ -1,18 +1,20 @@
-import { useState } from 'react';
-import { postCompletedGoalRetrospect } from './api';
+import { useEffect, useState } from 'react';
+import { postCompletedGoalRetrospect, getCompletedGoalRetrospect } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { RetrospectAIResponse } from './type';
 
-export const useRetrospectAI = () => {
+export const usePostRetrospectAI = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { showToast } = useToast();
 
   const postAISummary = async (goalId: string) => {
     setIsLoading(true);
-    /** 아직 회고 정보가 존재하지 않는다고 뜸 */
     try {
-      const result = await postCompletedGoalRetrospect(goalId);
+      const res = await postCompletedGoalRetrospect(goalId);
       setIsSuccess(true);
+      const data = res.data;
+      return data;
     } catch (error) {
       if (error instanceof Error) {
         showToast(error.message, 'error');
@@ -22,4 +24,38 @@ export const useRetrospectAI = () => {
   };
 
   return { isLoading, isSuccess, postAISummary };
+};
+
+export const useGetRetrospectAI = (goalRetrospectId: string) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [AISummary, setAISummary] = useState<RetrospectAIResponse | null>(null);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    const initData = async () => {
+      const response = await getAISummary(goalRetrospectId);
+      if (response) {
+        setAISummary(response);
+      }
+    };
+    initData();
+  }, []);
+
+  const getAISummary = async (goalRetrospectId: string) => {
+    setIsLoading(true);
+    try {
+      if (goalRetrospectId.length) {
+        const res = await getCompletedGoalRetrospect(goalRetrospectId);
+        return res?.data;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast(error.message, 'error');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { isLoading, AISummary };
 };
