@@ -28,7 +28,7 @@ export const BottomNavigation = () => {
   }
 
   return (
-    <nav className="fixed z-100 bottom-0 bg-elevated-assistive w-full md:hidden p-2 flex items-center justify-around">
+    <nav className="fixed z-100 bottom-0 w-full md:hidden p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
       {NAVIGATION_ROUTES.map(item => {
         const active = isActive(item.path);
         return (
