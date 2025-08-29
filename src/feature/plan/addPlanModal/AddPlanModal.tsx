@@ -60,7 +60,7 @@ export const AddPlanModal = ({
     setOpen(false);
   };
 
-  const displayGoal = selectedPlanIndex || `${selectedPlanIndex}주차 목표를 입력해주세요`;
+  const displayGoal = `${selectedPlanIndex}주차 목표를 입력해주세요`;
   const displayInfo = selectedPlanContent || '';
 
   return (
