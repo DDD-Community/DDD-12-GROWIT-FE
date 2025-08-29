@@ -33,12 +33,7 @@ export const useWeeklyRetrospect = (id: string) => {
     setIsLoading(false);
   };
 
-  const updateWeeklyRetrospect = async (
-    e: React.FormEvent<HTMLFormElement>,
-    weeklyRetrospectId: string,
-    newRetrospect: string
-  ) => {
-    e.preventDefault();
+  const updateWeeklyRetrospect = async (weeklyRetrospectId: string, newRetrospect: string) => {
     try {
       const result = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
       if (result.isSuccess) {

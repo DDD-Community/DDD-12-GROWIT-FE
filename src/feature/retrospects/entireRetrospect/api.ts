@@ -1,25 +1,15 @@
+import { RetrospectAIResponse } from './type';
 import { apiClient } from '@/shared/lib/apiClient';
 import { AxiosError } from 'axios';
-
-interface RetrospectAIResponse {
-  id: string;
-  goalId: string;
-  todoCompletedRate: number;
-
-  analysis: {
-    summary: string;
-    advice: string;
-  };
-}
 
 interface CompletedGoalRetrospectResponse {
   data: RetrospectAIResponse;
   content: string;
 }
 
-export const getCompletedGoalRetrospect = async (goalId: string) => {
+export const postCompletedGoalRetrospect = async (goalId: string) => {
   try {
-    const response = await apiClient.get<CompletedGoalRetrospectResponse>(`/goal-retrospects/${goalId}`);
+    const response = await apiClient.post<CompletedGoalRetrospectResponse>(`/goal-retrospects`, { goalId: goalId });
     const data = response.data;
     return data;
   } catch (err) {
@@ -47,5 +37,16 @@ export const patchCompletedGoalRetrospect = async (goalId: string, content: stri
     }
 
     throw new Error('알 수 없는 오류가 발생했습니다.');
+  }
+};
+
+export const getCompletedGoalRetrospect = async (goalRetrospectId: string) => {
+  try {
+    const response = await apiClient.get<CompletedGoalRetrospectResponse>(`/goal-retrospects/${goalRetrospectId}`);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };

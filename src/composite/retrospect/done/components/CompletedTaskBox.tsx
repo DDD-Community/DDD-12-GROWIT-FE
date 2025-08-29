@@ -3,15 +3,13 @@ import Badge from '@/shared/components/display/Badge';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Duration } from '../../type';
+import { CompletedGoal } from '../type';
 
 interface CompletedTaskBoxProps {
-  id?: string;
+  completedGoal: CompletedGoal;
   isCompleted: boolean;
-  content: string;
-  duration: Duration;
 }
-export const CompletedTaskBox = ({ id, isCompleted, content, duration }: CompletedTaskBoxProps) => {
+export const CompletedTaskBox = ({ completedGoal, isCompleted }: CompletedTaskBoxProps) => {
   const router = useRouter();
   const getWeeksBetween = useCallback((startDate: string, endDate: string): number => {
     const start = new Date(startDate);
@@ -24,11 +22,11 @@ export const CompletedTaskBox = ({ id, isCompleted, content, duration }: Complet
     return Math.ceil(diffMs / weekMs);
   }, []);
 
-  const week = getWeeksBetween(duration.startDate, duration.endDate) - 1; // 시작 주는 제외
+  const week = getWeeksBetween(completedGoal.goal.duration.startDate, completedGoal.goal.duration.endDate);
 
   return (
     <div
-      className={`w-full bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg ${id && 'hover:outline-2'} outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs`}
+      className={`w-full bg-[url('/interaction.png')] bg-no-repeat bg-cover bg-center flex justify-between rounded-lg ${completedGoal.goal.id && 'hover:outline-2'} outline-gray-500 px-6 py-4 bg-gray-900 shadow-xs`}
     >
       <div className="flex flex-col gap-4">
         <FlexBox className="gap-2">
@@ -52,19 +50,24 @@ export const CompletedTaskBox = ({ id, isCompleted, content, duration }: Complet
             </label>
           </div>
         </FlexBox>
-        <p className="heading-1-bold text-white">{content}</p>
+        <p className="heading-1-bold text-white">{completedGoal.goal.name}</p>
         <p className="label-1-normal text-label-neutral">
-          {duration.startDate} ~ {duration.endDate}
+          {completedGoal.goal.duration.startDate} ~ {completedGoal.goal.duration.endDate}
         </p>
       </div>
-      {id && (
+      {completedGoal && (
         <Image
           src="/chevron-right.svg"
           alt="right-arrow"
           width={24}
           height={24}
           className="cursor-pointer"
-          onClick={() => router.push(`/retrospect/completed/${id}`)}
+          onClick={() => {
+            const params = new URLSearchParams({
+              itemData: JSON.stringify(completedGoal),
+            });
+            router.push(`/retrospect/completed/${completedGoal.goal.id}?${params.toString()}`);
+          }}
         />
       )}
     </div>
