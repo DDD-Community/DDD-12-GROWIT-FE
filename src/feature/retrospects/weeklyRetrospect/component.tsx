@@ -1,19 +1,34 @@
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
-import { WeeklyRetrospectBox } from '@/feature/retrospects/WeeklyRetrospectBox';
+import { WeeklyRetrospectBox } from '@/feature/retrospects/weeklyRetrospect/components/WeeklyRetrospectBox';
 import { Plan, Retrospect } from '@/composite/retrospect/type';
+import { useMemo, useState } from 'react';
 
 interface WeeklyRetrospectProps {
+  goalId?: string;
   weeklyRetrospect: (Retrospect | null)[];
   plans: Plan[];
-  updateWeeklyRetrospect: (
-    e: React.FormEvent<HTMLFormElement>,
-    weeklyRetrospectId: string,
-    newRetrospect: string
-  ) => Promise<void>;
+  updateWeeklyRetrospect: (weeklyRetrospectId: string, newRetrospect: string) => Promise<void>;
 }
-export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospect }: WeeklyRetrospectProps) => {
+export const WeeklyRetrospect = ({
+  goalId,
+  weeklyRetrospect,
+  plans,
+  updateWeeklyRetrospect,
+}: WeeklyRetrospectProps) => {
   const totalWeekCount = plans.length;
+
+  // 주차 순으로 정렬되는것을 보장
+  const sortedPlans = useMemo(() => {
+    return [...plans].sort((a, b) => a.weekOfMonth - b.weekOfMonth);
+  }, [plans]);
+
+  // useMemo로 현재 주차 계산 최적화
+  const currentWeekNumber = useMemo(() => {
+    const currentWeekPlan = plans.find(plan => plan.isCurrentWeek);
+    return currentWeekPlan ? currentWeekPlan.weekOfMonth : 1;
+  }, [plans]);
+
   return (
     <>
       <Accordion
@@ -25,13 +40,18 @@ export const WeeklyRetrospect = ({ weeklyRetrospect, plans, updateWeeklyRetrospe
       >
         {Array.from({ length: totalWeekCount }, (_, idx) => {
           const currentRetrospect = weeklyRetrospect[idx];
-          const currentPlan = plans[idx];
+          const currentPlan = sortedPlans[idx];
+          // 지나간 주차인지에 대한 계산
+          const isPassedWeek = currentPlan.weekOfMonth < currentWeekNumber;
 
           return (
             <WeeklyRetrospectBox
+              goalId={goalId}
               key={currentPlan.id}
               retrospect={currentRetrospect || null}
               plan={currentPlan}
+              isCurrentWeek={currentPlan.isCurrentWeek}
+              isPassedWeek={isPassedWeek}
               updateWeeklyRetrospect={updateWeeklyRetrospect}
             />
           );

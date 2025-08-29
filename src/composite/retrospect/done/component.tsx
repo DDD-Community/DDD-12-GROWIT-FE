@@ -27,15 +27,7 @@ export const CompletedTasks = () => {
           if (currentItem && currentItem.goalRetrospect) {
             isCompleted = currentItem.goalRetrospect.isCompleted;
           }
-          return (
-            <CompletedTaskBox
-              key={item.goal.id}
-              id={item.goal.id}
-              isCompleted={isCompleted}
-              content={item.goal.name}
-              duration={item.goal.duration}
-            />
-          );
+          return <CompletedTaskBox key={item.goal.id} completedGoal={item} isCompleted={isCompleted} />;
         })
       ) : (
         <div className="body-1-normal flex justify-center items-center text-label-neutral">완료한 목표가 없습니다</div>
