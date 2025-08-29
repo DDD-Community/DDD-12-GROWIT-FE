@@ -35,7 +35,7 @@ export const EditProfile = () => {
       <div className="flex flex-col md:flex-row md:items-center w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
         <FlexBox className="gap-4">
           <Image
-            src={'/Avatar.png'}
+            src={'/avatar.png'}
             alt={'my-avatar'}
             width={64}
             height={64}
