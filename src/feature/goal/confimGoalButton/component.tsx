@@ -8,6 +8,8 @@ import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
 import Button from '@/shared/components/input/Button';
 import { useFetchPostCreateGoal } from './hook';
+import FlexBox from '@/shared/components/foundation/FlexBox';
+import Image from 'next/image';
 
 export const ConfirmGoalButton = () => {
   const router = useRouter();
@@ -46,17 +48,14 @@ export const ConfirmGoalButton = () => {
 
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md" showCloseButton={false}>
-          <DialogHeader>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mb-4">
-              <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <DialogTitle className="text-center">축하한다냥 🐱</DialogTitle>
-            <DialogDescription className="text-center">
-              드디어 {formValues.duration}주간 여정의 도착지가 정해졌다냥!
-            </DialogDescription>
-          </DialogHeader>
+          <FlexBox className="justify-center">
+            <Image src="/image/grorong-congratulation.png" alt="onboard" width={120} height={120} />
+          </FlexBox>
+          <FlexBox direction="col" className="gap-3">
+            <p className="text-white text-[16px] whitespace-pre-line text-center">
+              {`축하해 🎉 모든 준비가 끝났어!\n 이제 멋진 여정을 함께 시작해보자!`}
+            </p>
+          </FlexBox>
           <Button size={'ml'} text={`${formValues.duration}주 여정 시작하기`} onClick={handleSuccessConfirm} />
         </DialogContent>
       </Dialog>
