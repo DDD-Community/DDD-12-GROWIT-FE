@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import Button from '../../input/Button';
 import { NAVIGATION_ROUTES, ROUTES } from '@/shared/constants/routes';
-import { MyProfileIcon } from './MyProfileIcon';
 
 export const SideNaviagation = ({ children }: { children?: React.ReactNode }) => {
   const router = useRouter();
