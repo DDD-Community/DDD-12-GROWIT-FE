@@ -29,6 +29,33 @@ export const NAVIGATION_ROUTES = [
   },
 ] as const;
 
+export const NAVIGATION_ROUTES_MOBILE = [
+  {
+    path: ROUTES.HOME,
+    icon: '/icon/navigation-home-mobile.svg',
+    alt: 'Home',
+    text: '홈',
+    activeStyle: 'text-primary-normal font-semibold text-xs',
+    inActiveStyle: 'text-interaction-inactive font-semibold text-xs',
+  },
+  {
+    path: ROUTES.RETROSPECT,
+    icon: '/icon/navigation-retrospect-mobile.svg',
+    alt: 'Retrospect',
+    text: '회고',
+    activeStyle: 'text-primary-normal font-semibold text-xs',
+    inActiveStyle: 'text-interaction-inactive font-semibold text-xs',
+  },
+  {
+    path: ROUTES.MYPAGE,
+    icon: '',
+    alt: 'My Profile',
+    text: '마이',
+    activeStyle: 'text-primary-normal font-semibold text-xs',
+    inActiveStyle: 'text-interaction-inactive font-semibold text-xs',
+  },
+] as const;
+
 export const NAVIGATION_CONFIG = {
   hiddenPaths: [ROUTES.LOGIN, ROUTES.SIGNUP, ROUTES.ONBOARDING, ROUTES.ONBOARDING],
   showOnlyPaths: [] as string[],
