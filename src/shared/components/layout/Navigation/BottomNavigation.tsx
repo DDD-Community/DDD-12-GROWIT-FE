@@ -20,6 +20,11 @@ export const BottomNavigation = () => {
     strokeWidth: 2,
   };
 
+  const iconStyle = {
+    active: 'text-primary-normal font-semibold text-xs',
+    inActive: 'text-interaction-inactive font-semibold text-xs',
+  };
+
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
     return pathname === path;
@@ -42,11 +47,14 @@ export const BottomNavigation = () => {
             className={active ? 'bg-surface-assistive' : ''}
             icon={
               item.path === '/mypage' ? (
-                <MyProfileIcon active={active} />
+                <FlexBox direction="col" className="gap-1 text-xs font-semibold">
+                  <MyProfileIcon active={active} />
+                  <span className={active ? 'text-primary-normal' : 'text-[#70737C]'}>마이</span>
+                </FlexBox>
               ) : (
                 <FlexBox direction="col" className={active ? 'gap-1 brightness-0 invert' : 'gap-1'}>
                   <Image src={item.icon} alt={item.alt} width={iconConfig.size} height={iconConfig.size} />
-                  <span className={active ? item.activeStyle : item.inActiveStyle}>{item.text}</span>
+                  <span className={active ? iconStyle.active : iconStyle.inActive}>{item.text}</span>
                 </FlexBox>
               )
             }
