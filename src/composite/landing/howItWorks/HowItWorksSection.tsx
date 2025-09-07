@@ -148,4 +148,4 @@ const HowItWorksSection = () => {
   );
 };
 
-export default HowItWorksSection;
+export { HowItWorksSection };

@@ -130,4 +130,4 @@ const FooterSection = () => {
   );
 };
 
-export default FooterSection;
+export { FooterSection };

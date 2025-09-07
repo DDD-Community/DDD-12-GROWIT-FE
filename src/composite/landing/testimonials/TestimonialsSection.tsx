@@ -178,4 +178,4 @@ const TestimonialsSection = () => {
   );
 };
 
-export default TestimonialsSection;
+export { TestimonialsSection };

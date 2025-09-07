@@ -54,4 +54,4 @@ const HeaderActions = () => {
   );
 };
 
-export default HeaderActions;
+export { HeaderActions };
