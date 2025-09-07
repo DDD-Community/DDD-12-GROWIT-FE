@@ -7,6 +7,7 @@ import { FooterSection } from '@/composite/landing/footer';
 import { HeaderActions } from '@/composite/landing/headerAction';
 import { HowItWorksSection } from '@/composite/landing/howItWorks';
 import { TestimonialsSection } from '@/composite/landing/testimonials';
+import { AboutGrowitSection } from '@/composite/landing/aboutGrowitSection';
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <HeroSection />
       <ProblemSection />
       <SolutionSection />
+      <AboutGrowitSection />
       <FeaturesSection />
       <HowItWorksSection />
       <TestimonialsSection />

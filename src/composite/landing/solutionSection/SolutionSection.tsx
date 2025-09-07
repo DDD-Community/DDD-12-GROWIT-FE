@@ -16,7 +16,7 @@ export const SolutionSection = () => {
 
       <div className="relative max-w-7xl mx-auto">
         {/* Title Section */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-2">
           <div className="inline-block px-4 py-1 bg-[#35D942]/10 border border-[#35D942]/30 rounded-full mb-6">
             <span className="text-[#35D942] text-sm font-medium">핵심 문제</span>
           </div>
