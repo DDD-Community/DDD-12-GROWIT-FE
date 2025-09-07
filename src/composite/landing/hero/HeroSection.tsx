@@ -34,8 +34,8 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col z-100 items-start max-sm:items-center gap-8">
-          <div className="flex-1 text-left">
+        <div className="flex flex-col items-start max-sm:items-center gap-8">
+          <div className="flex-1 text-left z-100">
             <h1 className="text-[22px] max-sm:text-[16px] mb-6 max-sm:mb-4 font-bold text-[#01FF00] leading-tight">
               아직도 작심삼일을 반복하고 있나요?
             </h1>
@@ -48,10 +48,10 @@ const HeroSection = () => {
               <Button size="lg" onClick={handleGetStarted} text="성장 여정 시작하기" />
             </div>
           </div>
-          <div className="sm:absolute sm:right-4 sm:top-[-190px] z-0 flex items-center justify-center">
-            <div className="relative">
-              <Image src="/landing/landing-hero-1.png" alt="GROWIT App Preview" width={700} height={700} priority />
-            </div>
+        </div>
+        <div className="sm:absolute sm:right-4 sm:top-[-190px] z-0 flex items-center justify-center">
+          <div className="relative">
+            <Image src="/landing/landing-hero-1.png" alt="GROWIT App Preview" width={700} height={700} priority />
           </div>
         </div>
       </div>
