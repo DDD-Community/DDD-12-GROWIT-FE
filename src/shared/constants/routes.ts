@@ -16,39 +16,26 @@ export const NAVIGATION_ROUTES = [
     path: ROUTES.HOME,
     icon: '/icon/navigation-home.svg',
     alt: 'Home',
+    title: '홈',
   },
   {
     path: ROUTES.RETROSPECT,
     icon: '/icon/navigation-retrospect.svg',
     alt: 'Retrospect',
-  },
-  {
-    path: ROUTES.MYPAGE,
-    icon: '/icon/navigation-myprofile.svg',
-    alt: 'My Profile',
-  },
-] as const;
-
-export const NAVIGATION_ROUTES_MOBILE = [
-  {
-    path: ROUTES.HOME,
-    icon: '/icon/navigation-home-mobile.svg',
-    alt: 'Home',
-    text: '홈',
-  },
-  {
-    path: ROUTES.RETROSPECT,
-    icon: '/icon/navigation-retrospect-mobile.svg',
-    alt: 'Retrospect',
-    text: '회고',
+    title: '회고',
   },
   {
     path: ROUTES.MYPAGE,
     icon: '',
     alt: 'My Profile',
-    text: '마이',
+    title: '마이',
   },
 ] as const;
+
+export const titleStyle = {
+  active: 'text-primary-normal font-semibold text-xs md:text-base',
+  inActive: 'text-interaction-inactive font-semibold text-xs md:text-base',
+};
 
 export const NAVIGATION_CONFIG = {
   hiddenPaths: [ROUTES.LOGIN, ROUTES.SIGNUP, ROUTES.ONBOARDING, ROUTES.ONBOARDING],

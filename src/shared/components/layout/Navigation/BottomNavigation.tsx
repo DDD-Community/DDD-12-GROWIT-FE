@@ -3,8 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Button from '../../input/Button';
-import { NAVIGATION_ROUTES_MOBILE, ROUTES, shouldHiddenNavigation } from '@/shared/constants/routes';
-import { MyProfileIcon } from './MyProfileIcon';
+import { NAVIGATION_ROUTES, ROUTES, shouldHiddenNavigation, titleStyle } from '@/shared/constants/routes';
 import FlexBox from '../../foundation/FlexBox';
 
 export const BottomNavigation = () => {
@@ -20,11 +19,6 @@ export const BottomNavigation = () => {
     strokeWidth: 2,
   };
 
-  const iconStyle = {
-    active: 'text-primary-normal font-semibold text-xs',
-    inActive: 'text-interaction-inactive font-semibold text-xs',
-  };
-
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
     return pathname === path;
@@ -36,7 +30,7 @@ export const BottomNavigation = () => {
 
   return (
     <nav className="fixed z-100 bottom-0 w-full md:hidden p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
-      {NAVIGATION_ROUTES_MOBILE.map(item => {
+      {NAVIGATION_ROUTES.map(item => {
         const active = isActive(item.path);
         return (
           <Button
@@ -48,13 +42,28 @@ export const BottomNavigation = () => {
             icon={
               item.path === '/mypage' ? (
                 <FlexBox direction="col" className="gap-1 text-xs font-semibold">
-                  <MyProfileIcon active={active} />
+                  {active ? (
+                    <Image
+                      src="/icon/navigation-myprofile-active.svg"
+                      alt={item.alt}
+                      width={iconConfig.size}
+                      height={iconConfig.size}
+                    />
+                  ) : (
+                    <Image
+                      src="/icon/navigation-myprofile-inactive.svg"
+                      alt={item.alt}
+                      width={iconConfig.size}
+                      height={iconConfig.size}
+                    />
+                  )}
+
                   <span className={active ? 'text-primary-normal' : 'text-[#70737C]'}>마이</span>
                 </FlexBox>
               ) : (
                 <FlexBox direction="col" className={active ? 'gap-1 brightness-0 invert' : 'gap-1'}>
                   <Image src={item.icon} alt={item.alt} width={iconConfig.size} height={iconConfig.size} />
-                  <span className={active ? iconStyle.active : iconStyle.inActive}>{item.text}</span>
+                  <span className={active ? titleStyle.active : titleStyle.inActive}>{item.title}</span>
                 </FlexBox>
               )
             }
