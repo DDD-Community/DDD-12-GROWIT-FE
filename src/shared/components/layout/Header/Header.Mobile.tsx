@@ -2,9 +2,17 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import Image from 'next/image';
 import { HEADER_CONFIG } from './header.config';
+import { HeaderMode } from './Header.Desktop';
 
-export const HeaderMobile = () => {
+interface HeaderMobileProps {
+  mode?: HeaderMode;
+  title?: string;
+  rightSection?: React.ReactNode;
+}
+
+export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobileProps) => {
   const pathname = usePathname();
   if (HEADER_CONFIG.hideHeaderPages.includes(pathname as any)) {
     // << 여기 타입 고칠 것
@@ -19,14 +27,31 @@ export const HeaderMobile = () => {
 
   return (
     <>
-      <header className="sm:hidden fixed left-0 w-full flex items-center justify-between px-4 py-3 bg-[#1C1C1E] border-b-[1px] border-line-normal z-100">
-        <div className="flex items-center gap-3 w-[40px] h-[40px]">{shouldShowBackButton && <HeaderBackButton />}</div>
-        <div className="flex-1 text-center">
-          <h1 className="text-base font-semibold text-white">{getPageTitle()}</h1>
-        </div>
-        <div className="flex items-center gap-3 w-[40px] h-[40px]"></div>
+      <header className="sm:hidden fixed left-0 w-full bg-[#1C1C1E] border-b-[1px] border-line-normal z-100">
+        {mode === 'logo' ? (
+          <div className="flex items-center justify-between px-4 py-3">
+            <Image src="/logo-text.svg" alt="Growit" height={32} width={100} />
+            <div className="flex items-center gap-3">{rightSection}</div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-4 py-3 relative">
+            <div className="flex items-center gap-3 min-w-[40px] h-[40px]">
+              {shouldShowBackButton && <HeaderBackButton />}
+            </div>
+
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              {mode === 'title' ? (
+                <h1 className="text-lg font-semibold text-white">{title || 'Growit'}</h1>
+              ) : (
+                <h1 className="text-base font-semibold text-white">{getPageTitle()}</h1>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3 min-w-[40px] h-[40px]">{rightSection}</div>
+          </div>
+        )}
       </header>
-      <div className="h-[65px]" />
+      <div className="sm:hidden h-[60px]" />
     </>
   );
 };
