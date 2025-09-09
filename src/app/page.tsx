@@ -7,6 +7,7 @@ import { FooterSection } from '@/composite/landing/footer';
 import { HeaderActions } from '@/composite/landing/headerAction';
 import { TestimonialsSection } from '@/composite/landing/testimonials';
 import { AboutGrowitSection } from '@/composite/landing/aboutGrowitSection';
+import { TumblbugEventSection } from '@/composite/landing/tumblbugEvent';
 
 export default function LandingPage() {
   return (
@@ -18,6 +19,7 @@ export default function LandingPage() {
       <AboutGrowitSection />
       <FeaturesSection />
       <TestimonialsSection />
+      <TumblbugEventSection />
       <FooterSection />
     </div>
   );
