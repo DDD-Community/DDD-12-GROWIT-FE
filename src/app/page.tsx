@@ -8,11 +8,13 @@ import { HeaderActions } from '@/composite/landing/headerAction';
 import { TestimonialsSection } from '@/composite/landing/testimonials';
 import { AboutGrowitSection } from '@/composite/landing/aboutGrowitSection';
 import { TumblbugEventSection } from '@/composite/landing/tumblbugEvent';
+import { TumblbugBanner } from '@/composite/landing/banner';
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-normal">
       <Header mode="logo" rightSection={<HeaderActions />} />
+      <TumblbugBanner />
       <HeroSection />
       <ProblemSection />
       <SolutionSection />
