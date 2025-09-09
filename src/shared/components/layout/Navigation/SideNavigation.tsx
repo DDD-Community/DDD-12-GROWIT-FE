@@ -118,7 +118,7 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
                 onClick={() => router.push(item.path)}
                 icon={
                   item.path === '/mypage' ? (
-                    <div className={`w-full flex ${isOpen ? 'items-center gap-2' : 'justify-center'}`}>
+                    <div className={`w-full flex gap-2 ${isOpen ? 'justify-start' : 'justify-center'}`}>
                       <Image src="/icon/navigation-myprofile-active.svg" alt={item.alt} width={22} height={22} />
                       <AnimatePresence>
                         {isOpen && (
@@ -136,7 +136,7 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
                       </AnimatePresence>
                     </div>
                   ) : (
-                    <div className={`w-full flex ${isOpen ? 'items-center gap-2' : 'justify-center'}`}>
+                    <div className={`w-full flex gap-2 ${isOpen ? 'justify-start gap-2' : 'justify-center'}`}>
                       <Image src={item.icon} alt={item.alt} width={22} height={22} className="brightness-0 invert" />
 
                       <AnimatePresence>
