@@ -12,7 +12,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center px-4 pt-8 pb-10 overflow-hidden">
       {/* Background with image overlay */}
       <div className="absolute inset-0">
         {/* Main background gradient */}
@@ -34,7 +34,7 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col items-start max-sm:items-center gap-8">
+        <div className="flex flex-col items-start gap-8">
           <div className="flex-1 text-left z-100">
             <h1 className="text-[22px] max-sm:text-[16px] mb-6 max-sm:mb-4 font-bold text-[#01FF00] leading-tight">
               아직도 작심삼일을 반복하고 있나요?
