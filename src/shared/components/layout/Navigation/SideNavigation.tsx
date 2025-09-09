@@ -28,19 +28,19 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
   const sidebarInitalAnimation = {
     opacity: 0,
     x: -16,
-    scale: 0.9,
+    width: 0,
   };
 
   const sidebarDuringAnimation = {
     opacity: 1,
     x: 0,
-    scale: 1,
+    width: 'auto',
   };
 
   const sidebarExitAnimation = {
     opacity: 0,
     x: 0,
-    scale: 0.95,
+    width: 0,
   };
 
   return (
@@ -118,17 +118,13 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
                 onClick={() => router.push(item.path)}
                 icon={
                   item.path === '/mypage' ? (
-                    <div className="w-full flex items-center gap-2">
-                      {active ? (
-                        <Image src="/icon/navigation-myprofile-active.svg" alt={item.alt} width={22} height={22} />
-                      ) : (
-                        <Image src="/icon/navigation-myprofile-inactive.svg" alt={item.alt} width={22} height={22} />
-                      )}
+                    <div className={`w-full flex ${isOpen ? 'items-center gap-2' : 'justify-center'}`}>
+                      <Image src="/icon/navigation-myprofile-active.svg" alt={item.alt} width={22} height={22} />
                       <AnimatePresence>
                         {isOpen && (
                           <motion.span
                             key={`${item.path}-text`}
-                            className={`whitespace-nowrap ${active ? titleStyle.active : titleStyle.inActive}`}
+                            className={`whitespace-nowrap text-primary-normal font-semibold text-xs md:text-base`}
                             initial={sidebarInitalAnimation}
                             animate={sidebarDuringAnimation}
                             exit={sidebarExitAnimation}
@@ -140,20 +136,14 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
                       </AnimatePresence>
                     </div>
                   ) : (
-                    <div className="w-full flex items-center gap-2">
-                      <Image
-                        src={item.icon}
-                        alt={item.alt}
-                        width={22}
-                        height={22}
-                        className={active ? 'brightness-0 invert' : ''}
-                      />
+                    <div className={`w-full flex ${isOpen ? 'items-center gap-2' : 'justify-center'}`}>
+                      <Image src={item.icon} alt={item.alt} width={22} height={22} className="brightness-0 invert" />
 
                       <AnimatePresence>
                         {isOpen && (
                           <motion.span
                             key={`${item.path}-text`}
-                            className={`whitespace-nowrap ${active ? titleStyle.active : titleStyle.inActive}`}
+                            className={`whitespace-nowrap text-primary-normal font-semibold text-xs md:text-base`}
                             initial={sidebarInitalAnimation}
                             animate={sidebarDuringAnimation}
                             exit={sidebarExitAnimation}
