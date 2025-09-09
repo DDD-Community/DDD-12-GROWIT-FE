@@ -6,10 +6,9 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-[#1C1C1E]">
       {/* 왼쪽 로그인 섹션 */}
-      <div className="flex flex-col w-full p-10 md:p-[20px]">
+      <div className="flex flex-col w-full lg:w-1/2 p-10 md:p-[20px]">
         <div className="mb-10 md:mb-20">
           <Image src="/logo-text.svg" alt="Growit" height={24} width={120} />
-          {/* <h1 className="text-2xl font-bold text-white pl-[4px]">GROWIT</h1> */}
         </div>
 
         <div className="flex flex-col flex-grow justify-center max-w-md mx-auto w-full">
