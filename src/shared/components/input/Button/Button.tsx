@@ -109,7 +109,7 @@ const Button = ({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex justify-center items-center"
+                className="flex justify-center items-center whitespace-nowrap"
               >
                 {text}
               </motion.span>
@@ -119,11 +119,11 @@ const Button = ({
       ) : layout === 'icon-left' ? (
         <FlexBox className="flex justify-center items-center gap-2">
           {icon}
-          <span>{text}</span>
+          <span className="whitespace-nowrap">{text}</span>
         </FlexBox>
       ) : layout === 'icon-right' ? (
         <FlexBox className="flex justify-center items-center gap-2">
-          <span>{text}</span>
+          <span className="whitespace-nowrap">{text}</span>
           {icon}
         </FlexBox>
       ) : (

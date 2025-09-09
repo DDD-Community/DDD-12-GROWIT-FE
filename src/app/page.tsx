@@ -1,33 +1,20 @@
-'use client';
+import { Header } from '@/shared/components/layout';
+import { HeroSection } from '@/composite/landing/hero';
+import { FeaturesSection } from '@/composite/landing/features';
+import { FooterSection } from '@/composite/landing/footer';
+import { HeaderActions } from '@/composite/landing/headerAction';
+import { HowItWorksSection } from '@/composite/landing/howItWorks';
+import { TestimonialsSection } from '@/composite/landing/testimonials';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { tokenController } from '@/shared/lib/token';
-
-export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // 토큰 확인
-    const accessToken = tokenController.getAccessToken();
-    const refreshToken = tokenController.getRefreshToken();
-
-    // 토큰이 있으면 home 페이지로, 없으면 auth 페이지로 리다이렉션
-    if (accessToken && refreshToken) {
-      router.push('/home');
-    } else {
-      router.push('/login');
-    }
-  }, [router]);
-
-  // 리다이렉션 중에는 로딩 화면 표시
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1C1C1E]">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-white mb-4">GROWIT</h1>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-        <p className="text-gray-400 mt-4">페이지를 불러오는 중...</p>
-      </div>
+    <div className="min-h-screen bg-normal">
+      <Header mode="logo" rightSection={<HeaderActions />} />
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <TestimonialsSection />
+      <FooterSection />
     </div>
   );
 }
