@@ -1,7 +1,13 @@
+'use client';
+
 import Button from '@/shared/components/input/Button';
 import Image from 'next/image';
 
 const TumblbugEventSection = () => {
+  const handleTumblbugClick = () => {
+    window.open('https://tumblbug.com/growit', '_blank');
+  };
+
   return (
     <section className="relative py-20 px-4 sm:h-[722px] bg-black overflow-hidden">
       {/* Background Image */}
@@ -27,7 +33,13 @@ const TumblbugEventSection = () => {
 
             {/* Button */}
             <div className="inline-flex">
-              <Button size="xl" variant="brand" className="w-auto" text="텀블벅 바로가기" />
+              <Button
+                size="xl"
+                variant="brand"
+                className="w-auto"
+                text="텀블벅 바로가기"
+                onClick={handleTumblbugClick}
+              />
             </div>
           </div>
 
