@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Button from '../../input/Button';
-import { NAVIGATION_ROUTES, ROUTES, titleStyle } from '@/shared/constants/routes';
+import { NAVIGATION_ROUTES, ROUTES } from '@/shared/constants/routes';
 import { useState } from 'react';
+import { SideNavigationHeader } from './SideNavigationHeader';
+import { NavigationItem } from './NavigationItem';
 
 export const SideNaviagation = ({ children }: { children?: React.ReactNode }) => {
   const router = useRouter();
@@ -25,86 +25,15 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
     closed: { width: '5.5rem' },
   };
 
-  const sidebarInitalAnimation = {
-    opacity: 0,
-    x: -16,
-    width: 0,
-  };
-
-  const sidebarDuringAnimation = {
-    opacity: 1,
-    x: 0,
-    width: 'auto',
-  };
-
-  const sidebarExitAnimation = {
-    opacity: 0,
-    x: 0,
-    width: 0,
-  };
-
   return (
     <motion.aside
       initial="open"
       animate={isOpen ? 'open' : 'closed'}
       variants={sidebarVariants}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`max-sm:hidden flex min-h-screen gap-[24px] bg-fill-normal flex-col items-center py-8 px-4 shadow-lg`}
+      className={`hidden md:flex min-h-screen gap-[24px] bg-fill-normal flex-col items-center py-8 px-4 shadow-lg`}
     >
-      <AnimatePresence mode="wait">
-        {isOpen ? (
-          <motion.div
-            key="open-header"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-full flex items-center justify-between pl-2"
-          >
-            <Link href={'/home'}>
-              <Image src="/icon/growit-title-logo.svg" alt="icon of growit" width={100} height={32} />
-            </Link>
-            <Button
-              variant="tertiary"
-              layout="icon-only"
-              onClick={() => {
-                setIsOpen(!isOpen);
-                setHover(false);
-              }}
-              icon={<Image src="/icon/sidebar.svg" alt="control-sidebar" width={24} height={24} />}
-              size="sm"
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="closed-header"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-              <Button
-                variant="tertiary"
-                layout="icon-only"
-                icon={
-                  hover ? (
-                    <Image src="/icon/sidebar.svg" alt="control-sidebar" width={24} height={24} />
-                  ) : (
-                    <Image src="/logo-favicon.svg" alt="icon of growit" width={24} height={24} />
-                  )
-                }
-                onClick={() => {
-                  if (hover) setIsOpen(true);
-                  else router.push('home');
-                }}
-                size="sm"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      <SideNavigationHeader isOpen={isOpen} hover={hover} setIsOpen={setIsOpen} setHover={setHover} />
       <div className="flex-1 w-full flex flex-col items-center gap-4">
         {NAVIGATION_ROUTES.map(item => {
           const active = isActive(item.path);
@@ -116,46 +45,7 @@ export const SideNaviagation = ({ children }: { children?: React.ReactNode }) =>
                 layout="icon-only"
                 className={active ? 'bg-surface-assistive w-full' : 'w-full'}
                 onClick={() => router.push(item.path)}
-                icon={
-                  item.path === '/mypage' ? (
-                    <div className={`w-full flex gap-2 ${isOpen ? 'justify-start' : 'justify-center'}`}>
-                      <Image src="/icon/navigation-myprofile-active.svg" alt={item.alt} width={22} height={22} />
-                      <AnimatePresence>
-                        {isOpen && (
-                          <motion.span
-                            key={`${item.path}-text`}
-                            className={`whitespace-nowrap text-primary-normal font-semibold text-xs md:text-base`}
-                            initial={sidebarInitalAnimation}
-                            animate={sidebarDuringAnimation}
-                            exit={sidebarExitAnimation}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
-                          >
-                            마이페이지
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : (
-                    <div className={`w-full flex gap-2 ${isOpen ? 'justify-start gap-2' : 'justify-center'}`}>
-                      <Image src={item.icon} alt={item.alt} width={22} height={22} className="brightness-0 invert" />
-
-                      <AnimatePresence>
-                        {isOpen && (
-                          <motion.span
-                            key={`${item.path}-text`}
-                            className={`whitespace-nowrap text-primary-normal font-semibold text-xs md:text-base`}
-                            initial={sidebarInitalAnimation}
-                            animate={sidebarDuringAnimation}
-                            exit={sidebarExitAnimation}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
-                          >
-                            {item.title}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  )
-                }
+                icon={<NavigationItem item={item} isOpen={isOpen} />}
                 size={'lg'}
               />
             </motion.div>
