@@ -1,3 +1,5 @@
+'use client';
+
 import { usePathname } from 'next/navigation';
 import { BottomNavigation } from './BottomNavigation';
 import { SideNaviagation } from './SideNavigation';
