@@ -9,7 +9,7 @@ export function useCopyGrowitLink() {
   const copyGrowitLink = async () => {
     await navigator.clipboard.writeText(urls.growit);
     setIsCopied(true);
-    showToast('링크가 복사되었습니다!', 'success');
+    showToast('공유 링크를 복사했어요!', 'success');
   };
 
   return {
