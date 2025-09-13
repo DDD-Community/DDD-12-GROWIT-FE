@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Badge from '@/shared/components/display/Badge';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import FlexBox from '@/shared/components/foundation/FlexBox';
@@ -5,6 +6,7 @@ import Button from '@/shared/components/input/Button';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { InputField } from '@/shared/components/input/InputField';
 import { Controller, useForm } from 'react-hook-form';
+import { urls } from '@/shared/constants/urls';
 
 interface EarlyBirdModalProps {
   open: boolean;
@@ -83,7 +85,11 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
                     color="bg-[rgba(255,99,99,0.16)]"
                     textColor="text-[#FF6363]"
                   />
-                  <span className="text-[rgba(194,196,200,0.88)] text-sm font-normal">개인정보 수집 동의</span>
+                  <Link target="_blank" href={urls.customerInfoEarlyBird}>
+                    <span className="text-[rgba(194,196,200,0.88)] text-sm font-normal underline cursor-pointer hover:text-white transition-colors">
+                      개인정보 수집 동의
+                    </span>
+                  </Link>
                 </FlexBox>
               </FlexBox>
             )}
