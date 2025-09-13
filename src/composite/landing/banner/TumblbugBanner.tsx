@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Badge from '@/shared/components/display/Badge';
 
 const TumblbugBanner = () => {
   const handleTumblbugClick = () => {
@@ -9,11 +8,13 @@ const TumblbugBanner = () => {
   };
 
   return (
-    <div className="relative bg-[#2E2F33] py-3">
+    <div className="relative bg-[#2E2F33] py-2">
       <meta name="theme-color" content="#2E2F33" />
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-center gap-4 h-full">
-          <Badge type="default" size="sm" color="bg-brand-neon" textColor="text-black" label="텀블벅 단독 공개" />
+          <div className="inline-flex items-center py-1 px-3 rounded-2xl border border-[#35D942] bg-transparent text-[#35D942] text-sm font-medium whitespace-nowrap">
+            텀블벅 단독 공개
+          </div>
           <span className="text-[#E1DEE8] text-md max-sm:text-xs font-medium line-clamp-2">
             그로잇의 AI 기능을 훨씬 합리적인 가격으로 경험해보세요.
           </span>
