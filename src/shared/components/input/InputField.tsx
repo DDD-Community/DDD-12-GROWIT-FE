@@ -18,28 +18,30 @@ export function InputField({ label, isError, errorMessage, description, ...props
           maxLength={props.maxLength}
           {...props}
           className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border border-label-assistive placeholder-gray-500 focus:ring-2 ${
-            isError ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
+            isError || errorMessage ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
           }`}
         />
-        {isError && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-red-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm1 4a1 1 0 100-2 1 1 0 000 2z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        )}
+        {isError ||
+          (errorMessage && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg
+                className="h-5 w-5 text-red-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1zm1 4a1 1 0 100-2 1 1 0 000 2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          ))}
       </div>
-      {isError && <p className="text-xs text-red-500">{errorMessage}</p>}{' '}
+      {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}{' '}
+      {description && <p className="text-xs text-white">{description}</p>}
     </div>
   );
 }

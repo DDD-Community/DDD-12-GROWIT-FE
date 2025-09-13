@@ -1,1 +1,1 @@
-export { EarlyBirdModal } from './EarlyBirldModal';
+export { EarlyBirdModal } from './EarlyBirdModal';

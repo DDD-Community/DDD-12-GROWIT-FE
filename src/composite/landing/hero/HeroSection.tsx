@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Button from '@/shared/components/input/Button';
 import { useRouter } from 'next/navigation';
+import { EarlyBirdEvent } from './components/EarlyBirdEvent';
 
 const HeroSection = () => {
   const router = useRouter();
@@ -37,7 +38,6 @@ const HeroSection = () => {
       <div className="relative max-w-7xl mx-auto w-full z-20">
         {/* left-content */}
         <div className="flex flex-col items-start sm:gap-[60px] gap-[32px] relative z-30">
-          {/* text */}
           <div className="flex-1 text-left">
             <h1 className="text-[22px] max-sm:text-[16px] mb-6 max-sm:mb-4 font-bold text-[#01FF00] leading-tight">
               아직도 작심삼일을 반복하고 있나요?
@@ -48,32 +48,7 @@ const HeroSection = () => {
               AI 목표 관리 서비스
             </h2>
           </div>
-
-          {/* 얼리버드 신청 섹션 */}
-          <div className="flex flex-col gap-3">
-            <span className="text-[22px] max-sm:text-[16px] text-[rgba(194,196,200,0.88)] leading-relaxed">
-              지금 얼리버드 신청 시,
-              <br />
-              <span className="bg-gradient-to-r from-[#80F50E] via-[#78C1F1] to-[#CCADFD] bg-clip-text text-transparent font-bold">
-                연 24,000원 상당 AI{' '}
-              </span>
-              <span>기능을 </span>
-              <span className="text-white font-bold">무료 체험 </span>
-              <span>할 수 있어요!</span>
-            </span>
-            <div className="flex items-center">
-              <div className="px-3 bg-[rgba(112,115,124,0.22)] rounded-2xl">
-                <span className="text-[14px] max-sm:text-[12px] font-medium text-[rgba(194,196,200,0.88)]">
-                  무료 체험 기간: 10/2~10/31
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* button */}
-          <div className="w-[320px] max-sm:w-[240px] justify-center lg:justify-start relative z-30">
-            <Button size="xl" variant="brand" onClick={handleGetStarted} text="얼리버드 신청하기" />
-          </div>
+          <EarlyBirdEvent />
         </div>
 
         {/* image-content */}
