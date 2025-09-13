@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const GoalSettingSection = () => {
   return (
-    <section className="relative py-24 px-4 bg-gradient-to-b from-black via-black/50 to-transparent overflow-hidden">
+    <section className="relative py-24 px-4 overflow-hidden">
       <div className="relative max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
