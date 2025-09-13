@@ -12,6 +12,11 @@ interface EarlyBirdModalProps {
   onSuccessSubmit: () => void;
 }
 
+interface EarlyBirdModalFormData {
+  phoneNumber: string;
+  privacyPolicy: boolean;
+}
+
 export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModalProps) => {
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
@@ -20,6 +25,11 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
       privacyPolicy: false,
     },
   });
+
+  const onSubmitForm = (data: EarlyBirdModalFormData) => {
+    onSuccessSubmit();
+    onClose();
+  };
 
   return (
     <Modal
@@ -85,7 +95,7 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
           size="xl"
           text="제출"
           type="submit"
-          onClick={handleSubmit(onSuccessSubmit)}
+          onClick={handleSubmit(onSubmitForm)}
           disabled={!formState.isValid}
         />
       )}
