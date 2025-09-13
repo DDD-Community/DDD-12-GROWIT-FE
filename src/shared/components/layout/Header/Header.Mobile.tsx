@@ -27,7 +27,7 @@ export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobil
 
   return (
     <>
-      <header className="sm:hidden fixed left-0 w-full bg-[#1C1C1E] border-b-[1px] border-line-normal z-100">
+      <div className="sm:hidden">
         {mode === 'logo' ? (
           <div className="flex items-center justify-between px-4 py-3">
             <Image src="/logo-text.svg" alt="Growit" height={32} width={100} />
@@ -50,8 +50,7 @@ export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobil
             <div className="flex items-center gap-3 min-w-[40px] h-[40px]">{rightSection}</div>
           </div>
         )}
-      </header>
-      <div className="sm:hidden h-[60px]" />
+      </div>
     </>
   );
 };
