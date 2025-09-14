@@ -1,14 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import Section from '@/shared/components/layout/Section';
 
 const ProblemSection = () => {
   return (
-    <section
-      tabIndex={0}
-      className="relative sm:py-18 pt-16 px-4 bg-gradient-to-b from-[#0A0B0D] via-[#0F1011] to-[#000000] overflow-hidden"
-    >
-      <div className="relative max-w-7xl mx-auto">
+    <Section className="block relative px-4 bg-gradient-to-b from-[#0A0B0D] via-[#0F1011] to-[#000000] overflow-hidden">
+      <div className="max-w-7xl mx-auto translate-y-1/8">
         <div className="grid sm:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <div className="space-y-6">
@@ -36,7 +34,7 @@ const ProblemSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

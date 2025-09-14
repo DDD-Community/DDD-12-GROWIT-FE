@@ -2,6 +2,7 @@
 
 import Button from '@/shared/components/input/Button';
 import Image from 'next/image';
+import Section from '@/shared/components/layout/Section';
 
 const TumblbugEventSection = () => {
   const handleTumblbugClick = () => {
@@ -9,7 +10,7 @@ const TumblbugEventSection = () => {
   };
 
   return (
-    <section tabIndex={0} className="relative py-20 px-4 sm:h-[722px] bg-black overflow-hidden">
+    <Section className="relative px-4 sm:h-[722px] bg-black overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image src="/landing/landing-tumblbug-1.png" alt="텀블벅 이벤트 배경" fill className="object-cover" priority />
@@ -49,7 +50,7 @@ const TumblbugEventSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

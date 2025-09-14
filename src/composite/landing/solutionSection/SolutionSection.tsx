@@ -1,11 +1,10 @@
 'use client';
 
+import Section from '@/shared/components/layout/Section';
+
 export const SolutionSection = () => {
   return (
-    <section
-      tabIndex={0}
-      className="relative sm:py-10 pt-12 px-4 bg-gradient-to-b from-[#000000] via-[#0C242E] to-[#0B152B] min-h-screen overflow-hidden"
-    >
+    <Section className="relative px-4 bg-gradient-to-b from-[#000000] via-[#0C242E] to-[#0B152B] overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Gradient overlays */}
@@ -81,6 +80,6 @@ export const SolutionSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };

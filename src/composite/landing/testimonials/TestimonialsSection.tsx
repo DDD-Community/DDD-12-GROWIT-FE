@@ -1,6 +1,7 @@
 'use client';
 
 import { Star } from 'lucide-react';
+import Section from '@/shared/components/layout/Section';
 
 const testimonials = [
   {
@@ -31,7 +32,7 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section tabIndex={0} className="py-20 px-4 bg-black min-h-screen flex items-center">
+    <Section className="px-4 bg-black flex items-center">
       <div className="max-w-7xl mx-auto">
         {/* Testimonials */}
         <div>
@@ -103,7 +104,7 @@ const TestimonialsSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 
