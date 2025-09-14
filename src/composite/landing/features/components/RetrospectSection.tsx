@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import Section from '@/shared/components/layout/Section';
 
 const RetrospectSection = () => {
   return (
-    <section className="relative py-24 px-4 overflow-hidden">
+    <Section className="block relative px-4 overflow-hidden">
       <div className="relative max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
@@ -36,7 +37,7 @@ const RetrospectSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

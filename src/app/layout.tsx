@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${pretendard.variable} font-pretendard pretendard bg-[#1C1C1E]`}>
+      <body className={`${pretendard.variable} font-pretendard pretendard bg-[#1B1C1E]`}>
         <MSWClientProvider>
           <ToastProvider>{children}</ToastProvider>
         </MSWClientProvider>

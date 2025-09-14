@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Section from '@/shared/components/layout/Section';
 
 const AboutGrowitSection = () => {
   const tabs = [
@@ -35,19 +36,19 @@ const AboutGrowitSection = () => {
   ];
 
   return (
-    <section className="relative pb-12 px-4 bg-black overflow-hidden">
+    <Section className="block relative px-4 bg-black overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-l from-[#35D942]/5 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold leading-tight mb-6">
             <span className="text-white">GROWIT은</span>
             <br />
-            <span className="bg-gradient-to-r from-[#35D942] via-[#24A8D4] to-[#8B5CF6] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#35D942] via-[#24A8D4] to-[#1d103a] bg-clip-text text-transparent">
               꾸준히 성장할 수 있는
               <br className="sm:hidden" />
               <span className="hidden sm:inline"> </span>
@@ -99,7 +100,7 @@ const AboutGrowitSection = () => {
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

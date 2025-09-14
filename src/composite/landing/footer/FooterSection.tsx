@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Button from '@/shared/components/input/Button';
 import { useRouter } from 'next/navigation';
 import FooterLinks from './components/FooterLinks';
+import Section from '@/shared/components/layout/Section';
 
 const FooterSection = () => {
   const router = useRouter();
@@ -13,7 +14,7 @@ const FooterSection = () => {
   };
 
   return (
-    <footer className="relative bg-black overflow-hidden">
+    <div className="relative min-h-screen bg-black overflow-hidden">
       {/* Background Image for entire footer */}
       <div className="absolute inset-0">
         <Image src="/landing/landing-background.png" alt="Background" fill className="object-cover" priority />
@@ -21,7 +22,7 @@ const FooterSection = () => {
       </div>
 
       {/* Main CTA Section */}
-      <div className="relative h-[500px] sm:h-[722px] py-20 px-4 flex items-center justify-center z-10">
+      <Section>
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
           <div className="mb-12">
@@ -36,13 +37,13 @@ const FooterSection = () => {
             <Button size="xl" onClick={handleGetStarted} text="성장 여정 시작하기" />
           </div>
         </div>
-      </div>
+      </Section>
 
       {/* Footer links and info */}
-      <div className="relative z-10">
+      <footer className="relative z-10">
         <FooterLinks />
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 };
 

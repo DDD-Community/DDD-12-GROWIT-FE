@@ -59,11 +59,10 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
 
   return (
     <>
-      <header className="hidden sm:flex fixed z-100 left-0 w-full items-center justify-between px-[20px] py-[20px] shadow-sm border-t-[1px] border-line-normal bg-[#1B1C1E]">
+      <div className="hidden sm:flex w-full items-center justify-between px-[20px] py-[20px] shadow-sm">
         {renderLeftSection()}
         <div className="flex items-center gap-4">{rightSection || <React.Fragment />}</div>
-      </header>
-      <div className="max-sm:hidden h-[76px]" />
+      </div>
     </>
   );
 };
