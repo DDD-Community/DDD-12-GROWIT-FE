@@ -7,6 +7,8 @@ import Checkbox from '@/shared/components/input/Checkbox';
 import { InputField } from '@/shared/components/input/InputField';
 import { Controller, useForm } from 'react-hook-form';
 import { urls } from '@/shared/constants/urls';
+import { useFetchInvestingInfo } from './hooks/useFetchInvestingInfo';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 interface EarlyBirdModalProps {
   open: boolean;
@@ -15,22 +17,34 @@ interface EarlyBirdModalProps {
 }
 
 interface EarlyBirdModalFormData {
-  phoneNumber: string;
+  phone: string;
   privacyPolicy: boolean;
 }
 
 export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModalProps) => {
-  const { control, handleSubmit, formState } = useForm({
+  const { showToast } = useToast();
+  const { control, handleSubmit, formState, reset } = useForm({
     mode: 'onChange',
     defaultValues: {
-      phoneNumber: '',
+      phone: '',
       privacyPolicy: false,
     },
   });
 
-  const onSubmitForm = (data: EarlyBirdModalFormData) => {
-    onSuccessSubmit();
-    onClose();
+  const { isLoading, submitEarlyBirdEvent } = useFetchInvestingInfo({
+    onSuccess: () => {
+      onSuccessSubmit();
+      showToast('얼리버드 신청이 완료되었습니다.', 'success');
+      onClose();
+      reset();
+    },
+    onError: () => {
+      showToast('제출 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
+    },
+  });
+
+  const onSubmitForm = async (data: EarlyBirdModalFormData) => {
+    await submitEarlyBirdEvent({ phone: data.phone });
   };
 
   return (
@@ -41,7 +55,7 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
       renderContent={() => (
         <form className="gap-[20px] min-w-[300px] sm:min-w-[350px]" onSubmit={e => e.preventDefault()}>
           <Controller
-            name="phoneNumber"
+            name="phone"
             control={control}
             rules={{
               required: '휴대폰 번호를 입력해주세요.',
@@ -99,10 +113,11 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
       renderFooter={() => (
         <Button
           size="xl"
-          text="제출"
           type="submit"
+          text={isLoading ? '제출 중...' : '제출'}
           onClick={handleSubmit(onSubmitForm)}
-          disabled={!formState.isValid}
+          disabled={!formState.isValid || isLoading}
+          status={isLoading ? 'loading' : 'idle'}
         />
       )}
     />

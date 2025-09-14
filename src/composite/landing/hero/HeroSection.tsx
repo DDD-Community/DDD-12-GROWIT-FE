@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Button from '@/shared/components/input/Button';
 import Section from '@/shared/components/layout/Section';
 import { useRouter } from 'next/navigation';
 import { EarlyBirdEvent } from './components/EarlyBirdEvent';
@@ -14,10 +13,7 @@ const HeroSection = () => {
   };
 
   return (
-    <Section
-      className="relative flex items-center justify-center px-4 pt-8 max-sm:pt-24 pb-10 overflow-hidden"
-      noPadding
-    >
+    <Section className="relative flex items-center justify-center px-4 pt-8 max-sm:pt-24 pb-10 overflow-hidden">
       {/* Background with image overlay */}
       <div className="absolute inset-0">
         {/* Main background gradient */}
