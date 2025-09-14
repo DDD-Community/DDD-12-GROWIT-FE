@@ -14,7 +14,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-normal">
       <Header isLanding mode="logo" banner={<TumblbugBanner />} rightSection={<HeaderActions />} />
-      <div className="h-[50px]" />
+      <hr className="h-[50px] border-none" />
       <HeroSection />
       <ProblemSection />
       <SolutionSection />
