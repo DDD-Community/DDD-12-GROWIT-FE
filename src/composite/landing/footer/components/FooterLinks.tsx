@@ -1,3 +1,4 @@
+import { urls } from '@/shared/constants/urls';
 import React from 'react';
 
 // 링크 데이터 타입 정의
@@ -13,8 +14,8 @@ interface LinkSection {
 
 const FooterLinks = () => {
   const supportLinks: LinkItem[] = [
-    { label: '개인정보처리방침', href: '#' },
-    { label: '이용약관', href: '#' },
+    { label: '개인정보처리방침', href: urls.customerInfo },
+    { label: '이용약관', href: urls.termsOfService },
   ];
   const linkSections: LinkSection[] = [{ title: '지원', links: supportLinks }];
 
