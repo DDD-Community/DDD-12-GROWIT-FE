@@ -35,7 +35,7 @@ const AboutGrowitSection = () => {
   ];
 
   return (
-    <section className="relative pb-12 px-4 bg-black overflow-hidden">
+    <section tabIndex={0} className="relative pb-12 px-4 bg-black overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-l from-[#35D942]/5 to-transparent rounded-full blur-3xl" />

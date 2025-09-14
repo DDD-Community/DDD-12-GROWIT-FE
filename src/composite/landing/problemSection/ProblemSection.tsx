@@ -4,7 +4,10 @@ import Image from 'next/image';
 
 const ProblemSection = () => {
   return (
-    <section className="relative sm:py-18 pt-16 px-4 bg-gradient-to-b from-[#0A0B0D] via-[#0F1011] to-[#000000] overflow-hidden">
+    <section
+      tabIndex={0}
+      className="relative sm:py-18 pt-16 px-4 bg-gradient-to-b from-[#0A0B0D] via-[#0F1011] to-[#000000] overflow-hidden"
+    >
       <div className="relative max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-2 gap-16 items-center">
           {/* Left Content */}

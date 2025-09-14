@@ -9,7 +9,7 @@ const TumblbugEventSection = () => {
   };
 
   return (
-    <section className="relative py-20 px-4 sm:h-[722px] bg-black overflow-hidden">
+    <section tabIndex={0} className="relative py-20 px-4 sm:h-[722px] bg-black overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image src="/landing/landing-tumblbug-1.png" alt="텀블벅 이벤트 배경" fill className="object-cover" priority />

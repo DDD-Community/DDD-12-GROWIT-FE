@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const GoalManagementSection = () => {
   return (
-    <section className="relative py-24 px-4">
+    <section tabIndex={0} className="relative py-24 px-4">
       <div className="relative max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content - Planet Badge System */}

@@ -31,7 +31,7 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="py-20 px-4 bg-black">
+    <section tabIndex={0} className="py-20 px-4 bg-black min-h-screen flex items-center">
       <div className="max-w-7xl mx-auto">
         {/* Testimonials */}
         <div>

@@ -2,7 +2,10 @@
 
 export const SolutionSection = () => {
   return (
-    <section className="relative sm:py-10 pt-12 px-4 bg-gradient-to-b from-[#000000] via-[#0C242E] to-[#0B152B] min-h-screen overflow-hidden">
+    <section
+      tabIndex={0}
+      className="relative sm:py-10 pt-12 px-4 bg-gradient-to-b from-[#000000] via-[#0C242E] to-[#0B152B] min-h-screen overflow-hidden"
+    >
       {/* Background Elements */}
       <div className="absolute inset-0">
         {/* Gradient overlays */}

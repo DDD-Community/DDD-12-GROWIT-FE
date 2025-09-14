@@ -13,7 +13,7 @@ const FooterSection = () => {
   };
 
   return (
-    <footer className="relative bg-black overflow-hidden">
+    <footer tabIndex={0} className="relative bg-black overflow-hidden">
       {/* Background Image for entire footer */}
       <div className="absolute inset-0">
         <Image src="/landing/landing-background.png" alt="Background" fill className="object-cover" priority />
