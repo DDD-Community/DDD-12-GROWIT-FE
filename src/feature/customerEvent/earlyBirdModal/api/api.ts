@@ -12,7 +12,7 @@ interface EarlyBirdEventResponse {
 
 export async function postEarlyBirdEvent(request: EarlyBirdEventRequest) {
   const response = await axios.post<EarlyBirdEventResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}externals/invitations`,
+    `${process.env.NEXT_PUBLIC_API_URL}/externals/invitations`,
     request,
     {
       headers: {
