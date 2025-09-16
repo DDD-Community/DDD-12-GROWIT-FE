@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { LoginForm } from '@/composite/login/loginForm';
+import { KakaoLoginButton } from './KakaoLoginButton';
 
 export default function LoginPage() {
   return (
@@ -14,18 +15,21 @@ export default function LoginPage() {
         <div className="flex flex-col flex-grow justify-center max-w-md mx-auto w-full">
           <h2 className="text-3xl font-bold mb-2 text-white">로그인</h2>
           <p className="text-gray-400 mb-8">
-            목표는 쉽게, 성장은 확실하게
+            <span className="font-bold">목표</span>는 쉽게, <span className="font-bold">성장</span>은 확실하게
             <br />
-            GROWIT과 함께 매일 성장하세요.
+            GROWIT과 함께 <span className="font-bold">매일 성장하세요.</span>
           </p>
 
           <LoginForm />
 
-          <div className="mt-6 text-center text-sm text-gray-400">
-            <span>계정이 없으신가요? </span>
-            <Link href="/signup" className="text-white font-medium underline">
-              회원가입 바로가기
-            </Link>
+          <div className="mt-10 text-center text-sm text-gray-400 space-y-4">
+            <KakaoLoginButton />
+            <div>
+              <span>계정이 없으신가요? </span>
+              <Link href="/signup" className="text-white font-medium underline">
+                회원가입 바로가기
+              </Link>
+            </div>
           </div>
         </div>
       </div>
