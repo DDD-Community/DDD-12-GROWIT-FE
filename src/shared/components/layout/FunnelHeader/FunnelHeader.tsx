@@ -10,7 +10,7 @@ interface FunnelHeaderProps {
   title?: string;
 }
 
-export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 추가' }: FunnelHeaderProps) => {
+export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '' }: FunnelHeaderProps) => {
   const router = useRouter();
 
   const handleBack = () => {
@@ -21,10 +21,14 @@ export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 
     }
   };
 
+  console.log(currentStep, 'currentStep');
+
   return (
     <>
       {/* Desktop Header */}
-      <div className="max-sm:hidden fixed top-0 left-[88px] right-0 bg-[#1C1C1E] z-50">
+      <div
+        className={`max-sm:hidden fixed top-0 left-[88px] right-0 z-50 ${currentStep === 1 ? 'transparent' : 'bg-[#1C1C1E]'}`}
+      >
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={handleBack}
@@ -38,19 +42,23 @@ export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 
           </div>
           <div className="text-white text-sm min-w-[40px] text-right" />
         </div>
-        <div className="w-full px-4">
-          <div className="h-1 bg-[#70737C38] rounded-full">
-            <div
-              className="h-full bg-[#3AEE49] rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
+        {currentStep > 1 && (
+          <div className="w-full px-4">
+            <div className="h-1 bg-[#70737C38] rounded-full">
+              <div
+                className="h-full bg-[#3AEE49] rounded-full transition-all duration-300"
+                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="max-sm:hidden h-[65px]" />
 
       {/* Mobile Header */}
-      <div className="sm:hidden fixed top-0 left-0 right-0 bg-[#1C1C1E] z-50">
+      <div
+        className={`sm:hidden fixed top-0 left-0 right-0 z-50 ${currentStep === 1 ? 'bg-transparent' : 'bg-[#1C1C1E]'}`}
+      >
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={handleBack}
@@ -67,14 +75,16 @@ export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '목표 
           <div className="text-white text-sm min-w-[40px] text-right" />
         </div>
 
-        <div className="w-full px-4">
-          <div className="h-1 bg-[#70737C38] rounded-full">
-            <div
-              className="h-full bg-[#3AEE49] rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
+        {currentStep > 1 && (
+          <div className="w-full px-4">
+            <div className="h-1 bg-[#70737C38] rounded-full">
+              <div
+                className="h-full bg-[#3AEE49] rounded-full transition-all duration-300"
+                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="sm:hidden h-[65px]" />
     </>

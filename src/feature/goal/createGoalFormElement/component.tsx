@@ -51,7 +51,7 @@ const Provider = ({ children }: CreateGoalFormProviderProps) => {
 };
 
 const FormContainer = ({ children }: CreateGoalFormContainerProps) => {
-  return <form>{children}</form>;
+  return <form className="flex flex-1 flex-col">{children}</form>;
 };
 
 const DurationDate = ({ weeks }: CreateGoalFormDurationProps) => {
