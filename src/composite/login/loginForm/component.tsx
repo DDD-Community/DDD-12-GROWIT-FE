@@ -34,6 +34,7 @@ export const LoginForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginFormData>({
     mode: 'onSubmit',
@@ -42,6 +43,8 @@ export const LoginForm = () => {
       password: '',
     },
   });
+  const emailValue = watch('email');
+  const passwordValue = watch('password');
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -89,7 +92,13 @@ export const LoginForm = () => {
           errorMessage={errors.password?.message as string}
         />
       </div>
-      <Button type="submit" text="로그인" size={'xl'} status={loading ? 'loading' : isSuccess ? 'success' : 'idle'} />
+      <Button
+        type="submit"
+        text="로그인"
+        size={'xl'}
+        disabled={emailValue === '' || passwordValue === ''}
+        status={loading ? 'loading' : isSuccess ? 'success' : 'idle'}
+      />
     </form>
   );
 };
