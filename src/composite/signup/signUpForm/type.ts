@@ -10,7 +10,20 @@ export interface SignupFormData {
   termsOfService: boolean; // 개인정보수집동의 관련해서 백엔드 저장이 필요할듯?
 }
 
-export interface KakaoSignUpRequest {
+export interface KakaoSignupFormData {
   name: string;
-  registrationToken: string;
+  jobRoleId: string;
+  careerYear: '' | CareerYearType;
+  privacyPolicy: boolean;
+  termsOfService: boolean;
 }
+
+export interface KakaoSignUpRequest extends Omit<KakaoSignupFormData, 'privacyPolicy' | 'termsOfService'> {
+  registrationToken: string;
+  requiredConsent: {
+    isPrivacyPolicyAgreed: boolean;
+    isServiceTermsAgreed: boolean;
+  };
+}
+
+export interface KakaoSignUpResponse {}
