@@ -32,16 +32,18 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <GuideMessage text="어떤 분야에 집중하고 싶어?" highlight={['분야']} status="curious" />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <GuideMessage text="어떤 분야에 집중하고 싶어?" highlight={['분야']} status="default" />
+        <div className="flex flex-col gap-3 px-[20px]">
           {GOAL_CATEGORIES.map(category => (
             <Button
               key={category.id}
-              size="lg"
+              size="xl"
               text={category.label}
-              variant={selectedCategory === category.id ? 'primary' : 'secondary'}
+              variant="secondary"
               onClick={e => handleCategorySelect(e, category.id)}
-              className="w-full"
+              className={`w-full ${
+                selectedCategory === category.id ? 'border-[#34C759] bg-[rgba(52,199,89,0.08)]' : ''
+              }`}
             />
           ))}
         </div>

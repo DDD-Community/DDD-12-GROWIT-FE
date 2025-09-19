@@ -30,8 +30,8 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-8">
-        <GuideMessage status="excited" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
-        <div className="bg-[#0F0F10] rounded-lg p-6 space-y-6">
+        <GuideMessage status="default" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
+        <div className="bg-[#0F0F10] mt-[20px] rounded-lg p-6 space-y-6">
           <div>
             <h3 className="body-1-bold text-white mb-4">{formValues.name || '-'}</h3>
           </div>

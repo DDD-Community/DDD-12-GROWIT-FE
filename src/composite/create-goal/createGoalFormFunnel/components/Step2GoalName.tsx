@@ -37,11 +37,13 @@ export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <GuideMessage text="어떤 목표를 가지고 있어?" highlight={['목표']} status="curious" />
-        <CreateGoalFormElement.Name />
-        {selectedCategory && CATEGORY_EXAMPLES[selectedCategory] && (
-          <p className="mt-2 text-[14px] text-neutral-400">ex. {CATEGORY_EXAMPLES[selectedCategory]}</p>
-        )}
+        <GuideMessage text="어떤 목표를 가지고 있어?" highlight={['목표']} status="exciting" />
+        <div className="px-[20px]">
+          <CreateGoalFormElement.Name />
+          {selectedCategory && CATEGORY_EXAMPLES[selectedCategory] && (
+            <p className="mt-2 text-[14px] text-neutral-400">ex. {CATEGORY_EXAMPLES[selectedCategory]}</p>
+          )}
+        </div>
       </div>
       <FunnelNextButton disabled={!isStepValid} onClick={handleNext} />
     </div>
