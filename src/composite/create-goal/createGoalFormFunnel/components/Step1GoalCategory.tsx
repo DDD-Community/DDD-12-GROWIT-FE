@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import Button from '@/shared/components/input/Button';
@@ -39,11 +38,8 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
               key={category.id}
               size="xl"
               text={category.label}
-              variant="secondary"
+              variant={selectedCategory === category.id ? 'select' : 'secondary'}
               onClick={e => handleCategorySelect(e, category.id)}
-              className={`w-full ${
-                selectedCategory === category.id ? 'border-[#34C759] bg-[rgba(52,199,89,0.08)]' : ''
-              }`}
             />
           ))}
         </div>

@@ -31,25 +31,27 @@ export const Step4Summary = ({}: Step4SummaryProps) => {
     <div className="flex flex-col">
       <div className="flex flex-col gap-8">
         <GuideMessage status="default" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
-        <div className="bg-[#0F0F10] mt-[20px] rounded-lg p-6 space-y-6">
-          <div>
-            <h3 className="body-1-bold text-white mb-4">{formValues.name || '-'}</h3>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <span className="text-zinc-300 mr-3">기간</span>
-              <span className="text-[var(--color-brand-neon)]">{`<${duration}주>`}</span>
+        <div className="px-[20px]">
+          <div className="bg-[#0F0F10] rounded-lg p-6 space-y-6">
+            <div>
+              <h3 className="body-1-bold text-white mb-4">{formValues.name || '-'}</h3>
             </div>
 
-            <div className="flex items-center">
-              <span className="text-zinc-300 mr-3">날짜</span>
-              <span className="text-white">{formatDateRange()}</span>
-            </div>
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <span className="text-zinc-300 mr-3">기간</span>
+                <span className="text-[var(--color-brand-neon)]">{`<${duration}주>`}</span>
+              </div>
 
-            <div className="flex items-center">
-              <span className="text-zinc-300 mr-3">분야</span>
-              <span className="text-white">{selectedCategory?.label || '-'}</span>
+              <div className="flex items-center">
+                <span className="text-zinc-300 mr-3">날짜</span>
+                <span className="text-white">{formatDateRange()}</span>
+              </div>
+
+              <div className="flex items-center">
+                <span className="text-zinc-300 mr-3">분야</span>
+                <span className="text-white">{selectedCategory?.label || '-'}</span>
+              </div>
             </div>
           </div>
         </div>
