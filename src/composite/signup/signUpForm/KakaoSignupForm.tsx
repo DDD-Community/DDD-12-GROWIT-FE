@@ -4,13 +4,13 @@ import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
 import { SignupDialogButton } from '@/feature/auth';
 import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
-import { SignupFormData } from './type';
-import { useFetchSignUp } from './hook';
+import { KakaoSignupFormData } from './type';
+import { useFetchKakaoSignUp } from './hook';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
-export const SignUpForm = () => {
-  const { isSubmitting, isSignupSuccess, fetchSignUp } = useFetchSignUp();
+export const KakaoSignupForm = () => {
+  const { isSubmitting, isSignupSuccess, fetchKakaoSignUp } = useFetchKakaoSignUp();
   const {
     watch,
     setValue,
@@ -18,11 +18,9 @@ export const SignUpForm = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<SignupFormData>({
+  } = useForm<KakaoSignupFormData>({
     mode: 'onChange',
     defaultValues: {
-      email: '',
-      password: '',
       name: '',
       jobRoleId: '',
       careerYear: '',
@@ -34,34 +32,6 @@ export const SignUpForm = () => {
 
   return (
     <form className="space-y-6 w-full">
-      <InputField
-        label="Email"
-        type="email"
-        placeholder="가입할 이메일을 입력해주세요."
-        {...register('email', {
-          required: '이메일을 입력해주세요.',
-          pattern: {
-            value: /\S+@\S+\.\S+/,
-            message: '이메일 형식이 올바르지 않습니다.',
-          },
-        })}
-        isError={!!errors.email}
-        errorMessage={errors.email?.message as string}
-      />
-      <InputField
-        label="비밀번호"
-        type="password"
-        placeholder="비밀번호를 입력해주세요."
-        {...register('password', {
-          required: '비밀번호를 입력해주세요.',
-          minLength: {
-            value: 8,
-            message: '비밀번호는 8자 이상이어야 합니다.',
-          },
-        })}
-        isError={!!errors.password}
-        errorMessage={errors.password?.message as string}
-      />
       <InputField
         label="이름"
         type="text"
@@ -134,7 +104,7 @@ export const SignUpForm = () => {
         isValid={isValid}
         isSubmitting={isSubmitting}
         isSignupSuccess={isSignupSuccess}
-        onClick={handleSubmit(fetchSignUp)}
+        onClick={handleSubmit(fetchKakaoSignUp)}
       />
     </form>
   );

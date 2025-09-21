@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
+import { Dialog, DialogContent } from '@/shared/components/dialog';
 import Button from '@/shared/components/input/Button';
 import { useFetchPostCreateGoal } from './hook';
 import FlexBox from '@/shared/components/foundation/FlexBox';
