@@ -7,7 +7,7 @@ import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
 import { KakaoSignupFormData } from './type';
 import { useFetchKakaoSignUp } from './hook';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './data';
+import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
 export const KakaoSignupForm = () => {
   const { isSubmitting, isSignupSuccess, fetchKakaoSignUp } = useFetchKakaoSignUp();
