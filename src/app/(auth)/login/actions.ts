@@ -3,7 +3,6 @@
 import { redirect } from 'next/navigation';
 
 export async function kakaoLoginAction() {
-  // 서버에서 리다이렉트 처리
-  const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/signin/kakao?redirect-uri=https://grow-it.me/oauth/callback`;
+  const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/signin/kakao?redirect-uri=${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
   redirect(redirectUrl);
 }
