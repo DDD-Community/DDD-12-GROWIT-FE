@@ -1,4 +1,11 @@
-type ToolTipPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+type ToolTipPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'left';
 
 interface ToolTipProps {
   text: string;
@@ -20,6 +27,8 @@ const getPositionClasses = (position: ToolTipPosition) => {
       return 'top-full left-1/2 transform -translate-x-1/2 mt-2';
     case 'bottom-right':
       return 'top-full right-0 mt-2';
+    case 'left':
+      return 'top-2/3 right-full -translate-y-1/2 mr-1';
     default:
       return 'top-full left-1/2 transform -translate-x-1/2 mt-2';
   }
@@ -39,6 +48,8 @@ const getTailPositionClasses = (position: ToolTipPosition) => {
       return 'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-8 border-b-label-normal border-x-8 border-x-transparent';
     case 'bottom-right':
       return 'top-0 right-4 -translate-y-full border-b-8 border-b-label-normal border-x-8 border-x-transparent';
+    case 'left':
+      return 'top-1/2 left-full -translate-y-1/2 border-l-6 border-l-label-normal border-y-6 border-y-transparent';
     default:
       return 'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-8 border-b-label-normal border-x-8 border-x-transparent';
   }
@@ -47,7 +58,7 @@ const getTailPositionClasses = (position: ToolTipPosition) => {
 export const ToolTip = ({ text, className = '', position = 'bottom-center' }: ToolTipProps) => {
   return (
     <div className={`absolute ${getPositionClasses(position)} ${className}`}>
-      <div className="relative py-2 px-3 bg-white rounded-xl text-semibold text-xs whitespace-nowrap text-black">
+      <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
         {text}
         {/* 꼬리 */}
         <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} />

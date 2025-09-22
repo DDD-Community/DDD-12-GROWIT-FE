@@ -58,6 +58,15 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
   }
+
+  /* Swiper 커스텀 페이지네이션 스타일 */
+  .swiper-pagination-bullet {
+    @apply bg-gray-300!;
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply bg-white!;
+  }
 }
 
 dialog::backdrop {
