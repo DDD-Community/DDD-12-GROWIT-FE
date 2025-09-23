@@ -49,7 +49,7 @@ export const GuideMessage = ({ text, highlight, status = 'default' }: GuideMessa
   };
 
   return (
-    <div className="flex justify-end items-center gap-2 py-6">
+    <div className="flex justify-end items-center gap-2 py-6 pl-6">
       <div className="inline-block">
         <div className="bg-[#2E2F33] rounded-t-2xl rounded-r-2xl rounded-bl-2xl rounded-br-none px-[28px] py-[20px] shadow-md inline-block">
           <p className="text-white text-[18px] font-bold leading-[1.445]">{getHighlightedText()}</p>

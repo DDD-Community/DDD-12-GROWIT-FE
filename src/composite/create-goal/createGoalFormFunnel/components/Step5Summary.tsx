@@ -8,7 +8,7 @@ import { ConfirmGoalButton } from '@/feature/goal/confimGoalButton';
 
 interface Step4SummaryProps {}
 
-export const Step4Summary = ({}: Step4SummaryProps) => {
+export const Step5Summary = ({}: Step4SummaryProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
