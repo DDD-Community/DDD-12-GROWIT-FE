@@ -9,8 +9,10 @@ import { Navigation, Pagination } from 'swiper/modules';
 //import { useCheerMessage } from './hooks';
 import { GrorongCard } from '@/feature/home/GrorongCard';
 import { AIMentorCard } from '@/feature/home/AIMentorCard';
+import { useGoalSelector } from '@/model/goal/context';
 
 export const CheerMessageCard = () => {
+  const { currentGoal } = useGoalSelector();
   //const { fullUserName } = useFetchUserName();
   //const { cheerMessage } = useCheerMessage();
 

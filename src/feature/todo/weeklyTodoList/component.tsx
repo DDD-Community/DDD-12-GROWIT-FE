@@ -13,12 +13,9 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
-import { getDateString, isToday } from '@/model/todo/selectedDay/utils';
 import EditTodoModal from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import DeleteTodoModal from './components/DeleteTodoModal';
-import { ToolTip } from '@/shared/components/display/ToolTip';
 import { WeekDatePicker } from './components/WeekDatePicker';
 
 import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';

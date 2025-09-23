@@ -47,7 +47,7 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
 
   return (
     <>
-      <p className="text-label-neutral body-1-normal font-semibold pb-2">
+      <p className="text-label-neutral body-1-normal font-semibold border-b border-[#23262F] pb-2">
         나의 <span className="text-brand-neon body-1-bold">{totalWeeks}주</span> 목표
       </p>
       <div className="flex flex-col w-full rounded-2xl bg-elevated-assistive p-5 gap-5 relative overflow-hidden border border-[#23262F]">
