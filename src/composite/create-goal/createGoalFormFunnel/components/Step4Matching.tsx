@@ -1,15 +1,99 @@
+import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal';
 import { MentorCharacterCard, MentorCharacterType } from '@/feature/goal/mentorCharacterCard';
+import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
+import { GoalFormData } from '@/shared/type/form';
+import { useEffect, useMemo, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Modal } from '@/shared/components/feedBack/Modal';
+import Button from '@/shared/components/input/Button';
 
 interface Step4MatchingProps {
   onNext: () => void;
+  onBack: () => void;
 }
 
-export const Step4Matching = ({ onNext }: Step4MatchingProps) => {
+export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
+  const { hideHeader } = useFunnelHeader();
+  const { watch } = useFormContext<GoalFormData>();
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+  const formData = useMemo(() => watch(), [watch]);
+  const { isLoading, isError, error, data } = useFetchPostCreateGoal(formData);
+
+  useEffect(() => {
+    hideHeader();
+  }, []);
+
+  // 에러 발생 시 Modal 표시
+  useEffect(() => {
+    if (isError) {
+      setShowErrorModal(true);
+    }
+  }, [isError]);
+
+  const handleGoBack = () => {
+    setShowErrorModal(false);
+    onBack();
+  };
+
+  // 로딩 상태일 때 로딩 페이지 표시
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-full bg-[#1B1C1E]">
+        {/* 헤더 영역 */}
+        <div className="flex flex-col items-center gap-2 px-2 py-12">
+          <h1 className="text-[22px] text-[#F7F7F8] font-bold text-center leading-[1.36] tracking-[-0.43%]">
+            경서에게 알맞는 멘토를
+            <br />
+            찾는 중이야!
+          </h1>
+        </div>
+
+        {/* 메인 컨텐츠 영역 - 로딩 애니메이션 */}
+        <div className="flex-1 flex flex-col items-center justify-center px-5">
+          <div className="flex justify-center">
+            <div className="relative">
+              {/* 로딩 박스 */}
+              <div className="w-[275px] h-[325px] bg-[#0F0F10] rounded-[24px] flex items-center justify-center shadow-[0px_0px_80px_0px_rgba(53,217,66,0.5)]">
+                <span className="text-[45px] font-bold text-[#F7F7F8] leading-[1.36] tracking-[-1.94%]">?</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태일 때는 Modal만 표시하고 나머지는 숨김
+  if (isError) {
+    return (
+      <div className="flex flex-col h-full">
+        {/* 에러 Modal */}
+        <Modal
+          open={showErrorModal}
+          onClose={() => setShowErrorModal(false)}
+          renderContent={() => (
+            <div className="text-center">
+              <p className="text-[#F7F7F8] text-base leading-[1.5] mb-4">
+                {error || '목표 생성 중 오류가 발생했습니다.'}
+              </p>
+              <p className="text-[rgba(194,196,200,0.88)] text-sm leading-[1.5]">
+                이전 단계로 돌아가서 정보를 확인해주세요.
+              </p>
+            </div>
+          )}
+          renderFooter={() => <Button size="ml" onClick={handleGoBack} text="이전 단계로" className="w-full" />}
+        />
+      </div>
+    );
+  }
+
+  // 성공 상태일 때 기존 UI 표시
   return (
     <div className="flex flex-col h-full">
       {/* 헤더 영역 */}
-      <div className="flex flex-col items-center gap-2 px-2 py-4">
+      <div className="flex flex-col items-center gap-2 px-2 py-12">
         <span className="text-[22px] text-[rgba(194,196,200,0.88)] leading-relaxed">
           <span className="bg-gradient-to-r from-[#80F50E] via-[#78C1F1] to-[#CCADFD] bg-clip-text text-transparent font-bold">
             AI 멘토 매칭
@@ -24,7 +108,9 @@ export const Step4Matching = ({ onNext }: Step4MatchingProps) => {
       {/* 메인 컨텐츠 영역 */}
       <div className="flex-1 flex flex-col items-center justify-center px-5">
         <div className="flex justify-center">
-          <MentorCharacterCard mentorCharacter={MentorCharacterType.WARREN_BUFFETT} />
+          <MentorCharacterCard
+            mentorCharacter={(data?.mentor as MentorCharacterType) || MentorCharacterType.TIM_COOK}
+          />
         </div>
       </div>
 

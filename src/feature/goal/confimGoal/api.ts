@@ -16,12 +16,17 @@ export interface CreateGoalRequestDto {
   }[];
 }
 
+interface CreateGoalResponseDto {
+  id: string;
+  mentor: string;
+}
+
 export async function postCreateGoal(formData: GoalFormData) {
   const { duration, durationDate, ...rest } = formData;
   const dto: CreateGoalRequestDto = {
     ...rest,
-    duration: durationDate
+    duration: durationDate,
   };
-  
-  return await apiClient.post<CreateGoalRequestDto>('/goals', dto);
+
+  return await apiClient.post<CreateGoalResponseDto, CreateGoalRequestDto>('/goals', dto);
 }

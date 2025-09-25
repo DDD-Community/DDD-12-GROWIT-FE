@@ -23,7 +23,6 @@ export const Step0Onboarding = ({ onNext }: Step0OnboardingProps) => {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image src="/landing/landing-background.png" alt="Background" fill className="object-cover" priority />
       </div>

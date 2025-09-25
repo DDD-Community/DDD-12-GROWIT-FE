@@ -2,17 +2,35 @@
 
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
-import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
-import { GuideMessage } from './GuideMessage';
-import { ConfirmGoalButton } from '@/feature/goal/confimGoalButton';
+import { GOAL_CATEGORIES, GoalCategoryEnum } from '@/shared/constants/goalCategory';
+import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
+import { CheckCircle } from 'lucide-react';
+import { useEffect } from 'react';
+import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 
-interface Step4SummaryProps {}
+interface Step5SummaryProps {
+  onNext: () => void;
+}
 
-export const Step5Summary = ({}: Step4SummaryProps) => {
+export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
+  const { hideHeader } = useFunnelHeader();
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
   const duration = formValues.duration;
+
+  const getBackgroundImage = (category: string | undefined) => {
+    switch (category) {
+      case GoalCategoryEnum.PROFESSIONAL_GROWTH:
+        return '/image/goal-bg-confucius.png';
+      case GoalCategoryEnum.WEALTH_BUILDING:
+        return '/image/goal-bg-warren.png';
+      case GoalCategoryEnum.SIDE_PROJECT:
+        return '/image/goal-bg-timcook.png';
+      default:
+        return '/image/goal-bg-confucius.png';
+    }
+  };
 
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return '-';
@@ -27,35 +45,80 @@ export const Step5Summary = ({}: Step4SummaryProps) => {
     return `${formatDate(start)} ~ ${formatDate(end)}`;
   };
 
+  useEffect(() => {
+    hideHeader();
+  }, []);
+
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col gap-8">
-        <GuideMessage status="default" text={'수고했어 :)\n마지막으로 목표를 확인해보자!'} highlight={['목표']} />
-        <div className="px-[20px]">
-          <div className="bg-[#0F0F10] rounded-lg p-6 space-y-6">
-            <div>
-              <h3 className="body-1-bold text-white mb-4">{formValues.name || '-'}</h3>
-            </div>
+    <div className="relative flex flex-col h-full bg-[#1B1C1E] overflow-hidden">
+      {/* 백그라운드 이미지 */}
+      <div
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0.15) 48%, rgba(0, 0, 0, 0.51) 71%, rgba(0, 0, 0, 1) 81%), url(${getBackgroundImage(formValues.category)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
 
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <span className="text-zinc-300 mr-3">기간</span>
-                <span className="text-[var(--color-brand-neon)]">{`<${duration}주>`}</span>
+      {/* 컨텐츠 */}
+      <div className="relative z-10 flex flex-1 flex-col">
+        {/* 헤더 영역 */}
+        <div className="flex flex-col items-center gap-2 px-2 pt-12">
+          <h1 className="text-[22px] text-[#F7F7F8] font-bold text-center leading-[1.364] tracking-[-0.0194em]">
+            나만의 여정 시작하기
+          </h1>
+        </div>
+
+        {/* 메인 컨텐츠 영역 */}
+        <div className="flex-1 flex flex-col items-center justify-end px-5 pb-[80px]">
+          <div className="w-full max-w-[335px]">
+            {/* 목표 정보 카드 */}
+            <div className="bg-[#0F0F10] border border-[rgba(112,115,124,0.32)] rounded-lg p-5 space-y-4">
+              {/* 목표명 */}
+              <div className="bg-[rgba(46,47,51,0.88)] rounded-lg p-[10px_14px] flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-[#F7F7F8]" strokeWidth={1.67} />
+                <span className="text-[#F7F7F8] text-base font-normal leading-[1.5] tracking-[0.0057em]">
+                  {formValues.name || '-'}
+                </span>
               </div>
 
-              <div className="flex items-center">
-                <span className="text-zinc-300 mr-3">날짜</span>
-                <span className="text-white">{formatDateRange()}</span>
-              </div>
+              {/* 정보 목록 */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-[rgba(174,176,182,0.61)] text-base font-medium leading-[1.5] tracking-[0.0057em]">
+                    기간
+                  </span>
+                  <span className="text-[#3AEE49] text-base font-medium leading-[1.5] tracking-[0.0057em]">{`<${duration}주>`}</span>
+                </div>
 
-              <div className="flex items-center">
-                <span className="text-zinc-300 mr-3">분야</span>
-                <span className="text-white">{selectedCategory?.label || '-'}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[rgba(174,176,182,0.61)] text-base font-medium leading-[1.5] tracking-[0.0057em]">
+                    날짜
+                  </span>
+                  <span className="text-[#F7F7F8] text-base font-medium leading-[1.5] tracking-[0.0057em]">
+                    {formatDateRange()}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="text-[rgba(174,176,182,0.61)] text-base font-medium leading-[1.5] tracking-[0.0057em]">
+                    분야
+                  </span>
+                  <span className="text-[#F7F7F8] text-base font-medium leading-[1.5] tracking-[0.0057em]">
+                    {selectedCategory?.label || '-'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <ConfirmGoalButton />
+
+        {/* 하단 버튼 */}
+        <div className="px-5 pb-8">
+          <FunnelNextButton onClick={onNext} variant="brand" text="여정 시작하기" />
+        </div>
       </div>
     </div>
   );

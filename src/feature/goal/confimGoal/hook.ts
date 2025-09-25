@@ -1,27 +1,18 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { postCreateGoal } from './api';
 import { AxiosError } from 'axios';
-import { CommonError, CommonResponse } from '@/shared/type/response';
+import { CommonError } from '@/shared/type/response';
 
-interface UseFetchPostCreateGoalReturn {
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  error: string | null;
-  createGoal: (data: GoalFormData) => Promise<void>;
-  reset: () => void;
-}
-
-export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
-  const { showToast } = useToast();
+export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<any>(null);
 
   const createGoal = async (data: GoalFormData) => {
     try {
@@ -30,8 +21,10 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
       setIsSuccess(false);
       setIsError(false);
       setError(null);
-      await postCreateGoal(data);
+      const result = await postCreateGoal(data);
+      setData(result);
       setIsSuccess(true);
+      return result;
     } catch (err) {
       setIsError(true);
       let errorMessage = '목표 생성에 실패했습니다.';
@@ -45,7 +38,7 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
         errorMessage = (err as AxiosError<CommonError>).response?.data?.message ?? errorMessage;
       }
       setError(errorMessage);
-      showToast(errorMessage, 'error');
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -56,13 +49,22 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
     setIsSuccess(false);
     setIsError(false);
     setError(null);
+    setData(null);
   };
+
+  // 페이지 마운트 시 자동 패칭
+  useEffect(() => {
+    if (initialData) {
+      createGoal(initialData);
+    }
+  }, [initialData]);
 
   return {
     isLoading,
     isSuccess,
     isError,
     error,
+    data,
     createGoal,
     reset,
   };

@@ -2,26 +2,47 @@
 
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import { useFunnelHeader } from './FunnelHeaderContext';
 
 interface FunnelHeaderProps {
-  currentStep: number;
-  totalSteps: number;
-  onBack: () => void;
+  currentStep?: number;
+  totalSteps?: number;
+  onBack?: () => void;
   title?: string;
+  isVisible?: boolean;
 }
 
-export const FunnelHeader = ({ currentStep, totalSteps, onBack, title = '' }: FunnelHeaderProps) => {
+export const FunnelHeader = ({
+  currentStep: propCurrentStep,
+  totalSteps: propTotalSteps,
+  onBack: propOnBack,
+  title: propTitle = '',
+  isVisible: propIsVisible,
+}: FunnelHeaderProps) => {
   const router = useRouter();
+  let contextValue;
+  try {
+    contextValue = useFunnelHeader();
+  } catch {
+    contextValue = null;
+  }
+
+  const currentStep = propCurrentStep ?? 1;
+  const totalSteps = propTotalSteps ?? 1;
+  const title = propTitle || '';
+  const isVisible = propIsVisible ?? contextValue?.isVisible ?? true;
 
   const handleBack = () => {
-    if (currentStep === 1) {
-      router.push('/home');
+    if (propOnBack) {
+      propOnBack();
     } else {
-      onBack();
+      router.push('/home');
     }
   };
 
-  console.log(currentStep, 'currentStep');
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <>

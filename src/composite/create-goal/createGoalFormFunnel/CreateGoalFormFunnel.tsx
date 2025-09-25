@@ -11,7 +11,7 @@ import {
   Step4Matching,
   Step5Summary,
 } from './components';
-import { FunnelHeader } from '@/shared/components/layout/FunnelHeader';
+import { FunnelHeader, FunnelHeaderProvider } from '@/shared/components/layout/FunnelHeader';
 
 type StepType = 'onboarding' | 'goal-category' | 'goal-name' | 'duration' | 'summary' | 'matching';
 
@@ -36,20 +36,28 @@ export const CreateGoalFormFunnel = () => {
     setCurrentStep(nextStep);
   };
 
+  const handleSummaryNext = () => {
+    router.push('/home');
+  };
+
   return (
     <CreateGoalFormElement.Provider>
-      <div className="flex flex-1 flex-col">
-        <FunnelHeader currentStep={currentStepIndex} totalSteps={totalSteps} onBack={handleBack} />
-        <div className="flex flex-1 flex-col w-full mx-auto">
-          <CreateGoalFormElement.FormContainer>
-            {currentStep === 'onboarding' && <Step0Onboarding onNext={() => handleNext('goal-category')} />}
-            {currentStep === 'goal-category' && <Step1GoalCategory onNext={() => handleNext('goal-name')} />}
-            {currentStep === 'goal-name' && <Step2GoalName onNext={() => handleNext('duration')} />}
-            {currentStep === 'duration' && <Step3Duration onNext={() => handleNext('matching')} />}
-            {currentStep === 'matching' && <Step4Matching onNext={() => handleNext('summary')} />}
-            {currentStep === 'summary' && <Step5Summary />}
-          </CreateGoalFormElement.FormContainer>
-        </div>
+      <div className="flex flex-col">
+        <FunnelHeaderProvider>
+          <FunnelHeader currentStep={currentStepIndex} totalSteps={totalSteps} onBack={handleBack} />
+          <div className="flex flex-col w-full mx-auto">
+            <CreateGoalFormElement.FormContainer>
+              {currentStep === 'onboarding' && <Step0Onboarding onNext={() => handleNext('goal-category')} />}
+              {currentStep === 'goal-category' && <Step1GoalCategory onNext={() => handleNext('goal-name')} />}
+              {currentStep === 'goal-name' && <Step2GoalName onNext={() => handleNext('duration')} />}
+              {currentStep === 'duration' && <Step3Duration onNext={() => handleNext('matching')} />}
+              {currentStep === 'matching' && (
+                <Step4Matching onNext={() => handleNext('summary')} onBack={() => handleBack()} />
+              )}
+              {currentStep === 'summary' && <Step5Summary onNext={() => handleSummaryNext()} />}
+            </CreateGoalFormElement.FormContainer>
+          </div>
+        </FunnelHeaderProvider>
       </div>
     </CreateGoalFormElement.Provider>
   );

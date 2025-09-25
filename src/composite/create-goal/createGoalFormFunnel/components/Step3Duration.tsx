@@ -8,12 +8,14 @@ import Button from '@/shared/components/input/Button';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
 import { GuideMessage } from './GuideMessage';
+import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 
 interface Step3DurationProps {
   onNext: () => void;
 }
 
 export const Step3Duration = ({ onNext }: Step3DurationProps) => {
+  const { showHeader } = useFunnelHeader();
   const { watch, setValue, getValues } = useFormContext<GoalFormData>();
 
   const formValues = watch();
@@ -24,6 +26,7 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
     if (!formValues.durationDate.startDate) {
       setValue('durationDate.startDate', getToday());
     }
+    showHeader();
   }, []);
 
   const updatePlans = useCallback(

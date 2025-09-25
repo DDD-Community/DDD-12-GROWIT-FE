@@ -1,0 +1,1 @@
+export { useFetchPostCreateGoal } from './hook';
