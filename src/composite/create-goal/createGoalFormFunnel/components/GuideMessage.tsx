@@ -49,23 +49,33 @@ export const GuideMessage = ({ text, highlight, status = 'default' }: GuideMessa
   };
 
   return (
-    <div className="flex justify-end items-center gap-2 py-6 pl-6">
-      <div className="inline-block">
-        <div className="bg-[#2E2F33] rounded-t-2xl rounded-r-2xl rounded-bl-2xl rounded-br-none px-[28px] py-[20px] shadow-md inline-block">
-          <p className="text-white text-[18px] font-bold leading-[1.445]">{getHighlightedText()}</p>
+    <>
+      {/* 이미지 프리로드 */}
+      <div className="hidden">
+        <Image src="/image/grorong-right-default.png" alt="그로롱 기본" width={100} height={100} priority />
+        <Image src="/image/grorong-right-exciting.png" alt="그로롱 흥분" width={100} height={100} priority />
+        <Image src="/image/grorong-right-happy.png" alt="그로롱 행복" width={100} height={100} priority />
+      </div>
+
+      <div className="flex justify-end items-center gap-2 py-6 pl-6">
+        <div className="inline-block">
+          <div className="bg-[#2E2F33] rounded-t-2xl rounded-r-2xl rounded-bl-2xl rounded-br-none px-[28px] py-[20px] shadow-md inline-block">
+            <p className="text-white text-[18px] font-bold leading-[1.445]">{getHighlightedText()}</p>
+          </div>
+        </div>
+        <div className="relative flex-shrink-0">
+          <div className="block sm:hidden">
+            <Image
+              src={`/image/grorong-right-${status}.png`}
+              alt="그로롱"
+              width={100}
+              height={100}
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
       </div>
-      <div className="relative flex-shrink-0">
-        <div className="block sm:hidden">
-          <Image
-            src={`/image/grorong-right-${status}.png`}
-            alt="그로롱"
-            width={100}
-            height={100}
-            className="object-contain"
-          />
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
