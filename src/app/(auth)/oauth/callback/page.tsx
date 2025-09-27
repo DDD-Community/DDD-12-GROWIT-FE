@@ -44,7 +44,7 @@ export default function OAuthCallbackPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen bg-[#1C1C1E] items-center justify-center">
+      <div className="flex flex-1 bg-[#1C1C1E] items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">로그인 처리 중...</p>
@@ -56,7 +56,7 @@ export default function OAuthCallbackPage() {
   // 토큰이 있어서 로그인 성공한 경우
   if (hasTokens) {
     return (
-      <div className="flex min-h-screen bg-[#1C1C1E] items-center justify-center">
+      <div className="flex flex-1 bg-[#1C1C1E] items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">
