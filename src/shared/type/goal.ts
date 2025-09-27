@@ -1,6 +1,9 @@
+import { AIMentor } from '@/feature/home/type';
+
 export interface Goal {
   id: string;
   name: string;
+  mentor: AIMentor;
   duration: {
     startDate: string;
     endDate: string;

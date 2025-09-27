@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { Goal, Plan } from '@/shared/type/goal';
+import { Goal } from '@/shared/type/goal';
 
 // CORS preflight 요청 처리
 export const optionsHandler = http.options('*', () => {
@@ -19,6 +19,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-1',
     name: '프론트엔드 개발 마스터하기',
+    mentor: 'TIM_COOK',
     duration: {
       startDate: '2024-01-01',
       endDate: '2024-03-31',
@@ -43,6 +44,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-2',
     name: '디자인 시스템 구축',
+    mentor: 'CONFUCIUS',
     duration: {
       startDate: '2024-01-15',
       endDate: '2024-02-28',
@@ -67,6 +69,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-3',
     name: '프로젝트 관리 역량 강화',
+    mentor: 'WARREN_BUFFETT',
     duration: {
       startDate: '2024-01-01',
       endDate: '2024-04-30',

@@ -71,7 +71,11 @@ export const WeeklyRetrospectBox = ({
     }
     // 처음 작성하는 경우에는 새로운 회고 생성 (회고 데이터가 존재하지 않음)
     else if (goalId) {
-      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
+      await postAddRetrospect({
+        goalId: goalId,
+        planId: plan.id,
+        kpt: { keep: weeklyRetrospect, problem: 'weeklyRetrospect', tryNext: 'weeklyRetrospect' },
+      });
     }
     setIsEditable(false);
   };

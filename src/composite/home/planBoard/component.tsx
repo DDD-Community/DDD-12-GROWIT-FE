@@ -9,8 +9,8 @@ import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { Goal } from '@/shared/type/goal';
-import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AddRetroSpectButton } from '@/feature/retrospects';
+import { WeeklyGoalBoard } from '@/feature/goal/weeklyGoalBoard';
 
 export const WeeklyPlanBoard = () => {
   const { currentGoal, refetchCurrentGoal } = useGoalSelector();
@@ -46,6 +46,7 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
 
   const handleToggleTodo = useCallback(
     (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
+      // 투두 상태 토글
       toggleTodoStatus(dayOfWeek, todoId);
       refetchTodayList();
     },
@@ -59,11 +60,11 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
           <PlanSelect />
           <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
         </div>
-        <AddPlanModal
+        <WeeklyGoalBoard
           goalId={goal.id}
           planId={selectedPlanId}
+          selectedWeekIndex={selectedWeekIndex}
           selectedPlanContent={selectedPlanContent}
-          selectedPlanIndex={selectedWeekIndex}
           onSuccessAddPlan={handleRefreshGoal}
         />
         <WeeklyTodoList

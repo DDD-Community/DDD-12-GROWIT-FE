@@ -23,7 +23,7 @@ export const WithdrawButton = () => {
   };
 
   return (
-    <div className="max-w-24 md:max-w-40 pb-8">
+    <div className="max-w-24 md:max-w-40 md:pb-8">
       <Button variant="tertiary" text="탈퇴하기" size={'xl'} onClick={() => setIsModalOpen(true)} />
       <Modal
         open={isModalOpen}

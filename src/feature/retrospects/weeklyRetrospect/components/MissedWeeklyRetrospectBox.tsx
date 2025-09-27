@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { postAddRetrospect } from '../../addRetroSpect/api';
 import { Plan } from '@/shared/type/goal';
-import { useGoalSelector } from '@/model/goal/context';
+//import { useGoalSelector } from '@/model/goal/context';
 
 interface MissedWeeklyRetrospect {
   goalId?: string;
@@ -19,7 +19,11 @@ export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospe
 
   const addWeeklyRetrospect = async () => {
     if (goalId) {
-      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
+      await postAddRetrospect({
+        goalId: goalId,
+        planId: plan.id,
+        kpt: { keep: weeklyRetrospect, problem: 'weeklyRetrospect', tryNext: 'weeklyRetrospect' },
+      });
     }
     setIsEditable(false);
   };

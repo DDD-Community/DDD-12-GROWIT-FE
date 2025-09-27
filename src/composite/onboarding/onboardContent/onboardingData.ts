@@ -20,8 +20,8 @@ export const onboardingSteps: OnboardingStep[] = [
   },
   {
     id: 'step2',
-    guideMessage: '최종 목표까지 얼마나 왔는지 \n주간으로 확인해봐 🚀',
-    subMessage: '최종 목표 종료까지 같이 가보자!',
+    guideMessage: '너의 목표 진행 상황에 맞게\n AI 멘토가 조언을 해줄거야',
+    subMessage: '참고하고 목표까지 성공적으로 도달해보자',
     desktopImage: '/onboard/desktop-2.png',
     mobileImage: '/onboard/mobile-2.png',
     altText: '온보딩 스텝 2',
@@ -29,8 +29,8 @@ export const onboardingSteps: OnboardingStep[] = [
   },
   {
     id: 'step3',
-    guideMessage: '목표를 이루기 위해 투두를 추가해봐! 🌱',
-    subMessage: '투두를 완료할 때마다 목표 행성이 조금씩 \n선명하게 드러날거야',
+    guideMessage: '직관적으로 최종 목표와\n 주차 진척도를 확인할 수 있어 🚀',
+    subMessage: '목표 종료일까지 얼마나 남았는지 확인해보자',
     desktopImage: '/onboard/desktop-3.png',
     mobileImage: '/onboard/mobile-3.png',
     altText: '온보딩 스텝 3',
@@ -38,8 +38,8 @@ export const onboardingSteps: OnboardingStep[] = [
   },
   {
     id: 'step4',
-    guideMessage: '지금매일 작지만 특별한 미션을 줄게 💪',
-    subMessage: '하루하루 실천하면 목표에 점점 가까워질거야!',
+    guideMessage: '목표를 이루기 위해 투두를 추가해봐! 🌱',
+    subMessage: '투두를 완료할 때마다 목표 행성이 조금씩\n 선명하게 드러날거야',
     desktopImage: '/onboard/desktop-4.png',
     mobileImage: '/onboard/mobile-4.png',
     altText: '온보딩 스텝 4',
