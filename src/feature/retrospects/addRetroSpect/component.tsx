@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
-import { Modal } from '@/shared/components/feedBack/Modal';
-import { TextArea } from '@/shared/components/input/TextArea';
 import { ToolTip } from '@/shared/components/display/ToolTip';
-import { useFetchAddRetrospect, useFetchRetrospects, useFetchEditRetrospect } from './hooks';
+import { useFetchRetrospects } from './hooks';
 import { Goal } from '@/shared/type/goal';
-import { useToast } from '@/shared/components/feedBack/toast';
 import Image from 'next/image';
+import { UpdateRetrospectPage } from './components/UpdateRetrospectPage';
+import { AddRetroSpectPopup } from './components/AddRetrospectPopup';
 
 interface AddRetroSpectButtonProps {
   goal: Goal;
@@ -17,17 +16,10 @@ interface AddRetroSpectButtonProps {
 }
 
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [content, setContent] = useState('');
-  const [contentError, setContentError] = useState('');
-  const [isEditMode, setIsEditMode] = useState(false);
-  const { showToast } = useToast();
+  const [showUpdateRetrospectPage, setShowUpdateRetrospectPage] = useState(false);
+  const [showRetrospectPage, setShowRetrospectPage] = useState(false);
 
-  const {
-    retrospect,
-    fetchRetrospects,
-    isLoading: isLoadingRetrospects,
-  } = useFetchRetrospects(
+  const { retrospect, isLoading: isLoadingRetrospects } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
       onError: err => {
@@ -35,97 +27,6 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
       },
     }
   );
-
-  const { addRetrospect, isLoading: isAddingRetrospect } = useFetchAddRetrospect({
-    onSuccess: () => {
-      handleModalClose();
-      fetchRetrospects();
-    },
-    onError: err => {
-      showToast('회고 등록에 성공했습니다.', 'success');
-      console.error('회고 등록 실패:', err);
-    },
-  });
-
-  const { editRetrospect, isLoading: isEditingRetrospect } = useFetchEditRetrospect({
-    onSuccess: () => {
-      showToast('회고 수정에 성공했습니다.', 'success');
-      handleModalClose();
-      fetchRetrospects();
-    },
-    onError: err => {
-      showToast('회고 수정에 실패했습니다.', 'error');
-      console.error('회고 수정 실패:', err);
-    },
-  });
-
-  const handleSubmit = useCallback(async () => {
-    if (!isFormValid() || isAddingRetrospect || isEditingRetrospect) return;
-
-    try {
-      if (isEditMode && retrospect) {
-        await editRetrospect({
-          retrospectId: retrospect?.retrospect?.id,
-          planId: selectedPlanId,
-          content,
-        });
-      } else {
-        await addRetrospect({
-          goalId: goal.id,
-          planId: selectedPlanId,
-          content,
-        });
-      }
-    } catch (error) {}
-  }, [
-    addRetrospect,
-    editRetrospect,
-    content,
-    isAddingRetrospect,
-    isEditingRetrospect,
-    isEditMode,
-    retrospect,
-    goal,
-    selectedPlanId,
-  ]);
-
-  const showModal = useCallback(() => {
-    setIsModalOpen(true);
-    if (retrospect) {
-      setIsEditMode(true);
-      setContent(retrospect?.retrospect?.content);
-      setContentError('');
-    } else {
-      setIsEditMode(false);
-      setContent('');
-      setContentError('');
-    }
-  }, [retrospect]);
-
-  const handleModalClose = useCallback(() => {
-    setIsModalOpen(false);
-    setContent('');
-    setContentError('');
-    setIsEditMode(false);
-  }, []);
-
-  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setContent(value);
-    if (value.length < 10) {
-      setContentError('회고는 10글자 이상 작성해주세요');
-    } else {
-      setContentError('');
-    }
-  }, []);
-
-  const isFormValid = useCallback(() => {
-    return content?.length >= 10 && !contentError;
-  }, [content, contentError]);
-
-  const modalTitle = isEditMode ? `${currentWeekIndex}주차 회고 편집` : `${currentWeekIndex}주차 회고 작성`;
-  const footerButtonText = isEditMode ? '편집 완료' : '작성 완료';
-  const isSubmitting = isAddingRetrospect || isEditingRetrospect;
 
   return (
     <>
@@ -135,7 +36,7 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
           text="주간 회고"
           size="sm"
           layout="icon-left"
-          onClick={() => showModal()}
+          onClick={() => setShowUpdateRetrospectPage(true)}
           icon={<ButtonIcon needCreate={!retrospect} />}
         />
         {!isLoadingRetrospects && !retrospect && (
@@ -148,26 +49,20 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
           <div className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-[6px] bg-accent-fg-lime" />
         )}
       </div>
-      <Modal
-        open={isModalOpen}
-        onClose={handleModalClose}
-        title={modalTitle}
-        renderContent={() => (
-          <div className="flex flex-col justify-start gap-4">
-            <TextArea
-              className="min-w-[300px] md:min-w-[496px]"
-              maxLength={200}
-              value={content}
-              onChange={handleContentChange}
-              placeholder="이번 주 목표 달성 과정과 개선점에 대해 작성해주세요 (10글자 이상)"
-              isError={!!contentError}
-              errorMessage={contentError}
-            />
-          </div>
-        )}
-        renderFooter={() => (
-          <Button text={footerButtonText} size="xl" onClick={handleSubmit} disabled={!isFormValid() || isSubmitting} />
-        )}
+      {/* 회고 작성/수정 페이지 */}
+      {showUpdateRetrospectPage && (
+        <UpdateRetrospectPage
+          goal={goal}
+          planId={selectedPlanId}
+          weekIndex={currentWeekIndex}
+          showPopUp={() => setShowRetrospectPage(true)}
+          onClose={() => setShowUpdateRetrospectPage(false)}
+        />
+      )}
+      <AddRetroSpectPopup
+        userName={goal.name}
+        isOpen={showRetrospectPage}
+        onClose={() => setShowRetrospectPage(false)}
       />
     </>
   );

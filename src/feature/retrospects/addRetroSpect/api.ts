@@ -1,11 +1,14 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { BooleanOptional } from 'qs';
 
 interface AddRetrospectRequest {
   goalId: string;
   planId: string;
-  content: string;
+  kpt: {
+    keep: string;
+    problem: string;
+    tryNext: string;
+  };
 }
 
 interface GetRetrospectRequest {
@@ -20,7 +23,11 @@ interface DeleteRetrospectRequest {
 interface PutRetrospectRequest {
   retrospectId: string;
   planId: string;
-  content: string;
+  kpt: {
+    keep: string;
+    problem: string;
+    tryNext: string;
+  };
 }
 
 interface AddRetrospectResponse extends CommonResponse<{ id: string }> {}
