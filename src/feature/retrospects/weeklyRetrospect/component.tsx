@@ -8,7 +8,10 @@ interface WeeklyRetrospectProps {
   goalId?: string;
   weeklyRetrospect: (Retrospect | null)[];
   plans: Plan[];
-  updateWeeklyRetrospect: (weeklyRetrospectId: string, newRetrospect: string) => Promise<void>;
+  updateWeeklyRetrospect: (
+    weeklyRetrospectId: string,
+    newRetrospect: { keep: string; problem: string; tryNext: string }
+  ) => Promise<void>;
 }
 export const WeeklyRetrospect = ({
   goalId,

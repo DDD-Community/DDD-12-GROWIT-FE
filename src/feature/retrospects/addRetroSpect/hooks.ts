@@ -10,7 +10,11 @@ export function useFetchAddRetrospect(options?: UseAddRetrospectOptions) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
 
-  const addRetrospect = async (params: { goalId: string; planId: string; content: string }) => {
+  const addRetrospect = async (params: {
+    goalId: string;
+    planId: string;
+    kpt: { keep: string; problem: string; tryNext: string };
+  }) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -41,7 +45,7 @@ interface UseEditRetrospectOptions {
 interface EditRetrospectParams {
   retrospectId: string;
   planId: string;
-  content: string;
+  kpt: { keep: string; problem: string; tryNext: string };
 }
 
 export function useFetchEditRetrospect(options?: UseEditRetrospectOptions) {
@@ -49,12 +53,12 @@ export function useFetchEditRetrospect(options?: UseEditRetrospectOptions) {
   const [error, setError] = useState<unknown>(null);
 
   const editRetrospect = useCallback(
-    async ({ retrospectId, planId, content }: EditRetrospectParams) => {
+    async ({ retrospectId, planId, kpt }: EditRetrospectParams) => {
       if (isLoading) return;
       setIsLoading(true);
       setError(null);
       try {
-        await putRetrospect({ retrospectId, planId, content });
+        await putRetrospect({ retrospectId, planId, kpt });
         options?.onSuccess?.();
       } catch (err) {
         setError(err);

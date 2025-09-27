@@ -33,7 +33,10 @@ export const useWeeklyRetrospect = (id: string) => {
     setIsLoading(false);
   };
 
-  const updateWeeklyRetrospect = async (weeklyRetrospectId: string, newRetrospect: string) => {
+  const updateWeeklyRetrospect = async (
+    weeklyRetrospectId: string,
+    newRetrospect: { keep: string; problem: string; tryNext: string }
+  ) => {
     try {
       const result = await putWeeklyRetrospect(weeklyRetrospectId, newRetrospect);
       if (result.isSuccess) {

@@ -15,11 +15,15 @@ interface MissedWeeklyRetrospect {
 // 지나간 주차 미작성 컴포넌트 (새로 추가)
 export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospect) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [weeklyRetrospect, setWeeklyRetrospect] = useState('');
+  const [weeklyRetrospect, setWeeklyRetrospect] = useState({
+    keep: '',
+    problem: '',
+    tryNext: ''
+  });
 
   const addWeeklyRetrospect = async () => {
     if (goalId) {
-      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
+      await postAddRetrospect({ goalId: goalId, planId: plan.id, kpt: weeklyRetrospect });
     }
     setIsEditable(false);
   };
@@ -51,14 +55,37 @@ export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospe
         </FlexBox>
         <FlexBox direction="col" className="py-3 px-4 w-full rounded-lg gap-4">
           {isEditable ? (
-            <FlexBox direction="col" className="gap-2 w-full">
-              <TextArea
-                placeholder="회고 내용을 작성해주세요."
-                className="min-h-[100px] w-full"
-                value={weeklyRetrospect}
-                onChange={e => setWeeklyRetrospect(e.target.value)}
-                onClick={e => e.preventDefault()}
-              />
+            <FlexBox direction="col" className="gap-4 w-full">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-green-500">Keep (잘한 점)</label>
+                <TextArea
+                  placeholder="이번 주에 잘한 점을 작성해주세요."
+                  className="min-h-[80px] w-full"
+                  value={weeklyRetrospect.keep}
+                  onChange={e => setWeeklyRetrospect(prev => ({ ...prev, keep: e.target.value }))}
+                  onClick={e => e.preventDefault()}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-red-500">Problem (문제점)</label>
+                <TextArea
+                  placeholder="이번 주에 발생한 문제점을 작성해주세요."
+                  className="min-h-[80px] w-full"
+                  value={weeklyRetrospect.problem}
+                  onChange={e => setWeeklyRetrospect(prev => ({ ...prev, problem: e.target.value }))}
+                  onClick={e => e.preventDefault()}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-blue-500">Try Next (다음에 시도할 것)</label>
+                <TextArea
+                  placeholder="다음 주에 시도해볼 개선점을 작성해주세요."
+                  className="min-h-[80px] w-full"
+                  value={weeklyRetrospect.tryNext}
+                  onChange={e => setWeeklyRetrospect(prev => ({ ...prev, tryNext: e.target.value }))}
+                  onClick={e => e.preventDefault()}
+                />
+              </div>
               <FlexBox className="ml-auto w-[72px]">
                 <Button size="sm" text="완료" variant="tertiary" onClick={addWeeklyRetrospect} />
               </FlexBox>

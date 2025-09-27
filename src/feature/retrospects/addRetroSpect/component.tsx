@@ -18,7 +18,11 @@ interface AddRetroSpectButtonProps {
 
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [content, setContent] = useState('');
+  const [kpt, setKpt] = useState({
+    keep: '',
+    problem: '',
+    tryNext: '',
+  });
   const [contentError, setContentError] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const { showToast } = useToast();
@@ -67,20 +71,20 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
         await editRetrospect({
           retrospectId: retrospect?.retrospect?.id,
           planId: selectedPlanId,
-          content,
+          kpt,
         });
       } else {
         await addRetrospect({
           goalId: goal.id,
           planId: selectedPlanId,
-          content,
+          kpt,
         });
       }
     } catch (error) {}
   }, [
     addRetrospect,
     editRetrospect,
-    content,
+    kpt,
     isAddingRetrospect,
     isEditingRetrospect,
     isEditMode,
@@ -93,35 +97,34 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     setIsModalOpen(true);
     if (retrospect) {
       setIsEditMode(true);
-      setContent(retrospect?.retrospect?.content);
+      setKpt(retrospect?.retrospect?.kpt || { keep: '', problem: '', tryNext: '' });
       setContentError('');
     } else {
       setIsEditMode(false);
-      setContent('');
+      setKpt({ keep: '', problem: '', tryNext: '' });
       setContentError('');
     }
   }, [retrospect]);
 
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
-    setContent('');
+    setKpt({ keep: '', problem: '', tryNext: '' });
     setContentError('');
     setIsEditMode(false);
   }, []);
 
-  const handleContentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setContent(value);
-    if (value.length < 10) {
-      setContentError('회고는 10글자 이상 작성해주세요');
+  const handleKptChange = useCallback((field: 'keep' | 'problem' | 'tryNext', value: string) => {
+    setKpt(prev => ({ ...prev, [field]: value }));
+    if (value.length < 5) {
+      setContentError('각 항목은 5글자 이상 작성해주세요');
     } else {
       setContentError('');
     }
   }, []);
 
   const isFormValid = useCallback(() => {
-    return content?.length >= 10 && !contentError;
-  }, [content, contentError]);
+    return kpt.keep.length >= 5 && kpt.problem.length >= 5 && kpt.tryNext.length >= 5 && !contentError;
+  }, [kpt, contentError]);
 
   const modalTitle = isEditMode ? `${currentWeekIndex}주차 회고 편집` : `${currentWeekIndex}주차 회고 작성`;
   const footerButtonText = isEditMode ? '편집 완료' : '작성 완료';
@@ -154,15 +157,42 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
         title={modalTitle}
         renderContent={() => (
           <div className="flex flex-col justify-start gap-4">
-            <TextArea
-              className="min-w-[300px] md:min-w-[496px]"
-              maxLength={200}
-              value={content}
-              onChange={handleContentChange}
-              placeholder="이번 주 목표 달성 과정과 개선점에 대해 작성해주세요 (10글자 이상)"
-              isError={!!contentError}
-              errorMessage={contentError}
-            />
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-green-500">Keep (잘한 점)</label>
+              <TextArea
+                className="min-w-[300px] md:min-w-[496px]"
+                maxLength={200}
+                value={kpt.keep}
+                onChange={e => handleKptChange('keep', e.target.value)}
+                placeholder="이번 주에 잘한 점을 작성해주세요 (5글자 이상)"
+                isError={!!contentError}
+                errorMessage={contentError}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-red-500">Problem (문제점)</label>
+              <TextArea
+                className="min-w-[300px] md:min-w-[496px]"
+                maxLength={200}
+                value={kpt.problem}
+                onChange={e => handleKptChange('problem', e.target.value)}
+                placeholder="이번 주에 발생한 문제점을 작성해주세요 (5글자 이상)"
+                isError={!!contentError}
+                errorMessage={contentError}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-blue-500">Try Next (다음에 시도할 것)</label>
+              <TextArea
+                className="min-w-[300px] md:min-w-[496px]"
+                maxLength={200}
+                value={kpt.tryNext}
+                onChange={e => handleKptChange('tryNext', e.target.value)}
+                placeholder="다음 주에 시도해볼 개선점을 작성해주세요 (5글자 이상)"
+                isError={!!contentError}
+                errorMessage={contentError}
+              />
+            </div>
           </div>
         )}
         renderFooter={() => (
