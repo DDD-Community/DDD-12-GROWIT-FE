@@ -4,7 +4,7 @@ import { SignUpForm } from '@/composite/signup/signUpForm';
 
 export default function SignupPage() {
   return (
-    <div className="flex h-screen bg-[#1C1C1E] overflow-hidden">
+    <div className="flex flex-1 bg-[#1C1C1E] overflow-hidden">
       {/* 왼쪽 회원가입 섹션 */}
       <div className="flex flex-col w-full lg:w-1/2 h-full">
         {/* 고정 헤더 */}

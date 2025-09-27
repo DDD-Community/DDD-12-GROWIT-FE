@@ -12,7 +12,7 @@ import { TumblbugBanner } from '@/composite/landing/banner';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-normal">
+    <div className="min-h-screen min-w-screen bg-normal">
       <Header isLanding mode="logo" banner={<TumblbugBanner />} rightSection={<HeaderActions />} />
       <hr className="h-[50px] border-none" />
       <HeroSection />

@@ -12,7 +12,7 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
   useAutoLogout();
 
   return (
-    <div className="flex w-scree sm:h-screen max-sm:flex-col">
+    <div className="flex flex-1 max-sm:flex-col">
       <NavigationBar />
       <NotifyOnboardModal />
       <div className="flex flex-1 sm:flex-col overflow-x-hidden">{children}</div>
