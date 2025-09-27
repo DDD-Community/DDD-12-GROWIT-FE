@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { SignupFormData } from '@/composite/signup/signUpForm/type';
+import { KakaoSignupFormData, SignupFormData } from '@/composite/signup/signUpForm/type';
+import { KakaoSignUpRequest, KakaoSignUpResponse } from '@/composite/signup/signUpForm/type';
 
 interface SignUpRequest extends Omit<SignupFormData, 'privacyPolicy' | 'termsOfService'> {
   requiredConsent: {
@@ -20,4 +21,17 @@ export async function postSignUp(req: SignupFormData) {
     },
   };
   return await apiClient.post<SignUpResponse, SignUpResponse>('/auth/signup', request);
+}
+
+export async function postKakaoSignUp(req: KakaoSignupFormData, registrationToken: string) {
+  const { privacyPolicy, termsOfService, ...rest } = req;
+  const request: KakaoSignUpRequest = {
+    registrationToken: registrationToken,
+    ...rest,
+    requiredConsent: {
+      isPrivacyPolicyAgreed: true,
+      isServiceTermsAgreed: true,
+    },
+  };
+  return await apiClient.post<KakaoSignUpRequest, KakaoSignUpResponse>('/auth/signup/kakao', request);
 }
