@@ -15,7 +15,10 @@ interface WeeklyRetrospectBoxProps {
   plan: Plan;
   isCurrentWeek: boolean;
   isPassedWeek: boolean; // 새로 추가된 prop
-  updateWeeklyRetrospect: (weeklyRetrospectId: string, newRetrospect: { keep: string; problem: string; tryNext: string }) => Promise<void>;
+  updateWeeklyRetrospect: (
+    weeklyRetrospectId: string,
+    newRetrospect: { keep: string; problem: string; tryNext: string }
+  ) => Promise<void>;
 }
 
 export const WeeklyRetrospectBox = ({
@@ -30,7 +33,7 @@ export const WeeklyRetrospectBox = ({
   const [weeklyRetrospect, setWeeklyRetrospect] = useState({
     keep: retrospect ? retrospect.kpt.keep : '',
     problem: retrospect ? retrospect.kpt.problem : '',
-    tryNext: retrospect ? retrospect.kpt.tryNext : ''
+    tryNext: retrospect ? retrospect.kpt.tryNext : '',
   });
 
   const isWeeklyRetrospectCompleted = useMemo(() => {
@@ -116,22 +119,22 @@ export const WeeklyRetrospectBox = ({
         {retrospect && !isEditable ? (
           <div className="body-1-normal text-label-neutral">
             <div className="mb-2">
-              <span className="font-bold text-green-500">Keep: </span>
+              <p className="font-bold">Keep: </p>
               <span>{retrospect.kpt.keep}</span>
             </div>
             <div className="mb-2">
-              <span className="font-bold text-red-500">Problem: </span>
+              <p className="font-bold">Problem: </p>
               <span>{retrospect.kpt.problem}</span>
             </div>
             <div>
-              <span className="font-bold text-blue-500">Try Next: </span>
+              <p className="font-bold">Try Next: </p>
               <span>{retrospect.kpt.tryNext}</span>
             </div>
           </div>
         ) : (
-          <form className="flex flex-col gap-4 w-full" onSubmit={handleUpdateRetrospect}>
+          <form className="flex flex-col gap-4 w-full text-label-neutral" onSubmit={handleUpdateRetrospect}>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-green-500">Keep (잘한 점)</label>
+              <label className="text-sm font-bold">Keep (잘한 점)</label>
               <TextArea
                 placeholder="이번 주에 잘한 점을 작성해주세요."
                 className="min-h-[80px]"
@@ -141,7 +144,7 @@ export const WeeklyRetrospectBox = ({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-red-500">Problem (문제점)</label>
+              <label className="text-sm font-bold">Problem (문제점)</label>
               <TextArea
                 placeholder="이번 주에 발생한 문제점을 작성해주세요."
                 className="min-h-[80px]"
@@ -151,7 +154,7 @@ export const WeeklyRetrospectBox = ({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-blue-500">Try Next (다음에 시도할 것)</label>
+              <label className="text-sm font-bold">Try Next (다음에 시도할 것)</label>
               <TextArea
                 placeholder="다음 주에 시도해볼 개선점을 작성해주세요."
                 className="min-h-[80px]"
