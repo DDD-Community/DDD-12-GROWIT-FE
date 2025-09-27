@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import { AIMentorAdvice } from '@/composite/home/cheerMessageCard/type';
+import { AIMentorAdvice } from '@/model/aiMentor/type';
 
 interface AIAdviceDetailModalProps {
   aiMentorName: string;

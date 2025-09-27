@@ -19,7 +19,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-1',
     name: '프론트엔드 개발 마스터하기',
-    mentor: 'timcook',
+    mentor: 'TIM_COOK',
     duration: {
       startDate: '2024-01-01',
       endDate: '2024-03-31',
@@ -44,7 +44,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-2',
     name: '디자인 시스템 구축',
-    mentor: 'confucius',
+    mentor: 'CONFUCIUS',
     duration: {
       startDate: '2024-01-15',
       endDate: '2024-02-28',
@@ -69,7 +69,7 @@ export const mockGoals: Goal[] = [
   {
     id: 'goal-3',
     name: '프로젝트 관리 역량 강화',
-    mentor: 'warrenbuffett',
+    mentor: 'WARREN_BUFFETT',
     duration: {
       startDate: '2024-01-01',
       endDate: '2024-04-30',
