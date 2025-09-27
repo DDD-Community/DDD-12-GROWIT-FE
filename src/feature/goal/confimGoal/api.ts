@@ -1,5 +1,6 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { GoalFormData } from '@/shared/type/form';
+import { CommonResponse } from '@/shared/type/response';
 
 // API Request DTO - duration 필드 제외
 export interface CreateGoalRequestDto {
@@ -16,10 +17,11 @@ export interface CreateGoalRequestDto {
   }[];
 }
 
-interface CreateGoalResponseDto {
-  id: string;
-  mentor: string;
-}
+interface CreateGoalResponseDto
+  extends CommonResponse<{
+    id: string;
+    mentor: string;
+  }> {}
 
 export async function postCreateGoal(formData: GoalFormData) {
   const { duration, durationDate, ...rest } = formData;
@@ -27,6 +29,7 @@ export async function postCreateGoal(formData: GoalFormData) {
     ...rest,
     duration: durationDate,
   };
+  const { data } = await apiClient.post<CreateGoalResponseDto, CreateGoalRequestDto>('/goals', dto);
 
-  return await apiClient.post<CreateGoalResponseDto, CreateGoalRequestDto>('/goals', dto);
+  return data.data;
 }

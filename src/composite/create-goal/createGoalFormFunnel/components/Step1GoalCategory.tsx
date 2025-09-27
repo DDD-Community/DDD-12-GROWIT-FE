@@ -37,7 +37,7 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
             <Button
               key={category.id}
               size="xl"
-              text={category.label}
+              text={category.label} 
               variant={selectedCategory === category.id ? 'select' : 'secondary'}
               onClick={e => handleCategorySelect(e, category.id)}
             />

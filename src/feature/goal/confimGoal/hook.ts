@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { GoalFormData } from '@/shared/type/form';
-import { useToast } from '@/shared/components/feedBack/toast';
 import { postCreateGoal } from './api';
 import { AxiosError } from 'axios';
 import { CommonError } from '@/shared/type/response';
@@ -13,15 +12,25 @@ export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
+  const hasInitialized = useRef(false);
 
-  const createGoal = async (data: GoalFormData) => {
+  const createGoal = useCallback(async (data: GoalFormData) => {
+    const startTime = performance.now();
+    console.log('🚀 createGoal 시작:', new Date().toISOString());
+
     try {
       reset();
       setIsLoading(true);
       setIsSuccess(false);
       setIsError(false);
       setError(null);
-      const result = await postCreateGoal(data);
+
+      // 서버 요청과 최소 로딩 시간을 병렬로 처리
+      const [result] = await Promise.all([
+        postCreateGoal(data),
+        new Promise(resolve => setTimeout(resolve, 2000)), // 2초 최소 로딩 시간
+      ]);
+
       setData(result);
       setIsSuccess(true);
       return result;
@@ -40,24 +49,30 @@ export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
       setError(errorMessage);
       throw err;
     } finally {
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      console.log('✅ createGoal 완료:', new Date().toISOString());
+      console.log(`⏱️  총 실행 시간: ${duration.toFixed(2)}ms (${(duration / 1000).toFixed(2)}초)`);
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setIsLoading(false);
     setIsSuccess(false);
     setIsError(false);
     setError(null);
     setData(null);
-  };
+  }, []);
 
-  // 페이지 마운트 시 자동 패칭
+  // 페이지 마운트 시 자동 패칭 (최초 1회만)
   useEffect(() => {
-    if (initialData) {
+    if (initialData && !hasInitialized.current) {
+      hasInitialized.current = true;
       createGoal(initialData);
     }
-  }, [initialData]);
+    return reset;
+  }, [initialData, createGoal]);
 
   return {
     isLoading,
@@ -66,6 +81,5 @@ export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
     error,
     data,
     createGoal,
-    reset,
   };
 };

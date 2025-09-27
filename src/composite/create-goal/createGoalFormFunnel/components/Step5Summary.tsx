@@ -50,7 +50,7 @@ export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
   }, []);
 
   return (
-    <div className="relative flex flex-col h-full bg-[#1B1C1E] overflow-hidden">
+    <div className="relative h-[100dvh] flex flex-col md:h-screen bg-[#1B1C1E] overflow-hidden">
       {/* 백그라운드 이미지 */}
       <div
         className="absolute inset-0 w-full h-full"

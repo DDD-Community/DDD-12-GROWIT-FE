@@ -3,7 +3,7 @@ import { MentorCharacterCard, MentorCharacterType } from '@/feature/goal/mentorC
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
@@ -18,14 +18,13 @@ export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
   const { watch } = useFormContext<GoalFormData>();
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const formData = useMemo(() => watch(), [watch]);
+  const formData = useMemo(() => watch(), []);
   const { isLoading, isError, error, data } = useFetchPostCreateGoal(formData);
 
   useEffect(() => {
     hideHeader();
   }, []);
 
-  // 에러 발생 시 Modal 표시
   useEffect(() => {
     if (isError) {
       setShowErrorModal(true);
@@ -40,11 +39,11 @@ export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
   // 로딩 상태일 때 로딩 페이지 표시
   if (isLoading) {
     return (
-      <div className="flex flex-col h-full bg-[#1B1C1E]">
+      <div className="flex flex-1 flex-col h-full bg-[#1B1C1E]">
         {/* 헤더 영역 */}
         <div className="flex flex-col items-center gap-2 px-2 py-12">
           <h1 className="text-[22px] text-[#F7F7F8] font-bold text-center leading-[1.36] tracking-[-0.43%]">
-            경서에게 알맞는 멘토를
+            알맞는 멘토를
             <br />
             찾는 중이야!
           </h1>
@@ -52,7 +51,7 @@ export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
 
         {/* 메인 컨텐츠 영역 - 로딩 애니메이션 */}
         <div className="flex-1 flex flex-col items-center justify-center px-5">
-          <div className="flex justify-center">
+          <div className="flex flex-1 justify-center">
             <div className="relative">
               {/* 로딩 박스 */}
               <div className="w-[275px] h-[325px] bg-[#0F0F10] rounded-[24px] flex items-center justify-center shadow-[0px_0px_80px_0px_rgba(53,217,66,0.5)]">
@@ -91,42 +90,44 @@ export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
 
   // 성공 상태일 때 기존 UI 표시
   return (
-    <div className="flex flex-col h-full">
-      {/* 헤더 영역 */}
-      <div className="flex flex-col items-center gap-2 px-2 py-12">
-        <span className="text-[22px] text-[rgba(194,196,200,0.88)] leading-relaxed">
-          <span className="bg-gradient-to-r from-[#80F50E] via-[#78C1F1] to-[#CCADFD] bg-clip-text text-transparent font-bold">
-            AI 멘토 매칭
+    data && (
+      <div className="flex flex-col h-full">
+        {/* 헤더 영역 */}
+        <div className="flex flex-col items-center gap-2 px-2 py-12">
+          <span className="text-[22px] text-[rgba(194,196,200,0.88)] leading-relaxed">
+            <span className="bg-gradient-to-r from-[#80F50E] via-[#78C1F1] to-[#CCADFD] bg-clip-text text-transparent font-bold">
+              AI 멘토 매칭
+            </span>
+            <span>을 성공했어요!</span>
           </span>
-          <span>을 성공했어요!</span>
-        </span>
-        <p className="text-[rgba(194,196,200,0.88)] text-base font-normal leading-[1.5] tracking-[0.0057em] text-center">
-          카드를 클릭해보세요
-        </p>
-      </div>
+          <p className="text-[rgba(194,196,200,0.88)] text-base font-normal leading-[1.5] tracking-[0.0057em] text-center">
+            카드를 클릭해보세요
+          </p>
+        </div>
 
-      {/* 메인 컨텐츠 영역 */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5">
-        <div className="flex justify-center">
-          <MentorCharacterCard
-            mentorCharacter={(data?.mentor as MentorCharacterType) || MentorCharacterType.TIM_COOK}
-          />
+        {/* 메인 컨텐츠 영역 */}
+        <div className="flex-1 flex flex-col items-center justify-center px-5">
+          <div className="flex justify-center">
+            <MentorCharacterCard
+              mentorCharacter={(data?.mentor as MentorCharacterType) || MentorCharacterType.TIM_COOK}
+            />
+          </div>
+        </div>
+
+        {/* 하단 설명 */}
+        <div className="flex justify-center items-center px-5 py-5">
+          <p className="text-[rgba(194,196,200,0.88)] text-base font-normal leading-[1.5] tracking-[0.0057em] text-center">
+            이번 목표가 완료될때까지
+            <br />
+            AI 멘토의 조언을 받아볼 수 있어요
+          </p>
+        </div>
+
+        {/* 다음 버튼 */}
+        <div className="h-[84px]">
+          <FunnelNextButton onClick={onNext} />
         </div>
       </div>
-
-      {/* 하단 설명 */}
-      <div className="flex justify-center items-center px-5 py-5">
-        <p className="text-[rgba(194,196,200,0.88)] text-base font-normal leading-[1.5] tracking-[0.0057em] text-center">
-          이번 목표가 완료될때까지
-          <br />
-          AI 멘토의 조언을 받아볼 수 있어요
-        </p>
-      </div>
-
-      {/* 다음 버튼 */}
-      <div className="h-[84px]">
-        <FunnelNextButton onClick={onNext} />
-      </div>
-    </div>
+    )
   );
 };

@@ -4,7 +4,7 @@ import { LoginForm } from '@/composite/login/loginForm';
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen bg-[#1C1C1E]">
+    <div className="flex flex-1 bg-[#1C1C1E]">
       {/* 왼쪽 로그인 섹션 */}
       <div className="flex flex-col w-full lg:w-1/2 p-10 md:p-[20px]">
         <div className="mb-10 md:mb-20">

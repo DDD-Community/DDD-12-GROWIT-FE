@@ -45,7 +45,7 @@ export const CreateGoalFormFunnel = () => {
       <div className="flex flex-col">
         <FunnelHeaderProvider>
           <FunnelHeader currentStep={currentStepIndex} totalSteps={totalSteps} onBack={handleBack} />
-          <div className="flex flex-col w-full mx-auto">
+          <div className="flex flex-1 flex-col w-full mx-auto">
             <CreateGoalFormElement.FormContainer>
               {currentStep === 'onboarding' && <Step0Onboarding onNext={() => handleNext('goal-category')} />}
               {currentStep === 'goal-category' && <Step1GoalCategory onNext={() => handleNext('goal-name')} />}

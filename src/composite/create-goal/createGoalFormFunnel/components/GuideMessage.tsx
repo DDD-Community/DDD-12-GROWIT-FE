@@ -56,23 +56,12 @@ export const GuideMessage = ({ text, highlight, status = 'default' }: GuideMessa
         </div>
       </div>
       <div className="relative flex-shrink-0">
-        {/* Mobile */}
         <div className="block sm:hidden">
           <Image
             src={`/image/grorong-right-${status}.png`}
             alt="그로롱"
             width={100}
             height={100}
-            className="object-contain"
-          />
-        </div>
-        {/* Desktop */}
-        <div className="hidden sm:block">
-          <Image
-            src={`/image/grorong-right-${status}.png`}
-            alt="그로롱"
-            width={132}
-            height={132}
             className="object-contain"
           />
         </div>
