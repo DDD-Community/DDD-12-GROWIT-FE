@@ -65,3 +65,8 @@ export async function putRetrospect(req: PutRetrospectRequest) {
   const { data } = await apiClient.put<CommonResponse<string>>(`/retrospects/${req.retrospectId}`, req);
   return data.data;
 }
+
+export async function getRetrospectById(retrospectId: string) {
+  const { data } = await apiClient.get<CommonResponse<GetRetroSpectDto>>(`/retrospects/${retrospectId}`);
+  return data.data;
+}

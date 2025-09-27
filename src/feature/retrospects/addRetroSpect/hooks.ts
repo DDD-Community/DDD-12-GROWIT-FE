@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { postAddRetrospect, getRetrospects, putRetrospect, GetRetroSpectDto } from './api';
+import { postAddRetrospect, getRetrospects, putRetrospect, getRetrospectById, GetRetroSpectDto } from './api';
 
 interface UseAddRetrospectOptions {
   onSuccess?: (data: { id: string }) => void;
@@ -81,6 +81,47 @@ export function useFetchEditRetrospect(options?: UseEditRetrospectOptions) {
 interface UseFetchRetrospectsOptions {
   onSuccess?: (data: any) => void;
   onError?: (error: unknown) => void;
+}
+
+export function useFetchRetrospectById(retrospectId: string, options?: UseFetchRetrospectsOptions) {
+  const [retrospect, setData] = useState<GetRetroSpectDto | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown>(null);
+
+  const fetchRetrospects = useCallback(async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await getRetrospectById(retrospectId);
+      setData(result);
+      options?.onSuccess?.(result);
+      return result;
+    } catch (err) {
+      setError(err);
+      options?.onError?.(err);
+      // 404 에러는 정상적인 상황이므로 에러를 던지지 않음
+      if (err && typeof err === 'object' && 'status' in err && err.status === 404) {
+        setData(null); // 데이터가 없음을 명시
+        return null;
+      }
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [retrospectId]);
+
+  useEffect(() => {
+    fetchRetrospects();
+  }, [fetchRetrospects]);
+
+  return {
+    retrospect,
+    isLoading,
+    error,
+    fetchRetrospects,
+  };
 }
 
 export function useFetchRetrospects(req: { goalId: string; planId: string }, options?: UseFetchRetrospectsOptions) {
