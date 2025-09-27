@@ -7,15 +7,3 @@ export interface GrorongAdvice {
 }
 
 export interface GrorongAdviceResponse extends CommonResponse<GrorongAdvice> {}
-
-export interface AIMentorAdvice {
-  isChecked: boolean;
-  message: string;
-  kpt: {
-    keep: string;
-    problem: string;
-    tryNext: string;
-  };
-}
-
-export interface AIMentorAdviceResponse extends CommonResponse<AIMentorAdvice> {}

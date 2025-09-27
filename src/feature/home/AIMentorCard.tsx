@@ -4,7 +4,7 @@ import { AIMentorNames } from '@/feature/home/const';
 import { ChevronRight } from 'lucide-react';
 import { AIAdviceDetailModal } from '@/feature/home/AIAdviceDetailModal';
 import { useState } from 'react';
-import { AIMentorAdvice } from '@/composite/home/cheerMessageCard/type';
+import { AIMentorAdvice } from '@/model/aiMentor/type';
 import { getAIMentorModalBackground, getAIMentorImage, getAIMentorModalCharacter } from './utils';
 
 interface AIMentorCardProps {

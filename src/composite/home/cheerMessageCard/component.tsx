@@ -8,7 +8,8 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { GrorongCard } from '@/feature/home/GrorongCard';
 import { AIMentorCard } from '@/feature/home/AIMentorCard';
 import { useGoalSelector } from '@/model/goal/context';
-import { useAIMentorAdvice, useGrorongAdvice } from './hooks';
+import { useGrorongAdvice } from './hooks';
+import { useAIMentorAdvice } from '@/model/aiMentor/context';
 //import { useFetchUserName } from '@/shared/hooks';
 
 export const CheerMessageCard = () => {

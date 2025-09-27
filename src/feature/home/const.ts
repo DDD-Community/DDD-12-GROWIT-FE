@@ -3,9 +3,9 @@ import { AIMentor } from '@/feature/home/type';
 export type Mood = 'HAPPY' | 'NORMAL' | 'SAD';
 
 export const AIMentorNames: Record<AIMentor, string> = {
-  timcook: '팀쿡',
-  warrenbuffett: '워렌 버핏',
-  confucius: '공자',
+  TIM_COOK: '팀쿡',
+  WARREN_BUFFETT: '워렌 버핏',
+  CONFUCIUS: '공자',
 };
 
 export const GrorongImage: Record<Mood, Record<string, string>> = {
@@ -27,19 +27,19 @@ export const GrorongImage: Record<Mood, Record<string, string>> = {
 };
 
 export const AIMentorImage: Record<AIMentor, string> = {
-  timcook: '/home/timcook-home.png',
-  warrenbuffett: '/home/warrenbuffett-home.png',
-  confucius: '/home/confucius-home.png',
+  TIM_COOK: '/home/timcook-home.png',
+  WARREN_BUFFETT: '/home/warrenbuffett-home.png',
+  CONFUCIUS: '/home/confucius-home.png',
 };
 
 export const AIMentorModalCharacter: Record<AIMentor, string> = {
-  timcook: '/home/timcook-modal-character.png',
-  warrenbuffett: '/home/warrenbuffett-modal-character.png',
-  confucius: '/home/confucius-modal-character.png',
+  TIM_COOK: '/home/timcook-modal-character.png',
+  WARREN_BUFFETT: '/home/warrenbuffett-modal-character.png',
+  CONFUCIUS: '/home/confucius-modal-character.png',
 };
 
 export const AIMentorModalBackground: Record<AIMentor, string> = {
-  timcook: '/home/timcook-modal-bg.png',
-  warrenbuffett: '/home/warrenbuffett-modal-bg.png',
-  confucius: '/home/confucius-modal-bg.png',
+  TIM_COOK: '/home/timcook-modal-bg.png',
+  WARREN_BUFFETT: '/home/warrenbuffett-modal-bg.png',
+  CONFUCIUS: '/home/confucius-modal-bg.png',
 };

@@ -1,22 +1,20 @@
 import Button from '@/shared/components/input/Button';
-import { useEffect, useState } from 'react';
-import { getGoalRecommendation } from './api';
-import { GoalRecommendation } from './type';
+import { AIMentor } from '@/feature/home/type';
+import { AIMentorNames } from '@/feature/home/const';
 
 interface BeforeRecommendationProps {
-  goalId: string;
+  aiMentor: AIMentor;
   planId: string;
+  goalId: string;
+  getWeeklyGoalRecommendationByAI: (goalId: string, planId: string) => void;
 }
-export const GoalRecommendationRequest = ({ goalId, planId }: BeforeRecommendationProps) => {
-  const [goalRecommendation, setGoalRecommendation] = useState<GoalRecommendation | null>(null);
-  useEffect(() => {
-    const fetchGoalRecommendation = async () => {
-      const response = await getGoalRecommendation(goalId, planId);
-      setGoalRecommendation(response);
-    };
-    fetchGoalRecommendation();
-  }, []);
-
+export const GoalRecommendationRequest = ({
+  aiMentor,
+  planId,
+  goalId,
+  getWeeklyGoalRecommendationByAI,
+}: BeforeRecommendationProps) => {
+  const aiMentorName = AIMentorNames[aiMentor];
   return (
     <div className="relative">
       {/* 그라데이션 테두리 */}
@@ -41,12 +39,18 @@ export const GoalRecommendationRequest = ({ goalId, planId }: BeforeRecommendati
         </svg>
 
         <div className="flex flex-1 flex-col min-w-0">
-          <span className="text-label-alternative text-xs font-medium text-left">팀쿡이 추천한</span>
+          <span className="text-label-alternative text-xs font-medium text-left">{aiMentorName}이 추천한</span>
           <p className="body-1-bold text-label-normal text-sm mt-1 truncate w-full text-left">
             이번주 목표가 도착했어요
           </p>
         </div>
-        <Button size="sm" variant="primary" layout="normal" text="확인하기" />
+        <Button
+          size="sm"
+          variant="primary"
+          layout="normal"
+          text="확인하기"
+          onClick={() => getWeeklyGoalRecommendationByAI(goalId, planId)}
+        />
       </div>
     </div>
   );
