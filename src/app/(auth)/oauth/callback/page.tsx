@@ -6,10 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { KakaoSignupForm } from '@/composite/signup/signUpForm/KakaoSignupForm';
 import { tokenController } from '@/shared/lib/token';
-import { useToast } from '@/shared/components/feedBack/toast';
 
 export default function OAuthCallbackPage() {
-  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [hasTokens, setHasTokens] = useState(false);
 
@@ -36,7 +34,6 @@ export default function OAuthCallbackPage() {
         }
       } catch (error: any) {
         console.error('토큰 처리 중 오류:', error);
-        showToast('로그인 처리 중 오류가 발생했습니다.', 'error');
         setHasTokens(false);
       } finally {
         setIsLoading(false);
@@ -72,7 +69,7 @@ export default function OAuthCallbackPage() {
 
   // 아직 가입이 안된 경우 (회원가입 폼 표시)
   return (
-    <div className="flex h-screen bg-[#1C1C1E] overflow-hidden">
+    <div className="flex flex-1 h-screen bg-[#1C1C1E] overflow-hidden">
       {/* 왼쪽 회원가입 섹션 */}
       <div className="flex flex-col w-full lg:w-1/2">
         {/* 고정 헤더 */}
