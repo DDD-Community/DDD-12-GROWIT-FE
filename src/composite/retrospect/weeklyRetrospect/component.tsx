@@ -140,6 +140,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
         <div className="space-y-5">
           {/* Keep (잘한 점) */}
           <Accordion
+            defaultOpen={true}
             renderTitle={() => (
               <FlexBox className="flex gap-2">
                 <p className="heading-2-bold text-label-normal">Keep (잘한 점)</p>
@@ -159,6 +160,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
 
           {/* Problem (아쉬운 점) */}
           <Accordion
+            defaultOpen={true}
             renderTitle={() => (
               <FlexBox className="flex gap-2">
                 <p className="heading-2-bold text-label-normal">Problem (아쉬운 점)</p>
@@ -178,6 +180,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
 
           {/* Try (다음에 시도하고 싶은 것) */}
           <Accordion
+            defaultOpen={true}
             renderTitle={() => (
               <FlexBox className="flex gap-2">
                 <p className="heading-2-bold text-label-normal">Try (다음에 시도하고 싶은 것)</p>
@@ -196,9 +199,8 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
           </Accordion>
         </div>
       </div>
-
-      {/* Bottom Action */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background-primary border-t border-line-normal">
+      <div className="h-[100px]" />
+      <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 sm:hidden bg-[#1B1C1E]">
         <Button
           variant="primary"
           size="xl"

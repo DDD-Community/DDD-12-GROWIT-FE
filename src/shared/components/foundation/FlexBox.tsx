@@ -6,9 +6,11 @@ interface FlexBoxProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-const FlexBox = ({ className, direction = 'row', children }: FlexBoxProps) => {
+const FlexBox = ({ className, direction = 'row', children, ...props }: FlexBoxProps) => {
   return (
-    <div className={`flex ${direction === 'col' ? 'flex-col' : 'flex-row'} items-center ${className}`}>{children}</div>
+    <div className={`flex ${direction === 'col' ? 'flex-col' : 'flex-row'} items-center ${className}`} {...props}>
+      {children}
+    </div>
   );
 };
 
