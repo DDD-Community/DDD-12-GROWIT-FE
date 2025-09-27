@@ -1,29 +1,47 @@
-import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal';
 import { MentorCharacterCard, MentorCharacterType } from '@/feature/goal/mentorCharacterCard';
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
-import { GoalFormData } from '@/shared/type/form';
-import { useEffect, useState, useMemo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useEffect, useState, useRef } from 'react';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
+import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
+import { useFormContext } from 'react-hook-form';
+import { GoalFormData } from '@/shared/type/form';
+
+interface CreateGoalState {
+  isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  error: string | null;
+  data: CreateGoalResponseData | null;
+  createGoal: (data: any) => Promise<any>;
+}
 
 interface Step4MatchingProps {
   onNext: () => void;
   onBack: () => void;
+  createGoalState: CreateGoalState;
 }
 
-export const Step4Matching = ({ onNext, onBack }: Step4MatchingProps) => {
+export const Step4Matching = ({ onNext, onBack, createGoalState }: Step4MatchingProps) => {
+  const hasInitialized = useRef(false);
   const { hideHeader } = useFunnelHeader();
   const { watch } = useFormContext<GoalFormData>();
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const formData = useMemo(() => watch(), []);
-  const { isLoading, isError, error, data } = useFetchPostCreateGoal(formData);
+  const { isLoading, isError, error, data, createGoal } = createGoalState;
 
   useEffect(() => {
     hideHeader();
   }, []);
+
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      const formData = watch();
+      createGoal(formData);
+    }
+  }, [createGoal, watch]);
 
   useEffect(() => {
     if (isError) {

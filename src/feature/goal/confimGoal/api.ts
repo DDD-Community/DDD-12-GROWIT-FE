@@ -17,11 +17,12 @@ export interface CreateGoalRequestDto {
   }[];
 }
 
-interface CreateGoalResponseDto
-  extends CommonResponse<{
-    id: string;
-    mentor: string;
-  }> {}
+export interface CreateGoalResponseData {
+  id: string;
+  mentor: string;
+}
+
+interface CreateGoalResponseDto extends CommonResponse<CreateGoalResponseData> {}
 
 export async function postCreateGoal(formData: GoalFormData) {
   const { duration, durationDate, ...rest } = formData;

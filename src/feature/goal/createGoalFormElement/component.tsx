@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, createContext, useContext, ReactNode } from 'react';
 import { GoalFormData } from '@/shared/type/form';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { InputField } from '@/shared/components/input/InputField';
@@ -14,6 +15,22 @@ import {
   getTodayDate,
   parseDateFromYYYYMMDD,
 } from './utils';
+
+// CreateGoal 상태를 위한 Context
+interface CreateGoalContextType {
+  createGoalState: ReturnType<typeof useFetchPostCreateGoal>;
+}
+
+const CreateGoalContext = createContext<CreateGoalContextType | undefined>(undefined);
+
+// CreateGoal 상태를 사용하는 훅
+export const useCreateGoalState = () => {
+  const context = useContext(CreateGoalContext);
+  if (context === undefined) {
+    throw new Error('useCreateGoalState must be used within a CreateGoalFormProvider');
+  }
+  return context.createGoalState;
+};
 
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
@@ -47,7 +64,19 @@ const Provider = ({ children }: CreateGoalFormProviderProps) => {
     reValidateMode: 'onChange',
     defaultValues,
   });
-  return <FormProvider {...methods}>{children}</FormProvider>;
+
+  return (
+    <FormProvider {...methods}>
+      <CreateGoalStateProvider>{children}</CreateGoalStateProvider>
+    </FormProvider>
+  );
+};
+
+// CreateGoal 상태를 관리하는 Provider
+const CreateGoalStateProvider = ({ children }: { children: ReactNode }) => {
+  const createGoalState = useFetchPostCreateGoal();
+
+  return <CreateGoalContext.Provider value={{ createGoalState }}>{children}</CreateGoalContext.Provider>;
 };
 
 const FormContainer = ({ children }: CreateGoalFormContainerProps) => {

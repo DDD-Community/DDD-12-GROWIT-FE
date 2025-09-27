@@ -7,19 +7,34 @@ import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
+import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 
 interface Step5SummaryProps {
   onNext: () => void;
+  createGoalResult: CreateGoalResponseData | null;
 }
 
-export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
+export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) => {
   const { hideHeader } = useFunnelHeader();
   const { watch } = useFormContext<GoalFormData>();
   const formValues = watch();
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
   const duration = formValues.duration;
 
-  const getBackgroundImage = (category: string | undefined) => {
+  const getBackgroundImageByMentor = (mentor: string | undefined) => {
+    switch (mentor) {
+      case 'CONFUCIUS':
+        return '/image/goal-bg-confucius.png';
+      case 'WARREN':
+        return '/image/goal-bg-warren.png';
+      case 'TIM_COOK':
+        return '/image/goal-bg-timcook.png';
+      default:
+        return '/image/goal-bg-confucius.png';
+    }
+  };
+
+  const getBackgroundImageByCategory = (category: string | undefined) => {
     switch (category) {
       case GoalCategoryEnum.STUDY:
         return '/image/goal-bg-confucius.png';
@@ -30,6 +45,13 @@ export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
       default:
         return '/image/goal-bg-confucius.png';
     }
+  };
+
+  const getBackgroundImage = () => {
+    if (createGoalResult?.mentor) {
+      return getBackgroundImageByMentor(createGoalResult.mentor);
+    }
+    return getBackgroundImageByCategory(formValues.category);
   };
 
   const formatDate = (date: string | Date | undefined) => {
@@ -55,7 +77,7 @@ export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
       <div
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0.15) 48%, rgba(0, 0, 0, 0.51) 71%, rgba(0, 0, 0, 1) 81%), url(${getBackgroundImage(formValues.category)})`,
+          backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 1) 15%, rgba(0, 0, 0, 0.5) 30%, rgba(0, 0, 0, 0.15) 48%, rgba(0, 0, 0, 0.51) 71%, rgba(0, 0, 0, 1) 81%), url(${getBackgroundImage()})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

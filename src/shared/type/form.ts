@@ -1,7 +1,7 @@
 import { GoalCategoryEnum } from '../constants/goalCategory';
 
 export interface GoalFormData {
-  category: GoalCategoryEnum;
+  category: GoalCategoryEnum | '';
   name: string;
   duration: number; // 4, 8, 12 중 선택된 주차
   durationDate: {

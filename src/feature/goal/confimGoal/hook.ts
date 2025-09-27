@@ -1,18 +1,17 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { GoalFormData } from '@/shared/type/form';
-import { postCreateGoal } from './api';
+import { postCreateGoal, CreateGoalResponseData } from './api';
 import { AxiosError } from 'axios';
 import { CommonError } from '@/shared/type/response';
 
-export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
+export const useFetchPostCreateGoal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<any>(null);
-  const hasInitialized = useRef(false);
+  const [data, setData] = useState<CreateGoalResponseData | null>(null);
 
   const createGoal = useCallback(async (data: GoalFormData) => {
     const startTime = performance.now();
@@ -64,15 +63,6 @@ export const useFetchPostCreateGoal = (initialData?: GoalFormData) => {
     setError(null);
     setData(null);
   }, []);
-
-  // 페이지 마운트 시 자동 패칭 (최초 1회만)
-  useEffect(() => {
-    if (initialData && !hasInitialized.current) {
-      hasInitialized.current = true;
-      createGoal(initialData);
-    }
-    return reset;
-  }, [initialData, createGoal]);
 
   return {
     isLoading,
