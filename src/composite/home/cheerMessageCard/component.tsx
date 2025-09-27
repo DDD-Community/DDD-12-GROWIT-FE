@@ -5,18 +5,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Pagination } from 'swiper/modules';
-//import { useFetchUserName } from '@/shared/hooks';
-//import { useCheerMessage } from './hooks';
 import { GrorongCard } from '@/feature/home/GrorongCard';
 import { AIMentorCard } from '@/feature/home/AIMentorCard';
 import { useGoalSelector } from '@/model/goal/context';
+import { useAIMentorAdvice, useGrorongAdvice } from './hooks';
+//import { useFetchUserName } from '@/shared/hooks';
 
 export const CheerMessageCard = () => {
   const { currentGoal } = useGoalSelector();
+  const { advice } = useGrorongAdvice();
+  const { aiMentorAdvice } = useAIMentorAdvice();
   //const { fullUserName } = useFetchUserName();
-  //const { cheerMessage } = useCheerMessage();
-
-  //const displayMessage = cheerMessage?.message || '최고의 아이디어는 종종 테이블 위의 커피 잔 옆에서 나온다냥!';
 
   return (
     <div className="relative">
@@ -29,10 +28,12 @@ export const CheerMessageCard = () => {
         modules={[Navigation, Pagination]}
       >
         <SwiperSlide>
-          <GrorongCard intimacyLevel="하" />
+          {advice && <GrorongCard mood={advice.mood} message={advice.message} saying={advice.saying} />}
         </SwiperSlide>
         <SwiperSlide>
-          <AIMentorCard aiMentor="kongqiu" />
+          {currentGoal && aiMentorAdvice && (
+            <AIMentorCard aiMentor={currentGoal.mentor} aiMentorAdvice={aiMentorAdvice} />
+          )}
         </SwiperSlide>
       </Swiper>
     </div>

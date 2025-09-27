@@ -61,7 +61,7 @@ export const ToolTip = ({ text, className = '', position = 'bottom-center' }: To
       <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
         {text}
         {/* 꼬리 */}
-        <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} />
+        {/* <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} /> */}
       </div>
     </div>
   );

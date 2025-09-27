@@ -1,13 +1,12 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { CommonResponse } from '@/shared/type/response';
+import { GrorongAdviceResponse, AIMentorAdviceResponse } from './type';
 
-interface CheerMessageResponse
-  extends CommonResponse<{
-    message: string;
-    from: string;
-  }> {}
+export async function getGrorongAdvice() {
+  const response = await apiClient.get<GrorongAdviceResponse>('/advice/grorong ');
+  return response.data.data;
+}
 
-export async function getCheerMessage() {
-  const response = await apiClient.get<CheerMessageResponse>('/resource/saying');
+export async function getAIMentorAdvice() {
+  const response = await apiClient.get<AIMentorAdviceResponse>('/advice/mentor');
   return response.data.data;
 }
