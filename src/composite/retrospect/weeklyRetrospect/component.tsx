@@ -17,9 +17,10 @@ interface WeeklyRetrospectPageProps {
   retrospectId: string;
   goalId?: string;
   planId?: string;
+  weekIndex?: string;
 }
 
-export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId }: WeeklyRetrospectPageProps) => {
+export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }: WeeklyRetrospectPageProps) => {
   const { showToast } = useToast();
   const isNewRetrospect = retrospectId === 'new';
 
@@ -122,9 +123,16 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId }: WeeklyRet
     );
   }
 
+  const getHeaderTitle = () => {
+    if (isNewRetrospect) {
+      return weekIndex ? `${weekIndex}주차 회고 작성` : '새 회고 작성';
+    }
+    return weekIndex ? `${weekIndex}주차 회고` : '주간 회고';
+  };
+
   return (
     <div className="min-h-screen bg-background-primary">
-      <Header mode="title" title={isNewRetrospect ? '새 회고 작성' : '주간 회고'} />
+      <Header mode="title" title={getHeaderTitle()} />
       <div className="b-5 pt-20" />
 
       {/* Content */}

@@ -30,10 +30,12 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   const handleNavigateToRetrospect = () => {
     if (retrospect?.retrospect?.id) {
       // 기존 회고가 있는 경우 해당 회고 페이지로 이동
-      router.push(`/retrospect/${retrospect.retrospect.id}`);
+      router.push(`/retrospect/${retrospect.retrospect.id}?weekIndex=${currentWeekIndex}`);
     } else {
       // 회고가 없는 경우 새 회고 생성 페이지로 이동
-      router.push(`/retrospect/new-retrospect?goalId=${goal.id}&planId=${selectedPlanId}`);
+      router.push(
+        `/retrospect/new-retrospect?goalId=${goal.id}&planId=${selectedPlanId}&weekIndex=${currentWeekIndex}`
+      );
     }
   };
 
