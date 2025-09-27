@@ -1,16 +1,26 @@
 import Image from 'next/image';
-import { AIMentor } from './type';
 import { X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import FlexBox from '@/shared/components/foundation/FlexBox';
+import { AIMentorAdvice } from '@/composite/home/cheerMessageCard/type';
 
 interface AIAdviceDetailModalProps {
-  aiMentor: AIMentor;
+  aiMentorName: string;
+  aiMentorAdvice: AIMentorAdvice;
+  bgPath: string;
+  characterPath: string;
   open: boolean;
   onClose: () => void;
 }
 
-export const AIAdviceDetailModal = ({ aiMentor, open, onClose }: AIAdviceDetailModalProps) => {
+export const AIAdviceDetailModal = ({
+  aiMentorName,
+  aiMentorAdvice,
+  characterPath,
+  bgPath,
+  open,
+  onClose,
+}: AIAdviceDetailModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     if (dialogRef.current && open) {
@@ -27,20 +37,14 @@ export const AIAdviceDetailModal = ({ aiMentor, open, onClose }: AIAdviceDetailM
     >
       {/* 백그라운드 이미지 */}
       <div className="absolute inset-0">
-        <Image
-          src={`/image/${aiMentor}.png`}
-          alt="AI Mentor Background"
-          fill
-          className="object-cover"
-          priority={true}
-        />
-        <div className="absolute inset-0 bg-black/50"></div>
+        <Image src={bgPath} alt="ai-mentor-background" fill className="object-cover" priority={true} />
       </div>
 
       <div className="relative z-10">
         <FlexBox className="justify-between p-6 pb-4">
           <FlexBox className="gap-2">
-            <h1 className="text-lg font-bold text-white">팀쿡의 조언</h1>
+            <h1 className="text-lg font-bold text-white">{aiMentorName}의 조언</h1>
+            <Image src="/home/planet.png" alt="planet" width={24} height={32} priority={true} />
           </FlexBox>
           <button
             onClick={onClose}
@@ -51,28 +55,31 @@ export const AIAdviceDetailModal = ({ aiMentor, open, onClose }: AIAdviceDetailM
         </FlexBox>
 
         <div className="px-6 pb-6">
-          <h2 className="text-xl font-bold text-white mb-6">혁신은 단순함에서 시작돼</h2>
+          <h2 className="text-xl font-bold text-white mb-6">{aiMentorAdvice.message}</h2>
           <div className="space-y-4">
-            <div className="flex flex-col items-start gap-3">
-              <span className="px-3 py-1 bg-label-button-assistive text-white text-xs font-medium rounded-full whitespace-nowrap">
+            <div className="flex flex-col items-start gap-4">
+              <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Try
               </span>
-              <p className="body-1-normal text-label-normal">이번주는 MVP를 반드시 배포해라</p>
+              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.tryNext}</p>
             </div>
-            <div className="flex flex-col items-start gap-3">
-              <span className="px-3 py-1 bg-label-button-assistive text-white text-xs font-medium rounded-full whitespace-nowrap">
+            <div className="flex flex-col items-start gap-4">
+              <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Keep
               </span>
-              <p className="body-1-normal text-label-normal">투두 분해와 실행 리듬은 안정적이다</p>
+              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.keep}</p>
             </div>
-            <div className="flex flex-col items-start gap-3">
-              <span className="px-3 py-1 bg-label-button-assistive text-white text-xs font-medium rounded-full whitespace-nowrap">
+            <div className="flex flex-col items-start gap-4">
+              <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Problem
               </span>
-              <p className="body-1-normal text-label-normal">디자인-개발 QA 협업 속도가 더디다</p>
+              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.problem}</p>
             </div>
           </div>
         </div>
+        <FlexBox className="justify-center">
+          <Image src={characterPath} alt="ai-mentor-character" width={100} height={140} priority={true} />
+        </FlexBox>
       </div>
     </dialog>
   );

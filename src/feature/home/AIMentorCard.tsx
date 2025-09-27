@@ -1,32 +1,31 @@
 import Image from 'next/image';
-import { AIMentor } from '@/feature/home/type';
-import { AIMentorName } from '@/feature/home/const';
+import { AIMentor } from './type';
+import { AIMentorNames } from '@/feature/home/const';
 import { ChevronRight } from 'lucide-react';
 import { AIAdviceDetailModal } from '@/feature/home/AIAdviceDetailModal';
 import { useState } from 'react';
+import { AIMentorAdvice } from '@/composite/home/cheerMessageCard/type';
+import { getAIMentorModalBackground, getAIMentorImage, getAIMentorModalCharacter } from './utils';
 
 interface AIMentorCardProps {
   aiMentor: AIMentor;
+  aiMentorAdvice: AIMentorAdvice;
 }
 
-export const AIMentorCard = ({ aiMentor }: AIMentorCardProps) => {
+export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) => {
   const [showModal, setShowModal] = useState(false);
+  const aiMentorName = AIMentorNames[aiMentor] || '팀쿡';
+  const imagePath = getAIMentorImage(aiMentor);
+  const modalCharacterPath = getAIMentorModalCharacter(aiMentor);
+  const modalBackgroundPath = getAIMentorModalBackground(aiMentor);
+
   return (
     <>
-      <p className="body-1-bold text-label-neutral">{AIMentorName[aiMentor]}의 조언</p>
-      <div className="relative pt-6 pb-8 px-4 rounded-2xl overflow-hidden">
-        <Image
-          src={`/image/${aiMentor}.png`}
-          alt="background"
-          fill
-          className="object-cover object-top aspect-square"
-          priority={false}
-        />
-        <div className="flex flex-col gap-5 relative z-50">
-          <div className="w-3/4">
-            <h2 className="headline-1-bold text-white">혁신은 단순함에서 시작돼</h2>
-            <span className="text-sm text-label-neutral">네 작업은 뼈대는 있지만 브랜드 결이 약해 보여.</span>
-          </div>
+      <p className="body-1-bold text-label-neutral">{aiMentorName}의 조언</p>
+      <div className="relative pt-6 min-w-[335px] min-h-[180px] px-4 rounded-2xl overflow-hidden">
+        <Image src={imagePath} alt="ai-mentor-advice" fill className={`object-fit object-top`} />
+        <div className="flex flex-col gap-3 relative z-50">
+          <h2 className="headline-1-bold text-white">{aiMentorAdvice.message}</h2>
           <button
             className="flex items-center gap-2 body-2-normal text-label-neutral"
             onClick={() => setShowModal(true)}
@@ -35,7 +34,14 @@ export const AIMentorCard = ({ aiMentor }: AIMentorCardProps) => {
           </button>
         </div>
       </div>
-      <AIAdviceDetailModal open={showModal} onClose={() => setShowModal(false)} aiMentor={aiMentor} />
+      <AIAdviceDetailModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        aiMentorName={aiMentorName}
+        aiMentorAdvice={aiMentorAdvice}
+        characterPath={modalCharacterPath}
+        bgPath={modalBackgroundPath}
+      />
     </>
   );
 };
