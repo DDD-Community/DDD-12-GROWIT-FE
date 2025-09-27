@@ -21,11 +21,11 @@ export const Step5Summary = ({ onNext }: Step5SummaryProps) => {
 
   const getBackgroundImage = (category: string | undefined) => {
     switch (category) {
-      case GoalCategoryEnum.PROFESSIONAL_GROWTH:
+      case GoalCategoryEnum.STUDY:
         return '/image/goal-bg-confucius.png';
-      case GoalCategoryEnum.WEALTH_BUILDING:
+      case GoalCategoryEnum.FINANCE:
         return '/image/goal-bg-warren.png';
-      case GoalCategoryEnum.SIDE_PROJECT:
+      case GoalCategoryEnum.IT_PROJECT:
         return '/image/goal-bg-timcook.png';
       default:
         return '/image/goal-bg-confucius.png';

@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import Button from '@/shared/components/input/Button';
 import { GoalFormData } from '@/shared/type/form';
-import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
+import { GOAL_CATEGORIES, GoalCategoryEnum } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
 
 interface Step1GoalCategoryProps {
@@ -16,7 +16,7 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
   const formValues = watch();
   const selectedCategory = formValues.category;
 
-  const handleCategorySelect = (e: React.MouseEvent<HTMLButtonElement>, categoryId: string) => {
+  const handleCategorySelect = (e: React.MouseEvent<HTMLButtonElement>, categoryId: GoalCategoryEnum) => {
     e.preventDefault();
     setValue('category', categoryId);
   };

@@ -4,6 +4,7 @@ import { useFetchUserName } from '@/shared/hooks/useFetchUserName';
 import Button from '@/shared/components/input/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/shared/constants/routes';
 
 interface Step0OnboardingProps {
   onNext: () => void;
@@ -18,7 +19,7 @@ export const Step0Onboarding = ({ onNext }: Step0OnboardingProps) => {
   };
 
   const handleLater = () => {
-    router.push('/home');
+    router.replace(ROUTES.HOME);
   };
 
   return (
@@ -77,7 +78,14 @@ export const Step0Onboarding = ({ onNext }: Step0OnboardingProps) => {
       <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 sm:hidden">
         <Button size="xl" text="목표 설정하기" onClick={handleGoalSetting} className="w-full" />
         <div className="h-[20px]" />
-        <Button size="xl" text="다음에 할래요" variant="tertiary" onClick={handleLater} className="w-full" />
+        <Button
+          size="xl"
+          type="button"
+          text="다음에 할래요"
+          variant="tertiary"
+          onClick={handleLater}
+          className="w-full"
+        />
       </div>
     </div>
   );

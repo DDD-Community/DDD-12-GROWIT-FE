@@ -13,9 +13,9 @@ interface Step2GoalNameProps {
 }
 
 const CATEGORY_EXAMPLES: Record<string, string[]> = {
-  [GoalCategoryEnum.PROFESSIONAL_GROWTH]: ['매일 1시간 독서', '전공수업 A+', '컴활 자격증 취득'],
-  [GoalCategoryEnum.WEALTH_BUILDING]: ['월 50만원 저축', 'ETF 분산투자 시작', '지출 20% 줄이기'],
-  [GoalCategoryEnum.SIDE_PROJECT]: ['개발 스프린트', 'MVP 4주 내 완성', '서비스 고도화'],
+  [GoalCategoryEnum.STUDY]: ['매일 1시간 독서', '전공수업 A+', '컴활 자격증 취득'],
+  [GoalCategoryEnum.FINANCE]: ['월 50만원 저축', 'ETF 분산투자 시작', '지출 20% 줄이기'],
+  [GoalCategoryEnum.IT_PROJECT]: ['개발 스프린트', 'MVP 4주 내 완성', '서비스 고도화'],
 };
 
 export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
