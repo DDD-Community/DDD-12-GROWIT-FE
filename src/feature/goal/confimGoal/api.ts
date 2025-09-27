@@ -1,6 +1,7 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { GoalFormData } from '@/shared/type/form';
 import { CommonResponse } from '@/shared/type/response';
+import { MentorCharacterType } from '../mentorCharacterCard';
 
 // API Request DTO - duration 필드 제외
 export interface CreateGoalRequestDto {
@@ -19,7 +20,7 @@ export interface CreateGoalRequestDto {
 
 export interface CreateGoalResponseData {
   id: string;
-  mentor: string;
+  mentor: MentorCharacterType;
 }
 
 interface CreateGoalResponseDto extends CommonResponse<CreateGoalResponseData> {}

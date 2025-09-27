@@ -8,6 +8,7 @@ import { CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
+import { MentorCharacterType } from '@/feature/goal/mentorCharacterCard';
 
 interface Step5SummaryProps {
   onNext: () => void;
@@ -21,13 +22,13 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
   const duration = formValues.duration;
 
-  const getBackgroundImageByMentor = (mentor: string | undefined) => {
+  const getBackgroundImageByMentor = (mentor: MentorCharacterType | undefined) => {
     switch (mentor) {
-      case 'CONFUCIUS':
+      case MentorCharacterType.CONFUCIUS:
         return '/image/goal-bg-confucius.png';
-      case 'WARREN':
+      case MentorCharacterType.WARREN_BUFFETT:
         return '/image/goal-bg-warren.png';
-      case 'TIM_COOK':
+      case MentorCharacterType.TIM_COOK:
         return '/image/goal-bg-timcook.png';
       default:
         return '/image/goal-bg-confucius.png';
