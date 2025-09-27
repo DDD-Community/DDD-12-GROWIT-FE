@@ -28,7 +28,6 @@ export const useWeeklyGoalRecommendationByAI = ({
       const data = await getAIGoalRecommendation(goalId, planId);
       setIsSuccess(true);
       setRecommendedGoal(data);
-      console.log(data);
       setIsGoalRecommendationChecked(true);
     } catch (error) {
       console.error(error);

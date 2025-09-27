@@ -43,7 +43,7 @@ export const AIAdviceDetailModal = ({
       <div className="relative z-10">
         <FlexBox className="justify-between p-6 pb-4">
           <FlexBox className="gap-2">
-            <h1 className="text-lg font-bold text-white">{aiMentorName}의 조언</h1>
+            <h1 className="text-lg font-bold text-white">{aiMentorName}</h1>
             <Image src="/home/planet.png" alt="planet" width={24} height={32} priority={true} />
           </FlexBox>
           <button
