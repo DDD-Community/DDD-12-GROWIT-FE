@@ -33,7 +33,7 @@ jobs:
           echo "REDIRECT URL : ${{ vars.NEXT_PUBLIC_REDIRECT_URL }}"
           docker build \
             --build-arg NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
-            --build-arg NEXT_PUBLIC_REDIRECT_URL="${{ vars.NEXT_PUBLIC_REDIRECT_URL }}"
+            --build-arg NEXT_PUBLIC_REDIRECT_URL="${{ vars.NEXT_PUBLIC_REDIRECT_URL }}" \
             -t ${{ steps.tag.outputs.IMAGE_TAG }} \
             -t ${{ steps.tag.outputs.LATEST_TAG }} .
 
