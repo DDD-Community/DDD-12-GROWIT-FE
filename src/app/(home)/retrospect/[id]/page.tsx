@@ -1,31 +1,33 @@
 import { WeeklyRetrospectPage } from '@/composite/retrospect/weeklyRetrospect/component';
 
 interface WeeklyRetrospectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     goalId?: string;
     planId?: string;
     weekIndex?: string;
-  };
+  }>;
 }
 
-const WeeklyRetrospectPageRoute = ({ params, searchParams }: WeeklyRetrospectPageProps) => {
-  const isNewRetrospect = params.id === 'new-retrospect';
+const WeeklyRetrospectPageRoute = async ({ params, searchParams }: WeeklyRetrospectPageProps) => {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const isNewRetrospect = resolvedParams.id === 'new-retrospect';
 
   if (isNewRetrospect) {
     return (
       <WeeklyRetrospectPage
         retrospectId="new"
-        goalId={searchParams.goalId}
-        planId={searchParams.planId}
-        weekIndex={searchParams.weekIndex}
+        goalId={resolvedSearchParams.goalId}
+        planId={resolvedSearchParams.planId}
+        weekIndex={resolvedSearchParams.weekIndex}
       />
     );
   }
 
-  return <WeeklyRetrospectPage retrospectId={params.id} weekIndex={searchParams.weekIndex} />;
+  return <WeeklyRetrospectPage retrospectId={resolvedParams.id} weekIndex={resolvedSearchParams.weekIndex} />;
 };
 
 export default WeeklyRetrospectPageRoute;
