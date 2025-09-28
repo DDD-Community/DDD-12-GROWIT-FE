@@ -22,16 +22,17 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
   const { showToast } = useToast();
   const isNewRetrospect = retrospectId === 'new';
 
-  const { retrospect, isLoading, fetchRetrospects } = isNewRetrospect
-    ? { retrospect: null, isLoading: false, fetchRetrospects: () => {} }
-    : useFetchRetrospectById(retrospectId);
+  const { retrospect, isLoading, fetchRetrospects } = useFetchRetrospectById(retrospectId);
+  const actualRetrospect = isNewRetrospect ? null : retrospect;
+  const actualIsLoading = isNewRetrospect ? false : isLoading;
+  const actualFetchRetrospects = isNewRetrospect ? () => {} : fetchRetrospects;
 
   const { editRetrospect, isLoading: isEditing } = useFetchEditRetrospect({
     onSuccess: () => {
       showToast('회고가 성공적으로 수정되었습니다.', 'success');
-      fetchRetrospects();
+      actualFetchRetrospects();
     },
-    onError: error => {
+    onError: () => {
       showToast('회고 수정에 실패했습니다.', 'error');
     },
   });
@@ -41,7 +42,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
       showToast('회고가 성공적으로 작성되었습니다.', 'success');
       window.location.href = `/retrospect/${data.id}`;
     },
-    onError: error => {
+    onError: () => {
       showToast('회고 작성에 실패했습니다.', 'error');
     },
   });
@@ -49,7 +50,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
   const form = useKPTForm({
     mode: 'onChange',
   });
-  
+
   const {
     reset,
     formState: { isValid },
@@ -57,14 +58,14 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
 
   // 회고 데이터 로드
   useEffect(() => {
-    if (retrospect) {
+    if (actualRetrospect) {
       reset({
-        keep: retrospect.retrospect.kpt.keep,
-        problem: retrospect.retrospect.kpt.problem,
-        tryNext: retrospect.retrospect.kpt.tryNext,
+        keep: actualRetrospect.retrospect.kpt.keep,
+        problem: actualRetrospect.retrospect.kpt.problem,
+        tryNext: actualRetrospect.retrospect.kpt.tryNext,
       });
     }
-  }, [retrospect, reset]);
+  }, [actualRetrospect, reset]);
 
   const handleCreateRetrospect = async (data: KPTFormData) => {
     if (!goalId || !planId) {
@@ -79,13 +80,13 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
   };
 
   const handleEditRetrospect = async (data: KPTFormData) => {
-    if (!retrospect) {
+    if (!actualRetrospect) {
       showToast('회고 정보를 찾을 수 없습니다.', 'error');
       return;
     }
     await editRetrospect({
-      retrospectId: retrospect.retrospect.id,
-      planId: retrospect.plan.id,
+      retrospectId: actualRetrospect.retrospect.id,
+      planId: actualRetrospect.plan.id,
       kpt: data,
     });
   };
@@ -97,7 +98,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
     return await handleEditRetrospect(data);
   };
 
-  if (isLoading) {
+  if (actualIsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-label-normal">로딩 중...</div>

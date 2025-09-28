@@ -20,12 +20,7 @@ export const FunnelHeader = ({
   isVisible: propIsVisible,
 }: FunnelHeaderProps) => {
   const router = useRouter();
-  let contextValue;
-  try {
-    contextValue = useFunnelHeader();
-  } catch {
-    contextValue = null;
-  }
+  const contextValue = useFunnelHeader();
 
   const currentStep = propCurrentStep ?? 1;
   const totalSteps = propTotalSteps ?? 1;
