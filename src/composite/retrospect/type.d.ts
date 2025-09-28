@@ -12,5 +12,9 @@ interface Plan {
 
 interface Retrospect {
   id: string;
-  content: string;
+  kpt: {
+    keep: string;
+    problem: string;
+    tryNext: string;
+  };
 }

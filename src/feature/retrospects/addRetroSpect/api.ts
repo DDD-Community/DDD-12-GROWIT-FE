@@ -1,11 +1,15 @@
+import { Retrospect } from '@/composite/retrospect/type';
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { BooleanOptional } from 'qs';
 
 interface AddRetrospectRequest {
   goalId: string;
   planId: string;
-  content: string;
+  kpt: {
+    keep: string;
+    problem: string;
+    tryNext: string;
+  };
 }
 
 interface GetRetrospectRequest {
@@ -20,7 +24,11 @@ interface DeleteRetrospectRequest {
 interface PutRetrospectRequest {
   retrospectId: string;
   planId: string;
-  content: string;
+  kpt: {
+    keep: string;
+    problem: string;
+    tryNext: string;
+  };
 }
 
 interface AddRetrospectResponse extends CommonResponse<{ id: string }> {}
@@ -32,10 +40,7 @@ export interface GetRetroSpectDto {
     isCurrentWeek: boolean;
     weekOfMonth: number;
   };
-  retrospect: {
-    content: string;
-    id: string;
-  };
+  retrospect: Retrospect;
 }
 
 interface GetRetrospectResponse extends CommonResponse<GetRetroSpectDto[]> {}
@@ -58,5 +63,10 @@ export async function deleteRetrospect(req: DeleteRetrospectRequest) {
 
 export async function putRetrospect(req: PutRetrospectRequest) {
   const { data } = await apiClient.put<CommonResponse<string>>(`/retrospects/${req.retrospectId}`, req);
+  return data.data;
+}
+
+export async function getRetrospectById(retrospectId: string) {
+  const { data } = await apiClient.get<CommonResponse<GetRetroSpectDto>>(`/retrospects/${retrospectId}`);
   return data.data;
 }
