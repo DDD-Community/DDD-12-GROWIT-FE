@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { usePatchTodoStatus } from './hooks';
@@ -13,14 +13,11 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
-import { cn } from '@/shared/lib/utils';
-import { getDateString, isToday } from '@/model/todo/selectedDay/utils';
 import EditTodoModal from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import DeleteTodoModal from './components/DeleteTodoModal';
-import { ToolTip } from '@/shared/components/display/ToolTip';
 import { WeekDatePicker } from './components/WeekDatePicker';
-
+import { TodoCompletedPopup } from './components/TodoCompletedPopup';
 import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
 import { usePlanSelector } from '@/model/todo/planSelector';
 import { useTodoBoardState } from '@/model/todo/todoList';
@@ -52,6 +49,12 @@ export const WeeklyTodoList = ({
   const { changePlanByDate, selectedPlanId } = usePlanSelector();
   const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
   const { updateDateInfo, updateWeekDates } = useSelectedDayActions();
+  const [showTodoCompletedPopup, setShowTodoCompletedPopup] = useState(false);
+  // 오늘 Todo 완료 여부
+  const todayTodoCompleted = useMemo(
+    () => todoList?.[selectedDay]?.every(todo => todo.isCompleted) || false,
+    [todoList, selectedDay]
+  );
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
@@ -61,6 +64,12 @@ export const WeeklyTodoList = ({
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
   }, [goal.id, goal.duration.startDate, currentWeekIndex]);
+
+  useEffect(() => {
+    if (todayTodoCompleted) {
+      setShowTodoCompletedPopup(true);
+    }
+  }, [todayTodoCompleted]);
 
   const selectedDayTodos = todoList?.[selectedDay] || [];
 
@@ -119,6 +128,7 @@ export const WeeklyTodoList = ({
         onClose={() => setDeleteModal({ open: false, todo: null })}
         onDelete={handleDeleteSubmit}
       />
+      <TodoCompletedPopup isOpen={showTodoCompletedPopup} onClose={() => setShowTodoCompletedPopup(false)} />
     </div>
   );
 };
