@@ -1,9 +1,9 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import Image from 'next/image';
 import Button from '../../input/Button';
-import { NAVIGATION_ROUTES, ROUTES, shouldHiddenNavigation } from '@/shared/constants/routes';
+import { NAVIGATION_ROUTES_MOBILE, ROUTES, shouldHiddenNavigation, titleStyle } from '@/shared/constants/routes';
+import FlexBox from '../../foundation/FlexBox';
 
 export const BottomNavigation = () => {
   const router = useRouter();
@@ -11,12 +11,6 @@ export const BottomNavigation = () => {
 
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
   const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
-  const iconConfig = {
-    size: 22,
-    activeColor: '#FFFFFF',
-    inactiveColor: '#DCDCDC',
-    strokeWidth: 2,
-  };
 
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
@@ -29,8 +23,9 @@ export const BottomNavigation = () => {
 
   return (
     <nav className="fixed z-100 bottom-0 w-full md:hidden p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
-      {NAVIGATION_ROUTES.map(item => {
+      {NAVIGATION_ROUTES_MOBILE.map(item => {
         const active = isActive(item.path);
+        const IconComponent = active ? item.activeIcon : item.inActiveIcon;
         return (
           <Button
             key={item.path}
@@ -39,9 +34,10 @@ export const BottomNavigation = () => {
             layout="icon-only"
             className={active ? 'bg-surface-assistive' : ''}
             icon={
-              <div className={active ? 'brightness-0 invert' : ''}>
-                <Image src={item.icon} alt={item.alt} width={iconConfig.size} height={iconConfig.size} />
-              </div>
+              <FlexBox direction="col">
+                {<IconComponent />}
+                <span className={active ? titleStyle.active : titleStyle.inActive}>{item.title}</span>
+              </FlexBox>
             }
             onClick={() => router.push(item.path)}
           />

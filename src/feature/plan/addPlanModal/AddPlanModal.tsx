@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Modal } from '@/shared/components/feedBack/Modal';
-import { InputField } from '@/shared/components/input/InputField';
 import Button from '@/shared/components/input/Button';
 import { useFetchEditPlan } from './hooks';
 import { TextArea } from '@/shared/components/input/TextArea';
@@ -70,10 +69,10 @@ export const AddPlanModal = ({
           reset({ description: selectedPlanContent || '' });
           setOpen(true);
         }}
-        className="flex items-center justify-between w-full p-4 bg-elevated-normal rounded-lg hover:bg-elevated-alternative transition-colors duration-200 border border-line-normal"
+        className="flex items-center justify-between w-full p-4 bg-elevated-normal rounded-lg hover:bg-elevated-alternative transition-colors duration-200 border-4 border-gray-500"
       >
         <div className="flex flex-1 flex-col min-w-0">
-          <span className="text-label-alternative text-xs font-medium text-left">주차 목표</span>
+          <span className="text-label-alternative text-xs font-medium text-left">{selectedPlanIndex}주차 목표</span>
           <p className="text-label-normal text-sm mt-1 truncate w-full text-left">
             {displayInfo ? `'${displayInfo}'` : displayGoal}
           </p>

@@ -6,22 +6,20 @@ import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
 import { GoalCategoryEnum } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
+import Button from '@/shared/components/input/Button';
 
 interface Step2GoalNameProps {
   onNext: () => void;
 }
 
-const CATEGORY_EXAMPLES: Record<string, string> = {
-  [GoalCategoryEnum.PROFESSIONAL_GROWTH]: '4주 안에 TOEIC 900점 달성하기, 매일 영어 뉴스 1편 해석하기',
-  [GoalCategoryEnum.CAREER_TRANSITION]: '네카라쿠배당토 합격하기, PM으로 전직 성공하기',
-  [GoalCategoryEnum.LIFESTYLE_ROUTINE]: '매일 새벽 6시에 일어나기, 매일 1시간 책 읽기',
-  [GoalCategoryEnum.WEALTH_BUILDING]: '1,000만원 저축하기, 미주 단타로 4배 수익률 달성하기',
-  [GoalCategoryEnum.SIDE_PROJECT]: '동아리 프로젝트 출시, 공모전 우승',
-  [GoalCategoryEnum.NETWORKING]: '한 달 2회 이상 독서모임 참석하기, 업계 후배 1:1 멘토링 진행하기',
+const CATEGORY_EXAMPLES: Record<string, string[]> = {
+  [GoalCategoryEnum.STUDY]: ['매일 1시간 독서', '전공수업 A+', '컴활 자격증 취득'],
+  [GoalCategoryEnum.FINANCE]: ['월 50만원 저축', 'ETF 분산투자 시작', '지출 20% 줄이기'],
+  [GoalCategoryEnum.IT_PROJECT]: ['개발 스프린트', 'MVP 4주 내 완성', '서비스 고도화'],
 };
 
 export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
-  const { watch } = useFormContext<GoalFormData>();
+  const { watch, setValue } = useFormContext<GoalFormData>();
 
   const formValues = watch();
   const isStepValid = formValues.name && formValues.name.trim().length > 0;
@@ -37,11 +35,26 @@ export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <GuideMessage text="어떤 목표를 가지고 있어?" highlight={['목표']} status="curious" />
-        <CreateGoalFormElement.Name />
-        {selectedCategory && CATEGORY_EXAMPLES[selectedCategory] && (
-          <p className="mt-2 text-[14px] text-neutral-400">ex. {CATEGORY_EXAMPLES[selectedCategory]}</p>
-        )}
+        <GuideMessage text="어떤 목표를 가지고 있어?" highlight={['목표']} status="exciting" />
+        <div className="px-[20px]">
+          <CreateGoalFormElement.Name />
+          <div className="flex flex-row gap-3 flex-wrap mt-6">
+            {selectedCategory &&
+              CATEGORY_EXAMPLES[selectedCategory] &&
+              CATEGORY_EXAMPLES[selectedCategory].map(example => (
+                <div key={example} className="inline-flex">
+                  <Button
+                    size="sm"
+                    type="button"
+                    text={example}
+                    variant={formValues.name === example ? 'select' : 'secondary'}
+                    className={formValues.name === example ? '' : 'bg-transparent'}
+                    onClick={() => setValue('name', example)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
       <FunnelNextButton disabled={!isStepValid} onClick={handleNext} />
     </div>

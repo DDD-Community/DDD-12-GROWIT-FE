@@ -46,49 +46,33 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
   const colorTheme = getColorTheme(goal.plans?.length || 0);
 
   return (
-    <div className="flex flex-col w-full rounded-2xl bg-[#111317] px-[24px] py-[28px] gap-[24px] relative overflow-hidden border border-[#23262F]">
-      {/* 배경 이미지 - 모바일용 달 이미지 */}
-      <Image
-        src="/image/growit-landing.png"
-        alt="background"
-        fill
-        className="object-cover object-[40%_15%] opacity-30 pointer-events-none z-0"
-      />
-
-      <div className="flex flex-col gap-[16px] relative z-[2]">
-        <div className="flex items-center gap-2">
-          <span
-            className={`inline-flex items-center justify-center h-6 px-2 rounded-full ${colorTheme.badge} text-black text-xs font-semibold`}
-          >
-            {totalWeeks}주
-          </span>
-          <span className="inline-flex items-center h-6 px-2 rounded-full bg-[#2A2B31] opacity-60 text-white text-xs">
-            {durationLabel}
-          </span>
-        </div>
-        <div className="text-white text-lg font-semibold">{goal.name}</div>
-      </div>
-
-      {/* 진행률 바 */}
-      <div className="flex items-center gap-[12px]">
-        <div className="flex min-w-[28px] min-h-[28px] rounded-[4px] bg-black items-center justify-center">
-          <Image src="/meteor.svg" alt="meteor" width={22} height={22} />
+    <>
+      <p className="text-label-neutral body-1-normal font-semibold border-b border-[#23262F] pb-2">
+        나의 <span className="text-brand-neon body-1-bold">{totalWeeks}주</span> 목표
+      </p>
+      <div className="flex flex-col w-full rounded-2xl bg-elevated-assistive p-5 gap-5 relative overflow-hidden border border-[#23262F]">
+        <div className="flex flex-col gap-1 relative z-[2]">
+          <div className="text-white text-lg font-semibold">{goal.name}</div>
+          <span className="rounded-full bg-[#2A2B31] opacity-60 text-white text-xs">{durationLabel}</span>
         </div>
 
-        <div className="h-[10px] w-full bg-[#2A2B31] rounded-full overflow-visible">
-          <div
-            className={`relative h-[8px] my-[1px] bg-gradient-to-r rounded-full ${colorTheme.progress}`}
-            style={{ width: `${progressPercent}%` }}
-          >
-            <div className={`absolute top-[-4px] right-[-4px] w-[16px] h-[16px] rounded-full bg-white blur-md`} />
+        {/* 진행률 바 */}
+        <div className="flex items-center gap-[12px]">
+          <div className="h-[10px] w-full bg-[#2A2B31] rounded-full overflow-visible">
+            <div
+              className={`relative h-[8px] my-[1px] bg-gradient-to-r rounded-full ${colorTheme.progress}`}
+              style={{ width: `${progressPercent}%` }}
+            >
+              <div className={`absolute top-[-4px] right-[-4px] w-[16px] h-[16px] rounded-full bg-white blur-md`} />
+            </div>
+          </div>
+
+          <div className="flex items-center min-w-[38px]">
+            <span className="text-white text-sm font-medium">{`${currentWeek} `}</span>
+            <span className="text-label-neutral text-sm font-medium">/{totalWeeks}주</span>
           </div>
         </div>
-
-        <div className="flex items-center min-w-[38px]">
-          <span className="text-white text-sm font-medium">{`${currentWeek} `}</span>
-          <span className="text-label-neutral text-sm font-medium">/{totalWeeks}주</span>
-        </div>
       </div>
-    </div>
+    </>
   );
 };

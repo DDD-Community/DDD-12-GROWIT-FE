@@ -3,10 +3,13 @@ import { AxiosError } from 'axios';
 
 type PutWeeklyRetrospectResponse = { isSuccess: true; data: any } | { isSuccess: false; message: string };
 
-export const putWeeklyRetrospect = async (id: string, content: string): Promise<PutWeeklyRetrospectResponse> => {
+export const putWeeklyRetrospect = async (
+  id: string,
+  kpt: { keep: string; problem: string; tryNext: string }
+): Promise<PutWeeklyRetrospectResponse> => {
   try {
     const response = await apiClient.put(`/retrospects/${id}`, {
-      content: content,
+      kpt: kpt,
     });
     return { isSuccess: true, data: response.data };
   } catch (error) {

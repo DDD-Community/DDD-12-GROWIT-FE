@@ -1,37 +1,38 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { GoalFormData } from '@/shared/type/form';
-import { useToast } from '@/shared/components/feedBack/toast';
-import { postCreateGoal } from './api';
+import { postCreateGoal, CreateGoalResponseData } from './api';
 import { AxiosError } from 'axios';
-import { CommonError, CommonResponse } from '@/shared/type/response';
+import { CommonError } from '@/shared/type/response';
 
-interface UseFetchPostCreateGoalReturn {
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  error: string | null;
-  createGoal: (data: GoalFormData) => Promise<void>;
-  reset: () => void;
-}
-
-export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
-  const { showToast } = useToast();
+export const useFetchPostCreateGoal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<CreateGoalResponseData | null>(null);
 
-  const createGoal = async (data: GoalFormData) => {
+  const createGoal = useCallback(async (data: GoalFormData) => {
+    const startTime = performance.now();
+    console.log('🚀 createGoal 시작:', new Date().toISOString());
+
     try {
       reset();
       setIsLoading(true);
       setIsSuccess(false);
       setIsError(false);
       setError(null);
-      await postCreateGoal(data);
+
+      // 서버 요청과 최소 로딩 시간을 병렬로 처리
+      const [result] = await Promise.all([
+        postCreateGoal(data),
+        new Promise(resolve => setTimeout(resolve, 2000)), // 2초 최소 로딩 시간
+      ]);
+
+      setData(result);
       setIsSuccess(true);
+      return result;
     } catch (err) {
       setIsError(true);
       let errorMessage = '목표 생성에 실패했습니다.';
@@ -45,25 +46,30 @@ export const useFetchPostCreateGoal = (): UseFetchPostCreateGoalReturn => {
         errorMessage = (err as AxiosError<CommonError>).response?.data?.message ?? errorMessage;
       }
       setError(errorMessage);
-      showToast(errorMessage, 'error');
+      throw err;
     } finally {
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      console.log('✅ createGoal 완료:', new Date().toISOString());
+      console.log(`⏱️  총 실행 시간: ${duration.toFixed(2)}ms (${(duration / 1000).toFixed(2)}초)`);
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setIsLoading(false);
     setIsSuccess(false);
     setIsError(false);
     setError(null);
-  };
+    setData(null);
+  }, []);
 
   return {
     isLoading,
     isSuccess,
     isError,
     error,
+    data,
     createGoal,
-    reset,
   };
 };

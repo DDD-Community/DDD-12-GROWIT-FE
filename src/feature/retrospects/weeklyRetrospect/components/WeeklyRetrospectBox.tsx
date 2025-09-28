@@ -15,7 +15,10 @@ interface WeeklyRetrospectBoxProps {
   plan: Plan;
   isCurrentWeek: boolean;
   isPassedWeek: boolean; // 새로 추가된 prop
-  updateWeeklyRetrospect: (weeklyRetrospectId: string, newRetrospect: string) => Promise<void>;
+  updateWeeklyRetrospect: (
+    weeklyRetrospectId: string,
+    newRetrospect: { keep: string; problem: string; tryNext: string }
+  ) => Promise<void>;
 }
 
 export const WeeklyRetrospectBox = ({
@@ -27,10 +30,14 @@ export const WeeklyRetrospectBox = ({
   updateWeeklyRetrospect,
 }: WeeklyRetrospectBoxProps) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [weeklyRetrospect, setWeeklyRetrospect] = useState(retrospect ? retrospect.content : '');
+  const [weeklyRetrospect, setWeeklyRetrospect] = useState({
+    keep: retrospect ? retrospect.kpt.keep : '',
+    problem: retrospect ? retrospect.kpt.problem : '',
+    tryNext: retrospect ? retrospect.kpt.tryNext : '',
+  });
 
   const isWeeklyRetrospectCompleted = useMemo(() => {
-    return retrospect !== null && retrospect.content.length;
+    return retrospect !== null && retrospect.kpt.keep.length;
   }, [retrospect]);
 
   // 상태 분기 로직
@@ -71,7 +78,7 @@ export const WeeklyRetrospectBox = ({
     }
     // 처음 작성하는 경우에는 새로운 회고 생성 (회고 데이터가 존재하지 않음)
     else if (goalId) {
-      await postAddRetrospect({ goalId: goalId, planId: plan.id, content: weeklyRetrospect });
+      await postAddRetrospect({ goalId: goalId, planId: plan.id, kpt: weeklyRetrospect });
     }
     setIsEditable(false);
   };
@@ -110,16 +117,52 @@ export const WeeklyRetrospectBox = ({
           <span className="text-label-neutral body-1-normal">"{plan.content}"</span>
         </FlexBox>
         {retrospect && !isEditable ? (
-          <p className="body-1-normal text-label-neutral">{retrospect.content}</p>
+          <div className="body-1-normal text-label-neutral">
+            <div className="mb-2">
+              <p className="font-bold">Keep: </p>
+              <span>{retrospect.kpt.keep}</span>
+            </div>
+            <div className="mb-2">
+              <p className="font-bold">Problem: </p>
+              <span>{retrospect.kpt.problem}</span>
+            </div>
+            <div>
+              <p className="font-bold">Try Next: </p>
+              <span>{retrospect.kpt.tryNext}</span>
+            </div>
+          </div>
         ) : (
-          <form className="flex flex-col gap-2 w-full" onSubmit={handleUpdateRetrospect}>
-            <TextArea
-              placeholder="회고 내용을 작성해주세요."
-              className="min-h-[100px]"
-              value={weeklyRetrospect}
-              onChange={e => setWeeklyRetrospect(e.target.value)}
-              onClick={e => e.preventDefault()}
-            />
+          <form className="flex flex-col gap-4 w-full text-label-neutral" onSubmit={handleUpdateRetrospect}>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">Keep (잘한 점)</label>
+              <TextArea
+                placeholder="이번 주에 잘한 점을 작성해주세요."
+                className="min-h-[80px]"
+                value={weeklyRetrospect.keep}
+                onChange={e => setWeeklyRetrospect(prev => ({ ...prev, keep: e.target.value }))}
+                onClick={e => e.preventDefault()}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">Problem (문제점)</label>
+              <TextArea
+                placeholder="이번 주에 발생한 문제점을 작성해주세요."
+                className="min-h-[80px]"
+                value={weeklyRetrospect.problem}
+                onChange={e => setWeeklyRetrospect(prev => ({ ...prev, problem: e.target.value }))}
+                onClick={e => e.preventDefault()}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">Try Next (다음에 시도할 것)</label>
+              <TextArea
+                placeholder="다음 주에 시도해볼 개선점을 작성해주세요."
+                className="min-h-[80px]"
+                value={weeklyRetrospect.tryNext}
+                onChange={e => setWeeklyRetrospect(prev => ({ ...prev, tryNext: e.target.value }))}
+                onClick={e => e.preventDefault()}
+              />
+            </div>
             <FlexBox className="ml-auto w-[72px]">
               <Button size="sm" text="완료" variant="tertiary" />
             </FlexBox>

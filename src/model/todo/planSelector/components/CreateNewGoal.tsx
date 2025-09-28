@@ -4,7 +4,7 @@ import { CreateGoalButton } from '@/feature/goal';
 
 export const CreateNewGoal = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-6 p-8 bg-[#232326] rounded-2xl">
+    <div className="flex flex-col w-full items-center justify-center gap-6 px-8 py-64  rounded-2xl">
       <div className="text-center">
         <h2 className="heading-2-bold text-white mb-2">목표를 추가해주세요.</h2>
         <p className="text-label-neutral text-sm leading-relaxed">

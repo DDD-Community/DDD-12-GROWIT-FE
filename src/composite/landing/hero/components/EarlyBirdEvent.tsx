@@ -21,7 +21,7 @@ export const EarlyBirdEvent = () => {
   return (
     <>
       {isSuccess ? <EventMessage.AfterSubmit /> : <EventMessage.Default />}
-      <div className="w-[320px] max-sm:w-[240px] justify-center lg:justify-start relative z-30">
+      <div className="w-[320px] max-sm:w-[240px] lg:justify-start relative z-30">
         {isSuccess ? (
           <EventButton.AfterSubmit onClick={copyGrowitLink} />
         ) : (

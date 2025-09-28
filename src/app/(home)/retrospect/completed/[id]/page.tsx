@@ -2,7 +2,7 @@ import { CompletedDetailRetrospect } from '@/composite/retrospect/detail/compone
 
 const RetrospectDetailPage = () => {
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto">
       <CompletedDetailRetrospect />
     </div>
   );

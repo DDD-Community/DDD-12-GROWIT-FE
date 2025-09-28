@@ -6,25 +6,8 @@ import { SignupDialogButton } from '@/feature/auth';
 import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
 import { SignupFormData } from './type';
 import { useFetchSignUp } from './hook';
-import { CareerYearType } from './type';
 import Checkbox from '@/shared/components/input/Checkbox';
-
-const CAREER_YEAR_OPTIONS = [
-  '선택',
-  '신입(1년차 미만)',
-  '주니어(1~3년)',
-  '미드레벨(3~6년)',
-  '시니어(6~10년)',
-  '리드/매니저(10년 이상)',
-];
-
-const CAREER_YEAR_VALUES: Record<string, CareerYearType> = {
-  '신입(1년차 미만)': 'NEWBIE',
-  '주니어(1~3년)': 'JUNIOR',
-  '미드레벨(3~6년)': 'MID',
-  '시니어(6~10년)': 'SENIOR',
-  '리드/매니저(10년 이상)': 'LEAD',
-};
+import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
 export const SignUpForm = () => {
   const { isSubmitting, isSignupSuccess, fetchSignUp } = useFetchSignUp();
@@ -131,12 +114,7 @@ export const SignUpForm = () => {
             name="privacyPolicy"
             control={control}
             rules={{ required: '개인정보 수집에 동의해주세요.' }}
-            render={({ field }) => (
-              <Checkbox
-                checked={field.value}
-                onChange={field.onChange}
-              />
-            )}
+            render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} />}
           />
           <span className="text-gray-400 text-sm">개인정보 수집 동의</span>
         </label>
@@ -146,12 +124,7 @@ export const SignUpForm = () => {
             name="termsOfService"
             control={control}
             rules={{ required: '이용 약관에 동의해주세요.' }}
-            render={({ field }) => (
-              <Checkbox
-                checked={field.value}
-                onChange={field.onChange}
-              />
-            )}
+            render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} />}
           />
           <span className="text-gray-400 text-sm">이용 약관 동의</span>
         </label>
