@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Badge from '@/shared/components/display/Badge';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
@@ -9,7 +10,14 @@ import { GoalInfoModalProps } from './type';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 
 export function GoalInfoModal({ isOpen, onClose, goal, status = 'progress' }: GoalInfoModalProps) {
+  const router = useRouter();
+
   if (!goal) return null;
+
+  const handleEditClick = () => {
+    router.push(`/goal/${goal.id}`);
+    onClose();
+  };
 
   const getStatusBadge = () => {
     switch (status) {
@@ -87,7 +95,7 @@ export function GoalInfoModal({ isOpen, onClose, goal, status = 'progress' }: Go
         className="flex-1 bg-[rgba(46,47,51,0.88)] border border-[rgba(112,115,124,0.32)] text-[#FF6363] hover:bg-fill-strong"
         text="삭제"
       />
-      <Button variant="primary" size="ml" className="flex-1 " text="수정" />
+      <Button variant="primary" size="ml" className="flex-1" text="수정" onClick={handleEditClick} />
     </div>
   );
 
