@@ -1,0 +1,1 @@
+export { GoalPage } from './goalPage';
