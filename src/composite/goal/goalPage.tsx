@@ -2,8 +2,69 @@
 
 import { ChevronDownIcon } from 'lucide-react';
 import Badge from '@/shared/components/display/Badge';
+import { GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
+import { Goal } from '@/shared/type/goal';
 
 export function GoalPage() {
+  const { isOpen, selectedGoal, openModal, closeModal } = useGoalInfoModal();
+
+  // 목업 데이터
+  const mockGoal: Goal = {
+    id: '1',
+    name: '그로잇 서비스 런칭',
+    mentor: 'TIM_COOK',
+    duration: {
+      startDate: '25.01.01',
+      endDate: '25.01.28',
+    },
+    beforeAfter: {
+      asIs: '개발 초보자로서 혼자서는 프로젝트를 완성하기 어려웠음',
+      toBe: '완성도 높은 웹 서비스를 혼자서도 개발할 수 있는 실력 향상',
+    },
+    plans: [
+      {
+        id: '1',
+        content: '프로젝트 기획 및 설계',
+        weekOfMonth: 1,
+        duration: {
+          startDate: '25.01.01',
+          endDate: '25.01.07',
+        },
+      },
+      {
+        id: '2',
+        content: '프론트엔드 개발',
+        weekOfMonth: 2,
+        duration: {
+          startDate: '25.01.08',
+          endDate: '25.01.14',
+        },
+      },
+      {
+        id: '3',
+        content: '백엔드 개발',
+        weekOfMonth: 3,
+        duration: {
+          startDate: '25.01.15',
+          endDate: '25.01.21',
+        },
+      },
+      {
+        id: '4',
+        content: '배포 및 테스트',
+        weekOfMonth: 4,
+        duration: {
+          startDate: '25.01.22',
+          endDate: '25.01.28',
+        },
+      },
+    ],
+  };
+
+  const handlePlanetClick = () => {
+    openModal(mockGoal);
+  };
+
   return (
     <div className="relative flex flex-col w-full h-full bg-normal overflow-hidden">
       {/* Background */}
@@ -74,7 +135,10 @@ export function GoalPage() {
             </div>
 
             {/* Planet Image */}
-            <div className="relative w-[200px] h-[200px]">
+            <div
+              className="relative w-[200px] h-[200px] cursor-pointer hover:scale-105 transition-transform"
+              onClick={handlePlanetClick}
+            >
               <div
                 className="absolute inset-0 rounded-full bg-cover bg-center"
                 style={{
@@ -101,6 +165,9 @@ export function GoalPage() {
           </div>
         </div>
       </div>
+
+      {/* Goal Info Modal */}
+      <GoalInfoModal isOpen={isOpen} onClose={closeModal} goal={selectedGoal} status="progress" />
     </div>
   );
 }

@@ -1,0 +1,104 @@
+'use client';
+
+import { CheckCircle } from 'lucide-react';
+import Badge from '@/shared/components/display/Badge';
+import { Modal } from '@/shared/components/feedBack/Modal';
+import Button from '@/shared/components/input/Button';
+import { AIMentorNames } from '@/feature/home/const';
+import { GoalInfoModalProps } from './type';
+import FlexBox from '@/shared/components/foundation/FlexBox';
+
+export function GoalInfoModal({ isOpen, onClose, goal, status = 'progress' }: GoalInfoModalProps) {
+  if (!goal) return null;
+
+  const getStatusBadge = () => {
+    switch (status) {
+      case 'progress':
+        return (
+          <Badge type="default" size="md" label="진행중" color="bg-[rgba(53,217,66,0.4)]" textColor="text-[#3AEE49]" />
+        );
+      case 'completed':
+        return (
+          <Badge
+            type="default"
+            size="md"
+            label="완료"
+            color="bg-[rgba(112,115,124,0.22)]"
+            textColor="text-[rgba(194,196,200,0.88)]"
+          />
+        );
+      case 'pending':
+        return (
+          <Badge
+            type="default"
+            size="md"
+            label="대기"
+            color="bg-[rgba(112,115,124,0.22)]"
+            textColor="text-[rgba(194,196,200,0.88)]"
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderContent = () => (
+    <div className="flex flex-col gap-4">
+      {/* Badge and Title */}
+      <div className="flex flex-col gap-4">
+        <FlexBox className="justify-start">{getStatusBadge()}</FlexBox>
+
+        <div className="flex items-center gap-2">
+          <CheckCircle className="w-5 h-5 text-label-normal" />
+          <h2 className="headline-1-bold text-label-normal flex-1">{goal.name}</h2>
+        </div>
+      </div>
+
+      {/* Goal Details */}
+      <div className="flex flex-col gap-2">
+        {/* Duration */}
+        <div className="flex items-center gap-2.5">
+          <span className="label-1-medium text-label-neutral">기간</span>
+          <span className="label-1-medium text-[#3AEE49]">{goal.plans.length}주</span>
+        </div>
+
+        {/* Date Range */}
+        <div className="flex items-center gap-2.5">
+          <span className="label-1-medium text-label-neutral">날짜</span>
+          <span className="label-1-medium text-label-normal">
+            {goal.duration.startDate} ~ {goal.duration.endDate}
+          </span>
+        </div>
+
+        {/* Mentor */}
+        <div className="flex items-center gap-2.5">
+          <span className="label-1-medium text-label-neutral">멘토</span>
+          <span className="label-1-medium text-label-normal">{AIMentorNames[goal.mentor]}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFooter = () => (
+    <div className="flex gap-2 w-full">
+      <Button
+        variant="secondary"
+        size="ml"
+        className="flex-1 bg-[rgba(46,47,51,0.88)] border border-[rgba(112,115,124,0.32)] text-[#FF6363] hover:bg-fill-strong"
+        text="삭제"
+      />
+      <Button variant="primary" size="ml" className="flex-1 " text="수정" />
+    </div>
+  );
+
+  return (
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      title="목표 정보"
+      renderContent={renderContent}
+      renderFooter={renderFooter}
+      className="w-[335px]"
+    />
+  );
+}
