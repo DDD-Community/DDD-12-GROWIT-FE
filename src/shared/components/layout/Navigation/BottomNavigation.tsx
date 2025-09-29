@@ -22,7 +22,7 @@ export const BottomNavigation = () => {
   }
 
   return (
-    <nav className="fixed z-100 bottom-0 w-full md:hidden p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
+    <nav className="fixed z-100 bottom-0 max-w-md mx-auto w-full p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
       {NAVIGATION_ROUTES_MOBILE.map(item => {
         const active = isActive(item.path);
         const IconComponent = active ? item.activeIcon : item.inActiveIcon;

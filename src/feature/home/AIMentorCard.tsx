@@ -22,8 +22,8 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
   return (
     <>
       <p className="body-1-bold text-label-neutral">{aiMentorName}의 조언</p>
-      <div className="relative pt-6 min-w-[335px] min-h-[180px] px-4 rounded-2xl overflow-hidden">
-        <Image src={imagePath} alt="ai-mentor-advice" fill className={`object-fit object-top`} />
+      <div className="relative pt-6 max-w-md min-h-[180px] px-4 rounded-2xl overflow-hidden">
+        <Image src={imagePath} alt="ai-mentor-advice" fill className={`object-cover object-top`} />
         <div className="flex flex-col gap-3 relative z-50">
           <h2 className="headline-1-bold text-white">{aiMentorAdvice.message}</h2>
           <button
