@@ -24,8 +24,8 @@ export const LogoutDarkButton = () => {
   };
 
   return (
-    <div className="max-w-40">
-      <Button variant="secondary" size={'xl'} text={'로그아웃'} onClick={handleLogout} />
+    <div className="max-w-40 px-5">
+      <Button variant="secondary" size={'lg'} text={'로그아웃'} onClick={handleLogout} />
     </div>
   );
 };
