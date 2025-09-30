@@ -34,6 +34,7 @@ export const useCreateGoalState = () => {
 
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
+  initValue?: GoalFormData;
 }
 
 interface CreateGoalFormContainerProps {
@@ -58,11 +59,11 @@ const defaultValues: GoalFormData = {
   ],
 };
 
-const Provider = ({ children }: CreateGoalFormProviderProps) => {
+const Provider = ({ children, initValue }: CreateGoalFormProviderProps) => {
   const methods = useForm<GoalFormData>({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    defaultValues,
+    defaultValues: initValue || defaultValues,
   });
 
   return (
