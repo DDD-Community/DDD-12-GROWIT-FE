@@ -12,7 +12,7 @@ export const CreateNewGoal = () => {
             <path
               d="M9.99935 4.16699V15.8337M4.16602 10.0003H15.8327"
               stroke="black"
-              stroke-width="1.67"
+              strokeWidth="1.67"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
