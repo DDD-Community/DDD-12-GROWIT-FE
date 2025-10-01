@@ -23,7 +23,7 @@ export default function MainPage() {
                   <div className="max-sm:mx-[20px] sm:mx-[40px] mt-[32px] pb-3">
                     <CheerMessageCard />
                   </div>
-                  <div className="flex max-sm:flex-col mt-8 sm:flex-1 max-sm:mb-[170px] sm:mb-[80px]">
+                  <div className="flex flex-col mt-8 flex-1 mb-[80px]">
                     <div className="flex flex-col flex-1 max-sm:mx-[20px] sm:mx-[40px] sm:gap-[48px] max-sm:gap-[24px]">
                       <GoalBanner />
                       <WeeklyPlanBoard />
