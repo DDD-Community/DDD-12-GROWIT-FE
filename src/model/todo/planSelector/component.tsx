@@ -61,7 +61,7 @@ export const PlanSelect = () => {
 export const PlanProvider = ({ children }: PlanProviderProps) => {
   const { isLoading, goalList, currentGoal } = useGoalSelector();
 
-  if (!isLoading && goalList.length === 0) {
+  if ((!isLoading && goalList.length === 0) || !currentGoal) {
     return <CreateNewGoal />;
   }
 

@@ -1,6 +1,6 @@
 import { Goal } from '@/shared/type/goal';
 import { WeeklyGoalBannerMobile } from './components/WeeklyGoalBanner.mobile';
-import { WeeklyGoalBannerDesktop } from './components/WeeklyGoalBanner.desktop';
+//import { WeeklyGoalBannerDesktop } from './components/WeeklyGoalBanner.desktop';
 
 interface WeeklyGoalBannerProps {
   goal: Goal;
@@ -9,12 +9,12 @@ interface WeeklyGoalBannerProps {
 export const WeeklyGoalBanner = ({ goal }: WeeklyGoalBannerProps) => {
   return (
     <>
-      <div className="block sm:hidden">
+      <div className="block">
         <WeeklyGoalBannerMobile goal={goal} />
       </div>
-      <div className="hidden sm:block">
+      {/* <div className="hidden sm:block">
         <WeeklyGoalBannerDesktop goal={goal} />
-      </div>
+      </div> */}
     </>
   );
 };

@@ -24,6 +24,7 @@ import { useTodoBoardState } from '@/model/todo/todoList';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
+  todayTodoList: Todo[];
   dayOfWeek: DAY_OF_THE_WEEK;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
@@ -49,12 +50,6 @@ export const WeeklyTodoList = ({
   const { changePlanByDate, selectedPlanId } = usePlanSelector();
   const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
   const { updateDateInfo, updateWeekDates } = useSelectedDayActions();
-  const [showTodoCompletedPopup, setShowTodoCompletedPopup] = useState(false);
-  // 오늘 Todo 완료 여부
-  const todayTodoCompleted = useMemo(
-    () => todoList?.[selectedDay]?.every(todo => todo.isCompleted) || false,
-    [todoList, selectedDay]
-  );
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
@@ -64,12 +59,6 @@ export const WeeklyTodoList = ({
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
   }, [goal.id, goal.duration.startDate, currentWeekIndex]);
-
-  useEffect(() => {
-    if (todayTodoCompleted) {
-      setShowTodoCompletedPopup(true);
-    }
-  }, [todayTodoCompleted]);
 
   const selectedDayTodos = todoList?.[selectedDay] || [];
 
@@ -106,6 +95,7 @@ export const WeeklyTodoList = ({
               <MobileWeeklyTodoItem
                 key={todo.id}
                 todo={todo}
+                todayTodoList={todoList?.[selectedDay] || []}
                 dayOfWeek={selectedDay}
                 onToggleTodo={onToggleTodo}
                 onEdit={() => setEditModal({ open: true, todo })}
@@ -128,14 +118,21 @@ export const WeeklyTodoList = ({
         onClose={() => setDeleteModal({ open: false, todo: null })}
         onDelete={handleDeleteSubmit}
       />
-      <TodoCompletedPopup isOpen={showTodoCompletedPopup} onClose={() => setShowTodoCompletedPopup(false)} />
     </div>
   );
 };
 
-const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: MobileWeeklyTodoItemProps) => {
+const MobileWeeklyTodoItem = ({
+  todo,
+  dayOfWeek,
+  onToggleTodo,
+  onEdit,
+  onDelete,
+  todayTodoList,
+}: MobileWeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
+  const [showTodoCompletedPopup, setShowTodoCompletedPopup] = useState(false);
 
   useEffect(() => {
     setChecked(todo.isCompleted);
@@ -148,8 +145,15 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
       await mutate(todo.id, newChecked);
       setChecked(newChecked);
       onToggleTodo(dayOfWeek, todo.id);
+      // setChecked가 비동기적으로 반영, 따라서 newChecked와 체크 상태를 변경한 나머지 요소들이 isCompleted가 되면 오늘 todo가 완료된 것으로 간주
+      const restTodos = todayTodoList.filter(todo => todo.id !== todo.id);
+      const isTodayTodoCompleted = restTodos.every(todo => todo.isCompleted) && newChecked;
+      if (isTodayTodoCompleted) {
+        setShowTodoCompletedPopup(true);
+      }
     } catch (error) {
       console.error('Todo 상태 변경 실패:', error);
+    } finally {
     }
   };
 
@@ -180,6 +184,8 @@ const MobileWeeklyTodoItem = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete 
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {/** 오늘 Todo 완료 팝업 */}
+      <TodoCompletedPopup isOpen={showTodoCompletedPopup} onClose={() => setShowTodoCompletedPopup(false)} />
     </div>
   );
 };
