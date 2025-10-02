@@ -11,6 +11,7 @@ import { ComponentType } from 'react';
 export const ROUTES = {
   HOME: '/home',
   RETROSPECT: '/retrospect',
+  PROMOTION: '/promotion',
   MYPAGE: '/mypage',
   CREATE_GOAL: '/home/create-goal',
   ONBOARDING: '/onboarding',
