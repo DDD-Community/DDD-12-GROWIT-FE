@@ -26,7 +26,7 @@ export const PromotionModal = ({ open, onClose, onSuccessSubmit }: PromotionModa
       reset();
     },
     onError: () => {
-      showToast('프로모션 코드 적용에 실패했습니다. 다시 시도해주세요.', 'error');
+      showToast('프로모션 코드 적용에 실패했습니다.', 'error');
     },
   });
 
