@@ -1,38 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronDownIcon } from 'lucide-react';
 import Badge from '@/shared/components/display/Badge';
 import { GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
 import { Goal } from '@/shared/type/goal';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-// Swiper CSS 오버라이드
-const swiperStyles = `
-  .swiper {
-    width: 100%;
-    height: 500px;
-  }
-  .swiper-slide {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-  .swiper-pagination {
-    bottom: 20px;
-    position: absolute;
-  }
-  .swiper-wrapper {
-    height: 100%;
-  }
-`;
-
-export function GoalPage() {
+export function PlanetSelector() {
   const { isOpen, selectedGoal, openModal, closeModal } = useGoalInfoModal();
 
   // 목업 데이터 배열
@@ -198,119 +174,65 @@ export function GoalPage() {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: swiperStyles }} />
-      <div className="relative flex flex-col w-full h-full bg-normal overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 w-full h-full">
-          {/* Gradient Background */}
-          <div
-            className="absolute inset-0 w-full h-full"
-            style={{
-              background: 'linear-gradient(180deg, rgba(0, 0, 0, 1) 5%, rgba(42, 73, 114, 1) 100%)',
-              boxShadow: '0px 4px 14px 0px rgba(0, 0, 0, 0.14)',
-              backdropFilter: 'blur(80px)',
-            }}
-          />
-
-          {/* Mask Group */}
-          <div className="absolute inset-0 w-full h-full opacity-[0.08]">
-            {/* Gradient Overlay */}
-            <div
-              className="absolute inset-0 w-full h-full"
-              style={{
-                background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
-              }}
-            />
-
-            {/* Background Image */}
-            <div
-              className="absolute w-[1623.81px] h-[1195.3px]"
-              style={{
-                backgroundImage: 'url(/image/goal-background-282330.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                transform: 'translate(-510px, -368px)',
-              }}
-            />
-          </div>
-        </div>
-        {/* Header */}
-        <div className="relative z-10 flex flex-col">
-          {/* Header Content */}
-          <div className="flex items-center justify-between px-5 py-4">
-            <div className="w-8" />
-            <div className="flex items-center gap-2.5">
-              <div className="w-6" />
-              <h1 className="heading-1-bold text-label-normal">2025</h1>
-              <ChevronDownIcon className="w-6 h-6 text-label-normal" />
-            </div>
-            <div className="w-8" />
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-5 pt-10">
-          <Swiper
-            modules={[Pagination]}
-            loop={true}
-            spaceBetween={0}
-            slidesPerView={1}
-            allowTouchMove={true}
-            pagination={{
-              clickable: true,
-              bulletClass: 'swiper-pagination-bullet !w-2 !h-2 !bg-[#D9D9D9] !opacity-20 !mx-1',
-              bulletActiveClass: 'swiper-pagination-bullet-active !opacity-100',
-            }}
-            className="w-full max-w-sm"
-          >
-            {mockGoals.map(goal => (
-              <SwiperSlide key={goal.id}>
-                <div className="flex flex-col items-center justify-center h-full w-full">
-                  {/* Planet Card */}
-                  <div className="flex flex-col items-center gap-5 w-full">
-                    {/* Badge and Text */}
-                    <div className="flex flex-col items-center gap-2.5 px-2.5 py-2.5 w-full">
+      <div className="relative mt-20">
+        <Swiper
+          pagination={{
+            clickable: true,
+            bulletClass: 'swiper-pagination-bullet',
+            bulletActiveClass: 'swiper-pagination-bullet-active',
+            el: '.custom-pagination',
+          }}
+          modules={[Navigation, Pagination]}
+        >
+          {mockGoals.map(goal => (
+            <SwiperSlide key={goal.id}>
+              <div className="h-full w-full">
+                <div className="gap-5 w-full">
+                  {/* Header */}
+                  <div className="px-2.5 py-2.5 w-full space-y-3">
+                    <div className="flex w-full justify-center">
                       <Badge
                         type="default"
-                        size="lg"
+                        size="md"
                         label="진행중"
                         color="bg-[rgba(53,217,66,0.4)]"
                         textColor="text-[#3AEE49]"
                       />
-                      <h2 className="heading-2-bold text-label-normal text-center">{goal.name}</h2>
                     </div>
 
-                    {/* Planet Image */}
+                    <h2 className="heading-2-bold text-label-normal text-center">{goal.name}</h2>
+                  </div>
+
+                  {/* Planet Image */}
+                  <div className="flex w-full justify-center">
                     <div
-                      className="relative cursor-pointer hover:scale-105 transition-transform flex items-center justify-center mx-auto"
+                      className="relative cursor-pointer hover:scale-105 transition-transform w-full max-w-[294px] aspect-square"
                       onClick={() => handlePlanetClick(goal)}
                     >
                       <div
-                        className="rounded-full bg-cover bg-center"
+                        className="rounded-full bg-cover bg-center w-full h-full"
                         style={{
                           backgroundImage: 'url(/planet/planet-green.png)',
-                          width: '294.73px',
-                          height: '294.73px',
                         }}
                       />
                     </div>
+                  </div>
 
-                    {/* Date Range */}
-                    <div className="flex items-center justify-center gap-2.5 px-4 py-2.5">
-                      <span className="body-1-medium text-label-neutral">
-                        {goal.duration.startDate}~{goal.duration.endDate}
-                      </span>
-                    </div>
+                  {/* duration date */}
+                  <div className="flex w-full justify-center gap-2.5 px-4 py-2.5">
+                    <span className="body-1-medium text-label-neutral">
+                      {goal.duration.startDate}~{goal.duration.endDate}
+                    </span>
                   </div>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-        {/* Goal Info Modal */}
-        <GoalInfoModal isOpen={isOpen} onClose={closeModal} goal={selectedGoal} status="progress" />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div className="custom-pagination flex justify-center py-4" />
       </div>
+
+      <GoalInfoModal isOpen={isOpen} onClose={closeModal} goal={selectedGoal} status="progress" />
     </>
   );
 }
