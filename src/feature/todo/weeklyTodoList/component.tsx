@@ -146,7 +146,7 @@ const MobileWeeklyTodoItem = ({
       setChecked(newChecked);
       onToggleTodo(dayOfWeek, todo.id);
       // setChecked가 비동기적으로 반영, 따라서 newChecked와 체크 상태를 변경한 나머지 요소들이 isCompleted가 되면 오늘 todo가 완료된 것으로 간주
-      const restTodos = todayTodoList.filter(todo => todo.id !== todo.id);
+      const restTodos = todayTodoList.filter(otherTodo => otherTodo.id !== todo.id);
       const isTodayTodoCompleted = restTodos.every(todo => todo.isCompleted) && newChecked;
       if (isTodayTodoCompleted) {
         setShowTodoCompletedPopup(true);
