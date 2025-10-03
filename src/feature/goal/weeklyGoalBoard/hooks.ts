@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAIGoalRecommendation } from './api';
+import { getAIGoalRecommendation, putWeelyGoalContent } from './api';
 
 interface UseWeeklyGoalRecommendationByAIProps {
   goalId: string;
@@ -18,17 +18,18 @@ export const useWeeklyGoalRecommendationByAI = ({
 
   useEffect(() => {
     if (isRecommendationChecked) {
-      getWeeklyGoalRecommendationByAI(goalId, planId);
+      getAndPutWeeklyGoalRecommendationByAI(goalId, planId);
     }
   }, [isRecommendationChecked]);
 
-  const getWeeklyGoalRecommendationByAI = async (goalId: string, planId: string) => {
+  const getAndPutWeeklyGoalRecommendationByAI = async (goalId: string, planId: string) => {
     setIsLoading(true);
     try {
       const data = await getAIGoalRecommendation(goalId, planId);
       setIsSuccess(true);
       setRecommendedGoal(data);
       setIsGoalRecommendationChecked(true);
+      await updateWeeklyGoalContent(goalId, planId, data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,5 +37,13 @@ export const useWeeklyGoalRecommendationByAI = ({
     }
   };
 
-  return { isLoading, isSuccess, recommendedGoal, isGoalRecommendationChecked, getWeeklyGoalRecommendationByAI };
+  const updateWeeklyGoalContent = async (goalId: string, planId: string, content: string) => {
+    try {
+      await putWeelyGoalContent(goalId, planId, content);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { isLoading, isSuccess, recommendedGoal, isGoalRecommendationChecked, getAndPutWeeklyGoalRecommendationByAI };
 };

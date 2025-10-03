@@ -66,6 +66,7 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
           selectedWeekIndex={selectedWeekIndex}
           selectedPlanContent={selectedPlanContent}
           onSuccessAddPlan={handleRefreshGoal}
+          refetchGoal={refetchGoal}
         />
         <WeeklyTodoList
           goal={goal}
