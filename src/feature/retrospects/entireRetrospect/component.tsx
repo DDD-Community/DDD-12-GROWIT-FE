@@ -14,7 +14,17 @@ interface EntireRetrospectProps {
 
 export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireRetrospectProps) => {
   const { isLoading, isSuccess, postAISummary } = usePostRetrospectAI();
-  const { AISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
+  const { AISummary, setAISummary, getAISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
+
+  const handlePostAISummary = async () => {
+    const postRes = await postAISummary(goalId);
+    if (postRes) {
+      const aiSummary = await getAISummary(postRes.id);
+      if (aiSummary) {
+        setAISummary(aiSummary);
+      }
+    }
+  };
 
   return (
     <Accordion
@@ -53,7 +63,7 @@ export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireR
               <div className="absolute inset-0 flex items-center justify-center pt-16">
                 <AISummaryButton
                   text="AI 분석 시작"
-                  onClick={() => postAISummary(goalId)}
+                  onClick={handlePostAISummary}
                   status={isLoading ? 'loading' : isSuccess ? 'success' : 'idle'}
                 />
               </div>

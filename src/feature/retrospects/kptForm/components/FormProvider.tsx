@@ -10,9 +10,16 @@ interface KPTFormProviderProps {
 }
 
 export const KPTFormProvider = ({ form, onSubmit, children }: KPTFormProviderProps) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // 새로고침 방지
+    if (onSubmit) {
+      form.handleSubmit(onSubmit)(e);
+    }
+  };
+
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined} className="space-y-5">
+      <form onSubmit={handleFormSubmit} className="space-y-5">
         {children}
       </form>
     </FormProvider>
