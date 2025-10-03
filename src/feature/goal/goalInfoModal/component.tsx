@@ -2,21 +2,44 @@
 
 import { CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Badge from '@/shared/components/display/Badge';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
 import { AIMentorNames } from '@/feature/home/const';
-import { GoalInfoModalProps } from './type';
 import FlexBox from '@/shared/components/foundation/FlexBox';
+import { Goal } from '@/shared/type/goal';
+import { DeleteConfirm } from './components/DeleteConfirm';
 
-export function GoalInfoModal({ isOpen, onClose, goal, status = 'progress' }: GoalInfoModalProps) {
+interface GoalInfoModalProps extends GoalInfoModalActions {
+  isOpen: boolean;
+  onClose: () => void;
+  goal?: Goal;
+  status?: 'progress' | 'completed' | 'pending';
+}
+
+interface GoalInfoModalActions {
+  onDelete: (goalId: string) => void;
+}
+
+export function GoalInfoModal({ isOpen, onClose, onDelete, goal, status = 'progress' }: GoalInfoModalProps) {
   const router = useRouter();
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   if (!goal) return null;
 
   const handleEditClick = () => {
     router.push(`/goal/${goal.id}`);
     onClose();
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete(goal.id);
+    setIsDeleteConfirmOpen(false);
   };
 
   const getStatusBadge = () => {
@@ -94,19 +117,33 @@ export function GoalInfoModal({ isOpen, onClose, goal, status = 'progress' }: Go
         size="ml"
         className="flex-1 bg-[rgba(46,47,51,0.88)] border border-[rgba(112,115,124,0.32)] text-[#FF6363] hover:bg-fill-strong"
         text="삭제"
+        onClick={handleDeleteClick}
       />
       <Button variant="primary" size="ml" className="flex-1" text="수정" onClick={handleEditClick} />
     </div>
   );
 
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      title="목표 정보"
-      renderContent={renderContent}
-      renderFooter={renderFooter}
-      className="w-[335px]"
-    />
+    <>
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        title="목표 정보"
+        renderContent={renderContent}
+        renderFooter={renderFooter}
+        className="w-[335px]"
+      />
+      {isOpen && isDeleteConfirmOpen && (
+        <DeleteConfirm
+          isOpen={true}
+          onClose={() => {
+            onClose();
+            setIsDeleteConfirmOpen(false);
+          }}
+          onConfirm={handleDeleteConfirm}
+          goalName={goal.name}
+        />
+      )}
+    </>
   );
 }

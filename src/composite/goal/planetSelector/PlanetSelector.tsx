@@ -5,18 +5,13 @@ import { GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
 import { Goal } from '@/shared/type/goal';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
+import { useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { useGoalSelector } from '@/model/goal/context';
-import { useMemo } from 'react';
 
 export function PlanetSelector() {
-  const { goalList } = useGoalSelector();
+  const { goalList, deleteGoal } = useGoalSelector();
   const { isOpen, selectedGoal, openModal, closeModal } = useGoalInfoModal();
-  const reversedGoalList = [...goalList].reverse();
-  const initSliceIndex = useMemo(() => goalList.length - 1, [goalList]);
-
-  console.log(initSliceIndex);
 
   const handlePlanetClick = (goal: Goal) => {
     openModal(goal);
@@ -83,7 +78,7 @@ export function PlanetSelector() {
         <div className="custom-pagination flex justify-center py-4" style={{ flexDirection: 'row-reverse' }} />
       </div>
 
-      <GoalInfoModal isOpen={isOpen} onClose={closeModal} goal={selectedGoal} status="progress" />
+      <GoalInfoModal isOpen={isOpen} onClose={closeModal} onDelete={deleteGoal} goal={selectedGoal} status="progress" />
     </>
   );
 }
