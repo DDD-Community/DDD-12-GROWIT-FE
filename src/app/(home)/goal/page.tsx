@@ -1,5 +1,7 @@
-import { ChevronDownIcon } from 'lucide-react';
+'use client';
+
 import { PlanetSelector } from '@/composite/goal/planetSelector';
+import { GoalProvider } from '@/model/goal/context';
 
 export default function GoalPageRoute() {
   return (
@@ -39,19 +41,21 @@ export default function GoalPageRoute() {
       </div>
 
       {/* Header */}
+      {/* TODO: 이후에 연도선택 기능 추가할 것 */}
       <div className="relative z-10 flex flex-col">
         <div className="flex items-center justify-between px-5 py-4">
           <div className="w-8" />
           <div className="flex items-center gap-2.5">
-            <div className="w-6" />
             <h1 className="heading-1-bold text-label-normal">2025</h1>
-            <ChevronDownIcon className="w-6 h-6 text-label-normal" />
+            {/* <ChevronDownIcon className="w-6 h-6 text-label-normal" /> */}
           </div>
           <div className="w-8" />
         </div>
       </div>
 
-      <PlanetSelector />
+      <GoalProvider goalListOption={{ year: 2025 }}>
+        <PlanetSelector />
+      </GoalProvider>
     </div>
   );
 }

@@ -2,7 +2,8 @@
 
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
-import { GOAL_CATEGORIES, GoalCategoryEnum } from '@/shared/constants/goalCategory';
+import { GoalCategoryEnum } from '@/shared/type/goal';
+import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';

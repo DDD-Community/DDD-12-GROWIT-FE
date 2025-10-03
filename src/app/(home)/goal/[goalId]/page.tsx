@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { CreateGoalFormElement } from '@/feature/goal/createGoalFormElement/component';
 import { GoalFormData } from '@/shared/type/form';
-import { GoalCategoryEnum } from '@/shared/constants/goalCategory';
+import { GoalCategoryEnum } from '@/shared/type/goal';
 import Button from '@/shared/components/input/Button';
 import { InputField } from '@/shared/components/input/InputField';
 import DatePicker from '@/shared/components/input/DatePicker';
