@@ -12,7 +12,7 @@ export const GrorongImage: Record<Mood, Record<string, string>> = {
   HAPPY: {
     '오다 주웠다': '/home/intimacy-high-love.png',
     '너는 뭐든 잘해낼거야': '/home/intimacy-high-cute.png',
-    '역시 넌 나를 실망시키지 않아': '/home/counting-star.png',
+    '역시 넌 나를 실망시키지 않아': '/home/intimacy-high-cute.png',
   },
   NORMAL: {
     '꾸준한 나와주는 네 마음이야': '/home/intimacy-normal-heart.png',
@@ -35,7 +35,7 @@ export const AIMentorImage: Record<AIMentor, string> = {
 export const AIMentorModalCharacter: Record<AIMentor, string> = {
   TIM_COOK: '/home/timcook-modal-character.png',
   WARREN_BUFFETT: '/home/warrenbuffett-modal-character.png',
-  CONFUCIUS: '/home/confucius-modal-character.png',
+  CONFUCIUS: '/home/confucius-modal-charcter.png',
 };
 
 export const AIMentorModalBackground: Record<AIMentor, string> = {

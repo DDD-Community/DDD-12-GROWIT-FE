@@ -12,31 +12,44 @@ interface WeeklyGoalBoardProps {
   selectedWeekIndex: number;
   selectedPlanContent: string;
   onSuccessAddPlan: () => void;
+  refetchGoal: () => void;
 }
-export const WeeklyGoalBoard = ({ goalId, planId, selectedWeekIndex, selectedPlanContent }: WeeklyGoalBoardProps) => {
+export const WeeklyGoalBoard = ({
+  goalId,
+  planId,
+  selectedWeekIndex,
+  selectedPlanContent,
+  refetchGoal,
+}: WeeklyGoalBoardProps) => {
   const { currentGoal } = useGoalSelector();
   const { aiMentorAdvice } = useAIMentorAdvice();
   const aiMentor = currentGoal?.mentor;
-  const { recommendedGoal, getWeeklyGoalRecommendationByAI, isGoalRecommendationChecked } =
-    useWeeklyGoalRecommendationByAI({
-      goalId,
-      planId,
-      isRecommendationChecked: aiMentorAdvice?.isChecked || false,
-    });
+  const { getAndPutWeeklyGoalRecommendationByAI } = useWeeklyGoalRecommendationByAI({
+    goalId,
+    planId,
+    isRecommendationChecked: aiMentorAdvice?.isChecked || false,
+  });
+
+  const isPlanContentExist = selectedPlanContent !== '' && selectedPlanContent !== undefined;
 
   // 이번주 AI 목표 추천을 확인하지 않았을 경우
-  if (!isGoalRecommendationChecked && aiMentor) {
+  if (aiMentor && !isPlanContentExist) {
     return (
       <GoalRecommendationRequest
         aiMentor={aiMentor}
         planId={planId}
         goalId={goalId}
-        getWeeklyGoalRecommendationByAI={getWeeklyGoalRecommendationByAI}
+        getAndPutWeeklyGoalRecommendationByAI={getAndPutWeeklyGoalRecommendationByAI}
+        refetchGoal={refetchGoal}
       />
     );
-  } else if (isGoalRecommendationChecked && aiMentor) {
+  } else if (aiMentor && isPlanContentExist) {
     return (
-      <AIRecommendation aiMentor={aiMentor} recommendedGoal={recommendedGoal} selectedWeekIndex={selectedWeekIndex} />
+      <AIRecommendation
+        aiMentor={aiMentor}
+        selectedWeekIndex={selectedWeekIndex}
+        selectedPlanContent={selectedPlanContent}
+      />
     );
   } else {
     return <></>;

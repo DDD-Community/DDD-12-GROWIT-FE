@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 type ToolTipPosition =
   | 'top-left'
   | 'top-center'
@@ -11,6 +13,8 @@ interface ToolTipProps {
   text: string;
   className?: string;
   position?: ToolTipPosition;
+  autoHide?: boolean;
+  autoHideDelay?: number; // 밀리초 단위
 }
 
 const getPositionClasses = (position: ToolTipPosition) => {
@@ -55,9 +59,31 @@ const getTailPositionClasses = (position: ToolTipPosition) => {
   }
 };
 
-export const ToolTip = ({ text, className = '', position = 'bottom-center' }: ToolTipProps) => {
+export const ToolTip = ({
+  text,
+  className = '',
+  position = 'bottom-center',
+  autoHide = false,
+  autoHideDelay = 2500,
+}: ToolTipProps) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    if (autoHide) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, autoHideDelay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [autoHide, autoHideDelay]);
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <div className={`absolute ${getPositionClasses(position)} ${className}`}>
+    <div className={`absolute z-10 ${getPositionClasses(position)} ${className}`}>
       <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
         {text}
         {/* 꼬리 */}

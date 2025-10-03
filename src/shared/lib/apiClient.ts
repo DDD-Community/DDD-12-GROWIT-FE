@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { tokenController } from '@/shared/lib/token';
 import { AuthToken } from '@/shared/type/authToken';
+import { ROUTES } from '../constants/routes';
 
 interface TokenResponse {
   data: AuthToken;
@@ -9,7 +10,7 @@ interface TokenResponse {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 5000,
+  timeout: 20000,
 });
 
 // Request interceptor
@@ -35,7 +36,13 @@ axiosInstance.interceptors.response.use(
     // 403 errors (unauthorized access)
     if (error.response?.status === 403) {
       tokenController.clearTokens();
-      window.location.href = '/login';
+      window.location.href = ROUTES.LOGIN;
+      return Promise.reject(error);
+    }
+
+    // 499 errors (프로모션 코드 입력 - 기간제)
+    if (error.response?.status === 499) {
+      window.location.href = ROUTES.PROMOTION;
       return Promise.reject(error);
     }
 

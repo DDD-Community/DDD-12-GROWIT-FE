@@ -31,15 +31,15 @@ export const EditProfile = () => {
   };
 
   return (
-    <>
-      <div className="flex flex-col md:flex-row md:items-center w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
+    <section className="px-5">
+      <div className="flex flex-col w-full bg-fill-alternative text-label-normal rounded-xl p-4 gap-4 justify-between">
         <FlexBox className="gap-4">
           <Image
             src={'/avatar.png'}
             alt={'my-avatar'}
             width={64}
             height={64}
-            className="border-[2px] w-[64px] h-[64px] md:w-[100px] md:h-[100px] border-line-normal rounded-[200px]"
+            className="border-[2px] w-[64px] h-[64px] border-line-normal rounded-[200px]"
           />
           <div className="flex flex-col gap-2">
             <h2 className="heading-2-bold">{profile.userName}</h2>
@@ -50,7 +50,7 @@ export const EditProfile = () => {
           </div>
         </FlexBox>
 
-        <div className="w-full md:max-w-[150px]">
+        <div className="w-full">
           <Button
             size="ml"
             variant="secondary"
@@ -83,7 +83,7 @@ export const EditProfile = () => {
           title="프로필 수정"
           renderContent={() => (
             <>
-              <div className="flex flex-col gap-2 min-w-[297px] md:min-w-[430px]">
+              <div className="flex flex-col gap-2 min-w-[297px]">
                 <label htmlFor="select-job" className="label-1-normal text-label-normal">
                   직무
                 </label>
@@ -95,7 +95,7 @@ export const EditProfile = () => {
                   placeholder={'직무를 선택해주세요'}
                 />
               </div>
-              <div className="flex flex-col w-full gap-2 min-w-[297px] md:min-w-[430px]">
+              <div className="flex flex-col w-full gap-2 min-w-[297px]">
                 <label htmlFor="select-careerYear" className="label-1-normal text-label-normal">
                   연차
                 </label>
@@ -117,11 +117,19 @@ export const EditProfile = () => {
           )}
         />
       </div>
-      <p className="text-label-normal text-2xl font-bold">가입 정보</p>
-      <FlexBox className="gap-2 mb-4">
-        <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />
-        <p className="body-1-normal text-label-alternative">{profile.email}</p>
-      </FlexBox>
-    </>
+      <div className="flex flex-col gap-3 mt-6">
+        <p className="text-label-normal headline-1-bold font-bold">가입 정보</p>
+        <FlexBox className="gap-2 mb-4">
+          <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />
+          <p className="body-1-normal text-label-alternative">{profile.email}</p>
+        </FlexBox>
+
+        <p className="text-label-normal headline-1-bold font-bold">문의하기</p>
+        <FlexBox className="gap-2 mb-4">
+          <Image src={'/mail.svg'} alt="user-email" width={20} height={20} className="w-auto h-auto" />
+          <p className="body-1-normal text-label-alternative">starofleee@gmail.com</p>
+        </FlexBox>
+      </div>
+    </section>
   );
 };
