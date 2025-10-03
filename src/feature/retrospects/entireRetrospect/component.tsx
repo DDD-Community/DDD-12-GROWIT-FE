@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useEffect } from 'react';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
 import { AISummaryBox } from './components/AISummaryBox';
@@ -15,14 +14,17 @@ interface EntireRetrospectProps {
 
 export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireRetrospectProps) => {
   const { isLoading, isSuccess, postAISummary } = usePostRetrospectAI();
-  const { AISummary, refetch } = useGetRetrospectAI(goalRetrospect?.id || '');
+  const { AISummary, setAISummary, getAISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
 
-  // 성공했을 때 데이터 새로고침
-  useEffect(() => {
-    if (isSuccess && refetch) {
-      refetch();
+  const handlePostAISummary = async () => {
+    const postRes = await postAISummary(goalId);
+    if (postRes) {
+      const aiSummary = await getAISummary(postRes.id);
+      if (aiSummary) {
+        setAISummary(aiSummary);
+      }
     }
-  }, [isSuccess, refetch]);
+  };
 
   return (
     <Accordion
@@ -61,7 +63,7 @@ export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireR
               <div className="absolute inset-0 flex items-center justify-center pt-16">
                 <AISummaryButton
                   text="AI 분석 시작"
-                  onClick={() => postAISummary(goalId)}
+                  onClick={handlePostAISummary}
                   status={isLoading ? 'loading' : isSuccess ? 'success' : 'idle'}
                 />
               </div>

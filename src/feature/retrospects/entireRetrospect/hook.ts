@@ -63,14 +63,5 @@ export const useGetRetrospectAI = (goalRetrospectId: string) => {
     }
   };
 
-  const refetch = async () => {
-    if (goalRetrospectId.length) {
-      const response = await getAISummary(goalRetrospectId);
-      if (response) {
-        setAISummary(response);
-      }
-    }
-  };
-
-  return { isLoading, AISummary, refetch };
+  return { isLoading, AISummary, setAISummary, getAISummary };
 };
