@@ -53,7 +53,7 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
       <div className="flex flex-col w-full rounded-2xl bg-elevated-assistive p-5 gap-5 relative overflow-hidden border border-[#23262F]">
         <div className="flex flex-col gap-1 relative z-[2]">
           <div className="text-white text-lg font-semibold">{goal.name}</div>
-          <span className="rounded-full bg-[#2A2B31] opacity-60 text-white text-xs">{durationLabel}</span>
+          <span className="rounded-full opacity-60 text-white text-xs">{durationLabel}</span>
         </div>
 
         {/* 진행률 바 */}
