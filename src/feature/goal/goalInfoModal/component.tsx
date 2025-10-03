@@ -15,14 +15,13 @@ interface GoalInfoModalProps extends GoalInfoModalActions {
   isOpen: boolean;
   onClose: () => void;
   goal?: Goal;
-  status?: 'progress' | 'completed' | 'pending';
 }
 
 interface GoalInfoModalActions {
   onDelete: (goalId: string) => void;
 }
 
-export function GoalInfoModal({ isOpen, onClose, onDelete, goal, status = 'progress' }: GoalInfoModalProps) {
+export function GoalInfoModal({ isOpen, onClose, onDelete, goal }: GoalInfoModalProps) {
   const router = useRouter();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
@@ -43,33 +42,26 @@ export function GoalInfoModal({ isOpen, onClose, onDelete, goal, status = 'progr
   };
 
   const getStatusBadge = () => {
-    switch (status) {
-      case 'progress':
-        return (
-          <Badge type="default" size="md" label="진행중" color="bg-[rgba(53,217,66,0.4)]" textColor="text-[#3AEE49]" />
-        );
-      case 'completed':
-        return (
-          <Badge
-            type="default"
-            size="md"
-            label="완료"
-            color="bg-[rgba(112,115,124,0.22)]"
-            textColor="text-[rgba(194,196,200,0.88)]"
-          />
-        );
-      case 'pending':
-        return (
-          <Badge
-            type="default"
-            size="md"
-            label="대기"
-            color="bg-[rgba(112,115,124,0.22)]"
-            textColor="text-[rgba(194,196,200,0.88)]"
-          />
-        );
-      default:
-        return null;
+    // goal의 duration.endDate를 기준으로 상태 계산
+    const today = new Date();
+    const endDate = new Date(goal.duration.endDate);
+    const isCompleted = today > endDate;
+
+    if (isCompleted) {
+      return (
+        <Badge
+          type="default"
+          size="md"
+          label="종료"
+          color="bg-[rgba(112,115,124,0.22)]"
+          textColor="text-[rgba(194,196,200,0.88)]"
+          className="px-3 py-1 rounded-2xl"
+        />
+      );
+    } else {
+      return (
+        <Badge type="default" size="md" label="진행중" color="bg-[rgba(53,217,66,0.4)]" textColor="text-[#3AEE49]" />
+      );
     }
   };
 
