@@ -35,7 +35,7 @@ export const AIMentorImage: Record<AIMentor, string> = {
 export const AIMentorModalCharacter: Record<AIMentor, string> = {
   TIM_COOK: '/home/timcook-modal-character.png',
   WARREN_BUFFETT: '/home/warrenbuffett-modal-character.png',
-  CONFUCIUS: '/home/confucius-modal-character.png',
+  CONFUCIUS: '/home/confucius-modal-charcter.png',
 };
 
 export const AIMentorModalBackground: Record<AIMentor, string> = {
