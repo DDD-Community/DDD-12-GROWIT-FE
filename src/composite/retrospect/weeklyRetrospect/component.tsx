@@ -7,6 +7,7 @@ import {
   useFetchEditRetrospect,
   useFetchAddRetrospect,
 } from '@/feature/retrospects/addRetroSpect/hooks';
+import { useRouter } from 'next/navigation';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { KptForm, KPTFormData, useKPTForm } from '@/feature/retrospects/kptForm';
 import Button from '@/shared/components/input/Button';
@@ -19,6 +20,7 @@ interface WeeklyRetrospectPageProps {
 }
 
 export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }: WeeklyRetrospectPageProps) => {
+  const router = useRouter();
   const { showToast } = useToast();
   const isNewRetrospect = retrospectId === 'new';
 
@@ -39,8 +41,9 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
 
   const { addRetrospect, isLoading: isAdding } = useFetchAddRetrospect({
     onSuccess: data => {
+      router.push(`/retrospect/${data.id}`);
       showToast('회고가 성공적으로 작성되었습니다.', 'success');
-      window.location.href = `/retrospect/${data.id}`;
+      //window.location.href = `/retrospect/${data.id}`;
     },
     onError: () => {
       showToast('회고 작성에 실패했습니다.', 'error');
@@ -123,7 +126,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
           <KptForm.ProblemField />
           <KptForm.TryField />
           <div className="h-[100px]" />
-          <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 sm:hidden bg-[#1B1C1E]">
+          <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 max-w-md mx-auto bg-[#1B1C1E]">
             <Button
               variant="primary"
               size="xl"

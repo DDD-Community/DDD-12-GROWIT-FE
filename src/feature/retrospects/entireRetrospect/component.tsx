@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useEffect } from 'react';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
 import { AISummaryBox } from './components/AISummaryBox';
@@ -14,7 +15,14 @@ interface EntireRetrospectProps {
 
 export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireRetrospectProps) => {
   const { isLoading, isSuccess, postAISummary } = usePostRetrospectAI();
-  const { AISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
+  const { AISummary, refetch } = useGetRetrospectAI(goalRetrospect?.id || '');
+
+  // 성공했을 때 데이터 새로고침
+  useEffect(() => {
+    if (isSuccess && refetch) {
+      refetch();
+    }
+  }, [isSuccess, refetch]);
 
   return (
     <Accordion

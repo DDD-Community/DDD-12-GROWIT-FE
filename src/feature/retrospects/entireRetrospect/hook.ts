@@ -10,17 +10,21 @@ export const usePostRetrospectAI = () => {
 
   const postAISummary = async (goalId: string) => {
     setIsLoading(true);
+    setIsSuccess(false); // 성공 상태 초기화
+
     try {
       const res = await postCompletedGoalRetrospect(goalId);
       setIsSuccess(true);
       const data = res.data;
       return data;
     } catch (error) {
+      setIsSuccess(false);
       if (error instanceof Error) {
         showToast(error.message, 'error');
       }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return { isLoading, isSuccess, postAISummary };
@@ -33,13 +37,15 @@ export const useGetRetrospectAI = (goalRetrospectId: string) => {
 
   useEffect(() => {
     const initData = async () => {
-      const response = await getAISummary(goalRetrospectId);
-      if (response) {
-        setAISummary(response);
+      if (goalRetrospectId.length) {
+        const response = await getAISummary(goalRetrospectId);
+        if (response) {
+          setAISummary(response);
+        }
       }
     };
     initData();
-  }, []);
+  }, [goalRetrospectId]);
 
   const getAISummary = async (goalRetrospectId: string) => {
     setIsLoading(true);
@@ -57,5 +63,14 @@ export const useGetRetrospectAI = (goalRetrospectId: string) => {
     }
   };
 
-  return { isLoading, AISummary };
+  const refetch = async () => {
+    if (goalRetrospectId.length) {
+      const response = await getAISummary(goalRetrospectId);
+      if (response) {
+        setAISummary(response);
+      }
+    }
+  };
+
+  return { isLoading, AISummary, refetch };
 };
