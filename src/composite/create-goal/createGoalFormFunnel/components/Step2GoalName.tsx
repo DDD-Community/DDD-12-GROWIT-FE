@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { CreateGoalFormElement } from '@/feature/goal';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
-import { GoalCategoryEnum } from '@/shared/constants/goalCategory';
+import { GoalCategoryEnum } from '@/shared/type/goal';
 import { GuideMessage } from './GuideMessage';
 import Button from '@/shared/components/input/Button';
 

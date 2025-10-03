@@ -4,7 +4,8 @@ import { useFormContext } from 'react-hook-form';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import Button from '@/shared/components/input/Button';
 import { GoalFormData } from '@/shared/type/form';
-import { GOAL_CATEGORIES, GoalCategoryEnum } from '@/shared/constants/goalCategory';
+import { GoalCategoryEnum } from '@/shared/type/goal';
+import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
 
 interface Step1GoalCategoryProps {
@@ -37,7 +38,7 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
             <Button
               key={category.id}
               size="xl"
-              text={category.label} 
+              text={category.label}
               variant={selectedCategory === category.id ? 'select' : 'secondary'}
               onClick={e => handleCategorySelect(e, category.id)}
             />

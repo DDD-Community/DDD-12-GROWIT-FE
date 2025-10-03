@@ -8,7 +8,7 @@ interface FlexBoxProps extends HTMLAttributes<HTMLDivElement> {
 
 const FlexBox = ({ className, direction = 'row', children, ...props }: FlexBoxProps) => {
   return (
-    <div className={`flex ${direction === 'col' ? 'flex-col' : 'flex-row'} items-center ${className}`} {...props}>
+    <div className={`flex ${direction === 'col' ? 'flex-col' : 'flex-row'} ${className}`} {...props}>
       {children}
     </div>
   );

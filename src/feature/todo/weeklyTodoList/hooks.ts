@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { patchTodoStatus, postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { AxiosError } from 'axios';
+import { Goal } from '@/shared/type/goal';
 
 export function usePatchTodoStatus() {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,26 +55,11 @@ interface ExtendedPlan {
   weekOfMonth?: number;
 }
 
-// 확장된 Goal 타입
-interface ExtendedGoal {
-  id: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  beforeAfter: {
-    asIs: string;
-    toBe: string;
-  };
-  plans: ExtendedPlan[];
-}
-
 export function useAddTodoForm(
-  goal: ExtendedGoal,
+  goal: Goal,
   selectedPlanId: string,
   selectedDate: Date | null,
-  onWeekChange?: (weekOfMonth: number) => void,
+  onWeekChange?: (weekOfMonth: number) => void
 ) {
   const [date, setDate] = useState<Date | undefined>(selectedDate || undefined);
   const [content, setContent] = useState('');

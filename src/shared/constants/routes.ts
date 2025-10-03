@@ -5,6 +5,8 @@ import {
   HomeIconInActive,
   RetrospectIconInactive,
   ProfileIconInactive,
+  GoalIcon,
+  GoalIconInactive,
 } from './icons';
 import { ComponentType } from 'react';
 
@@ -15,6 +17,7 @@ export const ROUTES = {
   MYPAGE: '/mypage',
   CREATE_GOAL: '/home/create-goal',
   ONBOARDING: '/onboarding',
+  GOAL: '/goal',
   LOGIN: '/login',
   SIGNUP: '/signup',
 } as const;
@@ -77,6 +80,13 @@ export const NAVIGATION_ROUTES_MOBILE: NavigationRouteMobile[] = [
     inActiveIcon: RetrospectIconInactive,
     alt: 'Retrospect',
     title: '회고',
+  },
+  {
+    path: ROUTES.GOAL,
+    activeIcon: GoalIcon,
+    inActiveIcon: GoalIconInactive,
+    alt: 'My Profile',
+    title: '마이',
   },
   {
     path: ROUTES.MYPAGE,

@@ -74,3 +74,23 @@ export const ProfileIconInactive = (props: IconProps) => (
     className={props.className || ''}
   />
 );
+
+export const GoalIcon = (props: IconProps) => (
+  <Image
+    src="/icon/navigation-planet.svg"
+    alt="마이페이지"
+    width={props.width || 22}
+    height={props.height || 22}
+    className={`brightness-0 invert ${props.className || ''}`}
+  />
+);
+
+export const GoalIconInactive = (props: IconProps) => (
+  <Image
+    src="/icon/navigation-planet.svg"
+    alt="마이페이지"
+    width={props.width || 22}
+    height={props.height || 22}
+    className={props.className || ''}
+  />
+);

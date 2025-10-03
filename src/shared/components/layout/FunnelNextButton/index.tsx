@@ -6,13 +6,15 @@ type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'brand';
 
 interface FunnelNextButtonProps {
   text?: string;
+  type?: 'button' | 'submit';
   disabled?: boolean;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   variant?: ButtonVariant;
 }
 
 export const FunnelNextButton = ({
   text = '다음',
+  type = 'button',
   disabled = false,
   onClick,
   variant = 'primary',
@@ -30,7 +32,7 @@ export const FunnelNextButton = ({
       <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 sm:hidden">
         <Button
           size="lg"
-          type="button"
+          type={type}
           text={text}
           variant={variant}
           disabled={disabled}

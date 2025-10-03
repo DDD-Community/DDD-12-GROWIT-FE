@@ -1,6 +1,6 @@
 'use client';
 
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, useState, useEffect } from 'react';
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -10,13 +10,29 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function InputField({ label, isError, errorMessage, description, ...props }: InputFieldProps) {
+  const [charCount, setCharCount] = useState(0);
+
+  useEffect(() => {
+    if (props.value) {
+      setCharCount(String(props.value).length);
+    }
+  }, [props.value]);
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCharCount(e.target.value.length);
+    if (props.onInput) {
+      props.onInput(e);
+    }
+  };
+
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-300">{label}</label>
-      <div className="relative">
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
+      <div className="relative mb-1">
         <input
           maxLength={props.maxLength}
           {...props}
+          onInput={handleInput}
           className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border border-label-assistive placeholder-gray-500 focus:ring-2 ${
             isError || errorMessage ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
           }`}
@@ -40,8 +56,17 @@ export function InputField({ label, isError, errorMessage, description, ...props
             </div>
           ))}
       </div>
-      {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}{' '}
-      {description && <p className="text-xs text-white">{description}</p>}
+      <div className="flex justify-between items-center">
+        {errorMessage && <p className="text-xs text-red-500">{errorMessage}</p>}
+        {description && <p className="text-xs text-white">{description}</p>}
+        {props.maxLength && (
+          <div className="ml-auto">
+            <span className="text-xs text-[rgba(174,176,182,0.61)]">
+              ({charCount}/{props.maxLength})
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -3,35 +3,39 @@ import { useCallback, useEffect, useState, createContext, useContext, ReactNode,
 import { Goal } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { getGoalList, getCurrentProgressGoal } from './api';
+import { getGoalList, deleteGoal, putEditGoal, GetGoalListOption, getGoalItem, GetGoalOption } from './api';
 
 interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
   currentGoal: Goal | null;
   currentPlans: Goal['plans'];
-  refetchGoalList: (shouldThrow?: boolean) => Promise<void>;
-  refetchCurrentGoal: (shouldThrow?: boolean) => Promise<void>;
+  refetchGoalList: (goalListOption?: GetGoalListOption, shouldThrow?: boolean) => Promise<void>;
+  refetchCurrentGoal: (option?: GetGoalOption, shouldThrow?: boolean) => Promise<void>;
+  deleteGoal: (goalId: string) => Promise<void>;
+  updateGoal: (goal: Goal) => Promise<void>;
 }
 
 const GoalContext = createContext<GoalContextType | null>(null);
 
 interface GoalProviderProps {
   children: ReactNode;
+  goalListOption?: GetGoalListOption;
+  goalItemOption?: GetGoalOption;
 }
 
-export function GoalProvider({ children }: GoalProviderProps) {
+export function GoalProvider({ children, goalListOption, goalItemOption }: GoalProviderProps) {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
   const [currentGoal, setCurrentGoal] = useState<Goal | null>(null);
 
   const fetchGoalList = useCallback(
-    async (shouldThrow = false) => {
+    async (option = goalListOption, shouldThrow = false) => {
       try {
         setLoading(true);
 
-        const goals = await getGoalList();
+        const goals = await getGoalList(option);
         setGoalList(goals);
 
         setLoading(false);
@@ -55,20 +59,15 @@ export function GoalProvider({ children }: GoalProviderProps) {
         }
       }
     },
-    []
+    [goalListOption]
   );
 
-  const fetchCurrentGoal = useCallback(async (shouldThrow = false) => {
+  const fetchCurrentGoal = useCallback(async (option = goalItemOption, shouldThrow = false) => {
     try {
       setLoading(true);
 
-      const goals = await getCurrentProgressGoal();
-      if (goals && goals.length > 0) {
-        setCurrentGoal(goals[0]);
-      } else {
-        setCurrentGoal(null);
-      }
-
+      const goals = await getGoalItem(option);
+      setCurrentGoal(goals);
       setLoading(false);
     } catch (err) {
       const axiosError = err as AxiosError<CommonError>;
@@ -91,6 +90,48 @@ export function GoalProvider({ children }: GoalProviderProps) {
     }
   }, []);
 
+  const fetchDeleteGoal = useCallback(async (goalId: string) => {
+    try {
+      setLoading(true);
+
+      await deleteGoal(goalId);
+      await fetchGoalList();
+
+      setLoading(false);
+    } catch (err) {
+      const axiosError = err as AxiosError<CommonError>;
+      let errorMessage = '목표를 삭제하는데 실패했습니다.';
+
+      if (axiosError.isAxiosError && axiosError.response?.data.message) {
+        errorMessage = axiosError.response.data.message;
+      }
+
+      setLoading(false);
+      showToast(errorMessage);
+    }
+  }, []);
+
+  const updateGoal = useCallback(async (goal: Goal) => {
+    try {
+      setLoading(true);
+
+      await putEditGoal(goal);
+      await fetchGoalList();
+
+      setLoading(false);
+    } catch (err) {
+      const axiosError = err as AxiosError<CommonError>;
+      let errorMessage = '목표를 수정하는데 실패했습니다.';
+
+      if (axiosError.isAxiosError && axiosError.response?.data.message) {
+        errorMessage = axiosError.response.data.message;
+      }
+
+      setLoading(false);
+      showToast(errorMessage);
+    }
+  }, []);
+
   useEffect(() => {
     fetchGoalList();
     fetchCurrentGoal();
@@ -105,6 +146,8 @@ export function GoalProvider({ children }: GoalProviderProps) {
     currentPlans,
     refetchGoalList: fetchGoalList,
     refetchCurrentGoal: fetchCurrentGoal,
+    deleteGoal: fetchDeleteGoal,
+    updateGoal,
   };
 
   return createElement(GoalContext.Provider, { value }, children);
