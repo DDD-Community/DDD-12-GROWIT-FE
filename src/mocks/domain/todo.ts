@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { Goal } from '@/shared/type/goal';
+import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
 
 // CORS preflight 요청 처리
 export const optionsHandler = http.options('*', () => {
@@ -24,10 +24,8 @@ export const mockGoals: Goal[] = [
       startDate: '2024-01-01',
       endDate: '2024-03-31',
     },
-    beforeAfter: {
-      asIs: 'React 기초 지식만 있음',
-      toBe: 'React 전문가가 되어 프로젝트를 주도할 수 있음',
-    },
+    toBe: 'React 전문가가 되어 프로젝트를 주도할 수 있음',
+    category: GoalCategoryEnum.STUDY,
     plans: [
       {
         id: 'plan-1',
@@ -49,10 +47,8 @@ export const mockGoals: Goal[] = [
       startDate: '2024-01-15',
       endDate: '2024-02-28',
     },
-    beforeAfter: {
-      asIs: '개별적으로 디자인된 컴포넌트들',
-      toBe: '일관성 있는 디자인 시스템',
-    },
+    toBe: '일관성 있는 디자인 시스템',
+    category: GoalCategoryEnum.FINANCE,
     plans: [
       {
         id: 'plan-3',
@@ -74,10 +70,8 @@ export const mockGoals: Goal[] = [
       startDate: '2024-01-01',
       endDate: '2024-04-30',
     },
-    beforeAfter: {
-      asIs: '개발자로서의 역할만 수행',
-      toBe: '프로젝트를 기획하고 관리할 수 있는 역량',
-    },
+    toBe: '프로젝트를 기획하고 관리할 수 있는 역량',
+    category: GoalCategoryEnum.STUDY,
     plans: [
       {
         id: 'plan-5',

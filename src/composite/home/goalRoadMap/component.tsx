@@ -7,6 +7,9 @@ import { GetRoadMap } from '@/feature/goal/getRoadMap/component';
 import { useGoalSelector } from '@/model/goal/context';
 import { EarthIcon, MoveIcon } from './icons';
 
+/**
+ * @deprecated - 로드맵 기능은 hold
+ */
 const GoalRoadMapDesktop = () => {
   const { currentGoal } = useGoalSelector();
 
@@ -14,7 +17,7 @@ const GoalRoadMapDesktop = () => {
     return null;
   }
 
-  const { beforeAfter, plans } = currentGoal;
+  const { toBe, plans } = currentGoal;
 
   return (
     <aside className="hidden md:block w-full p-6">
@@ -23,12 +26,15 @@ const GoalRoadMapDesktop = () => {
           <EarthIcon />
           로드맵
         </h2>
-        {beforeAfter && <GetRoadMap beforeAfter={beforeAfter} plans={plans} />}
+        {toBe && <GetRoadMap beforeAfter={toBe as any} plans={plans} />}
       </article>
     </aside>
   );
 };
 
+/**
+ * @deprecated - 로드맵 기능은 hold
+ */
 const GoalRoadMapMobile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { currentGoal } = useGoalSelector();
@@ -37,7 +43,7 @@ const GoalRoadMapMobile = () => {
     return null;
   }
 
-  const { beforeAfter, plans } = currentGoal;
+  const { toBe, plans } = currentGoal;
 
   return (
     <>
@@ -51,7 +57,7 @@ const GoalRoadMapMobile = () => {
         </span>
         <MoveIcon />
       </button>
-      {isOpen && plans.length && beforeAfter && (
+      {isOpen && plans.length && toBe && (
         <div className="fixed inset-0 bg-black/50 z-120 md:hidden">
           <div className="fixed inset-0 z-130 flex flex-col items-center justify-center gap-2 md:relative md:z-auto">
             <FlexBox className="w-[335px] justify-end">
@@ -74,7 +80,7 @@ const GoalRoadMapMobile = () => {
                 }
               />
             </FlexBox>
-            <GetRoadMap beforeAfter={beforeAfter} plans={plans} />
+            <GetRoadMap beforeAfter={toBe as any} plans={plans} />
           </div>
         </div>
       )}
