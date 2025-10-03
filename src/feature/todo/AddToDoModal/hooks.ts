@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { Axios, AxiosError } from 'axios';
+import { Goal } from '@/shared/type/goal';
 
 export function useFetchAddTodo() {
   const [loading, setLoading] = useState(false);
@@ -28,30 +29,8 @@ export function useFetchAddTodo() {
   return { addTodo, loading, error, data };
 }
 
-// 확장된 Plan 타입 (weekOfMonth 포함)
-interface ExtendedPlan {
-  id: string;
-  content: string;
-  weekOfMonth?: number;
-}
-
-// 확장된 Goal 타입
-interface ExtendedGoal {
-  id: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  beforeAfter: {
-    asIs: string;
-    toBe: string;
-  };
-  plans: ExtendedPlan[];
-}
-
 export function useAddTodoForm(
-  goal: ExtendedGoal,
+  goal: Goal,
   selectedPlanId: string,
   onWeekChange?: (weekOfMonth: number) => void,
   onToggleWeekend?: (showWeekend: boolean) => void

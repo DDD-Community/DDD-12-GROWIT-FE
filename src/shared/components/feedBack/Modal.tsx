@@ -16,13 +16,24 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
-        onClose?.();
+        // 중첩 모달 체크: 다른 모달이 열려있는지 확인
+        const otherModals = document.querySelectorAll('dialog[open]');
+        const isNestedModal = otherModals.length > 1;
+
+        if (!isNestedModal) {
+          onClose?.();
+        }
       }
     };
 
     const handleEscapePress = (event: KeyboardEvent) => {
       if (dialogRef.current && event.key === 'Escape') {
-        onClose?.();
+        const otherModals = document.querySelectorAll('dialog[open]');
+        const isNestedModal = otherModals.length > 1;
+
+        if (!isNestedModal) {
+          onClose?.();
+        }
       }
     };
     document.addEventListener('mousedown', handleClickOutside);

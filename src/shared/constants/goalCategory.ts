@@ -1,8 +1,4 @@
-export enum GoalCategoryEnum {
-  STUDY = 'STUDY',
-  FINANCE = 'FINANCE',
-  IT_PROJECT = 'IT_PROJECT',
-}
+import { GoalCategoryEnum } from '@/shared/type/goal';
 
 export const GOAL_CATEGORY_MAP = {
   [GoalCategoryEnum.STUDY]: '스터디',

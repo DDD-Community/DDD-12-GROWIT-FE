@@ -1,4 +1,4 @@
-import { GoalCategoryEnum } from '../constants/goalCategory';
+import { GoalCategoryEnum } from './goal';
 
 export interface GoalFormData {
   category: GoalCategoryEnum | '';

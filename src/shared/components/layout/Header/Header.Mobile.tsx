@@ -15,7 +15,7 @@ interface HeaderMobileProps {
 export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobileProps) => {
   const pathname = usePathname();
   if (HEADER_CONFIG.hideHeaderPages.includes(pathname as any)) {
-    // << 여기 타입 고칠 것
+  
     return null;
   }
 
