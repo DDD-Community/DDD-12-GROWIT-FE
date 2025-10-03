@@ -6,18 +6,25 @@ import qs from 'qs';
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 
 export interface GetGoalOption {
+  goalId: string;
+}
+
+export interface GetGoalListOption {
   year: number;
 }
 
-export async function getGoalList(option?: GetGoalOption) {
+export async function getGoalList(option?: GetGoalListOption) {
   const queryString = option ? qs.stringify(option) : '';
   const { data } = await apiClient.get<GoalListResponse>(`/goals?${queryString}`);
   return data.data;
 }
 
-export async function getCurrentProgressGoal() {
-  const { data } = await apiClient.get<GoalListResponse>('/goals?status=PROGRESS');
-  return data.data;
+export async function getGoalItem(req?: GetGoalOption) {
+  const url = req?.goalId ? `/goals/${req.goalId}` : '/goals?status=PROGRESS';
+  const { data } = await apiClient.get<CommonResponse<Goal>>(url);
+
+  // TODO : Array 벗겨지면 해당 분기처리 코드 삭제필요
+  return Array.isArray(data.data) ? data.data[0] : data.data;
 }
 
 export async function deleteGoal(goalId: string) {

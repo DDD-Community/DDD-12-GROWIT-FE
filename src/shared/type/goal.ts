@@ -9,16 +9,13 @@ export enum GoalCategoryEnum {
 export interface Goal {
   id: string;
   name: string;
-  mentor: AIMentor;
-  category: GoalCategoryEnum;
   duration: {
     startDate: string;
     endDate: string;
   };
-  beforeAfter: {
-    asIs: string;
-    toBe: string;
-  };
+  toBe?: string;
+  mentor: AIMentor;
+  category: GoalCategoryEnum;
   plans: Plan[];
 }
 

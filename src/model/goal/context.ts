@@ -3,15 +3,15 @@ import { useCallback, useEffect, useState, createContext, useContext, ReactNode,
 import { Goal } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { getGoalList, getCurrentProgressGoal, deleteGoal, putEditGoal, GetGoalOption } from './api';
+import { getGoalList, deleteGoal, putEditGoal, GetGoalListOption, getGoalItem, GetGoalOption } from './api';
 
 interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
   currentGoal: Goal | null;
   currentPlans: Goal['plans'];
-  refetchGoalList: (goalListOption?: GetGoalOption, shouldThrow?: boolean) => Promise<void>;
-  refetchCurrentGoal: (shouldThrow?: boolean) => Promise<void>;
+  refetchGoalList: (goalListOption?: GetGoalListOption, shouldThrow?: boolean) => Promise<void>;
+  refetchCurrentGoal: (option?: GetGoalOption, shouldThrow?: boolean) => Promise<void>;
   deleteGoal: (goalId: string) => Promise<void>;
   updateGoal: (goal: Goal) => Promise<void>;
 }
@@ -20,10 +20,11 @@ const GoalContext = createContext<GoalContextType | null>(null);
 
 interface GoalProviderProps {
   children: ReactNode;
-  goalListOption?: GetGoalOption;
+  goalListOption?: GetGoalListOption;
+  goalItemOption?: GetGoalOption;
 }
 
-export function GoalProvider({ children, goalListOption }: GoalProviderProps) {
+export function GoalProvider({ children, goalListOption, goalItemOption }: GoalProviderProps) {
   const { showToast } = useToast();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
@@ -61,17 +62,12 @@ export function GoalProvider({ children, goalListOption }: GoalProviderProps) {
     [goalListOption]
   );
 
-  const fetchCurrentGoal = useCallback(async (shouldThrow = false) => {
+  const fetchCurrentGoal = useCallback(async (option = goalItemOption, shouldThrow = false) => {
     try {
       setLoading(true);
 
-      const goals = await getCurrentProgressGoal();
-      if (goals && goals.length > 0) {
-        setCurrentGoal(goals[0]);
-      } else {
-        setCurrentGoal(null);
-      }
-
+      const goals = await getGoalItem(option);
+      setCurrentGoal(goals);
       setLoading(false);
     } catch (err) {
       const axiosError = err as AxiosError<CommonError>;
