@@ -18,9 +18,9 @@ interface AddRetroSpectButtonProps {
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
   const router = useRouter();
   //const { showToast } = useToast();
-  const hasShownTooltip = useRef(false);
+  //const hasShownTooltip = useRef(false);
   const [showTooltip, setShowTooltip] = useState(false);
-
+  const [isInitLoad, setIsInitLoad] = useState(true);
   const { retrospect, isLoading: isLoadingRetrospects } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
@@ -43,20 +43,20 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   };
 
   useEffect(() => {
-    if (isLoadingRetrospects || hasShownTooltip.current) {
-      return;
-    }
-    // 회고가 없는 경우에만 툴팁 표시
-    if (!retrospect) {
-      hasShownTooltip.current = true;
-      setShowTooltip(true);
-
+    if (!isLoadingRetrospects && !isInitLoad) {
+      const showTooltipKey = `hasShownTooltip-${goal.id}-${selectedPlanId}`;
+      const hasShownTooltip = sessionStorage.getItem(showTooltipKey);
+      if (!retrospect?.retrospect?.id && !hasShownTooltip) {
+        sessionStorage.setItem(showTooltipKey, 'true');
+        setShowTooltip(true);
+      }
       const timer = setTimeout(() => {
         setShowTooltip(false);
       }, 2000);
 
       return () => clearTimeout(timer);
     }
+    setIsInitLoad(false);
   }, [isLoadingRetrospects, retrospect]);
 
   return (
