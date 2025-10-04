@@ -86,7 +86,7 @@ export const NAVIGATION_ROUTES_MOBILE: NavigationRouteMobile[] = [
     activeIcon: GoalIcon,
     inActiveIcon: GoalIconInactive,
     alt: 'My Profile',
-    title: '마이',
+    title: '목표',
   },
   {
     path: ROUTES.MYPAGE,

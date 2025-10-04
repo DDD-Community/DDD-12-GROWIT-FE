@@ -56,7 +56,7 @@ export function PlanetSelector() {
 
   return (
     <>
-      <div className="relative mt-20">
+      <div className="relative mt-10">
         <Swiper
           dir="rtl"
           pagination={{
