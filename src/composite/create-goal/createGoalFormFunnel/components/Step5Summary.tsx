@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 import { MentorCharacterType } from '@/feature/goal/mentorCharacterCard';
+import Image from 'next/image';
 
 interface Step5SummaryProps {
   onNext: () => void;
@@ -74,7 +75,7 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
   }, []);
 
   return (
-    <div className="relative h-[100dvh] flex flex-col md:h-screen bg-[#1B1C1E] overflow-hidden">
+    <div className="flex flex-1 flex-col bg-[#1B1C1E] overflow-hidden">
       {/* 백그라운드 이미지 */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -85,6 +86,9 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
           backgroundRepeat: 'no-repeat',
         }}
       />
+      <div className="absolute inset-0 z-0">
+        <Image src={getBackgroundImage()} alt="Background" fill className="object-cover" priority />
+      </div>
 
       {/* 컨텐츠 */}
       <div className="relative z-10 flex flex-1 flex-col">
@@ -96,7 +100,7 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
         </div>
 
         {/* 메인 컨텐츠 영역 */}
-        <div className="flex-1 flex flex-col items-center justify-end px-5 pb-[80px]">
+        <div className="flex-1 flex flex-col items-center justify-end px-5 pb-[40px]">
           <div className="w-full max-w-[335px]">
             {/* 목표 정보 카드 */}
             <div className="bg-[#0F0F10] border border-[rgba(112,115,124,0.32)] rounded-lg p-5 space-y-4">
@@ -140,9 +144,7 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
         </div>
 
         {/* 하단 버튼 */}
-        <div className="px-5 pb-8">
-          <FunnelNextButton onClick={onNext} variant="brand" text="여정 시작하기" />
-        </div>
+        <FunnelNextButton onClick={onNext} variant="brand" text="여정 시작하기" />
       </div>
     </div>
   );

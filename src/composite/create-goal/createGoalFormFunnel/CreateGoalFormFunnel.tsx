@@ -42,7 +42,7 @@ const CreateGoalFormFunnelContent = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-1">
       <CreateGoalFormElement.Provider>
         <FunnelHeaderProvider>
           <FunnelHeader currentStep={currentStepIndex} totalSteps={totalSteps} onBack={handleBack} />
