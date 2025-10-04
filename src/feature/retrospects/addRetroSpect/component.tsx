@@ -1,11 +1,12 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/shared/components/input/Button';
 import { ToolTip } from '@/shared/components/display/ToolTip';
 import { useFetchRetrospects } from './hooks';
 import { Goal } from '@/shared/type/goal';
-import { useToast } from '@/shared/components/feedBack/toast';
+//import { useToast } from '@/shared/components/feedBack/toast';
 import Image from 'next/image';
 
 interface AddRetroSpectButtonProps {
@@ -17,6 +18,8 @@ interface AddRetroSpectButtonProps {
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
   const router = useRouter();
   //const { showToast } = useToast();
+  const hasShownTooltip = useRef(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const { retrospect, isLoading: isLoadingRetrospects } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
@@ -39,6 +42,23 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
     }
   };
 
+  useEffect(() => {
+    if (isLoadingRetrospects || hasShownTooltip.current) {
+      return;
+    }
+    // 회고가 없는 경우에만 툴팁 표시
+    if (!retrospect) {
+      hasShownTooltip.current = true;
+      setShowTooltip(true);
+
+      const timer = setTimeout(() => {
+        setShowTooltip(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoadingRetrospects, retrospect]);
+
   return (
     <div className="relative min-w-[44px]">
       <Button
@@ -49,22 +69,10 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
         onClick={handleNavigateToRetrospect}
         icon={<ButtonIcon needCreate={!retrospect} />}
       />
-      {!isLoadingRetrospects && !retrospect && (
+      {showTooltip && (
         <>
-          <ToolTip
-            text="회고를 입력하세요"
-            position="top-center"
-            className="hidden sm:block"
-            autoHide={true}
-            autoHideDelay={2500}
-          />
-          <ToolTip
-            text="회고를 입력하세요"
-            position="bottom-right"
-            className="block sm:hidden"
-            autoHide={true}
-            autoHideDelay={2500}
-          />
+          <ToolTip text="회고를 입력하세요" position="top-center" className="hidden sm:block" autoHide={true} />
+          <ToolTip text="회고를 입력하세요" position="bottom-right" className="block sm:hidden" autoHide={true} />
         </>
       )}
       {!retrospect && (
