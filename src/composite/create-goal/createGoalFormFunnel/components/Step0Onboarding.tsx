@@ -75,7 +75,7 @@ export const Step0Onboarding = ({ onNext }: Step0OnboardingProps) => {
 
       {/* Bottom Actions */}
       <div className="h-[150px]" />
-      <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 sm:hidden">
+      <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 max-w-md mx-auto">
         <Button size="xl" text="목표 설정하기" onClick={handleGoalSetting} className="w-full" />
         <div className="h-[20px]" />
         <Button

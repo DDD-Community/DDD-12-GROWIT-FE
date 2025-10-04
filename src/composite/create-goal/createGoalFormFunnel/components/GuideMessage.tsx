@@ -64,7 +64,7 @@ export const GuideMessage = ({ text, highlight, status = 'default' }: GuideMessa
           </div>
         </div>
         <div className="relative flex-shrink-0">
-          <div className="block sm:hidden">
+          <div className="block">
             <Image
               src={`/image/grorong-right-${status}.png`}
               alt="그로롱"
