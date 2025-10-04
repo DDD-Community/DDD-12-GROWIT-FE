@@ -23,7 +23,14 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
     <>
       <p className="body-1-bold text-label-neutral">{aiMentorName}의 조언</p>
       <div className="relative pt-6 max-w-md min-h-[180px] px-4 rounded-2xl overflow-hidden">
-        <Image src={imagePath} alt="ai-mentor-advice" fill className={`object-cover object-top`} />
+        <Image
+          src={imagePath}
+          alt="ai-mentor-advice"
+          fill
+          className={`object-cover object-top`}
+          sizes="100%"
+          priority
+        />
         <div className="flex flex-col gap-2 relative z-50">
           <h2 className="headline-1-bold text-white">{aiMentorAdvice.message}</h2>
           <p className="text-sm text-label-neutral text-pretty max-w-3xs">{aiMentorAdvice.kpt.tryNext}</p>

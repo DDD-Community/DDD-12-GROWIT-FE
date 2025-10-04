@@ -38,7 +38,6 @@ const getColorTheme = (plansLength: number) => {
 };
 
 export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) => {
-  console.log('goal', goal);
   const currentWeek = calculateCurrentWeek(goal.duration.startDate, goal.duration.endDate);
   const durationLabel = `${goal.duration.startDate} ~ ${goal.duration.endDate}`;
   const totalWeeks = Math.max(1, goal.plans?.length || 1);

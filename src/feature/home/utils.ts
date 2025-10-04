@@ -6,13 +6,11 @@ export const DEFAULT_GRORONG_IMAGE = '/home/intimacy-normal-heart.png';
 export const getGrorongImage = (mood: Mood, message: string): string => {
   const moodImages = GrorongImage[mood];
   if (!moodImages) {
-    console.warn(`Unknown mood: ${mood}`);
     return DEFAULT_GRORONG_IMAGE;
   }
 
   const imagePath = moodImages[message];
   if (!imagePath) {
-    console.warn(`Unknown message for mood ${mood}: ${message}`);
     return DEFAULT_GRORONG_IMAGE;
   }
 
