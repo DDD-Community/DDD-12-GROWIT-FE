@@ -33,18 +33,18 @@ export const AIAdviceDetailModal = ({
   return (
     <dialog
       ref={dialogRef}
-      className="relative max-w-[338px] w-full md:max-w-[560px] inset-0 m-auto rounded-2xl overflow-hidden bg-elevated-assistive border border-gray-400"
+      className="relative max-w-[320px] w-full md:max-w-[560px] inset-0 m-auto rounded-2xl overflow-hidden bg-elevated-assistive border border-gray-400"
     >
       {/* 백그라운드 이미지 */}
       <div className="absolute inset-0">
-        <Image src={bgPath} alt="ai-mentor-background" fill className="object-cover" priority={true} />
+        <Image src={bgPath} alt="ai-mentor-background" fill className="object-cover" priority={true} sizes="100%" />
       </div>
 
       <div className="relative z-10">
         <FlexBox className="justify-between p-6 pb-4">
-          <FlexBox className="gap-2">
+          <FlexBox className="gap-2 items-center">
             <h1 className="text-lg font-bold text-white">{aiMentorName}</h1>
-            <Image src="/home/planet.png" alt="planet" width={24} height={32} priority={true} />
+            <Image src="/home/planet.png" alt="planet" width={24} height={20} priority={true} className="w-6 h-5" />
           </FlexBox>
           <button
             onClick={onClose}

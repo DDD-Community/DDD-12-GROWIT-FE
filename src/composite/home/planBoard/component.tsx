@@ -55,7 +55,7 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
 
   return (
     <>
-      <div className="flex flex-col min-h-[300px] w-full gap-[24px] pb-24">
+      <div className="flex flex-col min-h-[300px] w-full gap-[24px]">
         <div className="flex flex-1 justify-between items-end gap-2">
           <PlanSelect />
           <AddRetroSpectButton goal={goal} selectedPlanId={selectedPlanId} currentWeekIndex={selectedWeekIndex} />
