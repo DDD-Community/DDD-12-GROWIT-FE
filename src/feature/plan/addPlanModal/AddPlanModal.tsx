@@ -59,8 +59,8 @@ export const AddPlanModal = ({
     setOpen(false);
   };
 
-  const displayGoal = `${selectedPlanIndex}주차 목표를 입력해주세요`;
-  const displayInfo = selectedPlanContent || '';
+  // const displayGoal = `${selectedPlanIndex}주차 목표를 입력해주세요`;
+  // const displayInfo = selectedPlanContent || '';
 
   return (
     <>
@@ -69,14 +69,14 @@ export const AddPlanModal = ({
           reset({ description: selectedPlanContent || '' });
           setOpen(true);
         }}
-        className="flex items-center justify-between w-full p-4 bg-elevated-normal rounded-lg hover:bg-elevated-alternative transition-colors duration-200 border-4 border-gray-500"
+        className="flex items-center justify-between p-4"
       >
-        <div className="flex flex-1 flex-col min-w-0">
+        {/* <div className="flex flex-1 flex-col min-w-0">
           <span className="text-label-alternative text-xs font-medium text-left">{selectedPlanIndex}주차 목표</span>
           <p className="text-label-normal text-sm mt-1 truncate w-full text-left">
             {displayInfo ? `'${displayInfo}'` : displayGoal}
           </p>
-        </div>
+        </div> */}
         <svg
           width="16"
           height="16"
@@ -98,7 +98,7 @@ export const AddPlanModal = ({
       <Modal
         open={open}
         onClose={handleCancel}
-        title="주차 목표"
+        title={`${selectedPlanIndex}주차 목표`}
         renderContent={() => (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 min-w-[300px] md:min-w-[500px]">
             <div>
