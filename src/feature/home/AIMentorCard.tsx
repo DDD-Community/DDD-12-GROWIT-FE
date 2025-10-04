@@ -32,10 +32,10 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
           priority
         />
         <div className="flex flex-col gap-2 relative z-50">
-          <h2 className="headline-1-bold text-white">{aiMentorAdvice.message}</h2>
-          <p className="text-sm text-label-neutral text-pretty max-w-3xs">{aiMentorAdvice.kpt.tryNext}</p>
+          <h2 className="headline-2-bold text-white">{aiMentorAdvice.message}</h2>
+          <p className="text-xs text-label-neutral text-pretty max-w-[200px]">{aiMentorAdvice.kpt.tryNext}</p>
           <button
-            className="flex items-center gap-2 body-2-normal font-bold text-label-neutral mt-2"
+            className="flex items-center gap-2 headline-2-bold text-label-neutral mt-2"
             onClick={() => setShowModal(true)}
           >
             자세히보기 <ChevronRight className="w-4 h-4" />

@@ -10,6 +10,7 @@ import { AIMentorCard } from '@/feature/home/AIMentorCard';
 import { useGoalSelector } from '@/model/goal/context';
 import { useGrorongAdvice } from './hooks';
 import { useAIMentorAdvice } from '@/model/aiMentor/context';
+import { useEffect, useState } from 'react';
 //import { useFetchUserName } from '@/shared/hooks';
 
 export const CheerMessageCard = () => {
@@ -17,6 +18,25 @@ export const CheerMessageCard = () => {
   const { advice } = useGrorongAdvice();
   const { aiMentorAdvice } = useAIMentorAdvice();
   //const { fullUserName } = useFetchUserName();
+  const [slideOrder, setSlideOrder] = useState<number[]>([]);
+
+  useEffect(() => {
+    const order = [0, 1].sort(() => Math.random() - 0.5);
+    setSlideOrder(order);
+  }, []);
+
+  const slides = [
+    {
+      id: 'grorong',
+      component: advice && <GrorongCard mood={advice.mood} message={advice.message} saying={advice.saying} />,
+    },
+    {
+      id: 'aiMentor',
+      component: currentGoal && aiMentorAdvice && (
+        <AIMentorCard aiMentor={currentGoal.mentor} aiMentorAdvice={aiMentorAdvice} />
+      ),
+    },
+  ];
 
   return (
     <div className="relative">
@@ -28,14 +48,9 @@ export const CheerMessageCard = () => {
         }}
         modules={[Navigation, Pagination]}
       >
-        <SwiperSlide>
-          {advice && <GrorongCard mood={advice.mood} message={advice.message} saying={advice.saying} />}
-        </SwiperSlide>
-        <SwiperSlide>
-          {currentGoal && aiMentorAdvice && (
-            <AIMentorCard aiMentor={currentGoal.mentor} aiMentorAdvice={aiMentorAdvice} />
-          )}
-        </SwiperSlide>
+        {slideOrder.map(index => (
+          <SwiperSlide key={index}>{slides[index].component}</SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );

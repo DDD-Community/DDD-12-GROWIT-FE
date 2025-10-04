@@ -33,7 +33,7 @@ export const AIAdviceDetailModal = ({
   return (
     <dialog
       ref={dialogRef}
-      className="relative max-w-[320px] w-full md:max-w-[560px] inset-0 m-auto rounded-2xl overflow-hidden bg-elevated-assistive border border-gray-400"
+      className="relative max-w-[320px] w-full overflow-y-auto inset-0 m-auto rounded-lg bg-elevated-assistive border border-gray-400"
     >
       {/* 백그라운드 이미지 */}
       <div className="absolute inset-0">
@@ -43,7 +43,7 @@ export const AIAdviceDetailModal = ({
       <div className="relative z-10">
         <FlexBox className="justify-between p-6 pb-4">
           <FlexBox className="gap-2 items-center">
-            <h1 className="text-lg font-bold text-white">{aiMentorName}</h1>
+            <h1 className="text-base font-bold text-white">{aiMentorName}</h1>
             <Image src="/home/planet.png" alt="planet" width={24} height={20} priority={true} className="w-6 h-5" />
           </FlexBox>
           <button
@@ -55,25 +55,25 @@ export const AIAdviceDetailModal = ({
         </FlexBox>
 
         <div className="px-6 pb-6">
-          <h2 className="text-xl font-bold text-white mb-6">{aiMentorAdvice.message}</h2>
+          <h2 className="text-lg font-bold text-white mb-6">{aiMentorAdvice.message}</h2>
           <div className="space-y-4">
             <div className="flex flex-col items-start gap-4">
               <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Try
               </span>
-              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.tryNext}</p>
+              <p className="text-sm text-label-normal">{aiMentorAdvice.kpt.tryNext}</p>
             </div>
             <div className="flex flex-col items-start gap-4">
               <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Keep
               </span>
-              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.keep}</p>
+              <p className="text-sm text-label-normal">{aiMentorAdvice.kpt.keep}</p>
             </div>
             <div className="flex flex-col items-start gap-4">
               <span className="px-3 py-1 bg-label-button-assistive text-label-neutral text-xs caption-1-bold rounded-full whitespace-nowrap">
                 Problem
               </span>
-              <p className="body-1-normal text-label-normal">{aiMentorAdvice.kpt.problem}</p>
+              <p className="text-sm text-label-normal">{aiMentorAdvice.kpt.problem}</p>
             </div>
           </div>
         </div>

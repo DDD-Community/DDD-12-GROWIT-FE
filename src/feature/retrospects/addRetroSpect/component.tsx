@@ -16,7 +16,7 @@ interface AddRetroSpectButtonProps {
 
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
   const router = useRouter();
-  const { showToast } = useToast();
+  //const { showToast } = useToast();
 
   const { retrospect, isLoading: isLoadingRetrospects } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
