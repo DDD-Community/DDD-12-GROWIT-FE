@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect, memo } from 'react';
 
 type ToolTipPosition =
   | 'top-left'
@@ -59,39 +60,35 @@ const getTailPositionClasses = (position: ToolTipPosition) => {
   }
 };
 
-export const ToolTip = ({
-  text,
-  className = '',
-  position = 'bottom-center',
-  autoHide = false,
-  autoHideDelay = 2500,
-}: ToolTipProps) => {
-  const [isVisible, setIsVisible] = useState(true);
+export const ToolTip = React.memo(
+  ({ text, className = '', position = 'bottom-center', autoHide = false, autoHideDelay = 2500 }: ToolTipProps) => {
+    const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => {
-    if (autoHide) {
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, autoHideDelay);
+    useEffect(() => {
+      if (autoHide) {
+        const timer = setTimeout(() => {
+          setIsVisible(false);
+        }, autoHideDelay);
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
+    }, [autoHide, autoHideDelay]);
+
+    if (!isVisible) {
+      return null;
     }
-  }, [autoHide, autoHideDelay]);
 
-  if (!isVisible) {
-    return null;
-  }
-
-  return (
-    <div className={`absolute z-10 ${getPositionClasses(position)} ${className}`}>
-      <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
-        {text}
-        {/* 꼬리 */}
-        {/* <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} /> */}
+    return (
+      <div className={`absolute z-10 ${getPositionClasses(position)} ${className}`}>
+        <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
+          {text}
+          {/* 꼬리 */}
+          {/* <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} /> */}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 interface DarkToolTip {
   children: React.ReactNode;

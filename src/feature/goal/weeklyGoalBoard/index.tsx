@@ -1,7 +1,5 @@
 import { useAIMentorAdvice } from '@/model/aiMentor/context';
 import { GoalRecommendationRequest } from './GoalRecommendationRequest';
-// 무료 버전에서 쓰이는 기존 주간플랜 조회와 주간 목표 추가 모달을 띄워주는 컴포넌트 현재는 사용되지 않음
-//import { AddPlanModal } from '@/feature/plan/addPlanModal';
 import { AIRecommendation } from './AIRecommendation';
 import { useGoalSelector } from '@/model/goal/context';
 import { useWeeklyGoalRecommendationByAI } from './hooks';
@@ -19,6 +17,7 @@ export const WeeklyGoalBoard = ({
   planId,
   selectedWeekIndex,
   selectedPlanContent,
+  onSuccessAddPlan,
   refetchGoal,
 }: WeeklyGoalBoardProps) => {
   const { currentGoal } = useGoalSelector();
@@ -49,6 +48,9 @@ export const WeeklyGoalBoard = ({
         aiMentor={aiMentor}
         selectedWeekIndex={selectedWeekIndex}
         selectedPlanContent={selectedPlanContent}
+        onSuccessAddPlan={onSuccessAddPlan}
+        goalId={goalId}
+        planId={planId}
       />
     );
   } else {
