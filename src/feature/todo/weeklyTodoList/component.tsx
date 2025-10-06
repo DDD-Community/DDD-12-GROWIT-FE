@@ -49,13 +49,13 @@ export const WeeklyTodoList = ({
   const { todoList } = useTodoBoardState();
   const { changePlanByDate, selectedPlanId } = usePlanSelector();
   const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
-  const { updateDateInfo, updateWeekDates } = useSelectedDayActions();
+  const { updateDateInfo, initWeekDates } = useSelectedDayActions();
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
 
   useEffect(() => {
-    updateWeekDates(goal.duration.startDate, currentWeekIndex);
+    initWeekDates(goal.duration.startDate, goal.duration.endDate, currentWeekIndex);
     setEditModal({ open: false, todo: null });
     setDeleteModal({ open: false, todo: null });
   }, [goal.id, goal.duration.startDate, currentWeekIndex]);

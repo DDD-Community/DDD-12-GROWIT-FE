@@ -22,13 +22,13 @@ export const WeeklyGoalBoard = ({
 }: WeeklyGoalBoardProps) => {
   const { currentGoal } = useGoalSelector();
   const { aiMentorAdvice } = useAIMentorAdvice();
-  const aiMentor = currentGoal?.mentor;
   const { getAndPutWeeklyGoalRecommendationByAI } = useWeeklyGoalRecommendationByAI({
     goalId,
     planId,
     isRecommendationChecked: aiMentorAdvice?.isChecked || false,
   });
 
+  const aiMentor = currentGoal?.mentor;
   const isPlanContentExist = selectedPlanContent !== '' && selectedPlanContent !== undefined;
 
   // 이번주 AI 목표 추천을 확인하지 않았을 경우

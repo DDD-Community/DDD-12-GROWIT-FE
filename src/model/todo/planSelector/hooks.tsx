@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useMemo, ReactNode, useEffect, useRef, useCallback } from 'react';
 import { Goal, Plan } from '@/shared/type/goal';
-import { getCurrentWeekIndex } from './utils';
+import { initCurrentWeekIndex } from './utils';
 
 interface PlanSelectorContextValue {
   plans: Plan[];
@@ -48,7 +48,7 @@ export const PlanSelectorProvider = ({ children, goal }: { children: ReactNode; 
     (date: Date | string) => {
       if (!goal?.duration?.startDate) return;
 
-      const weekIndex = getCurrentWeekIndex(goal.duration.startDate, date);
+      const weekIndex = initCurrentWeekIndex(goal.duration.startDate, date);
       const targetPlanIndex = plans.findIndex(plan => plan.weekOfMonth === weekIndex + 1);
 
       if (targetPlanIndex !== -1) {
