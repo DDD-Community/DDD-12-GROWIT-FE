@@ -40,7 +40,6 @@ export const AddTodoModal = ({ goal, selectedPlanId, selectedDate, onWeekChange 
   } = useAddTodoForm(goal, selectedPlanId, selectedDate, onWeekChange);
 
   const showModal = () => {
-    // Reset form with selectedDate when modal opens
     if (selectedDate) {
       handleDateSelect(selectedDate);
     }

@@ -48,13 +48,6 @@ export function useFetchAddTodo() {
   return { addTodo, loading, error, data };
 }
 
-// 확장된 Plan 타입 (weekOfMonth 포함)
-interface ExtendedPlan {
-  id: string;
-  content: string;
-  weekOfMonth?: number;
-}
-
 export function useAddTodoForm(
   goal: Goal,
   selectedPlanId: string,
