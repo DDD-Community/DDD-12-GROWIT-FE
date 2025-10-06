@@ -8,7 +8,6 @@ import { TodoListProvider } from '@/model/todo/todoList';
 import { TodayTodoListProvider } from '@/model/todo/todayTodoList';
 import { SelectedDayProvider } from '@/model/todo/selectedDay';
 import { AIMentorProvider } from '@/model/aiMentor/context';
-//import { TodayMissionBoard } from '@/feature/todo/todayMissionBoard';
 
 export default function MainPage() {
   return (
@@ -28,10 +27,6 @@ export default function MainPage() {
                       <GoalBanner />
                       <WeeklyPlanBoard />
                     </div>
-
-                    {/* <div className="flex flex-col gap-8 w-[335px] sm:mr-[40px] max-sm:w-auto max-sm:mx-[20px]">
-                    <TodayMissionBoard />
-                  </div> */}
                   </div>
                 </AIMentorProvider>
               </div>
