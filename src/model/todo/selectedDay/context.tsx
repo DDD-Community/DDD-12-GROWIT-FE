@@ -3,17 +3,18 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { getTodayDayOfWeek, getWeekStartDate, getAllWeekDates } from './utils';
+import { DatePicker } from './type';
 
 interface SelectedDayState {
   selectedDay: DAY_OF_THE_WEEK;
   selectedDate: Date | null;
-  weekDates: Array<{ key: DAY_OF_THE_WEEK; label: string; date: Date }>;
+  weekDates: DatePicker[];
 }
 
 interface SelectedDayActions {
   updateDateInfo: (date: Date | string) => void;
   resetToToday: () => void;
-  updateWeekDates: (startDate: string, weekIndex: number) => void;
+  initWeekDates: (goalStartDate: string, goalEndDate: string, weekIndex: number) => void;
 }
 
 export const useSelectedDay = () => {
@@ -48,7 +49,7 @@ interface SelectedDayProviderProps {
 export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
   const [selectedDay, setSelectedDayState] = useState<DAY_OF_THE_WEEK>(getTodayDayOfWeek());
   const [selectedDate, setSelectedDateState] = useState<Date | null>(new Date());
-  const [weekDates, setWeekDates] = useState<Array<{ key: DAY_OF_THE_WEEK; label: string; date: Date }>>([]);
+  const [weekDates, setWeekDates] = useState<DatePicker[]>([]);
 
   const updateDateInfo = useCallback((date: Date | string) => {
     let dateObj: Date;
@@ -72,19 +73,18 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
     setSelectedDayState(dayMap[dayOfWeek] || 'MONDAY');
   }, []);
 
-  const updateWeekDates = useCallback(
-    (startDate: string, weekIndex: number) => {
-      const weekStart = getWeekStartDate(startDate, weekIndex - 1);
-      const dates = getAllWeekDates(weekStart);
-      setWeekDates(dates);
+  const initWeekDates = useCallback(
+    (goalStartDate: string, goalEndDate: string, weekIndex: number) => {
+      const weekStartDate = getWeekStartDate(goalStartDate, weekIndex - 1);
+      const goalStartDateDate = new Date(goalStartDate);
+      const goalEndDateDate = new Date(goalEndDate);
+      const dates = getAllWeekDates(weekStartDate, goalStartDateDate, goalEndDateDate);
+      const initFirstDateByWeek = dates.find(d => !d.isBeforeStart && !d.isAfterEnd) || dates[0];
 
-      // Update selectedDate if it's in the new week
-      const currentDayDate = dates.find(d => d.key === selectedDay);
-      if (currentDayDate) {
-        setSelectedDateState(currentDayDate.date);
-      }
+      setWeekDates(dates);
+      updateDateInfo(initFirstDateByWeek.date);
     },
-    [selectedDay]
+    [selectedDay, updateDateInfo]
   );
 
   const resetToToday = useCallback(() => {
@@ -100,9 +100,9 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
   };
 
   const actions: SelectedDayActions = {
-    updateDateInfo,
-    updateWeekDates,
     resetToToday,
+    initWeekDates,
+    updateDateInfo,
   };
 
   return (

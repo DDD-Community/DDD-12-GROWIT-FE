@@ -1,5 +1,6 @@
 import { DAY_LABELS, WEEKDAYS } from './const';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
+import { DatePicker } from './type';
 
 // 오늘 요일을 계산하여 DAY_OF_THE_WEEK 타입으로 반환
 export function getTodayDayOfWeek(): DAY_OF_THE_WEEK {
@@ -22,15 +23,15 @@ export function getTodayDayOfWeek(): DAY_OF_THE_WEEK {
 // 특정 날짜의 요일을 계산하여 DAY_OF_THE_WEEK 타입으로 반환
 export function getDayOfWeek(date: Date | string): DAY_OF_THE_WEEK {
   let targetDate: Date;
-  
+
   if (typeof date === 'string') {
     // 빈 문자열 체크
     if (!date.trim()) {
       return 'MONDAY';
     }
-    
+
     targetDate = new Date(date);
-    
+
     // Invalid Date 체크
     if (isNaN(targetDate.getTime())) {
       return 'MONDAY';
@@ -44,7 +45,7 @@ export function getDayOfWeek(date: Date | string): DAY_OF_THE_WEEK {
   } else {
     return 'MONDAY';
   }
-  
+
   const dayOfWeek = targetDate.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
 
   const dayMap: Record<number, DAY_OF_THE_WEEK> = {
@@ -88,7 +89,29 @@ export function getWeekStartDate(startDate: string, weekIdx: number) {
   return start;
 }
 
-// 해당 주차의 요일별 날짜 배열 반환
+export function getAllWeekDates(weekStart: Date, goalStartDate: Date, goalEndDate: Date): DatePicker[] {
+  const allDays: DAY_OF_THE_WEEK[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+
+  return allDays.map((key, idx) => {
+    const date = new Date(weekStart);
+    date.setDate(weekStart.getDate() + idx);
+
+    const isBeforeStart = date < goalStartDate;
+    const isAfterEnd = date > goalEndDate;
+
+    return {
+      key,
+      date,
+      label: DAY_LABELS[key],
+      isBeforeStart,
+      isAfterEnd,
+    };
+  });
+}
+
+/**
+ * @deprecated
+ */
 export function getWeekDates(weekStart: Date, showWeekend: boolean) {
   if (showWeekend) {
     // 토요일: +5, 일요일: +6
@@ -112,15 +135,4 @@ export function getWeekDates(weekStart: Date, showWeekend: boolean) {
       return { key, label: DAY_LABELS[key], date };
     });
   }
-}
-
-// 모바일용: 평일과 주말을 모두 포함한 요일별 날짜 배열 반환
-export function getAllWeekDates(weekStart: Date) {
-  const allDays: DAY_OF_THE_WEEK[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
-
-  return allDays.map((key, idx) => {
-    const date = new Date(weekStart);
-    date.setDate(weekStart.getDate() + idx);
-    return { key, label: DAY_LABELS[key], date };
-  });
 }

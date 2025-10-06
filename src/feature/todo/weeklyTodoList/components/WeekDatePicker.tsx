@@ -3,13 +3,10 @@ import { ToolTip } from '@/shared/components/display/ToolTip';
 import { isToday, getDateString } from '@/model/todo/selectedDay/utils';
 import { DAY_OF_THE_WEEK } from '@/shared/type/Todo';
 import { useSelectedDayActions } from '@/model/todo/selectedDay';
+import { DatePicker } from '@/model/todo/selectedDay/type';
 
 interface WeekDatePickerProps {
-  weekDates: Array<{
-    key: DAY_OF_THE_WEEK;
-    label: string;
-    date: Date;
-  }>;
+  weekDates: DatePicker[];
   selectedDay: DAY_OF_THE_WEEK;
   goal: {
     duration: {
@@ -29,15 +26,11 @@ export const WeekDatePicker = ({ weekDates, selectedDay, goal }: WeekDatePickerP
   return (
     <div className="grid grid-cols-7 gap-2 mb-[20px]">
       {weekDates.map((day, index) => {
-        const isSelected = selectedDay === day.key;
+        const { isBeforeStart, isAfterEnd } = day;
+
         const isTodayDate = isToday(day.date);
-        const goalStartDate = new Date(goal.duration.startDate);
-        const goalEndDate = new Date(goal.duration.endDate);
-
-        const isBeforeStart = day.date < goalStartDate;
-        const isAfterEnd = day.date > goalEndDate;
+        const isSelected = selectedDay === day.key;
         const isDisabled = isBeforeStart || isAfterEnd;
-
         const tooltipMessage = isBeforeStart ? '아직 목표가 시작되지 않은 날이에요.' : '목표가 종료된 이후예요.';
 
         let tooltipPosition: 'top-left' | 'top-center' | 'top-right' = 'top-center';
