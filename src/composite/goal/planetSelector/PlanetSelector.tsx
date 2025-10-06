@@ -1,7 +1,7 @@
 'use client';
 
 import Badge from '@/shared/components/display/Badge';
-import { GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
+import { CreateGoalButton, GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
 import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -53,6 +53,17 @@ export function PlanetSelector() {
         return '/planet/planet-green.png';
     }
   };
+
+  if (goalList && goalList.length === 0) {
+    return (
+      <div className="relative space-y-4 py-62 my-auto">
+        <p className="text-label-neutral text-center">진행중인 목표가 없습니다.</p>
+        <div className="w-[113px] mx-auto">
+          <CreateGoalButton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

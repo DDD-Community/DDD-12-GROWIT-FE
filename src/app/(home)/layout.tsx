@@ -15,7 +15,7 @@ export default function HomePageLayout({ children }: HomeLayoutProps) {
     <div className="flex flex-1 max-sm:flex-col max-w-md w-full mx-auto h-full">
       <NavigationBar />
       <NotifyOnboardModal />
-      <div className="flex flex-1 sm:flex-col overflow-x-hidden pb-20">{children}</div>
+      <div className="flex flex-1 flex-col overflow-x-hidden">{children}</div>
     </div>
   );
 }
