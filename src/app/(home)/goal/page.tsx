@@ -34,7 +34,7 @@ export default function GoalPageRoute() {
               backgroundImage: 'url(/image/goal-background-282330.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transform: 'translate(-510px, -368px)',
+              transform: 'translate(0px, -600px)',
             }}
           />
         </div>

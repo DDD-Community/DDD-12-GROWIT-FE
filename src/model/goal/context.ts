@@ -5,6 +5,12 @@ import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { getGoalList, deleteGoal, putEditGoal, GetGoalListOption, getGoalItem, GetGoalOption } from './api';
 
+interface ServerRequest<Request> {
+  request: Request;
+  onSuccess?: () => void;
+  onError?: () => void;
+}
+
 interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
@@ -13,7 +19,7 @@ interface GoalContextType {
   refetchGoalList: (goalListOption?: GetGoalListOption, shouldThrow?: boolean) => Promise<void>;
   refetchCurrentGoal: (option?: GetGoalOption, shouldThrow?: boolean) => Promise<void>;
   deleteGoal: (goalId: string) => Promise<void>;
-  updateGoal: (goal: Goal) => Promise<void>;
+  updateGoal: (req: ServerRequest<Goal>) => Promise<void>;
 }
 
 const GoalContext = createContext<GoalContextType | null>(null);
@@ -111,24 +117,18 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
     }
   }, []);
 
-  const updateGoal = useCallback(async (goal: Goal) => {
+  const updateGoal = useCallback(async ({ request, onSuccess, onError }: ServerRequest<Goal>) => {
     try {
       setLoading(true);
 
-      await putEditGoal(goal);
+      await putEditGoal(request);
       await fetchGoalList();
 
+      onSuccess?.();
       setLoading(false);
     } catch (err) {
-      const axiosError = err as AxiosError<CommonError>;
-      let errorMessage = '목표를 수정하는데 실패했습니다.';
-
-      if (axiosError.isAxiosError && axiosError.response?.data.message) {
-        errorMessage = axiosError.response.data.message;
-      }
-
       setLoading(false);
-      showToast(errorMessage);
+      onError?.();
     }
   }, []);
 

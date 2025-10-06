@@ -3,5 +3,10 @@ interface RetrospectLayoutProps {
 }
 
 export default function RetrospectPageLayout({ children }: RetrospectLayoutProps) {
-  return <div className="w-full max-w-3xl mx-auto">{children}</div>;
+  return (
+    <div className="w-full max-w-3xl mx-auto">
+      {children}
+      <div className="pb-20" />
+    </div>
+  );
 }
