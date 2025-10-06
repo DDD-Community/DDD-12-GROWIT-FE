@@ -46,7 +46,6 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
 
   const handleToggleTodo = useCallback(
     (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => {
-      // 투두 상태 토글
       toggleTodoStatus(dayOfWeek, todoId);
       refetchTodayList();
     },
