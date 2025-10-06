@@ -8,7 +8,6 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import FlexBox from '@/shared/components/foundation/FlexBox';
 
 export function PlanetSelector() {
   const { goalList, deleteGoal } = useGoalSelector();
