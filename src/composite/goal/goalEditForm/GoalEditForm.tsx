@@ -5,12 +5,24 @@ import { EditGoalFormElement } from '@/feature/goal/editGoalFormElement';
 import { useGoalSelector } from '@/model/goal/context';
 import { Info } from 'lucide-react';
 import { EditGoalFormData } from '@/feature/goal/editGoalFormElement/type';
+import { useToast } from '@/shared/components/feedBack/toast';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/shared/constants/routes';
 
 export const GoalEditForm = () => {
+  const { push } = useRouter();
+  const { showToast } = useToast();
   const { isLoading, currentGoal, updateGoal } = useGoalSelector();
 
   const handleFormSubmit = (data: EditGoalFormData) => {
-    updateGoal(data);
+    updateGoal({
+      request: data,
+      onSuccess: () => {
+        showToast('수정이 완료되었습니다.', 'success');
+        push(ROUTES.GOAL);
+      },
+      onError: () => showToast('수정에 실패했습니다.', 'error'),
+    });
   };
 
   return (
