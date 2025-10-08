@@ -9,29 +9,19 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
-import { TodoCompletedPopup } from './TodoCompletedPopup';
 import { Edit, Trash2 } from 'lucide-react';
 
 interface MobileWeeklyTodoItemProps {
   todo: Todo;
-  todayTodoList: Todo[];
   dayOfWeek: DAY_OF_THE_WEEK;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
-export const TodoCard = ({
-  todo,
-  dayOfWeek,
-  onToggleTodo,
-  onEdit,
-  onDelete,
-  todayTodoList,
-}: MobileWeeklyTodoItemProps) => {
+export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEdit, onDelete }: MobileWeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
-  const [showTodoCompletedPopup, setShowTodoCompletedPopup] = useState(false);
 
   useEffect(() => {
     setChecked(todo.isCompleted);
@@ -39,21 +29,9 @@ export const TodoCard = ({
 
   const handleCheck = async () => {
     const newChecked = !checked;
-
-    try {
-      await mutate(todo.id, newChecked);
-      setChecked(newChecked);
-      onToggleTodo(dayOfWeek, todo.id);
-      // setChecked가 비동기적으로 반영, 따라서 newChecked와 체크 상태를 변경한 나머지 요소들이 isCompleted가 되면 오늘 todo가 완료된 것으로 간주
-      const restTodos = todayTodoList.filter(otherTodo => otherTodo.id !== todo.id);
-      const isTodayTodoCompleted = restTodos.every(todo => todo.isCompleted) && newChecked;
-      if (isTodayTodoCompleted) {
-        setShowTodoCompletedPopup(true);
-      }
-    } catch (error) {
-      console.error('Todo 상태 변경 실패:', error);
-    } finally {
-    }
+    mutate(todo.id, newChecked);
+    setChecked(newChecked);
+    onToggleTodo(dayOfWeek, todo.id);
   };
 
   return (
@@ -83,8 +61,6 @@ export const TodoCard = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/** 오늘 Todo 완료 팝업 */}
-      <TodoCompletedPopup isOpen={showTodoCompletedPopup} onClose={() => setShowTodoCompletedPopup(false)} />
     </div>
   );
 };

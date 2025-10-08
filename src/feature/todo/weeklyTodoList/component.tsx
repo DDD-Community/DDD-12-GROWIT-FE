@@ -78,7 +78,6 @@ export const WeeklyTodoList = ({
               <TodoCard
                 key={todo.id}
                 todo={todo}
-                todayTodoList={todoList?.[selectedDay] || []}
                 dayOfWeek={selectedDay}
                 onToggleTodo={onToggleTodo}
                 onEdit={() => setEditModal({ open: true, todo })}
