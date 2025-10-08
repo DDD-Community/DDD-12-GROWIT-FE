@@ -8,7 +8,6 @@ import { putTodo } from '../api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { Goal } from '@/shared/type/goal';
-import { useSelectedDayActions } from '@/model/todo/selectedDay';
 
 interface EditTodoModalProps {
   open: boolean;
@@ -18,7 +17,7 @@ interface EditTodoModalProps {
   onSubmit: (updated: Todo) => void;
 }
 
-const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoModalProps) => {
+export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoModalProps) => {
   const [content, setContent] = useState(todo?.content || '');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -149,5 +148,3 @@ const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoModalPro
     />
   );
 };
-
-export default EditTodoModal;
