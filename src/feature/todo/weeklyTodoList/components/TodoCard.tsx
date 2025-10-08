@@ -86,7 +86,6 @@ interface MobileWeeklyTodoItemProps {
   dayOfWeek: DAY_OF_THE_WEEK;
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
-  onDelete?: () => void;
   onEditTodoItem?: (updatedTodo: Todo) => void;
 }
 
@@ -95,7 +94,6 @@ export const TodoCard = ({
   dayOfWeek,
   onToggleTodo,
   onEdit,
-  onDelete,
   onEditTodoItem,
 }: MobileWeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
@@ -151,24 +149,9 @@ export const TodoCard = ({
       </div>
       {/* 더보기 메뉴 */}
       {!isEditing && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer">
-              <span className="text-white text-lg">⋮</span>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" side="bottom" sideOffset={4} avoidCollisions={false} className="w-32">
-            <DropdownMenuItem onClick={onEdit}>
-              <Edit className="mr-2 h-4 w-4" />
-              수정
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onDelete} variant="destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
-              삭제
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <button className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer" onClick={onEdit}>
+          <span className="text-white text-lg">⋮</span>
+        </button>
       )}
     </div>
   );

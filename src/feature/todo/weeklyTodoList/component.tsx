@@ -28,7 +28,6 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
   const { toggleTodoStatus, refreshTodoList } = useTodoBoardActions();
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
-  const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
   const selectedDayTodos = todoList?.[selectedDay] || [];
 
   const handleEditSubmit = (updatedTodo: Todo) => {
@@ -38,16 +37,13 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
     refreshTodoList();
   };
 
-  const handleDeleteSubmit = (todo: Todo) => {
-    setDeleteModal({ open: false, todo: null });
-    changePlanByDate(todo.date);
+  const handleDeleteSubmit = () => {
     refreshTodoList();
   };
 
   useEffect(() => {
     initWeekDates(goal.duration.startDate, goal.duration.endDate, currentWeekIndex);
     setEditModal({ open: false, todo: null });
-    setDeleteModal({ open: false, todo: null });
   }, [goal.id, goal.duration.startDate, currentWeekIndex]);
 
   useInitSelectedToday();
@@ -65,7 +61,6 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
               onToggleTodo={toggleTodoStatus}
               onEditTodoItem={handleEditSubmit}
               onEdit={() => setEditModal({ open: true, todo })}
-              onDelete={() => setDeleteModal({ open: true, todo })}
             />
           ))}
           <AddTodoCard goal={goal} selectedPlanId={selectedPlanId} selectedDate={selectedDate} />
@@ -77,11 +72,6 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
         goal={goal}
         onClose={() => setEditModal({ open: false, todo: null })}
         onSubmit={handleEditSubmit}
-      />
-      <DeleteTodoModal
-        open={deleteModal.open}
-        todo={deleteModal.todo}
-        onClose={() => setDeleteModal({ open: false, todo: null })}
         onDelete={handleDeleteSubmit}
       />
     </div>

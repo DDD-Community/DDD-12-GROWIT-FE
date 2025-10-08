@@ -2,8 +2,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { Todo } from '@/shared/type/Todo';
-import { deleteTodo } from '../api/api';
-import { useState } from 'react';
+import { useFetchDeleteTodo } from '../hooks/useFetchDeleteTodo';
 import { useToast } from '@/shared/components/feedBack/toast';
 
 interface DeleteTodoModalProps {
@@ -14,24 +13,24 @@ interface DeleteTodoModalProps {
 }
 
 export const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps) => {
-  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+  const { deleteTodoItem, loading } = useFetchDeleteTodo({
+    onSuccess: todoId => {
+      showToast('투두가 성공적으로 삭제되었습니다.', 'success');
+      if (todo) {
+        onDelete(todo);
+      }
+      onClose();
+    },
+    onError: error => {
+      const errorMessage = error?.response?.data?.message || '투두 삭제에 실패했습니다.';
+      showToast(errorMessage, 'error');
+    },
+  });
 
   const handleDelete = async () => {
     if (!todo) return;
-
-    setIsLoading(true);
-    try {
-      await deleteTodo(todo.id);
-      showToast('투두가 성공적으로 삭제되었습니다.', 'success');
-      onDelete(todo);
-      onClose();
-    } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || '투두 삭제에 실패했습니다.';
-      showToast(errorMessage, 'error');
-    } finally {
-      setIsLoading(false);
-    }
+    await deleteTodoItem(todo.id);
   };
 
   return (
@@ -53,13 +52,13 @@ export const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoMod
       )}
       renderFooter={() => (
         <div className="flex w-full gap-2">
-          <Button size="xl" variant="secondary" text="취소" onClick={onClose} disabled={isLoading} />
+          <Button size="xl" variant="secondary" text="취소" onClick={onClose} disabled={loading} />
           <Button
             size="xl"
             variant="primary"
-            text={isLoading ? '삭제 중...' : '삭제'}
+            text={loading ? '삭제 중...' : '삭제'}
             onClick={handleDelete}
-            disabled={isLoading}
+            disabled={loading}
           />
         </div>
       )}

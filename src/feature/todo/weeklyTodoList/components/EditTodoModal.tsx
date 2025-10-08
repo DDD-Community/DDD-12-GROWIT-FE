@@ -7,6 +7,8 @@ import DatePicker from '@/shared/components/input/DatePicker';
 import Button from '@/shared/components/input/Button';
 import { Goal } from '@/shared/type/goal';
 import { useFetchEditTodo } from '../hooks/useFetchEditTodo';
+import { useFetchDeleteTodo } from '../hooks/useFetchDeleteTodo';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 interface EditTodoModalProps {
   open: boolean;
@@ -14,6 +16,7 @@ interface EditTodoModalProps {
   goal: Goal;
   onClose: () => void;
   onSubmit: (updated: Todo) => void;
+  onDelete: () => void;
 }
 
 interface EditTodoFormData {
@@ -21,11 +24,23 @@ interface EditTodoFormData {
   selectedDate: Date | undefined;
 }
 
-export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoModalProps) => {
+export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onDelete }: EditTodoModalProps) => {
+  const { showToast } = useToast();
   const { isLoading, editTodo } = useFetchEditTodo({
     onSuccess: updatedTodo => {
       onSubmit(updatedTodo);
       onClose();
+    },
+  });
+  const { deleteTodoItem } = useFetchDeleteTodo({
+    onSuccess: () => {
+      showToast('투두가 성공적으로 삭제되었습니다.', 'success');
+      onDelete();
+      onClose();
+    },
+    onError: error => {
+      const errorMessage = error?.response?.data?.message || '투두 삭제에 실패했습니다.';
+      showToast(errorMessage, 'error');
     },
   });
 
@@ -60,8 +75,6 @@ export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoM
 
   const onSubmitForm = async (data: EditTodoFormData) => {
     if (!todo) return;
-
-    // 날짜를 YYYY-MM-DD 형식으로 변환
     const year = data.selectedDate!.getFullYear();
     const month = String(data.selectedDate!.getMonth() + 1).padStart(2, '0');
     const day = String(data.selectedDate!.getDate()).padStart(2, '0');
@@ -72,6 +85,11 @@ export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoM
 
   const handleDateSelect = (date: Date) => {
     setValue('selectedDate', date, { shouldValidate: true });
+  };
+
+  const handleDelete = async () => {
+    if (!todo) return;
+    await deleteTodoItem(todo.id);
   };
 
   // selectedDate 필드 등록 (숨겨진 input으로)
@@ -132,7 +150,14 @@ export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit }: EditTodoM
       )}
       renderFooter={() => (
         <div className="flex w-full gap-2">
-          <Button size="xl" variant="secondary" text="취소" onClick={onClose} disabled={isLoading} />
+          <Button
+            size="xl"
+            text="삭제"
+            variant="secondary"
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="text-red-500"
+          />
           <Button
             size="xl"
             text={isLoading ? '수정 중...' : '수정 완료'}
