@@ -11,6 +11,8 @@ import { WeekDatePicker } from './components/WeekDatePicker';
 import { EditTodoModal } from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import { TodoCard } from './components/TodoCard';
+import { useInitSelectedToday } from './hooks';
+
 interface WeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
@@ -28,18 +30,11 @@ export const WeeklyTodoList = ({
 }: WeeklyTodoListProps) => {
   const { todoList } = useTodoBoardState();
   const { changePlanByDate, selectedPlanId } = usePlanSelector();
-  const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
   const { updateDateInfo, initWeekDates } = useSelectedDayActions();
+  const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
-
-  useEffect(() => {
-    initWeekDates(goal.duration.startDate, goal.duration.endDate, currentWeekIndex);
-    setEditModal({ open: false, todo: null });
-    setDeleteModal({ open: false, todo: null });
-  }, [goal.id, goal.duration.startDate, currentWeekIndex]);
-
   const selectedDayTodos = todoList?.[selectedDay] || [];
 
   const handleEditSubmit = (updatedTodo: Todo) => {
@@ -54,6 +49,14 @@ export const WeeklyTodoList = ({
     changePlanByDate(todo.date);
     onRefreshTodoList();
   };
+
+  useEffect(() => {
+    initWeekDates(goal.duration.startDate, goal.duration.endDate, currentWeekIndex);
+    setEditModal({ open: false, todo: null });
+    setDeleteModal({ open: false, todo: null });
+  }, [goal.id, goal.duration.startDate, currentWeekIndex]);
+
+  useInitSelectedToday();
 
   return (
     <div className="flex flex-col">

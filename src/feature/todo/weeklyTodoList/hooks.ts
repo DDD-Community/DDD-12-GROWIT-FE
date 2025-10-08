@@ -5,6 +5,7 @@ import { patchTodoStatus, postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { AxiosError } from 'axios';
 import { Goal } from '@/shared/type/goal';
+import { useSelectedDayActions } from '@/model/todo/selectedDay';
 
 export function usePatchTodoStatus() {
   const [isLoading, setIsLoading] = useState(false);
@@ -177,4 +178,15 @@ export function useAddTodoForm(
     // 유틸리티
     isFormValid,
   };
+}
+
+/**
+ * 최초 페이지 진입 시 오늘 날짜가 선택되도록 적용하는 Hook
+*/
+export function useInitSelectedToday() {
+  const { updateDateInfo } = useSelectedDayActions();
+  
+  useEffect(() => {
+    updateDateInfo(new Date());
+  }, []);
 }
