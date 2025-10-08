@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { KptForm, KPTFormData, useKPTForm } from '@/feature/retrospects/kptForm';
 import Button from '@/shared/components/input/Button';
+import { ROUTES } from '@/shared/constants/routes';
 
 interface WeeklyRetrospectPageProps {
   retrospectId: string;
@@ -22,33 +23,29 @@ interface WeeklyRetrospectPageProps {
 export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }: WeeklyRetrospectPageProps) => {
   const router = useRouter();
   const { showToast } = useToast();
-  const isNewRetrospect = retrospectId === 'new';
-
-  const { retrospect, isLoading, fetchRetrospects } = useFetchRetrospectById(retrospectId);
-  const actualRetrospect = isNewRetrospect ? null : retrospect;
-  const actualIsLoading = isNewRetrospect ? false : isLoading;
-  const actualFetchRetrospects = isNewRetrospect ? () => {} : fetchRetrospects;
-
-  const { editRetrospect, isLoading: isEditing } = useFetchEditRetrospect({
+  const { retrospect, isLoading: isLoadingRetrospect } = useFetchRetrospectById(retrospectId);
+  const { editRetrospect, isLoading: isLoadingEditRetrospect } = useFetchEditRetrospect({
     onSuccess: () => {
+      router.push(ROUTES.HOME);
       showToast('회고가 성공적으로 수정되었습니다.', 'success');
-      actualFetchRetrospects();
     },
     onError: () => {
       showToast('회고 수정에 실패했습니다.', 'error');
     },
   });
-
-  const { addRetrospect, isLoading: isAdding } = useFetchAddRetrospect({
-    onSuccess: data => {
-      router.push(`/retrospect/${data.id}`);
+  const { addRetrospect, isLoading: isLoadingAddRetrospect } = useFetchAddRetrospect({
+    onSuccess: () => {
+      router.push(ROUTES.HOME);
       showToast('회고가 성공적으로 작성되었습니다.', 'success');
-      //window.location.href = `/retrospect/${data.id}`;
     },
     onError: () => {
       showToast('회고 작성에 실패했습니다.', 'error');
     },
   });
+
+  const isNewRetrospect = retrospectId === 'new';
+  const actualRetrospect = isNewRetrospect ? null : retrospect;
+  const actualIsLoading = isNewRetrospect ? false : isLoadingRetrospect;
 
   const form = useKPTForm({
     mode: 'onChange',
@@ -132,7 +129,7 @@ export const WeeklyRetrospectPage = ({ retrospectId, goalId, planId, weekIndex }
               size="xl"
               text={isNewRetrospect ? '작성 완료' : '수정 완료'}
               type="submit"
-              disabled={!isValid || isEditing || isAdding}
+              disabled={!isValid || isLoadingEditRetrospect || isLoadingAddRetrospect}
               className="w-full"
             />
           </div>
