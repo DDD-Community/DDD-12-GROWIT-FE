@@ -2,7 +2,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { Todo } from '@/shared/type/Todo';
-import { deleteTodo } from '../api';
+import { deleteTodo } from '../api/api';
 import { useState } from 'react';
 import { useToast } from '@/shared/components/feedBack/toast';
 

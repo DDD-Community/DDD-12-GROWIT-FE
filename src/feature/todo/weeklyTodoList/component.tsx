@@ -11,7 +11,7 @@ import { WeekDatePicker } from './components/WeekDatePicker';
 import { EditTodoModal } from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import { TodoCard } from './components/TodoCard';
-import { useInitSelectedToday } from './hooks';
+import { useInitSelectedToday } from './hooks/useInitSelectedToday';
 
 interface WeeklyTodoListProps {
   goal: Goal;

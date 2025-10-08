@@ -1,6 +1,6 @@
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { usePatchTodoStatus } from '../hooks';
 import { useEffect, useState } from 'react';
+import { usePatchTodoStatus } from '@/model/todo/todayTodoList/hooks/usePatchTodoStatus';
 import Checkbox from '@/shared/components/input/Checkbox';
 import {
   DropdownMenu,

@@ -4,7 +4,7 @@ import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { Todo } from '@/shared/type/Todo';
 import { useState, useEffect } from 'react';
-import { putTodo } from '../api';
+import { putTodo } from '../api/api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import DatePicker from '@/shared/components/input/DatePicker';
 import { Goal } from '@/shared/type/goal';
