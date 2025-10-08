@@ -1,52 +1,10 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { patchTodoStatus, postAddTodo } from './api';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { AxiosError } from 'axios';
 import { Goal } from '@/shared/type/goal';
-
-export function usePatchTodoStatus() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const mutate = useCallback(async (todoId: string, isCompleted: boolean) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await patchTodoStatus({ todoId, isCompleted });
-    } catch (err: any) {
-      setError(err?.message || '체크 상태를 변경하지 못했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return { mutate, isLoading, error };
-}
-
-export function useFetchAddTodo() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<any>(null);
-
-  const addTodo = useCallback(async (request: Parameters<typeof postAddTodo>[0]) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await postAddTodo(request);
-      setData(result);
-      return result;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  return { addTodo, loading, error, data };
-}
+import { useFetchAddTodo } from './useFetchAddTodo';
 
 export function useAddTodoForm(
   goal: Goal,

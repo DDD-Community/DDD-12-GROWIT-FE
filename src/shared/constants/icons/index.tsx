@@ -94,3 +94,13 @@ export const GoalIconInactive = (props: IconProps) => (
     className={props.className || ''}
   />
 );
+
+export const PlusIcon = (props: IconProps) => (
+  <Image
+    src="/icon/plus.svg"
+    alt="추가"
+    width={props.width || 20}
+    height={props.height || 20}
+    className={`brightness-0 invert ${props.className || ''}`}
+  />
+);

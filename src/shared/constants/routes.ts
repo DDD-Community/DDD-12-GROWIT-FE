@@ -98,8 +98,8 @@ export const NAVIGATION_ROUTES_MOBILE: NavigationRouteMobile[] = [
 ] as const;
 
 export const titleStyle = {
-  active: 'text-primary-normal font-semibold text-xs md:text-base',
-  inActive: 'text-interaction-inactive font-semibold text-xs md:text-base',
+  active: 'text-primary-normal font-semibold text-xs',
+  inActive: 'text-interaction-inactive font-semibold text-xs',
 };
 
 export const NAVIGATION_CONFIG = {

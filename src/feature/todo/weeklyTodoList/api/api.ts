@@ -7,7 +7,7 @@ interface ChangeTodoStatusRequest {
   isCompleted: boolean;
 }
 
-interface ChangeTodoRequest {
+export interface ChangeTodoRequest {
   todoId: string;
   date: string;
   content: string;
@@ -20,7 +20,7 @@ interface AddTodoRequest {
   content: string;
 }
 
-interface AddTodoResponse extends CommonResponse<TodoResponse> {}
+export interface AddTodoResponse extends CommonResponse<TodoResponse> {}
 
 export async function patchTodoStatus(req: ChangeTodoStatusRequest) {
   const { todoId, isCompleted } = req;
