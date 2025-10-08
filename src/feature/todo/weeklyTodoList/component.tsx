@@ -11,6 +11,7 @@ import { WeekDatePicker } from './components/WeekDatePicker';
 import { EditTodoModal } from './components/EditTodoModal';
 import { AddTodoModal } from './components/AddTodoModal';
 import { TodoCard } from './components/TodoCard';
+import { AddTodoCard } from './components/AddTodoCard';
 import { useInitSelectedToday } from './hooks/useInitSelectedToday';
 
 interface WeeklyTodoListProps {
@@ -55,30 +56,19 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
     <div className="flex flex-col">
       <WeekDatePicker weekDates={weekDates} selectedDay={selectedDay} goal={goal} />
       <div className="flex flex-col gap-[20px] min-h-[200px]">
-        <AddTodoModal
-          goal={goal}
-          selectedPlanId={selectedPlanId}
-          selectedDate={selectedDate}
-          onWeekChange={onWeekChange}
-        />
         <div className="flex flex-col">
-          {selectedDayTodos.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center py-8 text-[#AEB0B6]">이 날의 Todo 가 없어요 ㅠ_ㅠ</div>
-            </div>
-          ) : (
-            selectedDayTodos.map(todo => (
-              <TodoCard
-                key={todo.id}
-                todo={todo}
-                dayOfWeek={selectedDay}
-                onToggleTodo={toggleTodoStatus}
-                onEditTodoItem={handleEditSubmit}
-                onEdit={() => setEditModal({ open: true, todo })}
-                onDelete={() => setDeleteModal({ open: true, todo })}
-              />
-            ))
-          )}
+          {selectedDayTodos.map(todo => (
+            <TodoCard
+              key={todo.id}
+              todo={todo}
+              dayOfWeek={selectedDay}
+              onToggleTodo={toggleTodoStatus}
+              onEditTodoItem={handleEditSubmit}
+              onEdit={() => setEditModal({ open: true, todo })}
+              onDelete={() => setDeleteModal({ open: true, todo })}
+            />
+          ))}
+          <AddTodoCard goal={goal} selectedPlanId={selectedPlanId} selectedDate={selectedDate} />
         </div>
       </div>
       <EditTodoModal

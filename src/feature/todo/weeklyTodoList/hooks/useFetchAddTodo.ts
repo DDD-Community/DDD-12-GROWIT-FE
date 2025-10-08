@@ -1,27 +1,40 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { postAddTodo } from '../api/api';
+import { AddTodoResponse, postAddTodo } from '../api/api';
+import { AxiosError } from 'axios';
+import { CommonError } from '@/shared/type/response';
 
-export function useFetchAddTodo() {
+interface UseFetchAddTodoProps {
+  onSuccess?: (data: any) => void;
+  onError?: (error: AxiosError<CommonError>) => void;
+}
+
+export function useFetchAddTodo({ onSuccess, onError }: UseFetchAddTodoProps = {}) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<AxiosError<CommonError> | null>(null);
+  const [data, setData] = useState<AddTodoResponse | null>(null);
 
-  const addTodo = useCallback(async (request: Parameters<typeof postAddTodo>[0]) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await postAddTodo(request);
-      setData(result);
-      return result;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const addTodo = useCallback(
+    async (request: Parameters<typeof postAddTodo>[0]) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await postAddTodo(request);
+        setData(result);
+        onSuccess?.(result);
+        return result;
+      } catch (err) {
+        const error = err as AxiosError<CommonError>;
+        setError(error);
+        onError?.(error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [onSuccess, onError]
+  );
 
   return { addTodo, loading, error, data };
 }

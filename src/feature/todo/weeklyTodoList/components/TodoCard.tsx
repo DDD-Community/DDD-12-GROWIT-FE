@@ -134,7 +134,7 @@ export const TodoCard = ({
   };
 
   return (
-    <div className="border-line-normal rounded-lg px-[14px] py-[8px] flex items-center gap-3 shadow">
+    <div className="rounded-lg px-[14px] py-[8px] flex items-center gap-3">
       <div className="flex items-center">
         <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
       </div>
