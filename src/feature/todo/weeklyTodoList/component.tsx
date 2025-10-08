@@ -80,6 +80,7 @@ export const WeeklyTodoList = ({
                 todo={todo}
                 dayOfWeek={selectedDay}
                 onToggleTodo={onToggleTodo}
+                onEditTodoItem={handleEditSubmit}
                 onEdit={() => setEditModal({ open: true, todo })}
                 onDelete={() => setDeleteModal({ open: true, todo })}
               />
