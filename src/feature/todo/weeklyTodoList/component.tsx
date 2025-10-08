@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import { usePlanSelector } from '@/model/todo/planSelector';
-import { useTodoBoardState } from '@/model/todo/todoList';
+import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
 import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
 import { DeleteTodoModal } from './components/DeleteTodoModal';
 import { WeekDatePicker } from './components/WeekDatePicker';
@@ -16,22 +16,15 @@ import { useInitSelectedToday } from './hooks/useInitSelectedToday';
 interface WeeklyTodoListProps {
   goal: Goal;
   currentWeekIndex: number;
-  onRefreshTodoList: () => void;
-  onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onWeekChange?: (weekOfMonth: number) => void;
 }
 
-export const WeeklyTodoList = ({
-  goal,
-  currentWeekIndex,
-  onRefreshTodoList,
-  onToggleTodo,
-  onWeekChange,
-}: WeeklyTodoListProps) => {
+export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyTodoListProps) => {
   const { todoList } = useTodoBoardState();
   const { changePlanByDate, selectedPlanId } = usePlanSelector();
   const { updateDateInfo, initWeekDates } = useSelectedDayActions();
   const { selectedDay, selectedDate, weekDates } = useSelectedDayState();
+  const { toggleTodoStatus, refreshTodoList } = useTodoBoardActions();
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
   const [deleteModal, setDeleteModal] = useState({ open: false, todo: null as Todo | null });
@@ -41,13 +34,13 @@ export const WeeklyTodoList = ({
     setEditModal({ open: false, todo: null });
     changePlanByDate(updatedTodo.date);
     updateDateInfo(updatedTodo.date);
-    onRefreshTodoList();
+    refreshTodoList();
   };
 
   const handleDeleteSubmit = (todo: Todo) => {
     setDeleteModal({ open: false, todo: null });
     changePlanByDate(todo.date);
-    onRefreshTodoList();
+    refreshTodoList();
   };
 
   useEffect(() => {
@@ -79,7 +72,7 @@ export const WeeklyTodoList = ({
                 key={todo.id}
                 todo={todo}
                 dayOfWeek={selectedDay}
-                onToggleTodo={onToggleTodo}
+                onToggleTodo={toggleTodoStatus}
                 onEditTodoItem={handleEditSubmit}
                 onEdit={() => setEditModal({ open: true, todo })}
                 onDelete={() => setDeleteModal({ open: true, todo })}
