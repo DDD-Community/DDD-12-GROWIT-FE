@@ -1,5 +1,6 @@
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { usePatchTodoStatus } from '@/model/todo/todayTodoList/hooks/usePatchTodoStatus';
 import Checkbox from '@/shared/components/input/Checkbox';
 import {
@@ -10,6 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/shared/components/dropdown-menu';
 import { Edit, Trash2 } from 'lucide-react';
+import { useFetchEditTodo } from '../hooks/useFetchEditTodo';
 
 interface TodoEditInputProps {
   isEditing: boolean;
@@ -18,75 +20,74 @@ interface TodoEditInputProps {
   onEditCancel: () => void;
 }
 
+interface EditFormData {
+  content: string;
+}
+
 const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEditInputProps) => {
-  const [editContent, setEditContent] = useState(todo.content);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { editTodo } = useFetchEditTodo({
+    onSuccess: updatedTodo => {
+      onEditTodoItem(updatedTodo);
+      onEditCancel();
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<EditFormData>({
+    defaultValues: {
+      content: todo.content,
+    },
+  });
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isEditing]);
+    reset({ content: todo.content });
+  }, [todo.content, reset]);
 
-  useEffect(() => {
-    setEditContent(todo.content);
-  }, [todo.content]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleEditSubmit();
-    } else if (e.key === 'Escape') {
+  const onSubmit = async (data: EditFormData) => {
+    if (data.content.trim() && data.content !== todo.content) {
+      await editTodo(todo.id, data.content, todo.date);
+    } else {
       onEditCancel();
     }
   };
 
-  const handleEditSubmit = () => {
-    if (editContent.trim() && editContent !== todo.content) {
-      const updatedTodo: Todo = {
-        ...todo,
-        content: editContent.trim(),
-      };
-      onEditTodoItem(updatedTodo);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onEditCancel();
     }
-    onEditCancel();
-  };
-
-  const handleBlur = () => {
-    setEditContent(todo.content);
-    onEditCancel();
   };
 
   if (!isEditing) return null;
 
   return (
-    <div className="flex-1 h-[36px] grid grid-cols-[1fr_auto] items-center gap-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex-1 h-[36px] grid grid-cols-[1fr_auto] items-center gap-2">
       <input
-        ref={inputRef}
+        {...register('content', {
+          required: true,
+          minLength: 1,
+          maxLength: 30,
+        })}
         type="text"
-        value={editContent}
-        onChange={e => setEditContent(e.target.value)}
         onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
         className="bg-transparent text-[16px] text-white border-none outline-none appearance-none w-full"
-        style={{
-          WebkitAppearance: 'none',
-          MozAppearance: 'none',
-          appearance: 'none',
-          background: 'transparent',
-          border: 'none',
-          outline: 'none',
-          boxShadow: 'none',
-          borderRadius: '0',
-        }}
-        maxLength={30}
+        disabled={isSubmitting}
+        autoFocus
       />
-      <button onClick={handleEditSubmit} className="p-1 hover:bg-[#2A2B31] rounded transition-colors" title="저장">
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="p-1 hover:bg-[#2A2B31] rounded transition-colors disabled:opacity-50"
+        title="저장"
+      >
         <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       </button>
-    </div>
+    </form>
   );
 };
 

@@ -7,7 +7,7 @@ interface ChangeTodoStatusRequest {
   isCompleted: boolean;
 }
 
-interface ChangeTodoRequest {
+export interface ChangeTodoRequest {
   todoId: string;
   date: string;
   content: string;
