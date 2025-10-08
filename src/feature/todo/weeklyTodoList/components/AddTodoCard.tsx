@@ -64,6 +64,10 @@ export const AddTodoCard = ({ goal, selectedPlanId, selectedDate }: AddTodoCardP
     reset({ content: '' });
   };
 
+  const handlePlusClick = () => {
+    inputRef.current?.focus();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       inputRef.current?.blur();
@@ -79,7 +83,9 @@ export const AddTodoCard = ({ goal, selectedPlanId, selectedDate }: AddTodoCardP
   return (
     <div className="rounded-lg px-[14px] py-[8px] flex items-center gap-3">
       <div className="flex items-center">
-        <PlusIcon className="text-[#70737C]" />
+        <button type="button" onClick={handlePlusClick} title="Todo 추가">
+          <PlusIcon className="text-[#70737C]" />
+        </button>
       </div>
       <div className="flex-1 flex items-center gap-2 h-[36px] relative">
         <form

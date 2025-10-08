@@ -77,16 +77,6 @@ const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEd
         disabled={isSubmitting}
         autoFocus
       />
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="p-1 hover:bg-[#2A2B31] rounded transition-colors disabled:opacity-50"
-        title="저장"
-      >
-        <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-        </svg>
-      </button>
     </form>
   );
 };
@@ -123,9 +113,13 @@ export const TodoCard = ({
     onToggleTodo(dayOfWeek, todo.id);
   };
 
-  const handleTextClick = () => {
-    if (!isEditing) {
-      setIsEditing(true);
+  const handleClickEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleBlur = (e: React.FocusEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsEditing(false);
     }
   };
 
@@ -138,7 +132,7 @@ export const TodoCard = ({
       <div className="flex items-center">
         <Checkbox checked={checked} onClick={handleCheck} disabled={isLoading} />
       </div>
-      <div className="flex-1 flex items-center gap-2">
+      <div className="flex-1 flex items-center gap-2" onBlur={handleBlur}>
         <TodoEditInput
           todo={todo}
           isEditing={isEditing}
@@ -147,9 +141,9 @@ export const TodoCard = ({
         />
         {!isEditing && (
           <span
-            className={`text-sm ${todo.isCompleted ? 'line-through text-[#70737C]' : 'text-white'} truncate cursor-pointer`}
-            onClick={handleTextClick}
+            className={`text-sm ${todo.isCompleted ? 'line-through text-[#70737C]' : 'text-white'} whitespace-normal cursor-pointer`}
             title="클릭하여 수정"
+            onClick={handleClickEdit}
           >
             {todo.content}
           </span>
