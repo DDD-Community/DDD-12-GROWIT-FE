@@ -36,7 +36,7 @@ export function useFetchEditTodo({ onSuccess }: UseEditTodoProps) {
           isCompleted: false,
         };
 
-        showToast('투두가 성공적으로 수정되었습니다.', 'success');
+        showToast('투두가 수정되었습니다.', 'success');
         onSuccess(updatedTodo);
 
         return true; // 성공 시 true 반환

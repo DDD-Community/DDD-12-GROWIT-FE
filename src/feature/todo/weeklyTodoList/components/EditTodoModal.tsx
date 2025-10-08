@@ -34,7 +34,7 @@ export const EditTodoModal = ({ open, todo, goal, onClose, onSubmit, onDelete }:
   });
   const { deleteTodoItem } = useFetchDeleteTodo({
     onSuccess: () => {
-      showToast('투두가 성공적으로 삭제되었습니다.', 'success');
+      showToast('투두가 삭제되었습니다.', 'success');
       onDelete();
       onClose();
     },
