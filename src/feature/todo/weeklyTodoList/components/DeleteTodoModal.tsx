@@ -13,7 +13,7 @@ interface DeleteTodoModalProps {
   onDelete: (todo: Todo) => void;
 }
 
-const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps) => {
+export const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
 
@@ -66,5 +66,3 @@ const DeleteTodoModal = ({ open, todo, onClose, onDelete }: DeleteTodoModalProps
     />
   );
 };
-
-export default DeleteTodoModal;
