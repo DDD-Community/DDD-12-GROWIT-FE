@@ -43,8 +43,10 @@ export const AIAdviceDetailModal = ({
       <div className="relative z-10">
         <FlexBox className="justify-between p-6 pb-4">
           <FlexBox className="gap-2 items-center">
-            <h1 className="text-base font-bold text-white">{aiMentorName}</h1>
-            <Image src="/home/planet.png" alt="planet" width={24} height={20} priority={true} className="w-6 h-5" />
+            <h1 className="body-1-bold bg-[linear-gradient(90deg,rgba(128,245,14,1)_0%,rgba(120,193,241,1)_40%,rgba(204,173,253,1)_100%)] bg-clip-text text-transparent">
+              {aiMentorName}의 조언
+            </h1>
+            <Image src="/home/planet.svg" alt="planet" width={24} height={20} priority={true} className="w-6 h-5" />
           </FlexBox>
           <button
             onClick={onClose}
