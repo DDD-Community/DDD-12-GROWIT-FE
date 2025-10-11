@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
+import { Todo } from '@/shared/type/Todo';
 import { usePlanSelector } from '@/model/todo/planSelector';
 import { useTodoBoardActions, useTodoBoardState } from '@/model/todo/todoList';
 import { useSelectedDayState, useSelectedDayActions } from '@/model/todo/selectedDay';
-import { DeleteTodoModal } from './components/DeleteTodoModal';
 import { WeekDatePicker } from './components/WeekDatePicker';
 import { EditTodoModal } from './components/EditTodoModal';
-import { AddTodoModal } from './components/AddTodoModal';
 import { TodoCard } from './components/TodoCard';
 import { AddTodoCard } from './components/AddTodoCard';
 import { useInitSelectedToday } from './hooks/useInitSelectedToday';
@@ -28,7 +26,11 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
   const { toggleTodoStatus, refreshTodoList } = useTodoBoardActions();
 
   const [editModal, setEditModal] = useState({ open: false, todo: null as Todo | null });
-  const selectedDayTodos = todoList?.[selectedDay] || [];
+  // 미완료된 todo가 상단으로 정렬되어야한다는 요구사항 반영
+  const selectedDayTodos = useMemo(
+    () => todoList?.[selectedDay].sort((a, b) => (a.isCompleted ? 1 : -1)) || [],
+    [todoList, selectedDay]
+  );
 
   const handleEditSubmit = (updatedTodo: Todo) => {
     setEditModal({ open: false, todo: null });
