@@ -21,7 +21,12 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
 
   return (
     <>
-      <p className="body-1-bold text-label-neutral">{aiMentorName}의 조언</p>
+      <div className="flex items-center gap-2">
+        <p className="body-1-bold bg-[linear-gradient(90deg,rgba(128,245,14,1)_0%,rgba(120,193,241,1)_40%,rgba(204,173,253,1)_100%)] bg-clip-text text-transparent">
+          {aiMentorName}의 조언
+        </p>
+        <Image src="/home/planet.svg" alt="planet" width={24} height={24} priority={true} className="w-6 h-5" />
+      </div>
       <div className="relative pt-6 max-w-md min-h-[180px] px-4 rounded-2xl overflow-hidden">
         <Image
           src={imagePath}
