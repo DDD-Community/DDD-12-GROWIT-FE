@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <GoogleTagManager gtmId="GTM-NG254Z2D" />
+      <GoogleTagManager gtmId="GTM-W8GCRPWX" />
       <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-[#1B1C1E]`}>
         <MSWClientProvider>
           <ToastProvider>{children}</ToastProvider>
