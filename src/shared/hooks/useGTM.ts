@@ -47,7 +47,7 @@ export const useGTMEvent = () => {
 interface TrackButtonClickParams {
   eventName: GTM_EVENTS;
   buttonName: string;
-  pagePath: string;
+  pagePath?: string; // 선택적으로 변경
 }
 
 /**
@@ -55,11 +55,12 @@ interface TrackButtonClickParams {
  */
 export const useGTMActions = () => {
   const { sendEvent } = useGTMEvent();
+  const pathname = usePathname();
 
   const trackButtonClick = ({ eventName, buttonName, pagePath }: TrackButtonClickParams) => {
     sendEvent(eventName, {
       [GTM_PARAMETERS.BUTTON_NAME]: buttonName,
-      [GTM_PARAMETERS.PAGE_PATH]: pagePath,
+      [GTM_PARAMETERS.PAGE_PATH]: pagePath || pathname,
     });
   };
 

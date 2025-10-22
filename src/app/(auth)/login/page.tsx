@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { LoginForm } from '@/composite/login/loginForm';
 import { KakaoLoginButton } from './KakaoLoginButton';
+import { SignUpButton } from '@/feature/auth';
 
 export default function LoginPage() {
   return (
@@ -26,9 +26,7 @@ export default function LoginPage() {
             <KakaoLoginButton />
             <div>
               <span>계정이 없으신가요? </span>
-              <Link href="/signup" className="text-white font-medium underline">
-                회원가입 바로가기
-              </Link>
+              <SignUpButton />
             </div>
           </div>
         </div>

@@ -8,6 +8,8 @@ export enum GTM_EVENTS {
   // 페이지 관련
   PAGE_VIEW = 'page_view',
 
+  LOGIN_CLICK = 'login_click',
+
   // 사용자 액션
   BUTTON_CLICK = 'button_click',
   FORM_SUBMIT = 'form_submit',
@@ -36,6 +38,12 @@ export enum GTM_EVENTS {
 
   // 에러 관련
   ERROR = 'error',
+}
+
+export enum GTM_BUTTON_NAME {
+  LOGIN = 'login',
+  KAKAO_LOGIN = 'kakao_login',
+  SIGN_UP = 'sign_up',
 }
 
 // 이벤트 파라미터 enum
