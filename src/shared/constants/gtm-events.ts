@@ -9,6 +9,7 @@ export enum GTM_EVENTS {
   PAGE_VIEW = 'page_view',
 
   LOGIN_CLICK = 'login_click',
+  SIGN_UP_CLICK = 'signup_click',
 
   // 사용자 액션
   BUTTON_CLICK = 'button_click',
