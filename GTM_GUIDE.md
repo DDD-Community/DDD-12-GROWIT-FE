@@ -48,15 +48,15 @@ import { useGTMActions, useGTMEvent } from '@/shared/hooks/useGTM';
 import { GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 function MyComponent() {
-  const { trackButtonClick, trackFormSubmit, trackTodoAction } = useGTMActions();
+  const { trackButtonClick } = useGTMActions();
   const { sendEvent } = useGTMEvent();
 
   const handleButtonClick = () => {
-    trackButtonClick('my_button', 'main_page');
-  };
-
-  const handleTodoComplete = (todoId: string) => {
-    trackTodoAction('complete', todoId);
+    trackButtonClick({
+      eventName: GTM_EVENTS.BUTTON_CLICK,
+      buttonName: 'signup_button',
+      pagePath: '/home'
+    });
   };
 
   const handleCustomEvent = () => {
@@ -66,7 +66,6 @@ function MyComponent() {
   return (
     <div>
       <button onClick={handleButtonClick}>클릭 추적</button>
-      <button onClick={() => handleTodoComplete('todo-123')}>투두 완료</button>
       <button onClick={handleCustomEvent}>커스텀 이벤트</button>
     </div>
   );
@@ -96,11 +95,10 @@ function MyApp({ children, userId, userProperties }) {
 
 ### 2. 수동 추적 이벤트
 
-- **버튼 클릭**: `trackButtonClick(buttonName, location)` - enum 기반 파라미터 사용
-- **폼 제출**: `trackFormSubmit(formName, success)` - enum 기반 파라미터 사용
-- **투두 액션**: `trackTodoAction(action, todoId)` - enum 기반 이벤트 매핑
-- **목표 완료**: `trackGoalComplete(goalId, goalName, value)` - enum 기반 파라미터 사용
-- **네비게이션**: `trackNavigation(from, to)` - enum 기반 파라미터 사용
+- **버튼 클릭**: `trackButtonClick({ eventName, buttonName, pagePath })` - 객체 기반 파라미터 사용
+  - `event`: 이벤트 이름
+  - `btn_name`: 버튼 이름 (enum: `GTM_PARAMETERS.BUTTON_NAME`)
+  - `page_path`: 페이지 경로 (enum: `GTM_PARAMETERS.PAGE_PATH`)
 
 ## GTM 대시보드 설정
 
@@ -154,9 +152,9 @@ GTM_EVENTS.TODO_COMPLETE;
 GTM_EVENTS.GOAL_CREATE;
 
 // 이벤트 파라미터
-GTM_PARAMETERS.BUTTON_NAME;
+GTM_PARAMETERS.BUTTON_NAME; // 'btn_name'
+GTM_PARAMETERS.PAGE_PATH; // 'page_path'
 GTM_PARAMETERS.TODO_ID;
-GTM_PARAMETERS.GOAL_VALUE;
 
 // 이벤트 카테고리
 GTM_CATEGORIES.USER_ACTION;

@@ -48,7 +48,7 @@ export enum GTM_PARAMETERS {
   PAGE_LOCATION = 'page_location',
 
   // 버튼 관련
-  BUTTON_NAME = 'button_name',
+  BUTTON_NAME = 'btn_name',
   BUTTON_LOCATION = 'button_location',
 
   // 폼 관련

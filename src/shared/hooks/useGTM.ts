@@ -44,59 +44,26 @@ export const useGTMEvent = () => {
   return { sendEvent };
 };
 
+interface TrackButtonClickParams {
+  eventName: GTM_EVENTS;
+  buttonName: string;
+  pagePath: string;
+}
+
 /**
  * 특정 액션에 대한 이벤트 전송 훅들
  */
 export const useGTMActions = () => {
   const { sendEvent } = useGTMEvent();
 
-  const trackButtonClick = (buttonName: string, location?: string) => {
-    sendEvent(GTM_EVENTS.BUTTON_CLICK, {
+  const trackButtonClick = ({ eventName, buttonName, pagePath }: TrackButtonClickParams) => {
+    sendEvent(eventName, {
       [GTM_PARAMETERS.BUTTON_NAME]: buttonName,
-      [GTM_PARAMETERS.BUTTON_LOCATION]: location,
-    });
-  };
-
-  const trackFormSubmit = (formName: string, success: boolean = true) => {
-    sendEvent(GTM_EVENTS.FORM_SUBMIT, {
-      [GTM_PARAMETERS.FORM_NAME]: formName,
-      [GTM_PARAMETERS.FORM_SUCCESS]: success,
-    });
-  };
-
-  const trackGoalComplete = (goalId: string, goalName: string, value?: number) => {
-    sendEvent(GTM_EVENTS.GOAL_COMPLETE, {
-      [GTM_PARAMETERS.GOAL_ID]: goalId,
-      [GTM_PARAMETERS.GOAL_NAME]: goalName,
-      [GTM_PARAMETERS.GOAL_VALUE]: value,
-    });
-  };
-
-  const trackTodoAction = (action: 'create' | 'complete' | 'delete' | 'update', todoId?: string) => {
-    const eventMap = {
-      create: GTM_EVENTS.TODO_CREATE,
-      complete: GTM_EVENTS.TODO_COMPLETE,
-      delete: GTM_EVENTS.TODO_DELETE,
-      update: GTM_EVENTS.TODO_UPDATE,
-    };
-
-    sendEvent(eventMap[action], {
-      [GTM_PARAMETERS.TODO_ID]: todoId,
-    });
-  };
-
-  const trackNavigation = (from: string, to: string) => {
-    sendEvent(GTM_EVENTS.NAVIGATION, {
-      [GTM_PARAMETERS.NAVIGATION_FROM]: from,
-      [GTM_PARAMETERS.NAVIGATION_TO]: to,
+      [GTM_PARAMETERS.PAGE_PATH]: pagePath,
     });
   };
 
   return {
     trackButtonClick,
-    trackFormSubmit,
-    trackGoalComplete,
-    trackTodoAction,
-    trackNavigation,
   };
 };
