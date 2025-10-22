@@ -10,7 +10,7 @@ export const SignUpButton = () => {
   const handleClick = () => {
     trackButtonClick({
       eventName: GTM_EVENTS.LOGIN_CLICK,
-      buttonName: GTM_BUTTON_NAME.SIGN_UP,
+      buttonName: GTM_BUTTON_NAME.SIGN_UP_LINK,
     });
   };
 

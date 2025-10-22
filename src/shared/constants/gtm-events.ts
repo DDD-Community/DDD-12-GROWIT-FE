@@ -41,8 +41,12 @@ export enum GTM_EVENTS {
 }
 
 export enum GTM_BUTTON_NAME {
+  // 로그인 페이지
   LOGIN = 'login',
   KAKAO_LOGIN = 'kakao_login',
+  SIGN_UP_LINK = 'signup_link',
+
+  // 회원가입 페이지
   SIGN_UP = 'sign_up',
 }
 
