@@ -8,6 +8,8 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { useFetchLogin } from '@/composite/login/loginForm/hook';
 import { tokenController } from '@/shared/lib/token';
 import Button from '@/shared/components/input/Button';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface LoginFormData {
   email: string;
@@ -19,6 +21,7 @@ export const LoginForm = () => {
   const { showToast } = useToast();
   const { login, loading } = useFetchLogin();
   const [isSuccess, setIsSuccess] = useState(false);
+  const { trackButtonClick } = useGTMActions();
 
   // 이미 로그인된 사용자 체크
   useEffect(() => {
@@ -60,6 +63,13 @@ export const LoginForm = () => {
     }
   };
 
+  const handleGTMEvent = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.LOGIN_CLICK,
+      buttonName: GTM_BUTTON_NAME.LOGIN,
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex flex-col gap-[24px] pb-[40px]">
@@ -96,6 +106,7 @@ export const LoginForm = () => {
         type="submit"
         text="로그인"
         size={'xl'}
+        onClick={handleGTMEvent}
         disabled={emailValue === '' || passwordValue === ''}
         status={loading ? 'loading' : isSuccess ? 'success' : 'idle'}
       />
