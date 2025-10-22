@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/shared/components/dialog';
 import Button from '@/shared/components/input/Button';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface SignupButtonProps {
   isValid: boolean;
@@ -15,10 +17,18 @@ interface SignupButtonProps {
 export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmitting }: SignupButtonProps) => {
   const router = useRouter();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const { trackButtonClick } = useGTMActions();
 
   useEffect(() => {
     if (isSignupSuccess) setShowSuccessDialog(true);
   }, [isSignupSuccess]);
+
+  const handleGTMEvent = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.SIGN_UP_CLICK,
+      buttonName: GTM_BUTTON_NAME.SIGN_UP,
+    });
+  };
 
   const handleSuccessConfirm = () => {
     setShowSuccessDialog(false);
@@ -29,7 +39,10 @@ export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmit
     <>
       <Button
         size={'ml'}
-        onClick={onClick}
+        onClick={() => {
+          handleGTMEvent();
+          onClick();
+        }}
         disabled={!isValid || isSubmitting}
         text={isSubmitting ? '가입 중...' : '가입하기'}
       />
