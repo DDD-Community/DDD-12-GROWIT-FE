@@ -6,6 +6,8 @@ import { AIAdviceDetailModal } from '@/feature/home/AIAdviceDetailModal';
 import { useState } from 'react';
 import { AIMentorAdvice } from '@/model/aiMentor/type';
 import { getAIMentorModalBackground, getAIMentorImage, getAIMentorModalCharacter } from './utils';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface AIMentorCardProps {
   aiMentor: AIMentor;
@@ -18,6 +20,15 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
   const imagePath = getAIMentorImage(aiMentor);
   const modalCharacterPath = getAIMentorModalCharacter(aiMentor);
   const modalBackgroundPath = getAIMentorModalBackground(aiMentor);
+  const { trackButtonClick } = useGTMActions();
+
+  const handleMentorCardClick = () => {
+    setShowModal(true);
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_AI_CLICK,
+      buttonName: GTM_BUTTON_NAME.AI_ADVICE,
+    });
+  };
 
   return (
     <>
@@ -41,7 +52,7 @@ export const AIMentorCard = ({ aiMentor, aiMentorAdvice }: AIMentorCardProps) =>
           <p className="text-xs text-label-neutral text-pretty max-w-[200px]">{aiMentorAdvice.kpt.tryNext}</p>
           <button
             className="flex items-center gap-2 headline-2-bold text-label-neutral mt-2"
-            onClick={() => setShowModal(true)}
+            onClick={handleMentorCardClick}
           >
             자세히보기 <ChevronRight className="w-4 h-4" />
           </button>

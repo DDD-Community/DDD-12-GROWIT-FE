@@ -5,6 +5,8 @@ import { Goal } from '@/shared/type/goal';
 import { useTodoBoardActions } from '@/model/todo/todoList';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { PlusIcon } from '@/shared/constants/icons';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface AddTodoCardProps {
   goal: Goal;
@@ -18,8 +20,8 @@ interface AddTodoFormData {
 
 export const AddTodoCard = ({ goal, selectedPlanId, selectedDate }: AddTodoCardProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-
   const { showToast } = useToast();
+  const { trackButtonClick } = useGTMActions();
   const { refreshTodoList } = useTodoBoardActions();
   const { addTodo, loading } = useFetchAddTodo({
     onSuccess: () => {
@@ -65,6 +67,10 @@ export const AddTodoCard = ({ goal, selectedPlanId, selectedDate }: AddTodoCardP
   };
 
   const handlePlusClick = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_CLICK,
+      buttonName: GTM_BUTTON_NAME.ADD_TODO,
+    });
     inputRef.current?.focus();
   };
 

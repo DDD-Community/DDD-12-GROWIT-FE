@@ -7,6 +7,8 @@ import { GoalFormData } from '@/shared/type/form';
 import { GoalCategoryEnum } from '@/shared/type/goal';
 import { GOAL_CATEGORIES } from '@/shared/constants/goalCategory';
 import { GuideMessage } from './GuideMessage';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface Step1GoalCategoryProps {
   onNext: () => void;
@@ -16,15 +18,28 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
   const { watch, setValue } = useFormContext<GoalFormData>();
   const formValues = watch();
   const selectedCategory = formValues.category;
+  const { trackButtonClick } = useGTMActions();
 
-  const handleCategorySelect = (e: React.MouseEvent<HTMLButtonElement>, categoryId: GoalCategoryEnum) => {
+  const handleCategorySelect = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    categoryId: GoalCategoryEnum,
+    gtmButtonName: GTM_BUTTON_NAME
+  ) => {
     e.preventDefault();
     setValue('category', categoryId);
+    trackButtonClick({
+      eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+      buttonName: gtmButtonName,
+    });
   };
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (selectedCategory) {
+      trackButtonClick({
+        eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+        buttonName: GTM_BUTTON_NAME.CATEGORY_NEXT,
+      });
       onNext();
     }
   };
@@ -40,7 +55,7 @@ export const Step1GoalCategory = ({ onNext }: Step1GoalCategoryProps) => {
               size="xl"
               text={category.label}
               variant={selectedCategory === category.id ? 'select' : 'secondary'}
-              onClick={e => handleCategorySelect(e, category.id)}
+              onClick={e => handleCategorySelect(e, category.id, category.gtmButtonName)}
             />
           ))}
         </div>

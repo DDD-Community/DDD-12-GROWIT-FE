@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { postAddRetrospect } from '../../addRetroSpect/api';
 import { Plan } from '@/shared/type/goal';
-import { useGoalSelector } from '@/model/goal/context';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useGTMActions } from '@/shared/hooks/useGTM';
 
 interface MissedWeeklyRetrospect {
   goalId?: string;
@@ -14,11 +15,12 @@ interface MissedWeeklyRetrospect {
 
 // 지나간 주차 미작성 컴포넌트 (새로 추가)
 export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospect) => {
+  const { trackButtonClick } = useGTMActions();
   const [isEditable, setIsEditable] = useState(false);
   const [weeklyRetrospect, setWeeklyRetrospect] = useState({
     keep: '',
     problem: '',
-    tryNext: ''
+    tryNext: '',
   });
 
   const addWeeklyRetrospect = async () => {
@@ -26,6 +28,14 @@ export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospe
       await postAddRetrospect({ goalId: goalId, planId: plan.id, kpt: weeklyRetrospect });
     }
     setIsEditable(false);
+  };
+
+  const handleClickNewReview = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.WEEKLY_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.NEW_REVIEW,
+    });
+    setIsEditable(true);
   };
 
   return (
@@ -96,7 +106,7 @@ export const MissedWeeklyRetrospectBox = ({ goalId, plan }: MissedWeeklyRetrospe
                 지난 주 회고가 아직 작성되지 않았어요. 간단히 경험을 기록해보세요.
               </p>
               <div className="w-32">
-                <Button size={'ml'} text="회고 작성하기" onClick={() => setIsEditable(true)} />
+                <Button size={'ml'} text="회고 작성하기" onClick={handleClickNewReview} />
               </div>
             </>
           )}

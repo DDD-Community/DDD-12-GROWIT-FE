@@ -3,15 +3,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePatchTodoStatus } from '@/model/todo/todayTodoList/hooks/usePatchTodoStatus';
 import Checkbox from '@/shared/components/input/Checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/shared/components/dropdown-menu';
-import { Edit, Trash2 } from 'lucide-react';
 import { useFetchEditTodo } from '../hooks/useFetchEditTodo';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface TodoEditInputProps {
   isEditing: boolean;
@@ -89,22 +83,21 @@ interface MobileWeeklyTodoItemProps {
   onEditTodoItem?: (updatedTodo: Todo) => void;
 }
 
-export const TodoCard = ({
-  todo,
-  dayOfWeek,
-  onToggleTodo,
-  onEdit,
-  onEditTodoItem,
-}: MobileWeeklyTodoItemProps) => {
+export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEdit, onEditTodoItem }: MobileWeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isEditing, setIsEditing] = useState(false);
+  const { trackButtonClick } = useGTMActions();
 
   useEffect(() => {
     setChecked(todo.isCompleted);
   }, [todo.isCompleted]);
 
   const handleCheck = async () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_CLICK,
+      buttonName: GTM_BUTTON_NAME.TODO_CHECK,
+    });
     const newChecked = !checked;
     mutate(todo.id, newChecked);
     setChecked(newChecked);
@@ -112,7 +105,19 @@ export const TodoCard = ({
   };
 
   const handleClickEdit = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_CLICK,
+      buttonName: GTM_BUTTON_NAME.TODO,
+    });
     setIsEditing(true);
+  };
+
+  const handleClickEditModalOpen = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_CLICK,
+      buttonName: GTM_BUTTON_NAME.TODO_EDIT,
+    });
+    onEdit?.();
   };
 
   const handleBlur = (e: React.FocusEvent) => {
@@ -149,7 +154,10 @@ export const TodoCard = ({
       </div>
       {/* 더보기 메뉴 */}
       {!isEditing && (
-        <button className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer" onClick={onEdit}>
+        <button
+          className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer"
+          onClick={handleClickEditModalOpen}
+        >
           <span className="text-white text-lg">⋮</span>
         </button>
       )}

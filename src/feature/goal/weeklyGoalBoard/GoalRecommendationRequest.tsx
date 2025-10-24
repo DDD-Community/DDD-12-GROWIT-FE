@@ -2,6 +2,8 @@ import Button from '@/shared/components/input/Button';
 import { AIMentor } from '@/feature/home/type';
 import { AIMentorNames } from '@/feature/home/const';
 import { useState } from 'react';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface BeforeRecommendationProps {
   aiMentor: AIMentor;
@@ -18,9 +20,15 @@ export const GoalRecommendationRequest = ({
   refetchGoal,
 }: BeforeRecommendationProps) => {
   const aiMentorName = AIMentorNames[aiMentor];
+  const { trackButtonClick } = useGTMActions();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_GOAL_CLICK,
+      buttonName: GTM_BUTTON_NAME.GOAL_OPEN,
+    });
+
     setIsLoading(true);
     try {
       await getAndPutWeeklyGoalRecommendationByAI(goalId, planId);

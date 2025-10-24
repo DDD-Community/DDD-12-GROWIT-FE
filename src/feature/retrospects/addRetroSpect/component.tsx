@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/shared/components/input/Button';
 import { ToolTip } from '@/shared/components/display/ToolTip';
-import { useFetchRetrospects } from './hooks';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useGTMActions } from '@/shared/hooks/useGTM';
 import { Goal } from '@/shared/type/goal';
-//import { useToast } from '@/shared/components/feedBack/toast';
-import Image from 'next/image';
+import { useFetchRetrospects } from './hooks';
 
 interface AddRetroSpectButtonProps {
   goal: Goal;
@@ -17,10 +18,9 @@ interface AddRetroSpectButtonProps {
 
 export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: AddRetroSpectButtonProps) => {
   const router = useRouter();
-  //const { showToast } = useToast();
-  //const hasShownTooltip = useRef(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isInitLoad, setIsInitLoad] = useState(true);
+  const { trackButtonClick } = useGTMActions();
   const { retrospect, isLoading: isLoadingRetrospects } = useFetchRetrospects(
     { goalId: goal.id, planId: selectedPlanId },
     {
@@ -31,6 +31,10 @@ export const AddRetroSpectButton = ({ goal, selectedPlanId, currentWeekIndex }: 
   );
 
   const handleNavigateToRetrospect = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_CLICK,
+      buttonName: GTM_BUTTON_NAME.REVIEW,
+    });
     if (retrospect?.retrospect?.id) {
       // 기존 회고가 있는 경우 해당 회고 페이지로 이동
       router.push(`/retrospect/${retrospect.retrospect.id}?weekIndex=${currentWeekIndex}`);
