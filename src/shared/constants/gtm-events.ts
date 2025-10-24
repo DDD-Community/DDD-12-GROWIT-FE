@@ -59,9 +59,9 @@ export enum GTM_BUTTON_NAME {
   GOAL_EXAMPLE = 'goal_example',
   GOAL_NEXT = 'goal_next',
   PERIOD_4 = 'period_4',
-  period_8 = 'period_8',
-  period_12 = 'period_12',
-  period_next = 'period_next',
+  PERIOD_8 = 'period_8',
+  PERIOD_12 = 'period_12',
+  PERIOD_NEXT = 'period_next',
 }
 
 // 이벤트 파라미터 enum
