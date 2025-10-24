@@ -8,13 +8,20 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 export function PlanetSelector() {
+  const { trackButtonClick } = useGTMActions();
   const { goalList, deleteGoal } = useGoalSelector();
   const { isOpen, selectedGoal, openModal, closeModal } = useGoalInfoModal();
 
   const handlePlanetClick = (goal: Goal) => {
     openModal(goal);
+    trackButtonClick({
+      eventName: GTM_EVENTS.GOAL_CLICK,
+      buttonName: GTM_BUTTON_NAME.PLANET,
+    });
   };
 
   const getGoalStatus = (goal: Goal) => {

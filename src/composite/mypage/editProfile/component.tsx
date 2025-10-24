@@ -9,9 +9,12 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { Select } from '@/shared/components/input/Select';
 import { SelectWithPortal } from '@/shared/components/input/Select';
 import { useEditProfile, useModalState, useEditProfileForm } from './hooks';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 export const EditProfile = () => {
   const { showToast } = useToast();
+  const { trackButtonClick } = useGTMActions();
   const { profile, putUserProfile } = useEditProfile();
   const { isModalOpen, handleOpenModal, handleCloseModal } = useModalState();
   const { selectedJobRole, selectedCareerYear, setSelectedJobRole, setSelectedCareerYear } = useEditProfileForm(
@@ -28,6 +31,14 @@ export const EditProfile = () => {
     } catch (error) {
       showToast('프로필 수정에 실패했습니다.', 'error');
     }
+  };
+
+  const handleClickToOpenModal = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.MYPAGE_CLICK,
+      buttonName: GTM_BUTTON_NAME.PROFILE_EDIT,
+    });
+    handleOpenModal();
   };
 
   return (
@@ -56,7 +67,7 @@ export const EditProfile = () => {
             variant="secondary"
             text="프로필 수정"
             layout="icon-left"
-            onClick={handleOpenModal}
+            onClick={handleClickToOpenModal}
             icon={
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_901_6588)">
