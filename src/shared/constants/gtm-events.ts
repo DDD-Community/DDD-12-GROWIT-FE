@@ -20,6 +20,10 @@ export enum GTM_EVENTS {
   HOME_TODO_CLICK = 'home_todo_click',
   HOME_GOAL_CLICK = 'home_goal_click',
 
+  // 회고
+  WEEKLY_REVIEW_CLICK = 'weekly_review_click',
+  TOTAL_REVIEW_CLICK = 'total_review_click',
+
   // 사용자 액션
   BUTTON_CLICK = 'button_click',
   FORM_SUBMIT = 'form_submit',
@@ -81,6 +85,13 @@ export enum GTM_BUTTON_NAME {
   TODO_EDIT = 'todo_edit',
   GOAL_OPEN = 'goal_open',
   GOAL_EDIT = 'goal_edit',
+
+  // 회고
+  REVIEW_EDIT = 'review_edit',
+  NEW_REVIEW = 'new_review',
+  REVIEW_DONE = 'review_done',
+  REVIEW_AI = 'review_ai',
+  PAST_TODO = 'past_todo',
 }
 
 // 이벤트 파라미터 enum
