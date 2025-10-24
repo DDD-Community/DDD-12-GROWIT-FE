@@ -11,13 +11,11 @@ import { useGoalSelector } from '@/model/goal/context';
 import { useGrorongAdvice } from './hooks';
 import { useAIMentorAdvice } from '@/model/aiMentor/context';
 import { useEffect, useState } from 'react';
-//import { useFetchUserName } from '@/shared/hooks';
 
 export const CheerMessageCard = () => {
   const { currentGoal } = useGoalSelector();
   const { advice } = useGrorongAdvice();
   const { aiMentorAdvice } = useAIMentorAdvice();
-  //const { fullUserName } = useFetchUserName();
   const [slideOrder, setSlideOrder] = useState<number[]>([]);
 
   useEffect(() => {
