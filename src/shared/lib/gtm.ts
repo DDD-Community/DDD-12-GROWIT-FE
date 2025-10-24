@@ -44,16 +44,6 @@ export const gtmCustomEvent = (eventName: string, parameters: Record<string, any
   });
 };
 
-// 전환 이벤트 전송
-export const gtmConversion = (conversionId: string, value?: number, currency?: string) => {
-  gtmEvent({
-    event: GTM_EVENTS.CONVERSION,
-    conversion_id: conversionId,
-    value: value,
-    currency: currency || 'KRW',
-  });
-};
-
 // 사용자 속성 설정
 export const gtmSetUserProperties = (properties: Record<string, any>) => {
   gtmEvent({
@@ -61,8 +51,3 @@ export const gtmSetUserProperties = (properties: Record<string, any>) => {
     ...properties,
   });
 };
-
-// dataLayer 타입 확장 (기존 선언이 있는 경우를 고려)
-interface Window {
-  dataLayer?: any[];
-}
