@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { RetrospectAIResponse } from '../type';
 import { apiClient } from '@/shared/lib/apiClient';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface AISummaryBoxProps {
   AISummary: RetrospectAIResponse;
@@ -19,9 +21,10 @@ interface AISummaryBoxProps {
 // 목표 진행 과정 요약(AI) 데이터가 있을 경우
 export const AISummaryBox = ({ AISummary, goalId }: AISummaryBoxProps) => {
   const router = useRouter();
+  const { showToast } = useToast();
+  const { trackButtonClick } = useGTMActions();
   const [goalRetrospect, setGoalRetrospect] = useState<string>(AISummary.content);
   const [isEditing, setIsEditing] = useState(AISummary.content === undefined || AISummary.content.length === 0);
-  const { showToast } = useToast();
 
   const patchGoalRetrospect = async () => {
     try {
@@ -32,6 +35,23 @@ export const AISummaryBox = ({ AISummary, goalId }: AISummaryBoxProps) => {
         showToast(error.message, 'error');
       }
     }
+  };
+
+  const handleClickPastWeeklyPlan = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.TOTAL_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.PAST_TODO,
+    });
+    goalId && router.push(`/retrospect/last/${goalId}`);
+  };
+
+  const handleClickReviewEdit = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.TOTAL_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.REVIEW_EDIT,
+    });
+    patchGoalRetrospect();
+    setIsEditing(false);
   };
 
   return (
@@ -46,13 +66,7 @@ export const AISummaryBox = ({ AISummary, goalId }: AISummaryBoxProps) => {
       </RetrospectBox>
       <RetrospectBox title="이전 기록 돌아보기">
         <div className="w-[137px] flex justify-start items-center">
-          <Button
-            onClick={() => {
-              goalId && router.push(`/retrospect/last/${goalId}`);
-            }}
-            size={'sm'}
-            text="지난 주간 플랜 보기"
-          />
+          <Button size={'sm'} text="지난 주간 플랜 보기" onClick={handleClickPastWeeklyPlan} />
         </div>
       </RetrospectBox>
       {/** 나의 회고 */}
@@ -69,15 +83,7 @@ export const AISummaryBox = ({ AISummary, goalId }: AISummaryBoxProps) => {
               maxLength={100}
             />
             <div className="w-[106px] flex items-end justify-end">
-              <Button
-                onClick={() => {
-                  patchGoalRetrospect();
-                  setIsEditing(false);
-                }}
-                variant="secondary"
-                size="sm"
-                text="작성 완료"
-              />
+              <Button onClick={handleClickReviewEdit} variant="secondary" size="sm" text="작성 완료" />
             </div>
           </FlexBox>
         ) : (
