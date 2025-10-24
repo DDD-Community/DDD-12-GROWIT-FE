@@ -10,6 +10,8 @@ import { AIMentorNames } from '@/feature/home/const';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Goal } from '@/shared/type/goal';
 import { DeleteConfirm } from './components/DeleteConfirm';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface GoalInfoModalProps extends GoalInfoModalActions {
   isOpen: boolean;
@@ -23,17 +25,26 @@ interface GoalInfoModalActions {
 
 export function GoalInfoModal({ isOpen, onClose, onDelete, goal }: GoalInfoModalProps) {
   const router = useRouter();
+  const { trackButtonClick } = useGTMActions();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   if (!goal) return null;
 
   const handleEditClick = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.GOAL_CLICK,
+      buttonName: GTM_BUTTON_NAME.PLANET_EDIT,
+    });
     router.push(`/goal/${goal.id}`);
     onClose();
   };
 
   const handleDeleteClick = () => {
     setIsDeleteConfirmOpen(true);
+    trackButtonClick({
+      eventName: GTM_EVENTS.GOAL_CLICK,
+      buttonName: GTM_BUTTON_NAME.PLANET_DELETE,
+    });
   };
 
   const handleDeleteConfirm = () => {
