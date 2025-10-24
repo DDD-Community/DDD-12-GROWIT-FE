@@ -8,6 +8,8 @@ import { Plan, Retrospect } from '@/composite/retrospect/type';
 import { MissedWeeklyRetrospectBox } from './MissedWeeklyRetrospectBox';
 import { LockedWeeklyRetrospectBox } from './LockedWeeklyRetrospectBox';
 import { postAddRetrospect } from '../../addRetroSpect/api';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useGTMActions } from '@/shared/hooks/useGTM';
 
 interface WeeklyRetrospectBoxProps {
   goalId?: string | undefined;
@@ -29,6 +31,7 @@ export const WeeklyRetrospectBox = ({
   isPassedWeek,
   updateWeeklyRetrospect,
 }: WeeklyRetrospectBoxProps) => {
+  const { trackButtonClick } = useGTMActions();
   const [isEditable, setIsEditable] = useState(false);
   const [weeklyRetrospect, setWeeklyRetrospect] = useState({
     keep: retrospect ? retrospect.kpt.keep : '',
@@ -72,6 +75,11 @@ export const WeeklyRetrospectBox = ({
 
   const handleUpdateRetrospect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    trackButtonClick({
+      eventName: GTM_EVENTS.WEEKLY_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.REVIEW_DONE,
+    });
+
     // 이미 작성된 경우에는 수정 (회고 데이터가 존재)
     if (retrospect) {
       await updateWeeklyRetrospect(retrospect.id, weeklyRetrospect);
@@ -81,6 +89,14 @@ export const WeeklyRetrospectBox = ({
       await postAddRetrospect({ goalId: goalId, planId: plan.id, kpt: weeklyRetrospect });
     }
     setIsEditable(false);
+  };
+
+  const handleClickReviewEdit = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.WEEKLY_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.REVIEW_EDIT,
+    });
+    setIsEditable(true);
   };
 
   return (
@@ -171,7 +187,7 @@ export const WeeklyRetrospectBox = ({
 
         {isWeeklyRetrospectCompleted && !isEditable && (
           <button
-            onClick={() => setIsEditable(true)}
+            onClick={handleClickReviewEdit}
             className="absolute bottom-4 right-4 p-2 rounded-2xl w-[36px] bg-label-button-neutral hover:bg-gray-600 border border-line-normal cursor-pointer"
           >
             <Image src="/pen.svg" alt="correct" width={20} height={20} />
