@@ -14,6 +14,7 @@ export enum GTM_EVENTS {
   // 목표 관련
   GOAL_ADD_CLICK = 'goal_add_click',
   GOAL_START_CLICK = 'goal_start_click',
+  GOAL_CLICK = 'goal_click',
 
   // home
   HOME_AI_CLICK = 'home_ai_click',
@@ -75,6 +76,9 @@ export enum GTM_BUTTON_NAME {
   MENTO_CARD = 'mento_card',
   MENTO_NEXT = 'mento_next',
   START_GOAL = 'start_goal',
+  PLANET = 'planet',
+  PLANET_DELETE = 'planet_delete',
+  PLANET_EDIT = 'planet_edit',
 
   // Home 페이지
   AI_ADVICE = 'ai_advice',
