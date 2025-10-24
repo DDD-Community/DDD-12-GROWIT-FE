@@ -7,10 +7,13 @@ import { useState } from 'react';
 import { apiClient } from '@/shared/lib/apiClient';
 import { useRouter } from 'next/navigation';
 import { tokenController } from '@/shared/lib/token';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useGTMActions } from '@/shared/hooks/useGTM';
 
 export const WithdrawButton = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const { trackButtonClick } = useGTMActions();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const deleteAccount = async () => {
     try {
@@ -22,9 +25,17 @@ export const WithdrawButton = () => {
     }
   };
 
+  const handleClickToOpenModal = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.MYPAGE_CLICK,
+      buttonName: GTM_BUTTON_NAME.PROFILE_DELETE,
+    });
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="max-w-24 flex justify-center">
-      <button className="text-gray-500 text-centerbody-1-bold p-4" onClick={() => setIsModalOpen(true)}>
+      <button className="text-gray-500 text-centerbody-1-bold p-4" onClick={handleClickToOpenModal}>
         탈퇴하기
       </button>
       <Modal
