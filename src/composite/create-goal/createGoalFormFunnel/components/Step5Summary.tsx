@@ -11,6 +11,8 @@ import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 import { MentorCharacterType } from '@/feature/goal/mentorCharacterCard';
 import Image from 'next/image';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface Step5SummaryProps {
   onNext: () => void;
@@ -19,7 +21,9 @@ interface Step5SummaryProps {
 
 export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) => {
   const { hideHeader } = useFunnelHeader();
+  const { trackButtonClick } = useGTMActions();
   const { watch } = useFormContext<GoalFormData>();
+
   const formValues = watch();
   const selectedCategory = GOAL_CATEGORIES.find(cat => cat.id === formValues.category);
   const duration = formValues.duration;
@@ -144,7 +148,13 @@ export const Step5Summary = ({ onNext, createGoalResult }: Step5SummaryProps) =>
         </div>
 
         {/* 하단 버튼 */}
-        <FunnelNextButton onClick={onNext} variant="brand" text="여정 시작하기" />
+        <FunnelNextButton onClick={() => {
+          trackButtonClick({
+            eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+            buttonName: GTM_BUTTON_NAME.START_GOAL,
+          });
+          onNext();
+        }} variant="brand" text="여정 시작하기" />
       </div>
     </div>
   );

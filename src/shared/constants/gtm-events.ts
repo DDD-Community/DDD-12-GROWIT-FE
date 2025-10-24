@@ -11,6 +11,10 @@ export enum GTM_EVENTS {
   LOGIN_CLICK = 'login_click',
   SIGN_UP_CLICK = 'signup_click',
 
+  // 목표 관련
+  GOAL_ADD_CLICK = 'goal_add_click',
+  GOAL_START_CLICK = 'goal_start_click',
+
   // 사용자 액션
   BUTTON_CLICK = 'button_click',
   FORM_SUBMIT = 'form_submit',
@@ -46,9 +50,22 @@ export enum GTM_BUTTON_NAME {
   LOGIN = 'login',
   KAKAO_LOGIN = 'kakao_login',
   SIGN_UP_LINK = 'signup_link',
-
-  // 회원가입 페이지
   SIGN_UP = 'sign_up',
+
+  // 목표 페이지
+  CATEGORY_STUDY = 'category_study',
+  CATEGORY_INVEST = 'category_invest',
+  CATEGORY_IT = 'category_it',
+  CATEGORY_NEXT = 'category_next',
+  GOAL_EXAMPLE = 'goal_example',
+  GOAL_NEXT = 'goal_next',
+  PERIOD_4 = 'period_4',
+  PERIOD_8 = 'period_8',
+  PERIOD_12 = 'period_12',
+  PERIOD_NEXT = 'period_next',
+  MENTO_CARD = 'mento_card',
+  MENTO_NEXT = 'mento_next',
+  START_GOAL = 'start_goal',
 }
 
 // 이벤트 파라미터 enum

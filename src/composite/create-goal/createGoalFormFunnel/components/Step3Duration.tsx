@@ -9,6 +9,8 @@ import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { GoalFormData } from '@/shared/type/form';
 import { GuideMessage } from './GuideMessage';
 import { useFunnelHeader } from '@/shared/components/layout/FunnelHeader';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface Step3DurationProps {
   onNext: () => void;
@@ -16,6 +18,7 @@ interface Step3DurationProps {
 
 export const Step3Duration = ({ onNext }: Step3DurationProps) => {
   const { showHeader } = useFunnelHeader();
+  const { trackButtonClick } = useGTMActions();
   const { watch, setValue, getValues } = useFormContext<GoalFormData>();
 
   const formValues = watch();
@@ -48,6 +51,10 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
 
   const handleNext = () => {
     if (isStepValid) {
+      trackButtonClick({
+        eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+        buttonName: GTM_BUTTON_NAME.PERIOD_NEXT,
+      });
       onNext();
     }
   };
@@ -66,7 +73,13 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
                 variant="secondary"
                 type="button"
                 className={`flex-1 ${selectedDuration === 4 && 'bg-gray-100! text-gray-900!'}`}
-                onClick={() => handleDurationClick(4)}
+                onClick={() => {
+                  handleDurationClick(4);
+                  trackButtonClick({
+                    eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+                    buttonName: GTM_BUTTON_NAME.PERIOD_4,
+                  });
+                }}
               />
               <Button
                 size="lg"
@@ -74,7 +87,13 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
                 variant="secondary"
                 type="button"
                 className={`flex-1 ${selectedDuration === 8 && 'bg-gray-100! text-gray-900!'}`}
-                onClick={() => handleDurationClick(8)}
+                onClick={() => {
+                  handleDurationClick(8);
+                  trackButtonClick({
+                    eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+                    buttonName: GTM_BUTTON_NAME.PERIOD_8,
+                  });
+                }}
               />
               <Button
                 size="lg"
@@ -82,7 +101,13 @@ export const Step3Duration = ({ onNext }: Step3DurationProps) => {
                 variant="secondary"
                 type="button"
                 className={`flex-1 ${selectedDuration === 12 && 'bg-gray-100! text-gray-900!'}`}
-                onClick={() => handleDurationClick(12)}
+                onClick={() => {
+                  handleDurationClick(12);
+                  trackButtonClick({
+                    eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+                    buttonName: GTM_BUTTON_NAME.PERIOD_12,
+                  });
+                }}
               />
             </div>
           </div>

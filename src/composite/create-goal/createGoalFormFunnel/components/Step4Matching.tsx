@@ -7,6 +7,8 @@ import Button from '@/shared/components/input/Button';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 import { useFormContext } from 'react-hook-form';
 import { GoalFormData } from '@/shared/type/form';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface CreateGoalState {
   isLoading: boolean;
@@ -28,6 +30,7 @@ export const Step4Matching = ({ onNext, onBack, createGoalState }: Step4Matching
   const { hideHeader } = useFunnelHeader();
   const { watch } = useFormContext<GoalFormData>();
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const { trackButtonClick } = useGTMActions();
 
   const { isLoading, isError, error, data, createGoal } = createGoalState;
 
@@ -143,7 +146,13 @@ export const Step4Matching = ({ onNext, onBack, createGoalState }: Step4Matching
 
         {/* 다음 버튼 */}
         <div className="h-[84px]">
-          <FunnelNextButton onClick={onNext} />
+          <FunnelNextButton onClick={() => {
+            trackButtonClick({
+              eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+              buttonName: GTM_BUTTON_NAME.MENTO_NEXT,
+            });
+            onNext();
+          }} />
         </div>
       </div>
     )

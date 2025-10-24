@@ -1,4 +1,5 @@
 import { GoalCategoryEnum } from '@/shared/type/goal';
+import { GTM_BUTTON_NAME } from './gtm-events';
 
 export const GOAL_CATEGORY_MAP = {
   [GoalCategoryEnum.STUDY]: '스터디',
@@ -7,7 +8,19 @@ export const GOAL_CATEGORY_MAP = {
 };
 
 export const GOAL_CATEGORIES = [
-  { id: GoalCategoryEnum.STUDY, label: GOAL_CATEGORY_MAP[GoalCategoryEnum.STUDY] },
-  { id: GoalCategoryEnum.FINANCE, label: GOAL_CATEGORY_MAP[GoalCategoryEnum.FINANCE] },
-  { id: GoalCategoryEnum.IT_PROJECT, label: GOAL_CATEGORY_MAP[GoalCategoryEnum.IT_PROJECT] },
+  {
+    id: GoalCategoryEnum.STUDY,
+    label: GOAL_CATEGORY_MAP[GoalCategoryEnum.STUDY],
+    gtmButtonName: GTM_BUTTON_NAME.CATEGORY_STUDY,
+  },
+  {
+    id: GoalCategoryEnum.FINANCE,
+    label: GOAL_CATEGORY_MAP[GoalCategoryEnum.FINANCE],
+    gtmButtonName: GTM_BUTTON_NAME.CATEGORY_INVEST,
+  },
+  {
+    id: GoalCategoryEnum.IT_PROJECT,
+    label: GOAL_CATEGORY_MAP[GoalCategoryEnum.IT_PROJECT],
+    gtmButtonName: GTM_BUTTON_NAME.CATEGORY_IT,
+  },
 ];

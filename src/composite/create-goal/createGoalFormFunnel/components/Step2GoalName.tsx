@@ -3,8 +3,10 @@
 import { useFormContext } from 'react-hook-form';
 import { CreateGoalFormElement } from '@/feature/goal';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
-import { GoalFormData } from '@/shared/type/form';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { GoalCategoryEnum } from '@/shared/type/goal';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GoalFormData } from '@/shared/type/form';
 import { GuideMessage } from './GuideMessage';
 import Button from '@/shared/components/input/Button';
 
@@ -19,6 +21,7 @@ const CATEGORY_EXAMPLES: Record<string, string[]> = {
 };
 
 export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
+  const { trackButtonClick } = useGTMActions();
   const { watch, setValue } = useFormContext<GoalFormData>();
 
   const formValues = watch();
@@ -28,6 +31,10 @@ export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isStepValid) {
+      trackButtonClick({
+        eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+        buttonName: GTM_BUTTON_NAME.GOAL_NEXT,
+      });
       onNext();
     }
   };
@@ -49,7 +56,13 @@ export const Step2GoalName = ({ onNext }: Step2GoalNameProps) => {
                     text={example}
                     variant={formValues.name === example ? 'select' : 'secondary'}
                     className={formValues.name === example ? '' : 'bg-transparent'}
-                    onClick={() => setValue('name', example)}
+                    onClick={() => {
+                      setValue('name', example);
+                      trackButtonClick({
+                        eventName: GTM_EVENTS.GOAL_ADD_CLICK,
+                        buttonName: GTM_BUTTON_NAME.GOAL_EXAMPLE,
+                      });
+                    }}
                   />
                 </div>
               ))}
