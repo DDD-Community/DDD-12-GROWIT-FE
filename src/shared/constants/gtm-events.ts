@@ -15,6 +15,11 @@ export enum GTM_EVENTS {
   GOAL_ADD_CLICK = 'goal_add_click',
   GOAL_START_CLICK = 'goal_start_click',
 
+  // home
+  HOME_AI_CLICK = 'home_ai_click',
+  HOME_TODO_CLICK = 'home_todo_click',
+  HOME_GOAL_CLICK = 'home_goal_click',
+
   // 사용자 액션
   BUTTON_CLICK = 'button_click',
   FORM_SUBMIT = 'form_submit',
@@ -66,6 +71,16 @@ export enum GTM_BUTTON_NAME {
   MENTO_CARD = 'mento_card',
   MENTO_NEXT = 'mento_next',
   START_GOAL = 'start_goal',
+
+  // Home 페이지
+  AI_ADVICE = 'ai_advice',
+  REVIEW = 'review',
+  TODO_CHECK = 'todo_check',
+  ADD_TODO = 'add_todo',
+  TODO = 'todo',
+  TODO_EDIT = 'todo_edit',
+  GOAL_OPEN = 'goal_open',
+  GOAL_EDIT = 'goal_edit',
 }
 
 // 이벤트 파라미터 enum
