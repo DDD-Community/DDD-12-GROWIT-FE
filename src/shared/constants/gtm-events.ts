@@ -25,34 +25,8 @@ export enum GTM_EVENTS {
   WEEKLY_REVIEW_CLICK = 'weekly_review_click',
   TOTAL_REVIEW_CLICK = 'total_review_click',
 
-  // 사용자 액션
-  BUTTON_CLICK = 'button_click',
-  FORM_SUBMIT = 'form_submit',
-  NAVIGATION = 'navigation',
-
-  // 투두 관련
-  TODO_CREATE = 'todo_create',
-  TODO_COMPLETE = 'todo_complete',
-  TODO_DELETE = 'todo_delete',
-  TODO_UPDATE = 'todo_update',
-
-  // 목표 관련
-  GOAL_CREATE = 'goal_create',
-  GOAL_COMPLETE = 'goal_complete',
-  GOAL_UPDATE = 'goal_update',
-  GOAL_DELETE = 'goal_delete',
-
-  // 회원가입/로그인
-  SIGN_UP = 'sign_up',
-  SIGN_IN = 'sign_in',
-  SIGN_OUT = 'sign_out',
-
-  // 전환 이벤트
-  CONVERSION = 'conversion',
-  PURCHASE = 'purchase',
-
-  // 에러 관련
-  ERROR = 'error',
+  // 프로필 관련
+  MYPAGE_CLICK = 'mypage_click',
 }
 
 export enum GTM_BUTTON_NAME {
@@ -96,6 +70,11 @@ export enum GTM_BUTTON_NAME {
   REVIEW_DONE = 'review_done',
   REVIEW_AI = 'review_ai',
   PAST_TODO = 'past_todo',
+
+  // 프로필 관련
+  LOGOUT = 'logout',
+  PROFILE_EDIT = 'profile_edit',
+  PROFILE_DELETE = 'profile_delete',
 }
 
 // 이벤트 파라미터 enum
@@ -135,24 +114,4 @@ export enum GTM_PARAMETERS {
   ERROR_MESSAGE = 'error_message',
   ERROR_CODE = 'error_code',
   ERROR_LOCATION = 'error_location',
-}
-
-// 이벤트 카테고리 enum
-export enum GTM_CATEGORIES {
-  USER_ACTION = 'user_action',
-  PAGE_VIEW = 'page_view',
-  CONVERSION = 'conversion',
-  ERROR = 'error',
-  TODO = 'todo',
-  GOAL = 'goal',
-}
-
-// 이벤트 라벨 enum
-export enum GTM_LABELS {
-  BUTTON = 'button',
-  FORM = 'form',
-  NAVIGATION = 'navigation',
-  TODO_ACTION = 'todo_action',
-  GOAL_ACTION = 'goal_action',
-  AUTH = 'auth',
 }
