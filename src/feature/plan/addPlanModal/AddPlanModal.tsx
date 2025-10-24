@@ -6,6 +6,8 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
 import { useFetchEditPlan } from './hooks';
 import { TextArea } from '@/shared/components/input/TextArea';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface AddPlanModalProps {
   onSuccessAddPlan: () => void;
@@ -27,6 +29,7 @@ export const AddPlanModal = ({
   planId,
 }: AddPlanModalProps) => {
   const [open, setOpen] = useState(false);
+  const { trackButtonClick } = useGTMActions();
   const {
     register,
     handleSubmit,
@@ -59,18 +62,21 @@ export const AddPlanModal = ({
     setOpen(false);
   };
 
+  const handleModalOpen = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_GOAL_CLICK,
+      buttonName: GTM_BUTTON_NAME.GOAL_EDIT,
+    });
+    reset({ description: selectedPlanContent || '' });
+    setOpen(true);
+  };
+
   // const displayGoal = `${selectedPlanIndex}주차 목표를 입력해주세요`;
   // const displayInfo = selectedPlanContent || '';
 
   return (
     <>
-      <button
-        onClick={() => {
-          reset({ description: selectedPlanContent || '' });
-          setOpen(true);
-        }}
-        className="flex items-center justify-between p-4"
-      >
+      <button onClick={handleModalOpen} className="flex items-center justify-between p-4">
         {/* <div className="flex flex-1 flex-col min-w-0">
           <span className="text-label-alternative text-xs font-medium text-left">{selectedPlanIndex}주차 목표</span>
           <p className="text-label-normal text-sm mt-1 truncate w-full text-left">
