@@ -62,6 +62,9 @@ export enum GTM_BUTTON_NAME {
   PERIOD_8 = 'period_8',
   PERIOD_12 = 'period_12',
   PERIOD_NEXT = 'period_next',
+  MENTO_CARD = 'mento_card',
+  MENTO_NEXT = 'mento_next',
+  START_GOAL = 'start_goal',
 }
 
 // 이벤트 파라미터 enum
