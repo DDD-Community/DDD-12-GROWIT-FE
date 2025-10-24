@@ -13,6 +13,7 @@ export enum GTM_EVENTS {
 
   // 목표 관련
   GOAL_ADD_CLICK = 'goal_add_click',
+  GOAL_START_CLICK = 'goal_start_click',
 
   // 사용자 액션
   BUTTON_CLICK = 'button_click',

@@ -2,17 +2,24 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { MentorCharacterType } from './types';
 import { mentorCharactersData } from './mentorCharactersData';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface MentorCharacterCardProps {
   mentorCharacter: MentorCharacterType;
 }
 
 const MentorCharacterCard: React.FC<MentorCharacterCardProps> = ({ mentorCharacter }) => {
+  const { trackButtonClick } = useGTMActions();
   const characterData = mentorCharactersData[mentorCharacter];
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleCardClick = () => {
     setIsFlipped(!isFlipped);
+    trackButtonClick({
+      eventName: GTM_EVENTS.GOAL_START_CLICK,
+      buttonName: GTM_BUTTON_NAME.MENTO_CARD,
+    });
   };
 
   return (
