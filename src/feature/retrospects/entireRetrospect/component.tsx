@@ -6,6 +6,8 @@ import { AISummaryButton } from './components/AISummaryButton';
 import { usePostRetrospectAI, useGetRetrospectAI } from './hook';
 import Badge from '@/shared/components/display/Badge';
 import { GoalRetrospect } from '@/composite/retrospect/done/type';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface EntireRetrospectProps {
   goalId?: string;
@@ -15,8 +17,14 @@ interface EntireRetrospectProps {
 export const EntireRetrospect = ({ goalId = '', goalRetrospect = null }: EntireRetrospectProps) => {
   const { isLoading, isSuccess, postAISummary } = usePostRetrospectAI();
   const { AISummary, setAISummary, getAISummary } = useGetRetrospectAI(goalRetrospect?.id || '');
+  const { trackButtonClick } = useGTMActions();
 
   const handlePostAISummary = async () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.TOTAL_REVIEW_CLICK,
+      buttonName: GTM_BUTTON_NAME.REVIEW_AI,
+    });
+
     const postRes = await postAISummary(goalId);
     if (postRes) {
       const aiSummary = await getAISummary(postRes.id);
