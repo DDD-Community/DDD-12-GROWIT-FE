@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { X } from 'lucide-react';
 import Button from '@/shared/components/input/Button/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -9,7 +8,7 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 
 const STORAGE_KEY = 'last-visited-date';
 
-export const AttendanceStreakPopup = () => {
+export const AttendanceStreakPopup = ({ mood }: { mood: 'HAPPY' | 'NORMAL' | 'SAD' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = () => {
@@ -34,6 +33,60 @@ export const AttendanceStreakPopup = () => {
     checkAndShowPopup();
   }, []);
 
+  const renderTitle = () => {
+    switch (mood) {
+      case 'HAPPY':
+        return (
+          <p className="title-2-bold text-primary-normal">
+            그로롱과의 친밀도가 <br /> MAX에 도달했어요!
+          </p>
+        );
+      default:
+        return (
+          <p className="title-2-bold text-primary-normal">
+            그로롱과의 친밀도가 <br /> 한 단계 올랐어요!
+          </p>
+        );
+    }
+  };
+
+  const renderMessage = () => {
+    switch (mood) {
+      case 'HAPPY':
+        return (
+          <p className="text-center body-1-normal text-primary-normal">
+            지금처럼 계속 이어간다면, <br />
+            그로롱은 늘 곁에서 응원할 거예요!
+          </p>
+        );
+      default:
+        return (
+          <p className="text-center body-1-normal text-primary-normal">
+            3일 연속으로 출석하면, <br /> 또 다른 그로롱이 기다리고 있어요!{' '}
+          </p>
+        );
+    }
+  };
+
+  const renderImage = () => {
+    switch (mood) {
+      case 'HAPPY':
+        return (
+          <Image
+            src="/home/grorong-love-max.png"
+            alt="grorong"
+            width={250}
+            height={250}
+            className="drop-shadow-lg mb-6"
+          />
+        );
+      default:
+        return (
+          <Image src="/home/grorong-love.png" alt="grorong" width={250} height={250} className="drop-shadow-lg mb-6" />
+        );
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -48,12 +101,6 @@ export const AttendanceStreakPopup = () => {
           <div className="absolute inset-0 bg-black/50" />
           <div className="relative w-full h-full">
             <Image src="/home/popup-bg.png" alt="popup background" fill className="object-cover" priority />
-            {/* <button
-              onClick={handleClose}
-              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
-            >
-              <X className="w-6 h-6 text-white" />
-            </button> */}
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-10">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
@@ -77,9 +124,7 @@ export const AttendanceStreakPopup = () => {
                 >
                   축하해요!
                 </h2>
-                <p className="title-2-bold text-primary-normal">
-                  그로롱과의 친밀도가 <br /> 한 단계 올랐어요!
-                </p>
+                {renderTitle()}
               </motion.div>
 
               <motion.div
@@ -93,16 +138,8 @@ export const AttendanceStreakPopup = () => {
                 }}
                 className="mb-6"
               >
-                <Image
-                  src="/home/grorong-love.png"
-                  alt="grorong clapping"
-                  width={250}
-                  height={250}
-                  className="drop-shadow-lg mb-6"
-                />
-                <p className="text-center body-1-normal text-primary-normal">
-                  3일 연속으로 출석하면, <br /> 또 다른 그로롱이 기다리고 있어요!{' '}
-                </p>
+                {renderImage()}
+                {renderMessage()}
               </motion.div>
               <div className="max-w-sm mx-auto w-full">
                 <Button size="lg" text="확인" onClick={handleClose} />

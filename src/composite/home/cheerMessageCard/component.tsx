@@ -9,6 +9,7 @@ import { AIMentorCard } from '@/feature/home/AIMentorCard';
 import { useGoalSelector } from '@/model/goal/context';
 import { useAIMentorAdvice } from '@/model/aiMentor/context';
 import { useGrorongAdvice } from './hooks';
+import { AttendanceStreakPopup } from '@/feature/todo/weeklyTodoList/components/AttendanceStreakPopup';
 
 export const CheerMessageCard = ({ type }: { type: 'grorong' | 'aiMentor' }) => {
   const { currentGoal } = useGoalSelector();
@@ -25,5 +26,10 @@ export const CheerMessageCard = ({ type }: { type: 'grorong' | 'aiMentor' }) => 
     return null;
   };
 
-  return <div className="relative">{renderCard()}</div>;
+  return (
+    <div className="relative">
+      {renderCard()}
+      {type === 'grorong' && advice?.mood && <AttendanceStreakPopup mood={advice.mood} />}
+    </div>
+  );
 };

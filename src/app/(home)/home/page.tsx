@@ -7,7 +7,6 @@ import { WeeklyPlanBoard } from '@/composite/home/planBoard';
 import { TodoListProvider } from '@/model/todo/todoList';
 import { SelectedDayProvider } from '@/model/todo/selectedDay';
 import { AIMentorProvider } from '@/model/aiMentor/context';
-import { AttendanceStreakPopup } from '@/feature/todo/weeklyTodoList/components/AttendanceStreakPopup';
 import { Z_INDEX } from '@/shared/lib/z-index';
 
 export default function MainPage() {
@@ -35,7 +34,6 @@ export default function MainPage() {
                   </div>
                 </div>
               </div>
-              <AttendanceStreakPopup />
             </AIMentorProvider>
           </SelectedDayProvider>
         </TodoListProvider>
