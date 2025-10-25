@@ -4,6 +4,7 @@ import DateSelectorPanel from './DateSelectorPanel';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { Z_INDEX } from '@/shared/lib/z-index';
+import { XIcon } from 'lucide-react';
 
 interface DateSelectorProps {
   selectedDate: Date | undefined;
@@ -64,7 +65,17 @@ export const DateSelector = ({
         </button>
       </SheetTrigger>
       <SheetContent side="bottom" className={`h-[60vh] ${Z_INDEX.SHEET}`}>
-        <div className="flex-1 p-4">
+        {/* <div className="flex items-center justify-between w-full">
+          <button type="button" className="label-1-normal font-bold text-status-negative">
+            닫기
+          </button>
+        </div> */}
+        <div className="flex-1 p-4 space-y-4">
+          <div className="flex justify-end text-label-normal">
+            <button type="button" onClick={() => handleOpenChange(false)}>
+              <XIcon className="w-5 h-5" />
+            </button>
+          </div>
           <DateSelectorPanel
             selectedDate={selectedDate}
             focusedDate={focusedDate || new Date()}
