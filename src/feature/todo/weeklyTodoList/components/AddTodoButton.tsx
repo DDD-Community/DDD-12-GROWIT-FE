@@ -124,7 +124,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
           type="button"
           onClick={handlePlusClick}
           className="rounded-lg px-[14px] py-[8px] flex items-center gap-3"
-          title="Todo 추가"
+          title="투두 추가"
         >
           <PlusIcon className="text-[#70737C]" />
           <span className="text-[#70737C] text-[16px]">Todo 추가</span>
