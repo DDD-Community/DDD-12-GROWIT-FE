@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Button from '../../input/Button';
 import { NAVIGATION_ROUTES_MOBILE, ROUTES, shouldHiddenNavigation, titleStyle } from '@/shared/constants/routes';
 import FlexBox from '../../foundation/FlexBox';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 export const BottomNavigation = () => {
   const router = useRouter();
@@ -22,7 +23,9 @@ export const BottomNavigation = () => {
   }
 
   return (
-    <nav className="fixed z-100 bottom-0 max-w-md mx-auto w-full p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47]">
+    <nav
+      className={`fixed bottom-0 max-w-md mx-auto w-full p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47] ${Z_INDEX.BOTTOM_NAVIGATION}`}
+    >
       {NAVIGATION_ROUTES_MOBILE.map(item => {
         const active = isActive(item.path);
         const IconComponent = active ? item.activeIcon : item.inActiveIcon;

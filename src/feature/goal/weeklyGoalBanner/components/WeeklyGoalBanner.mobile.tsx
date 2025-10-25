@@ -2,7 +2,7 @@
 
 import { Goal } from '@/shared/type/goal';
 import { calculateCurrentWeek } from '../utils';
-import Image from 'next/image';
+import { CheckCircle } from 'lucide-react';
 
 interface WeeklyGoalBannerMobileProps {
   goal: Goal;
@@ -47,13 +47,13 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
 
   return (
     <>
-      <p className="text-label-neutral body-1-normal font-semibold border-b border-[#23262F] pb-2">
-        나의 <span className="text-brand-neon body-1-bold">{totalWeeks}주</span> 목표
-      </p>
-      <div className="flex flex-col w-full rounded-2xl bg-elevated-assistive p-5 gap-5 relative overflow-hidden border border-[#23262F]">
+      <div className="flex flex-col w-full p-5 gap-5 relative overflow-hidden bg-transparent border-b border-b-line-normal">
         <div className="flex flex-col gap-1 relative z-[2]">
-          <div className="text-white text-lg font-semibold">{goal.name}</div>
-          <span className="rounded-full opacity-60 text-white text-xs">{durationLabel}</span>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-label-normal" />
+            <div className="text-body-normal text-label-normal">{goal.name}</div>
+          </div>
+          <span className="label-2-medium text-label-neutral">{durationLabel}</span>
         </div>
 
         {/* 진행률 바 */}
@@ -68,7 +68,7 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
           </div>
 
           <div className="flex items-center min-w-[38px]">
-            <span className="text-white text-sm font-medium">{`${currentWeek} `}</span>
+            <span className="text-label-normal   text-sm font-medium">{`${currentWeek} `}</span>
             <span className="text-label-neutral text-sm font-medium">/{totalWeeks}주</span>
           </div>
         </div>

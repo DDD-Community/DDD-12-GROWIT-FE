@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { XIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 interface Toast {
   id: string;
@@ -48,7 +49,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-100 space-y-2">
+      <div className={`fixed top-4 right-4 space-y-2 ${Z_INDEX.TOAST}`}>
         <AnimatePresence>
           {toasts.map(toast => (
             <ToastItem key={toast.id} toast={toast} onClose={() => hideToast(toast.id)} />
