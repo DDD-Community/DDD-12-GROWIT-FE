@@ -54,21 +54,19 @@ export const WeeklyTodoList = ({ goal, currentWeekIndex, onWeekChange }: WeeklyT
     <div className="flex flex-col">
       <WeekDatePicker weekDates={weekDates} selectedDay={selectedDay} goal={goal} />
       <div className="flex flex-col gap-[20px] min-h-[200px]">
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col">
           <AddTodoButton goal={goal} selectedPlanId={selectedPlanId} selectedDate={selectedDate} />
-          <div className="flex flex-col w-full">
-            {selectedDayTodos.map(todo => (
-              <TodoCard
-                key={todo.id}
-                todo={todo}
-                dayOfWeek={selectedDay}
-                goal={goal}
-                onToggleTodo={toggleTodoStatus}
-                onEditTodoItem={handleEditSubmit}
-                //onEdit={() => setEditModal({ open: true, todo })}
-              />
-            ))}
-          </div>
+          {selectedDayTodos.map(todo => (
+            <TodoCard
+              key={todo.id}
+              todo={todo}
+              dayOfWeek={selectedDay}
+              goal={goal}
+              onToggleTodo={toggleTodoStatus}
+              onEditTodoItem={handleEditSubmit}
+              //onEdit={() => setEditModal({ open: true, todo })}
+            />
+          ))}
         </div>
       </div>
       {/* <EditTodoModal
