@@ -19,9 +19,9 @@ export default function MainPage() {
               <div className="relative w-full">
                 <CheerMessageCard type="grorong" />
                 <div
-                  className={`absolute top-[160px] left-0 right-0 max-w-sm:mx-[20px] sm:mx-[40px] mx-auto bg-normal rounded-t-3xl shadow-xl ${Z_INDEX.CONTENT}`}
+                  className={`absolute top-[140px] left-0 right-0 max-w-sm:mx-[20px] sm:mx-[40px] mx-auto bg-normal rounded-t-3xl shadow-xl ${Z_INDEX.CONTENT}`}
                 >
-                  <div className="flex flex-col h-[calc(100vh-160px)]">
+                  <div className="flex flex-col h-[calc(100vh-140px)]">
                     <div className="flex flex-col flex-1 gap-6">
                       <GoalBanner />
                       <div className="px-4 md:px-0">
