@@ -2,7 +2,8 @@
 
 import { Goal } from '@/shared/type/goal';
 import { calculateCurrentWeek } from '../utils';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface WeeklyGoalBannerMobileProps {
   goal: Goal;
@@ -38,6 +39,7 @@ const getColorTheme = (plansLength: number) => {
 };
 
 export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) => {
+  const router = useRouter();
   const currentWeek = calculateCurrentWeek(goal.duration.startDate, goal.duration.endDate);
   const durationLabel = `${goal.duration.startDate} ~ ${goal.duration.endDate}`;
   const totalWeeks = Math.max(1, goal.plans?.length || 1);
@@ -49,11 +51,19 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
     <>
       <div className="flex flex-col w-full p-5 gap-5 relative overflow-hidden bg-transparent border-b border-b-line-normal">
         <div className="flex flex-col gap-1 relative z-[2]">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-label-normal" />
-            <div className="text-body-normal text-label-normal">{goal.name}</div>
+          <div className="flex w-full justify-between items-center">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-label-normal" />
+                <div className="text-body-normal text-label-normal">{goal.name}</div>
+              </div>
+              <span className="label-2-medium text-label-neutral">{durationLabel}</span>
+            </div>
+            <ChevronRight
+              className="w-5 h-5 text-label-normal cursor-pointer"
+              onClick={() => router.push(`/goal/${goal.id}`)}
+            />
           </div>
-          <span className="label-2-medium text-label-neutral">{durationLabel}</span>
         </div>
 
         {/* 진행률 바 */}
