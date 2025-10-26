@@ -1,9 +1,10 @@
 import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
+import { Goal } from '@/shared/type/goal';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePatchTodoStatus } from '@/model/todo/todayTodoList/hooks/usePatchTodoStatus';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { useFetchEditTodo } from '../hooks/useFetchEditTodo';
+import { EditTodoButton } from './EditTodoButton';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
@@ -19,13 +20,6 @@ interface EditFormData {
 }
 
 const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEditInputProps) => {
-  const { editTodo } = useFetchEditTodo({
-    onSuccess: updatedTodo => {
-      onEditTodoItem(updatedTodo);
-      onEditCancel();
-    },
-  });
-
   const {
     register,
     handleSubmit,
@@ -43,7 +37,8 @@ const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEd
 
   const onSubmit = async (data: EditFormData) => {
     if (data.content.trim() && data.content !== todo.content) {
-      await editTodo(todo.id, data.content, todo.date);
+      // 간단한 수정 로직 - 실제로는 부모 컴포넌트에서 처리
+      onEditTodoItem({ ...todo, content: data.content });
     } else {
       onEditCancel();
     }
@@ -81,9 +76,10 @@ interface MobileWeeklyTodoItemProps {
   onToggleTodo: (dayOfWeek: DAY_OF_THE_WEEK, todoId: string) => void;
   onEdit?: () => void;
   onEditTodoItem?: (updatedTodo: Todo) => void;
+  goal?: Goal;
 }
 
-export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEdit, onEditTodoItem }: MobileWeeklyTodoItemProps) => {
+export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEditTodoItem, goal }: MobileWeeklyTodoItemProps) => {
   const { mutate, isLoading } = usePatchTodoStatus();
   const [checked, setChecked] = useState(todo.isCompleted);
   const [isEditing, setIsEditing] = useState(false);
@@ -112,13 +108,13 @@ export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEdit, onEditTodoItem
     setIsEditing(true);
   };
 
-  const handleClickEditModalOpen = () => {
-    trackButtonClick({
-      eventName: GTM_EVENTS.HOME_TODO_CLICK,
-      buttonName: GTM_BUTTON_NAME.TODO_EDIT,
-    });
-    onEdit?.();
-  };
+  // const handleClickEditModalOpen = () => {
+  //   trackButtonClick({
+  //     eventName: GTM_EVENTS.HOME_TODO_CLICK,
+  //     buttonName: GTM_BUTTON_NAME.TODO_EDIT,
+  //   });
+  //   onEdit?.();
+  // };
 
   const handleBlur = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
@@ -153,14 +149,7 @@ export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEdit, onEditTodoItem
         )}
       </div>
       {/* 더보기 메뉴 */}
-      {!isEditing && (
-        <button
-          className="p-1 rounded hover:bg-[#2A2B31] transition-colors hover:cursor-pointer"
-          onClick={handleClickEditModalOpen}
-        >
-          <span className="text-white text-lg">⋮</span>
-        </button>
-      )}
+      {!isEditing && goal && <EditTodoButton todo={todo} goal={goal} onSubmit={onEditTodoItem || (() => {})} />}
     </div>
   );
 };
