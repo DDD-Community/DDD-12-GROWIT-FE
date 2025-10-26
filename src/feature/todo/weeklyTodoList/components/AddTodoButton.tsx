@@ -162,7 +162,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
           <div className="flex-1 px-4">
             <input type="hidden" {...dateRegister} ref={dateRef} />
             <TextArea
-              className="min-h-[120px] h-full"
+              className="h-full"
               maxLength={30}
               {...register('content', {
                 required: '내용을 입력해주세요.',
