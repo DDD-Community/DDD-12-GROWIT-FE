@@ -12,22 +12,11 @@ interface DateSelectorPanelProps {
   maxDate?: Date; // 최대 선택 가능 날짜
   onDateSelect: (date: Date) => void;
   onFocusedDateChange: (date: Date) => void;
-  onClose: () => void;
 }
 
 const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProps>(
   (
-    {
-      selectedDate,
-      focusedDate,
-      isStartDate,
-      allowedDaysOfWeek,
-      minDate,
-      maxDate,
-      onDateSelect,
-      onFocusedDateChange,
-      onClose,
-    },
+    { selectedDate, focusedDate, isStartDate, allowedDaysOfWeek, minDate, maxDate, onDateSelect, onFocusedDateChange },
     ref
   ) => {
     const [currentMonth, setCurrentMonth] = useState(focusedDate);
@@ -290,7 +279,7 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
                 relative w-10 h-10 flex items-center justify-center label-1-regular rounded-full transition-colors
                 ${!isSelectable ? 'pointer-events-none text-label-assistive opacity-50' : ''}
                 ${isStartDate && day.getDay() !== 0 && 'pointer-events-none text-label-assistive'} 
-                ${isSelected ? 'bg-[var(--color-brand-neon)] text-black' : ''}
+                ${isSelected ? 'bg-[var(--color-brand-neon)]' : ''}
                 ${isFocused && !isSelected ? 'bg-gray-700 text-primary-normal' : ''}
                 ${!isInCurrentMonth ? 'text-gray-500' : ''}
                 ${isToday && !isSelected ? 'bg-gray-600' : ''}

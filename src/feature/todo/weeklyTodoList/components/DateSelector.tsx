@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/components/ui/sheet';
 import DateSelectorPanel from './DateSelectorPanel';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { Z_INDEX } from '@/shared/lib/z-index';
-import { XIcon } from 'lucide-react';
 
 interface DateSelectorProps {
   selectedDate: Date | undefined;
@@ -23,7 +22,14 @@ export const DateSelector = ({
 }: DateSelectorProps) => {
   const [open, setOpen] = useState(false);
   const [focusedDate, setFocusedDate] = useState<Date | undefined>(selectedDate);
+  const [selectedDateLocal, setSelectedDateLocal] = useState<Date | undefined>(selectedDate);
   const { trackButtonClick } = useGTMActions();
+
+  // selectedDate prop이 변경될 때 내부 상태 동기화
+  useEffect(() => {
+    setSelectedDateLocal(selectedDate);
+    setFocusedDate(selectedDate);
+  }, [selectedDate]);
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear().toString().slice(-2);
@@ -32,14 +38,12 @@ export const DateSelector = ({
     return `${year}-${month}-${day}`;
   };
 
-  const handleDateSelect = (date: Date) => {
-    onDateSelect(date);
-    setOpen(false);
-  };
-
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (newOpen) {
+      // Sheet가 열릴 때 selectedDate를 초기값으로 설정
+      setSelectedDateLocal(selectedDate);
+      setFocusedDate(selectedDate || new Date());
       trackButtonClick({
         eventName: GTM_EVENTS.SHEET_OPEN,
         buttonName: GTM_BUTTON_NAME.DATE_SELECTOR_SHEET,
@@ -50,6 +54,13 @@ export const DateSelector = ({
         buttonName: GTM_BUTTON_NAME.DATE_SELECTOR_SHEET,
       });
     }
+  };
+
+  const handleComplete = () => {
+    if (selectedDateLocal) {
+      onDateSelect(selectedDateLocal);
+    }
+    setOpen(false);
   };
 
   return (
@@ -71,20 +82,31 @@ export const DateSelector = ({
           </button>
         </div> */}
         <div className="flex-1 p-4 space-y-4">
-          <div className="flex justify-end text-label-normal">
-            <button type="button" onClick={() => handleOpenChange(false)}>
-              <XIcon className="w-5 h-5" />
+          <div className="flex justify-between text-label-normal">
+            <button
+              type="button"
+              onClick={() => handleOpenChange(false)}
+              className="label-1-normal font-bold text-status-negative"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleComplete}
+              disabled={!selectedDateLocal}
+              className="label-1-normal font-bold"
+            >
+              완료
             </button>
           </div>
           <DateSelectorPanel
-            selectedDate={selectedDate}
+            selectedDate={selectedDateLocal}
             focusedDate={focusedDate || new Date()}
             isStartDate={false}
             minDate={minDate}
             maxDate={maxDate}
-            onDateSelect={handleDateSelect}
+            onDateSelect={setSelectedDateLocal}
             onFocusedDateChange={setFocusedDate}
-            onClose={() => handleOpenChange(false)}
           />
         </div>
       </SheetContent>

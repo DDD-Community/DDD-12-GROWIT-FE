@@ -37,6 +37,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
       showToast('투두가 추가되었습니다.', 'success');
     },
     onError: error => {
+      setOpen(false);
       showToast(error?.response?.data.message || '투두 추가에 실패했습니다.', 'error');
     },
   });
@@ -46,7 +47,9 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid },
+    trigger,
+    clearErrors,
+    formState: { errors },
     reset,
   } = useForm<AddTodoFormData>({
     mode: 'onChange',
@@ -56,7 +59,6 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
     },
   });
 
-  const watchedContent = watch('content');
   const watchedSelectedDate = watch('selectedDate');
   const startDate = new Date(goal.duration.startDate);
   const endDate = new Date(goal.duration.endDate);
@@ -83,7 +85,17 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
     setValue('selectedDate', date, { shouldValidate: true });
   };
 
+  const handleCompleteClick = async () => {
+    const isFormValid = await trigger(['content', 'selectedDate']);
+
+    if (!isFormValid) {
+      return;
+    }
+    handleSubmit(onSubmit)();
+  };
+
   const handlePlusClick = () => {
+    clearErrors(); // Sheet를 열 때 에러 상태 초기화
     trackButtonClick({
       eventName: GTM_EVENTS.HOME_TODO_CLICK,
       buttonName: GTM_BUTTON_NAME.ADD_TODO,
@@ -103,6 +115,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
         buttonName: GTM_BUTTON_NAME.ADD_TODO_SHEET,
       });
       reset({ content: '', selectedDate: selectedDate || undefined });
+      clearErrors(); // 에러 상태 초기화
     }
   };
 
@@ -138,7 +151,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
               onClick={() => setOpen(false)}
               className="label-1-normal font-bold text-status-negative"
             >
-              닫기
+              취소
             </button>
             <DateSelector
               selectedDate={watchedSelectedDate}
@@ -149,8 +162,8 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
             />
             <button
               type="button"
-              onClick={handleSubmit(onSubmit)}
-              disabled={loading || !isValid}
+              onClick={handleCompleteClick}
+              disabled={loading}
               className="label-1-normal font-bold text-label-normal"
             >
               완료
