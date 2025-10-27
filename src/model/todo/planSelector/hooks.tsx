@@ -41,8 +41,19 @@ export const PlanSelectorProvider = ({ children, goal }: { children: ReactNode; 
     if (idx !== -1) setSelectedPlanIndex(idx);
   };
 
-  const goPrev = () => setSelectedPlanIndex(idx => (idx > 0 ? idx - 1 : idx));
-  const goNext = () => setSelectedPlanIndex(idx => (idx < plans.length - 1 ? idx + 1 : idx));
+  const goPrev = () => {
+    const newIdx = selectedPlanIndex > 0 ? selectedPlanIndex - 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      setSelectedPlanIndex(newIdx);
+    }
+  };
+  
+  const goNext = () => {
+    const newIdx = selectedPlanIndex < plans.length - 1 ? selectedPlanIndex + 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      setSelectedPlanIndex(newIdx);
+    }
+  };
 
   const changePlanByDate = useCallback(
     (date: Date | string) => {

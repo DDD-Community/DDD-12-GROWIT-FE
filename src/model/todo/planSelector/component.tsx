@@ -2,6 +2,7 @@
 
 import { PlanSelectorProvider, usePlanSelector } from './hooks';
 import { useGoalSelector } from '@/model/goal/context';
+import { useSelectedDayActions } from '@/model/todo/selectedDay';
 import { CreateNewGoal } from './components/CreateNewGoal';
 
 interface PlanProviderProps {
@@ -9,7 +10,9 @@ interface PlanProviderProps {
 }
 
 export const PlanSelect = () => {
-  const { plans, selectedPlanIndex, goPrev, goNext } = usePlanSelector();
+  const { plans, selectedPlanIndex, goPrev, goNext, selectedWeekIndex } = usePlanSelector();
+  const { initWeekDatesToMonday } = useSelectedDayActions();
+  const { currentGoal } = useGoalSelector();
 
   if (!plans.length) return null;
 
@@ -17,10 +20,32 @@ export const PlanSelect = () => {
   const isPrevDisabled = !hasPlans || selectedPlanIndex === 0;
   const isNextDisabled = !hasPlans || selectedPlanIndex === plans.length - 1;
 
+  const handlePrev = () => {
+    const newIdx = selectedPlanIndex > 0 ? selectedPlanIndex - 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      goPrev();
+      const newWeekIndex = plans[newIdx]?.weekOfMonth;
+      if (currentGoal?.duration && newWeekIndex) {
+        initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, newWeekIndex);
+      }
+    }
+  };
+
+  const handleNext = () => {
+    const newIdx = selectedPlanIndex < plans.length - 1 ? selectedPlanIndex + 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      goNext();
+      const newWeekIndex = plans[newIdx]?.weekOfMonth;
+      if (currentGoal?.duration && newWeekIndex) {
+        initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, newWeekIndex);
+      }
+    }
+  };
+
   return (
     <div className="flex items-center">
       <button
-        onClick={goPrev}
+        onClick={handlePrev}
         disabled={isPrevDisabled}
         className="flex items-center justify-center w-8 h-8 rounded-lg text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200"
       >
@@ -40,7 +65,7 @@ export const PlanSelect = () => {
       </span>
 
       <button
-        onClick={goNext}
+        onClick={handleNext}
         disabled={isNextDisabled}
         className="flex items-center justify-center w-8 h-8 rounded-lg text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200"
       >
