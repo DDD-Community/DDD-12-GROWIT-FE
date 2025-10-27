@@ -21,16 +21,24 @@ export const PlanSelect = () => {
   const isNextDisabled = !hasPlans || selectedPlanIndex === plans.length - 1;
 
   const handlePrev = () => {
-    goPrev();
-    if (currentGoal?.duration) {
-      initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, selectedWeekIndex);
+    const newIdx = selectedPlanIndex > 0 ? selectedPlanIndex - 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      goPrev();
+      const newWeekIndex = plans[newIdx]?.weekOfMonth;
+      if (currentGoal?.duration && newWeekIndex) {
+        initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, newWeekIndex);
+      }
     }
   };
 
   const handleNext = () => {
-    goNext();
-    if (currentGoal?.duration) {
-      initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, selectedWeekIndex);
+    const newIdx = selectedPlanIndex < plans.length - 1 ? selectedPlanIndex + 1 : selectedPlanIndex;
+    if (newIdx !== selectedPlanIndex) {
+      goNext();
+      const newWeekIndex = plans[newIdx]?.weekOfMonth;
+      if (currentGoal?.duration && newWeekIndex) {
+        initWeekDatesToMonday(currentGoal.duration.startDate, currentGoal.duration.endDate, newWeekIndex);
+      }
     }
   };
 
