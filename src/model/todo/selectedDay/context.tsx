@@ -15,6 +15,7 @@ interface SelectedDayActions {
   updateDateInfo: (date: Date | string) => void;
   resetToToday: () => void;
   initWeekDates: (goalStartDate: string, goalEndDate: string, weekIndex: number) => void;
+  initWeekDatesToMonday: (goalStartDate: string, goalEndDate: string, weekIndex: number) => void;
 }
 
 export const useSelectedDay = () => {
@@ -79,12 +80,28 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
       const goalStartDateDate = new Date(goalStartDate);
       const goalEndDateDate = new Date(goalEndDate);
       const dates = getAllWeekDates(weekStartDate, goalStartDateDate, goalEndDateDate);
-      const initFirstDateByWeek = dates.find(d => !d.isBeforeStart && !d.isAfterEnd) || dates[0];
+      setWeekDates(dates);
+    },
+    [selectedDay]
+  );
+
+  const initWeekDatesToMonday = useCallback(
+    (goalStartDate: string, goalEndDate: string, weekIndex: number) => {
+      const weekStartDate = getWeekStartDate(goalStartDate, weekIndex - 1);
+      const goalStartDateDate = new Date(goalStartDate);
+      const goalEndDateDate = new Date(goalEndDate);
+      const dates = getAllWeekDates(weekStartDate, goalStartDateDate, goalEndDateDate);
+
+      // 월요일 찾기 (또는 첫 번째 유효한 날짜)
+      const monday =
+        dates.find(d => !d.isBeforeStart && !d.isAfterEnd && d.date.getDay() === 1) ||
+        dates.find(d => !d.isBeforeStart && !d.isAfterEnd) ||
+        dates[0];
 
       setWeekDates(dates);
-      updateDateInfo(initFirstDateByWeek.date);
+      updateDateInfo(monday.date);
     },
-    [selectedDay, updateDateInfo]
+    [updateDateInfo]
   );
 
   const resetToToday = useCallback(() => {
@@ -102,6 +119,7 @@ export const SelectedDayProvider = ({ children }: SelectedDayProviderProps) => {
   const actions: SelectedDayActions = {
     resetToToday,
     initWeekDates,
+    initWeekDatesToMonday,
     updateDateInfo,
   };
 
