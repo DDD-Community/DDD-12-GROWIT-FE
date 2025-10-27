@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback } from 'react';
+import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
+import { WeeklyGoalBoard } from '@/feature/goal/weeklyGoalBoard';
+import { AddRetroSpectButton } from '@/feature/retrospects';
 import { usePlanSelector } from '@/model/todo/planSelector';
 import { useGoalSelector } from '@/model/goal/context';
-import { WeeklyTodoList } from '@/feature/todo/weeklyTodoList';
 import { PlanSelect } from '@/model/todo/planSelector';
 import { Goal } from '@/shared/type/goal';
-import { AddRetroSpectButton } from '@/feature/retrospects';
-import { WeeklyGoalBoard } from '@/feature/goal/weeklyGoalBoard';
 
 export const WeeklyPlanBoard = () => {
   const { currentGoal, refetchCurrentGoal } = useGoalSelector();
@@ -16,21 +16,11 @@ export const WeeklyPlanBoard = () => {
 };
 
 const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: () => void }) => {
-  const { selectedPlanId, selectedPlanContent, selectedWeekIndex, setSelectedPlanId } = usePlanSelector();
+  const { selectedPlanId, selectedPlanContent, selectedWeekIndex } = usePlanSelector();
 
   const handleRefreshGoal = useCallback(() => {
     refetchGoal();
   }, []);
-
-  const handleWeekChange = useCallback(
-    (weekOfMonth: number) => {
-      const targetPlan = goal.plans.find(plan => plan.weekOfMonth === weekOfMonth);
-      if (targetPlan) {
-        setSelectedPlanId(targetPlan.id);
-      }
-    },
-    [goal.plans, setSelectedPlanId]
-  );
 
   return (
     <>
@@ -47,7 +37,7 @@ const WeeklyPlanBoardInner = ({ goal, refetchGoal }: { goal: Goal; refetchGoal: 
           onSuccessAddPlan={handleRefreshGoal}
           refetchGoal={refetchGoal}
         />
-        <WeeklyTodoList goal={goal} currentWeekIndex={selectedWeekIndex} onWeekChange={handleWeekChange} />
+        <WeeklyTodoList goal={goal} currentWeekIndex={selectedWeekIndex} />
       </div>
     </>
   );
