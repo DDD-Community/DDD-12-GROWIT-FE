@@ -16,6 +16,7 @@ interface AddTodoButtonProps {
   goal: Goal;
   selectedPlanId: string;
   selectedDate: Date | null;
+  onTodoAdded?: (addedDate: Date) => void;
 }
 
 interface AddTodoFormData {
@@ -23,24 +24,11 @@ interface AddTodoFormData {
   selectedDate: Date | undefined;
 }
 
-export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoButtonProps) => {
+export const AddTodoButton = ({ goal, selectedPlanId, selectedDate, onTodoAdded }: AddTodoButtonProps) => {
   const [open, setOpen] = useState(false);
   const { showToast } = useToast();
   const { trackButtonClick } = useGTMActions();
   const { refreshTodoList } = useTodoBoardActions();
-
-  const { addTodo, loading } = useFetchAddTodo({
-    onSuccess: () => {
-      refreshTodoList();
-      reset({ content: '', selectedDate: selectedDate || undefined });
-      setOpen(false);
-      showToast('투두가 추가되었습니다.', 'success');
-    },
-    onError: error => {
-      setOpen(false);
-      showToast(error?.response?.data.message || '투두 추가에 실패했습니다.', 'error');
-    },
-  });
 
   const {
     register,
@@ -62,6 +50,23 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate }: AddTodoBut
   const watchedSelectedDate = watch('selectedDate');
   const startDate = new Date(goal.duration.startDate);
   const endDate = new Date(goal.duration.endDate);
+
+  const { addTodo, loading } = useFetchAddTodo({
+    onSuccess: () => {
+      const dateToUse = watchedSelectedDate || selectedDate;
+      if (dateToUse && onTodoAdded) {
+        onTodoAdded(dateToUse);
+      }
+      refreshTodoList();
+      reset({ content: '', selectedDate: selectedDate || undefined });
+      setOpen(false);
+      showToast('투두가 추가되었습니다.', 'success');
+    },
+    onError: error => {
+      setOpen(false);
+      showToast(error?.response?.data.message || '투두 추가에 실패했습니다.', 'error');
+    },
+  });
 
   const onSubmit = async (data: AddTodoFormData) => {
     if (!data.selectedDate) return;
