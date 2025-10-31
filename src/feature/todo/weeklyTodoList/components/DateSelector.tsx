@@ -6,7 +6,7 @@ import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { Z_INDEX } from '@/shared/lib/z-index';
 
 interface DateSelectorProps {
-  selectedDate: Date | undefined;
+  selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
   minDate: Date;
   maxDate: Date;
@@ -21,8 +21,8 @@ export const DateSelector = ({
   placeholder = '날짜 선택',
 }: DateSelectorProps) => {
   const [open, setOpen] = useState(false);
-  const [focusedDate, setFocusedDate] = useState<Date | undefined>(selectedDate);
-  const [selectedDateLocal, setSelectedDateLocal] = useState<Date | undefined>(selectedDate);
+  const [focusedDate, setFocusedDate] = useState<Date | null>(selectedDate);
+  const [selectedDateLocal, setSelectedDateLocal] = useState<Date | null>(selectedDate);
   const { trackButtonClick } = useGTMActions();
 
   // selectedDate prop이 변경될 때 내부 상태 동기화
