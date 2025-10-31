@@ -150,7 +150,7 @@ export const EditTodoButton = ({ todo, goal, onSubmit }: EditTodoButtonProps) =>
               삭제
             </button>
             <DateSelector
-              selectedDate={watchedSelectedDate}
+              selectedDate={watchedSelectedDate || null}
               onDateSelect={handleDateSelect}
               minDate={startDate}
               maxDate={endDate}

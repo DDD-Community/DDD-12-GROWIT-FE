@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
 
 interface DateSelectorPanelProps {
-  selectedDate?: Date;
+  selectedDate: Date | null;
   focusedDate: Date;
   isStartDate: boolean;
   allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
@@ -256,7 +256,7 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
           onKeyDown={handleKeyDown}
         >
           {days.map((day, index) => {
-            const isSelected = selectedDate && isSameDay(day, selectedDate);
+            const isSelected = !!selectedDate && isSameDay(day, selectedDate);
             const isFocused = isSameDay(day, focusedDate);
             const isInCurrentMonth = isCurrentMonth(day);
             const isToday = isSameDay(day, new Date());

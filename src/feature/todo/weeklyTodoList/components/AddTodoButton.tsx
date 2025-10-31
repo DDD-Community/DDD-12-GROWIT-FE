@@ -15,13 +15,13 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 interface AddTodoButtonProps {
   goal: Goal;
   selectedPlanId: string;
-  selectedDate: Date;
+  selectedDate: Date | null;
   onTodoAdded?: (addedDate: Date) => void;
 }
 
 interface AddTodoFormData {
   content: string;
-  selectedDate: Date;
+  selectedDate: Date | null;
 }
 
 export const AddTodoButton = ({ goal, selectedPlanId, selectedDate = new Date(), onTodoAdded }: AddTodoButtonProps) => {
