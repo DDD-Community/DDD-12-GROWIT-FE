@@ -7,6 +7,7 @@ import Checkbox from '@/shared/components/input/Checkbox';
 import { EditTodoButton } from './EditTodoButton';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useFetchEditTodo } from '@/feature/todo/weeklyTodoList/hooks/useFetchEditTodo';
 
 interface TodoEditInputProps {
   isEditing: boolean;
@@ -20,6 +21,12 @@ interface EditFormData {
 }
 
 const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEditInputProps) => {
+  const { editTodo } = useFetchEditTodo({
+    onSuccess: updatedTodo => {
+      onEditTodoItem(updatedTodo);
+      onEditCancel();
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -37,8 +44,7 @@ const TodoEditInput = ({ isEditing, todo, onEditTodoItem, onEditCancel }: TodoEd
 
   const onSubmit = async (data: EditFormData) => {
     if (data.content.trim() && data.content !== todo.content) {
-      // 간단한 수정 로직 - 실제로는 부모 컴포넌트에서 처리
-      onEditTodoItem({ ...todo, content: data.content });
+      await editTodo(todo.id, data.content, todo.date);
     } else {
       onEditCancel();
     }
@@ -108,14 +114,6 @@ export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEditTodoItem, goal }
     setIsEditing(true);
   };
 
-  // const handleClickEditModalOpen = () => {
-  //   trackButtonClick({
-  //     eventName: GTM_EVENTS.HOME_TODO_CLICK,
-  //     buttonName: GTM_BUTTON_NAME.TODO_EDIT,
-  //   });
-  //   onEdit?.();
-  // };
-
   const handleBlur = (e: React.FocusEvent) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setIsEditing(false);
@@ -140,8 +138,8 @@ export const TodoCard = ({ todo, dayOfWeek, onToggleTodo, onEditTodoItem, goal }
         />
         {!isEditing && (
           <span
-            className={`text-sm ${todo.isCompleted ? 'line-through text-[#70737C]' : 'text-white'} whitespace-normal cursor-pointer`}
             title="클릭하여 수정"
+            className={`text-sm ${todo.isCompleted ? 'line-through text-[#70737C]' : 'text-white'} whitespace-normal cursor-pointer`}
             onClick={handleClickEdit}
           >
             {todo.content}
