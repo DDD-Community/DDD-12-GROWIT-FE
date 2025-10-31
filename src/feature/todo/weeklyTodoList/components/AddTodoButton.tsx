@@ -15,16 +15,16 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 interface AddTodoButtonProps {
   goal: Goal;
   selectedPlanId: string;
-  selectedDate: Date | null;
+  selectedDate: Date;
   onTodoAdded?: (addedDate: Date) => void;
 }
 
 interface AddTodoFormData {
   content: string;
-  selectedDate: Date | undefined;
+  selectedDate: Date;
 }
 
-export const AddTodoButton = ({ goal, selectedPlanId, selectedDate, onTodoAdded }: AddTodoButtonProps) => {
+export const AddTodoButton = ({ goal, selectedPlanId, selectedDate = new Date(), onTodoAdded }: AddTodoButtonProps) => {
   const [open, setOpen] = useState(false);
   const { showToast } = useToast();
   const { trackButtonClick } = useGTMActions();
@@ -43,7 +43,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate, onTodoAdded 
     mode: 'onChange',
     defaultValues: {
       content: '',
-      selectedDate: selectedDate || undefined,
+      selectedDate: selectedDate,
     },
   });
 
@@ -110,6 +110,7 @@ export const AddTodoButton = ({ goal, selectedPlanId, selectedDate, onTodoAdded 
       buttonName: GTM_BUTTON_NAME.ADD_TODO_SHEET,
     });
     setOpen(true);
+    setValue('selectedDate', selectedDate, { shouldValidate: true });
   };
 
   const handleOpenChange = (newOpen: boolean) => {
