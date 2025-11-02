@@ -76,7 +76,7 @@ export function PlanetSelector() {
     <>
       <div className="relative mt-10">
         <Swiper
-          dir="rtl"
+          initialSlide={0}
           pagination={{
             clickable: true,
             bulletClass: 'swiper-pagination-bullet',
@@ -126,12 +126,7 @@ export function PlanetSelector() {
                     {/* duration date */}
                     <div className="flex w-full justify-center gap-2.5 px-4 py-2.5">
                       <span className="body-1-medium text-label-neutral">
-                        {(() => {
-                          const startDate = goal.duration.startDate;
-                          const endDate = goal.duration.endDate;
-                          // TODO : Swiper 에 dir="rtl" 를 적용하며 발생한 문제를 해결
-                          return `${endDate}~${startDate}`;
-                        })()}
+                        {goal.duration.startDate}~{goal.duration.endDate}
                       </span>
                     </div>
                   </div>
@@ -140,7 +135,7 @@ export function PlanetSelector() {
             );
           })}
         </Swiper>
-        <div className="custom-pagination flex justify-center py-4" style={{ flexDirection: 'row-reverse' }} />
+        <div className="custom-pagination flex justify-center py-4" />
       </div>
 
       <GoalInfoModal isOpen={isOpen} onClose={closeModal} onDelete={deleteGoal} goal={selectedGoal} />
