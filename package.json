@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 3000",
     "lint": "next lint",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook": "storybook dev -p 6006 -c stories/.storybook",
+    "build-storybook": "storybook build -c stories/.storybook"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.6",
