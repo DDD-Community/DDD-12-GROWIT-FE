@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { todoHandlers } from './domain/todo';
-import { getContribution } from '@/composite/home/contributionGraph/api';
+import { getContribution } from '../src/composite/home/contributionGraph/api';
 
 // 테스트용 더미 데이터
 const users = [
