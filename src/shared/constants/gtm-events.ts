@@ -20,6 +20,7 @@ export enum GTM_EVENTS {
   HOME_AI_CLICK = 'home_ai_click',
   HOME_TODO_CLICK = 'home_todo_click',
   HOME_GOAL_CLICK = 'home_goal_click',
+  HOME_TODO_EDIT = 'home_todo_edit',
 
   // 시트 관련
   SHEET_OPEN = 'sheet_open',
@@ -67,6 +68,8 @@ export enum GTM_BUTTON_NAME {
   TODO_EDIT = 'todo_edit',
   GOAL_OPEN = 'goal_open',
   GOAL_EDIT = 'goal_edit',
+  TODO_DELETE = 'todo_delete',
+  TODO_EDIT_COMPLETE = 'todo_edit_complete',
 
   // 시트 관련
   ADD_TODO_SHEET = 'add_todo_sheet',
