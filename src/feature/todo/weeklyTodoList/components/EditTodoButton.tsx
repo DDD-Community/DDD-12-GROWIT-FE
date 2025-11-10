@@ -88,6 +88,11 @@ export const EditTodoButton = ({ todo, goal, onSubmit }: EditTodoButtonProps) =>
     const formattedDate = `${year}-${month}-${day}`;
 
     await editTodo(todo.id, data.content.trim(), formattedDate);
+
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_EDIT,
+      buttonName: GTM_BUTTON_NAME.TODO_EDIT_COMPLETE,
+    });
   };
 
   const handleDateSelect = (date: Date) => {
@@ -97,6 +102,11 @@ export const EditTodoButton = ({ todo, goal, onSubmit }: EditTodoButtonProps) =>
   const handleDelete = async () => {
     if (!todo) return;
     await deleteTodoItem(todo.id);
+
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME_TODO_EDIT,
+      buttonName: GTM_BUTTON_NAME.TODO_DELETE,
+    });
   };
 
   const handleOpenChange = (newOpen: boolean) => {
