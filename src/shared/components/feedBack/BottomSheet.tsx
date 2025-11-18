@@ -47,7 +47,7 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
   const [minHeight, setMinHeight] = useState(200);
   const height = useMotionValue(0);
   const springHeight = useSpring(height, {
-    stiffness: 500,
+    stiffness: 400,
     damping: 50,
   });
   const initDragHeight = useRef(0);
@@ -74,11 +74,18 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
   useEffect(() => {
     if (open) {
       height.set(snapPoints.half);
+
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
       initDragHeight.current = snapPoints.half;
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current);
         closeTimeoutRef.current = null;
       }
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
     }
   }, [open]);
 
@@ -105,7 +112,7 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
   const handleDragEnd = (info: PanInfo) => {
     const currentHeight = height.get();
     // 아래로 빠르게 내리면 닫기
-    if (info.velocity.y > 1000 && info.offset.y < 0) {
+    if (info.velocity.y > 800 && info.offset.y < 0) {
       onOpenChange(false);
       return;
     }
