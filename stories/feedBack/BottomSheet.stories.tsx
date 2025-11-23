@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
+import {
+  BottomSheetNavigator,
+  useBottomSheetNavigator,
+} from '@/shared/components/layout/BottomSheetNavigator/BottomSheetNavigator';
 import Button from '@/shared/components/input/Button';
 import { TextArea } from '@/shared/components/input/TextArea';
-import DatePicker from '@/shared/components/input/DatePicker';
 import { Folder, X } from 'lucide-react';
-import { useState } from 'react';
 
 const meta = {
   title: 'FeedBack/BottomSheet',
@@ -30,7 +32,6 @@ export const Playground: Story = {
   name: 'Default',
   render: () => {
     const { isOpen, showSheet, closeSheet } = useBottomSheet();
-    const [date, setDate] = useState<Date>(new Date());
 
     return (
       <>
@@ -40,7 +41,7 @@ export const Playground: Story = {
         <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
           <BottomSheet.Title>
             <div className="flex items-center justify-between w-full p-5">
-              <button onClick={close}>
+              <button onClick={closeSheet}>
                 <X size={24} className="text-primary-normal" />
               </button>
               <div className="flex items-center gap-2 text-primary-normal">
@@ -61,21 +62,48 @@ export const Playground: Story = {
             </div>
           </BottomSheet.Title>
           <BottomSheet.Content>
-            <div className="flex flex-col gap-4">
-              <div className="w-full">
-                <DatePicker selectedDate={date} onDateSelect={setDate} />
-              </div>
-              <TextArea placeholder="텍스트를 입력하세요" className="w-full" />
-              <div className="space-y-2">
-                <p className="text-sm text-label-normal">바텀시트 컨텐츠 영역입니다.</p>
-                <p className="text-sm text-label-normal">헤더를 드래그하여 높이를 조절할 수 있습니다.</p>
-              </div>
-            </div>
+            <BottomSheetNavigator>
+              <FirstScreen />
+            </BottomSheetNavigator>
           </BottomSheet.Content>
         </BottomSheet>
       </>
     );
   },
+};
+
+const FirstScreen = () => {
+  const { push } = useBottomSheetNavigator();
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="w-full">
+        <Button size="lg" text="다음 화면으로 이동" onClick={() => push(<SecondScreen />)} />
+      </div>
+      <TextArea placeholder="텍스트를 입력하세요" className="w-full" />
+      <div className="space-y-2">
+        <p className="text-sm text-label-normal">바텀시트 컨텐츠 영역입니다.</p>
+        <p className="text-sm text-label-normal">헤더를 드래그하여 높이를 조절할 수 있습니다.</p>
+      </div>
+    </div>
+  );
+};
+
+const SecondScreen = () => {
+  const { pop } = useBottomSheetNavigator();
+  return (
+    <div className="flex flex-col gap-4">
+      <button
+        type="button"
+        className="w-full h-full flex items-center gap-2 md:gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal focus:outline-none"
+        onClick={() => pop()}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M7 13L1 7L7 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span className="flex-1 text-left body-2-regular">뒤로 가기</span>
+      </button>
+    </div>
+  );
 };
 
 export const WithLongContent: Story = {
@@ -104,34 +132,6 @@ export const WithLongContent: Story = {
                   <p className="text-xs text-muted-foreground mt-1">이것은 긴 컨텐츠를 테스트하기 위한 예제입니다.</p>
                 </div>
               ))}
-            </div>
-          </BottomSheet.Content>
-        </BottomSheet>
-      </>
-    );
-  },
-};
-
-export const SimpleContent: Story = {
-  name: '간단한 컨텐츠',
-  render: () => {
-    const { isOpen, showSheet, closeSheet } = useBottomSheet();
-
-    return (
-      <>
-        <div className="flex justify-center items-center">
-          <Button size="xl" text="간단한 바텀시트 열기" onClick={showSheet} />
-        </div>
-        <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
-          <BottomSheet.Title>
-            <div className="p-5">
-              <h2 className="text-lg font-semibold">간단한 예제</h2>
-            </div>
-          </BottomSheet.Title>
-          <BottomSheet.Content>
-            <div className="flex flex-col gap-4">
-              <p className="text-label-normal">이것은 간단한 바텀시트 예제입니다.</p>
-              <Button size="lg" text="확인" onClick={close} />
             </div>
           </BottomSheet.Content>
         </BottomSheet>
