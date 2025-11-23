@@ -2,9 +2,9 @@
 @import 'tw-animate-css';
 @import './typography.css';
 @import './colors.css';
+@import './customTokens.css';
 
 @custom-variant dark (&:is(.dark *));
-
 /* Pretendard 폰트 설정 */
 @layer base {
   :root {
