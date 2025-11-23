@@ -1,44 +1,44 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValue, useSpring, type PanInfo } from 'framer-motion';
+import { useContext, createContext } from 'react';
+import { AnimatePresence, motion, useMotionValue, useSpring, type PanInfo, type MotionValue } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { X, Folder } from 'lucide-react';
 
-interface IBottomSheetProps {
-  title: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
+// Context 타입 정의
+interface BottomSheetContextType {
+  isOpen: boolean;
+  showSheet: () => void;
+  closeSheet: () => void;
+  snapPoints: {
+    closed: number;
+    half: number;
+    expanded: number;
+  };
+  minHeight: number;
+  height: MotionValue<number>;
+  springHeight: MotionValue<number>;
+  initDragHeight: React.MutableRefObject<number>;
 }
 
-interface IBottomSheetTitleProps {
-  title: string;
-  onOpenChange: (open: boolean) => void;
-}
-function SheetTitle({ title, onOpenChange }: IBottomSheetTitleProps) {
-  return (
-    <motion.div className="bg-transparent p-4 flex items-center justify-between border-b border-line-normal">
-      <button onClick={() => onOpenChange(false)}>
-        <X size={24} className="text-primary-normal" />
-      </button>
-      <div className="flex items-center gap-2 text-primary-normal">
-        <Folder size={24} />
-        {title}
-      </div>
-      <button>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M20 6L9 17L4 12" stroke="#3AEE49" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-    </motion.div>
-  );
-}
+const BottomSheetContext = createContext<BottomSheetContextType | null>(null);
 
-const SheetContent = ({ children }: { children: React.ReactNode }) => {
-  return <section className="bg-transparent p-4 max-h-[80%] h-full overflow-y-auto">{children}</section>;
+// Context 사용을 위한 훅
+const useBottomSheetContext = () => {
+  const context = useContext(BottomSheetContext);
+  if (!context) {
+    throw new Error('BottomSheet 컴포넌트는 BottomSheet.Provider 내부에서 사용되어야 합니다.');
+  }
+  return context;
 };
 
-export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomSheetProps) => {
+interface BottomSheetProviderProps {
+  isOpen: boolean;
+  showSheet: () => void;
+  closeSheet: () => void;
+  children: React.ReactNode;
+}
+// Provider 컴포넌트
+const BottomSheetProvider = ({ children, isOpen, showSheet, closeSheet }: BottomSheetProviderProps) => {
   const [snapPoints, setSnapPoints] = useState({
     closed: 0,
     half: 0,
@@ -51,10 +51,10 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
     damping: 50,
   });
   const initDragHeight = useRef(0);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 뷰포트 높이 기반 스냅 포인트 설정
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       const viewportHeight = window.innerHeight;
       const newSnapPoints = {
         closed: 0,
@@ -63,37 +63,96 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
       };
       setSnapPoints(newSnapPoints);
       setMinHeight(viewportHeight * 0.3);
-      // snapPoints가 설정된 후 initDragHeight도 업데이트
-      if (open) {
-        height.set(newSnapPoints.half);
-        initDragHeight.current = newSnapPoints.half;
-      }
     }
   }, []);
 
+  // 열릴 때 초기 높이 설정 및 body 스크롤 잠금
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       height.set(snapPoints.half);
+      initDragHeight.current = snapPoints.half;
 
       const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-      initDragHeight.current = snapPoints.half;
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current);
-        closeTimeoutRef.current = null;
-      }
-
       return () => {
         document.body.style.overflow = originalStyle;
       };
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!open && snapPoints.closed !== undefined) {
+    } else {
       height.set(snapPoints.closed);
     }
-  }, [open, snapPoints.closed, height, springHeight]);
+  }, [isOpen, snapPoints, height]);
+
+  return (
+    <BottomSheetContext.Provider
+      value={{
+        isOpen,
+        showSheet,
+        closeSheet,
+        snapPoints,
+        minHeight,
+        height,
+        springHeight,
+        initDragHeight,
+      }}
+    >
+      {children}
+    </BottomSheetContext.Provider>
+  );
+};
+
+// Root 컴포넌트 (오버레이 + 시트 컨테이너)
+const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
+  const { isOpen, closeSheet, springHeight, snapPoints } = useBottomSheetContext();
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* 오버레이 */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            onClick={e => {
+              if (e.target === e.currentTarget) {
+                closeSheet();
+              }
+            }}
+            className="fixed inset-0 bg-black z-998"
+          />
+          {/* 바텀시트 컨테이너 */}
+          <motion.aside
+            key="bottom-sheet"
+            style={{
+              height: springHeight,
+              touchAction: 'none',
+              willChange: 'height',
+            }}
+            initial={{ height: 0 }}
+            animate={{ height: snapPoints.half }}
+            exit={{ height: 0 }}
+            className="fixed bottom-0 left-1/2 -translate-x-1/2 bg-elevated-assistive max-w-96 w-full rounded-t-lg z-999"
+          >
+            {children}
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// Handle 컴포넌트
+const SheetHandle = () => {
+  return (
+    <motion.div className="absolute">
+      <div className="w-14 h-1 bg-fill-strong rounded-full" />
+    </motion.div>
+  );
+};
+
+// Title 컴포넌트 (드래그 가능한 헤더)
+const SheetTitle = ({ children }: { children: React.ReactNode }) => {
+  const { snapPoints, minHeight, height, initDragHeight, closeSheet } = useBottomSheetContext();
 
   const findClosestSnapPoint = useCallback(
     (currentHeight: number) => {
@@ -113,15 +172,15 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
     const currentHeight = height.get();
     // 아래로 빠르게 내리면 닫기
     if (info.velocity.y > 800 && info.offset.y < 0) {
-      onOpenChange(false);
+      closeSheet();
       return;
     }
-    // 현재 높이가 최소 높이이하로 내려가면 닫기
+    // 현재 높이가 최소 높이 이하로 내려가면 닫기
     if (currentHeight < minHeight) {
-      onOpenChange(false);
+      closeSheet();
       return;
     }
-    // 놓았을때 가장 가까운 스냅 포인트로 이동
+    // 놓았을 때 가장 가까운 스냅 포인트로 이동
     const targetHeight = findClosestSnapPoint(currentHeight);
     setTimeout(() => {
       height.set(targetHeight);
@@ -129,55 +188,76 @@ export const BottomSheet = ({ title, open, onOpenChange, children }: IBottomShee
   };
 
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            exit={{ opacity: 0 }}
-            onClick={e => {
-              if (e.target === e.currentTarget) {
-                onOpenChange(false);
-              }
-            }}
-            className="fixed inset-0 bg-black z-998"
-          />
-          <motion.aside
-            key="bottom-sheet"
-            style={{
-              height: springHeight,
-              touchAction: 'none',
-              willChange: 'height',
-            }}
-            initial={{ height: 0 }}
-            animate={{ height: snapPoints.half }}
-            exit={{ height: 0 }}
-            className="fixed bottom-0 left-1/2 -translate-x-1/2 bg-elevated-assistive max-w-96 w-full rounded-t-lg z-999"
-          >
-            <motion.div
-              onPanStart={() => {
-                initDragHeight.current = height.get();
-              }}
-              onPan={(_, info) => {
-                const deltaY = -info.offset.y;
-                const newHeight = initDragHeight.current + deltaY;
-                if (newHeight < minHeight) {
-                  onOpenChange(false);
-                  return;
-                }
+    <motion.div
+      onPanStart={() => {
+        initDragHeight.current = height.get();
+      }}
+      onPan={(_, info) => {
+        const deltaY = -info.offset.y;
+        const newHeight = initDragHeight.current + deltaY;
+        if (newHeight < minHeight) {
+          closeSheet();
+          return;
+        }
+        height.set(newHeight);
+      }}
+      onPanEnd={(_, info) => handleDragEnd(info)}
+      className="bg-transparent pt-3 flex flex-col items-center gap-4 cursor-grab active:cursor-grabbing"
+    >
+      <SheetHandle />
 
-                height.set(newHeight);
-              }}
-              onPanEnd={(_, info) => handleDragEnd(info)}
-              className="cursor-grab active:cursor-grabbing"
-            >
-              <SheetTitle title={title} onOpenChange={onOpenChange} />
-            </motion.div>
-            <SheetContent>{children}</SheetContent>
-          </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
+      {children}
+    </motion.div>
   );
+};
+
+// Content 컴포넌트
+const SheetContent = ({ children }: { children: React.ReactNode }) => {
+  return <section className="bg-transparent p-4 max-h-[80%] h-full overflow-y-auto">{children}</section>;
+};
+
+export const BottomSheet = ({
+  children,
+  isOpen,
+  showSheet,
+  closeSheet,
+}: {
+  children: React.ReactNode;
+  isOpen: boolean;
+  showSheet: () => void;
+  closeSheet: () => void;
+}) => {
+  return (
+    <BottomSheetProvider isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
+      <BottomSheetRoot>{children}</BottomSheetRoot>
+    </BottomSheetProvider>
+  );
+};
+
+// 서브 컴포넌트 할당
+BottomSheet.Title = SheetTitle;
+BottomSheet.Content = SheetContent;
+
+interface UseBottomSheetReturn {
+  isOpen: boolean;
+  showSheet: () => void;
+  closeSheet: () => void;
+}
+// 외부에서 사용할 수 있는 훅
+export const useBottomSheet = (): UseBottomSheetReturn => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const showSheet = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const closeSheet = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  return {
+    isOpen,
+    showSheet,
+    closeSheet,
+  };
 };
