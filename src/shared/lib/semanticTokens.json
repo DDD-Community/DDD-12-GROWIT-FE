@@ -1,0 +1,120 @@
+{
+  "Text": {
+    "Brand": {
+      "value": "{Lime.99}",
+      "type": "color"
+    },
+    "Inverse": {
+      "value": "{Cool Neutral.5}",
+      "type": "color"
+    },
+    "Secondary": {
+      "value": "{Cool Neutral.60}",
+      "type": "color"
+    },
+    "Primary": {
+      "value": "{Cool Neutral.90}",
+      "type": "color"
+    },
+    "Strong": {
+      "value": "{Cool Neutral._100}",
+      "type": "color"
+    },
+    "Danger": {
+      "value": "{Red.60}",
+      "type": "color"
+    },
+    "Warning": {
+      "value": "{Red Orange.70}",
+      "type": "color"
+    },
+    "Success": {
+      "value": "{Green.60}",
+      "type": "color"
+    },
+    "Tertiary": {
+      "value": "{Cool Neutral.40}",
+      "type": "color"
+    }
+  },
+  "Icon": {
+    "Primary": {
+      "value": "{Cool Neutral.90}",
+      "type": "color"
+    },
+    "Brand": {
+      "value": "{Lime.50}",
+      "type": "color"
+    },
+    "Tertiary": {
+      "value": "{Cool Neutral.40}",
+      "type": "color"
+    },
+    "Strong": {
+      "value": "{Cool Neutral._100}",
+      "type": "color"
+    },
+    "Secondary": {
+      "value": "{Cool Neutral.60}",
+      "type": "color"
+    }
+  },
+  "Border": {
+    "Brand": {
+      "value": "{Lime.99}",
+      "type": "color"
+    },
+    "Secondary": {
+      "value": "{Cool Neutral.20}",
+      "type": "color"
+    },
+    "Primary": {
+      "value": "{Cool Neutral.30}",
+      "type": "color"
+    }
+  },
+  "Fill": {
+    "Tertiary": {
+      "value": "{Cool Neutral.10}",
+      "type": "color"
+    },
+    "Danger": {
+      "value": "{Red.60}",
+      "type": "color"
+    },
+    "Warning": {
+      "value": "{Red Orange.70}",
+      "type": "color"
+    },
+    "Inverse": {
+      "value": "{Cool Neutral._100}",
+      "type": "color"
+    },
+    "Success": {
+      "value": "{Green.60}",
+      "type": "color"
+    },
+    "Primary": {
+      "value": "{Cool Neutral.23}",
+      "type": "color"
+    },
+    "Secondary": {
+      "value": "{Cool Neutral.20}",
+      "type": "color"
+    },
+    "Brand": {
+      "value": "{Lime.50}",
+      "type": "color"
+    }
+  },
+  "Bg": {
+    "Elevated": {
+      "value": "{Cool Neutral.15}",
+      "type": "color"
+    },
+    "Default": {
+      "value": "{Cool Neutral.5}",
+      "type": "color"
+    }
+  }
+}

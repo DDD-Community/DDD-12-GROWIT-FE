@@ -1,0 +1,68 @@
+:root {
+  --text-brand: #f8fff2;
+  --text-inverse: #0f0f10;
+  --text-secondary: #878a93;
+  --text-primary: #c2c4c8;
+  --text-strong: #ffffff;
+  --text-danger: #ff6363;
+  --text-warning: #ff9b61;
+  --text-success: #1ed45a;
+  --text-tertiary: #5a5c63;
+  --icon-primary: #c2c4c8;
+  --icon-brand: #1a2412;
+  --icon-tertiary: #5a5c63;
+  --icon-strong: #ffffff;
+  --icon-secondary: #878a93;
+  --border-brand: #f8fff2;
+  --border-secondary: #292a2d;
+  --border-primary: #46474c;
+  --fill-tertiary: #171719;
+  --fill-danger: #ff6363;
+  --fill-warning: #ff9b61;
+  --fill-inverse: #ffffff;
+  --fill-success: #1ed45a;
+  --fill-primary: #333438;
+  --fill-secondary: #292a2d;
+  --fill-brand: #58cf04;
+  --bg-elevated: #1b1c1e;
+  --bg-default: #0f0f10;
+}
+
+@theme {
+  /* Text Colors */
+  --color-text-brand: var(--text-brand);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-strong: var(--text-strong);
+  --color-text-danger: var(--text-danger);
+  --color-text-warning: var(--text-warning);
+  --color-text-success: var(--text-success);
+  --color-text-tertiary: var(--text-tertiary);
+
+  /* Icon Colors */
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-brand: var(--icon-brand);
+  --color-icon-tertiary: var(--icon-tertiary);
+  --color-icon-strong: var(--icon-strong);
+  --color-icon-secondary: var(--icon-secondary);
+
+  /* Border Colors */
+  --color-border-brand: var(--border-brand);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-primary: var(--border-primary);
+
+  /* Fill Colors */
+  --color-fill-tertiary: var(--fill-tertiary);
+  --color-fill-danger: var(--fill-danger);
+  --color-fill-warning: var(--fill-warning);
+  --color-fill-inverse: var(--fill-inverse);
+  --color-fill-success: var(--fill-success);
+  --color-fill-primary: var(--fill-primary);
+  --color-fill-secondary: var(--fill-secondary);
+  --color-fill-brand: var(--fill-brand);
+
+  /* Background Colors */
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-default: var(--bg-default);
+}
