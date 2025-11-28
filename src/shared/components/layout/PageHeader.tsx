@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-export const TopAppBar = ({ title = '제목' }: { title: string }) => {
+export const PageHeader = ({ title = '제목' }: { title: string }) => {
   const router = useRouter();
   // 추후에 safe-area-inset-top 적용 필요 (pt-8 대체)
   return (
