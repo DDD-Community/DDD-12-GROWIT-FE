@@ -5,6 +5,11 @@
 @import './customTokens.css';
 
 @custom-variant dark (&:is(.dark *));
+
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top);
+}
+
 /* Pretendard 폰트 설정 */
 @layer base {
   :root {

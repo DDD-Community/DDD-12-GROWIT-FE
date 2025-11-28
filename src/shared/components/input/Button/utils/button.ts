@@ -21,8 +21,8 @@ const ButtonSizeMap = {
 const ButtonVariantMap = {
   primary: {
     enabled:
-      'bg-primary-normal box-border hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal',
-    disabled: 'bg-interaction-disable text-label-disable cursor-not-allowed',
+      'bg-fill-inverse box-border text-text-inverse hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal',
+    disabled: 'bg-fill-primary text-text-tertiary cursor-not-allowed',
   },
   secondary: {
     enabled:
