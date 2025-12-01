@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { CheerMessageCard, GoalBanner } from '@/composite/home';
 import { GoalProvider } from '@/model/goal/context';
 import { PlanProvider } from '@/model/todo/planSelector';
@@ -8,8 +9,10 @@ import { TodoListProvider } from '@/model/todo/todoList';
 import { SelectedDayProvider } from '@/model/todo/selectedDay';
 import { AIMentorProvider } from '@/model/aiMentor/context';
 import { Z_INDEX } from '@/shared/lib/z-index';
+import { Calendar } from '@/feature/todo/calendar';
 
 export default function MainPage() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   return (
     <GoalProvider>
       <PlanProvider>
@@ -25,6 +28,7 @@ export default function MainPage() {
                     <div className="flex flex-col flex-1 gap-6">
                       <GoalBanner />
                       <div className="px-4 md:px-0">
+                        <Calendar selectedDate={selectedDate} onDateSelect={setSelectedDate} showTodayButton />
                         <WeeklyPlanBoard />
                       </div>
                     </div>
