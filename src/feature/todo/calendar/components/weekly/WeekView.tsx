@@ -3,7 +3,8 @@ import { WeekViewProps } from '../../types';
 import { DateHeader } from './DateHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { DateCell } from '../common/DateCell';
-import { getWeekDates, isToday, isSameDay, toDateKey, getDateNumber } from '../../utils';
+import { WeekNavigation } from './WeekNavigation';
+import { getWeekDates, getWeekRange, isToday, isSameDay, toDateKey, getDateNumber } from '../../utils';
 
 /**
  * 주간 뷰 컴포넌트
@@ -14,19 +15,19 @@ export const WeekView: React.FC<WeekViewProps> = ({
   indicators = {},
   holidays = {},
   onDateSelect,
+  onWeekChange,
   showNavigation,
   selectedView,
   onViewChange,
   className = '',
 }) => {
   // 주간 날짜 배열 계산
-  const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
+  const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
+  const [weekStart, weekEnd] = useMemo(() => getWeekRange(currentDate), [currentDate]);
 
   // 선택된 날짜의 공휴일 라벨
   const selectedDateKey = toDateKey(selectedDate);
   const selectedHolidayLabel = holidays[selectedDateKey];
-
-  console.log(selectedDate, holidays);
 
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
@@ -40,6 +41,16 @@ export const WeekView: React.FC<WeekViewProps> = ({
 
       {/* 캘린더 */}
       <div className="flex flex-col">
+        {/* 주간 이동 */}
+        {showNavigation && onWeekChange && (
+          <WeekNavigation
+            startDate={weekStart}
+            endDate={weekEnd}
+            onPrevWeek={() => onWeekChange('prev')}
+            onNextWeek={() => onWeekChange('next')}
+          />
+        )}
+
         {/* 요일 헤더 */}
         <WeekdayHeader />
 
