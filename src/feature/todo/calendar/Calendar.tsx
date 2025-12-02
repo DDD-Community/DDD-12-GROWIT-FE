@@ -1,10 +1,18 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { CalendarProps, CalendarView } from './types';
 import { WeekView } from './components/weekly';
 import { MonthView } from './components/monthly';
-import { getWeekRange, getMonthRange, getPreviousWeek, getNextWeek, getPreviousMonth, getNextMonth } from './utils';
+import {
+  getWeekRange,
+  getMonthRange,
+  getPreviousWeek,
+  getNextWeek,
+  getPreviousMonth,
+  getNextMonth,
+  getKoreanHolidaysInRange,
+} from './utils';
 
 /**
  * 통합 캘린더 컴포넌트
@@ -34,13 +42,23 @@ export const Calendar: React.FC<CalendarProps> = ({
   className = '',
   styles = {},
 }) => {
-  // Controlled vs Uncontrolled 뷰 관리
   const isControlled = controlledView !== undefined;
   const [internalView, setInternalView] = useState<CalendarView>(defaultView);
   const [internalCurrentDate, setInternalCurrentDate] = useState(currentDate);
 
   const activeView = isControlled ? controlledView : internalView;
   const activeCurrentDate = internalCurrentDate;
+
+  const resolvedHolidays = useMemo(() => {
+    if (holidays) {
+      return holidays;
+    }
+
+    const [rangeStart, rangeEnd] =
+      activeView === 'weekly' ? getWeekRange(activeCurrentDate) : getMonthRange(activeCurrentDate);
+
+    return getKoreanHolidaysInRange(rangeStart, rangeEnd);
+  }, [holidays, activeView, activeCurrentDate]);
 
   // 뷰 변경 핸들러
   const handleViewChange = useCallback(
@@ -84,7 +102,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           selectedDate={selectedDate}
           currentDate={activeCurrentDate}
           indicators={indicators}
-          holidays={holidays}
+          holidays={resolvedHolidays}
           onDateSelect={onDateSelect}
           onWeekChange={handleWeekChange}
           showNavigation={showNavigation}
@@ -97,7 +115,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           selectedDate={selectedDate}
           currentDate={activeCurrentDate}
           indicators={indicators}
-          holidays={holidays}
+          holidays={resolvedHolidays}
           onDateSelect={onDateSelect}
           onMonthChange={handleMonthChange}
           showNavigation={showNavigation}

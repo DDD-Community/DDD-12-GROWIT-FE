@@ -3,7 +3,7 @@ import { MonthViewProps } from '../../types';
 import { MonthHeader } from './MonthHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { WeekRow } from './WeekRow';
-import { getMonthDates, getPreviousMonth, getNextMonth, CALENDAR } from '../../utils';
+import { getMonthDates, CALENDAR } from '../../utils';
 
 /**
  * 월간 뷰 컴포넌트
