@@ -20,11 +20,13 @@ export const WeekView: React.FC<WeekViewProps> = ({
   className = '',
 }) => {
   // 주간 날짜 배열 계산
-  const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
+  const weekDates = useMemo(() => getWeekDates(selectedDate), [selectedDate]);
 
   // 선택된 날짜의 공휴일 라벨
   const selectedDateKey = toDateKey(selectedDate);
   const selectedHolidayLabel = holidays[selectedDateKey];
+
+  console.log(selectedDate, holidays);
 
   return (
     <div className={`flex flex-col gap-4 ${className}`}>

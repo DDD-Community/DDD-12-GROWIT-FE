@@ -54,11 +54,11 @@ export const Calendar: React.FC<CalendarProps> = ({
       return holidays;
     }
 
-    const [rangeStart, rangeEnd] =
-      activeView === 'weekly' ? getWeekRange(activeCurrentDate) : getMonthRange(activeCurrentDate);
-
+    const [rangeStart, rangeEnd] = getMonthRange(activeCurrentDate);
     return getKoreanHolidaysInRange(rangeStart, rangeEnd);
-  }, [holidays, activeView, activeCurrentDate]);
+  }, [holidays, activeCurrentDate]);
+
+  console.log('resolvedHolidays', resolvedHolidays);
 
   // 뷰 변경 핸들러
   const handleViewChange = useCallback(
