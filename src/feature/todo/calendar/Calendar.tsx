@@ -5,6 +5,7 @@ import { CalendarProps, CalendarView } from './types';
 import { WeekView } from './components/weekly';
 import { MonthView } from './components/monthly';
 import {
+  getWeekDates,
   getWeekRange,
   getMonthRange,
   getPreviousWeek,
@@ -58,8 +59,6 @@ export const Calendar: React.FC<CalendarProps> = ({
     return getKoreanHolidaysInRange(rangeStart, rangeEnd);
   }, [holidays, activeCurrentDate]);
 
-  console.log('resolvedHolidays', resolvedHolidays);
-
   // 뷰 변경 핸들러
   const handleViewChange = useCallback(
     (newView: CalendarView) => {
@@ -71,10 +70,18 @@ export const Calendar: React.FC<CalendarProps> = ({
     [isControlled, onViewChange]
   );
 
-  // 주/월 변경 핸들러
-  const handleWeekChange = useCallback((direction: 'prev' | 'next') => {
-    setInternalCurrentDate(prev => (direction === 'prev' ? getPreviousWeek(prev) : getNextWeek(prev)));
-  }, []);
+  const handleWeekChange = useCallback(
+    (direction: 'prev' | 'next') => {
+      setInternalCurrentDate(prev => {
+        const nextDate = direction === 'prev' ? getPreviousWeek(prev) : getNextWeek(prev);
+        const nextWeekDates = getWeekDates(nextDate);
+        const sundayOfWeek = nextWeekDates[0];
+        onDateSelect(sundayOfWeek);
+        return nextDate;
+      });
+    },
+    [onDateSelect]
+  );
 
   const handleMonthChange = useCallback((direction: 'prev' | 'next') => {
     setInternalCurrentDate(prev => (direction === 'prev' ? getPreviousMonth(prev) : getNextMonth(prev)));
