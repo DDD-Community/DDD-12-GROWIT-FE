@@ -19,7 +19,6 @@ export const WeekView: React.FC<WeekViewProps> = ({
   showNavigation,
   selectedView,
   onViewChange,
-  className = '',
 }) => {
   // 주간 날짜 배열 계산
   const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
@@ -30,7 +29,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   const selectedHolidayLabel = holidays[selectedDateKey];
 
   return (
-    <div className={`flex flex-col gap-4 ${className}`}>
+    <div className={`flex flex-col gap-4`}>
       {/* 날짜 헤더 */}
       <DateHeader
         date={selectedDate}
@@ -58,8 +57,8 @@ export const WeekView: React.FC<WeekViewProps> = ({
         <div className="flex justify-between">
           {weekDates.map(date => {
             const dateKey = toDateKey(date);
-            const indicatorCount = indicators[dateKey] || 0;
-            const holidayLabel = holidays[dateKey];
+            const indicatorColors = indicators?.[dateKey];
+            const holidayLabel = holidays?.[dateKey];
 
             return (
               <DateCell
@@ -69,7 +68,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
                 isSelected={isSameDay(date, selectedDate)}
                 isToday={isToday(date)}
                 isCurrentMonth={true} // 주간 뷰는 항상 현재 월
-                indicatorCount={indicatorCount}
+                indicatorColors={indicatorColors}
                 holidayLabel={holidayLabel}
                 onClick={onDateSelect}
               />

@@ -13,14 +13,13 @@ export const WeekRow: React.FC<WeekRowProps> = ({
   indicators = {},
   holidays = {},
   onDateSelect,
-  className = '',
 }) => {
   return (
-    <div className={`flex justify-between ${className}`}>
+    <div className="flex justify-between">
       {dates.map(date => {
         const dateKey = toDateKey(date);
-        const indicatorCount = indicators[dateKey] || 0;
-        const holidayLabel = holidays[dateKey];
+        const indicatorColors = indicators?.[dateKey];
+        const holidayLabel = holidays?.[dateKey];
         const isInCurrentMonth = isCurrentMonth(date, currentMonth);
 
         return (
@@ -31,7 +30,7 @@ export const WeekRow: React.FC<WeekRowProps> = ({
             isSelected={isSameDay(date, selectedDate)}
             isToday={isToday(date)}
             isCurrentMonth={isInCurrentMonth}
-            indicatorCount={indicatorCount}
+            indicatorColors={indicatorColors}
             holidayLabel={holidayLabel}
             onClick={onDateSelect}
           />

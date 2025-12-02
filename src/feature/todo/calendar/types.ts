@@ -10,7 +10,7 @@ export interface CalendarProps {
   defaultView?: CalendarView; // 기본 뷰 (기본값: 'weekly')
 
   // 데이터
-  indicators?: Record<string, number>; // { '2025-01-01': 3 }
+  indicators?: Record<string, (string | null | undefined)[] | undefined>; // { '2025-01-01': ['#35D942', '#FF0000'] }
   holidays?: Record<string, string>; // { '2025-01-01': '새해' }
 
   // 이벤트 핸들러
@@ -20,21 +20,9 @@ export interface CalendarProps {
 
   // 뷰 제어
   view?: CalendarView; // 외부에서 뷰 제어 (controlled)
-  showViewSwitcher?: boolean; // 뷰 전환 버튼 표시 여부 (기본값: true)
 
   // 네비게이션
   showNavigation?: boolean; // 이전/다음 버튼 표시 (기본값: true)
-  showTodayButton?: boolean; // 오늘 버튼 표시 (기본값: false)
-
-  // 스타일 커스터마이징
-  className?: string;
-  styles?: {
-    container?: string;
-    header?: string;
-    viewSwitcher?: string;
-    weekView?: string;
-    monthView?: string;
-  };
 }
 
 /**
@@ -43,14 +31,13 @@ export interface CalendarProps {
 export interface WeekViewProps {
   selectedDate: Date;
   currentDate: Date;
-  indicators?: Record<string, number>;
+  indicators?: Record<string, (string | null | undefined)[] | undefined>;
   holidays?: Record<string, string>;
   onDateSelect: (date: Date) => void;
   onWeekChange?: (direction: 'prev' | 'next') => void;
   showNavigation: boolean;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
-  className?: string;
 }
 
 /**
@@ -59,14 +46,13 @@ export interface WeekViewProps {
 export interface MonthViewProps {
   selectedDate: Date;
   currentDate: Date;
-  indicators?: Record<string, number>;
+  indicators?: Record<string, (string | null | undefined)[] | undefined>;
   holidays?: Record<string, string>;
   onDateSelect: (date: Date) => void;
   onMonthChange?: (direction: 'prev' | 'next') => void;
   showNavigation: boolean;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
-  className?: string;
 }
 
 /**
@@ -83,7 +69,7 @@ export interface DateCellProps {
   isCurrentMonth: boolean; // 현재 월의 날짜인지
 
   // 표시 데이터
-  indicatorCount?: number; // 0-3
+  indicatorColors?: (string | null | undefined)[];
   holidayLabel?: string;
 
   // 이벤트
@@ -97,7 +83,7 @@ export interface DateCellProps {
  * 투두 인디케이터 Props
  */
 export interface IndicatorProps {
-  count: number; // 1-3
+  colors?: (string | null | undefined)[];
   maxDisplay?: number; // 기본값: 3
   className?: string;
 }
@@ -148,8 +134,7 @@ export interface WeekRowProps {
   dates: Date[];
   selectedDate: Date;
   currentMonth: Date;
-  indicators?: Record<string, number>;
+  indicators?: Record<string, (string | null | undefined)[] | undefined>;
   holidays?: Record<string, string>;
   onDateSelect: (date: Date) => void;
-  className?: string;
 }

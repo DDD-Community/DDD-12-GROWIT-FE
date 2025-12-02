@@ -1,7 +1,6 @@
 import React from 'react';
 import { DateCellProps } from '../../types';
 import { Indicator } from './Indicator';
-import { toDateKey } from '../../utils';
 
 /**
  * 날짜 셀 컴포넌트
@@ -12,7 +11,7 @@ export const DateCell: React.FC<DateCellProps> = ({
   isSelected,
   isToday,
   isCurrentMonth,
-  indicatorCount = 0,
+  indicatorColors,
   holidayLabel,
   onClick,
   className = '',
@@ -34,7 +33,7 @@ export const DateCell: React.FC<DateCellProps> = ({
 
   return (
     <div
-      className={`flex justify-center items-end w-10 h-10 pb-[3px] cursor-pointer ${className}`}
+      className={`flex flex-col items-center justify-end w-10 h-10 pb-[3px] cursor-pointer ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
@@ -43,11 +42,12 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
+      <div className="h-[6px] mb-1 flex items-center justify-center">
+        {indicatorColors && <Indicator colors={indicatorColors} />}
+      </div>
       {/* 날짜 숫자 - 선택된 경우 원형 배경 */}
       <div
-        className={`flex justify-center items-center rounded-full ${
-          isSelected ? 'w-[30px] h-[30px] bg-[#3AEE49]' : 'w-[30px] h-[30px]'
-        }`}
+        className={`flex justify-center items-center rounded-full ${isSelected ? 'w-[30px] h-[30px] bg-[#3AEE49]' : 'w-[30px] h-[30px]'}`}
       >
         <span
           className="text-[14px] leading-[20px] tracking-[0.0145em] text-center"

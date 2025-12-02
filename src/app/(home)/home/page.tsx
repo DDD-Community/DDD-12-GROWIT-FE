@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { format } from 'date-fns';
 import { CheerMessageCard, GoalBanner } from '@/composite/home';
 import { GoalProvider } from '@/model/goal/context';
 import { PlanProvider } from '@/model/todo/planSelector';
@@ -13,6 +14,14 @@ import { Calendar } from '@/feature/todo/calendar';
 
 export default function MainPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const demoIndicators = useMemo(() => {
+    return {
+      '2025-12-01': ['#35D942', '#FFD95C', '#FF6363'],
+      '2025-12-02': ['#35D942'],
+      '2025-12-03': ['#FFD95C', '#35D942'],
+      '2025-12-05': [null],
+    };
+  }, [selectedDate]);
   return (
     <GoalProvider>
       <PlanProvider>
@@ -28,7 +37,11 @@ export default function MainPage() {
                     <div className="flex flex-col flex-1 gap-6">
                       <GoalBanner />
                       <div className="px-4 md:px-0">
-                        <Calendar selectedDate={selectedDate} onDateSelect={setSelectedDate} showTodayButton />
+                        <Calendar
+                          selectedDate={selectedDate}
+                          onDateSelect={setSelectedDate}
+                          indicators={demoIndicators}
+                        />
                         <WeeklyPlanBoard />
                       </div>
                     </div>

@@ -35,13 +35,9 @@ export const Calendar: React.FC<CalendarProps> = ({
   onViewChange,
   onDateSelect,
   onDateRangeChange,
-  showViewSwitcher = true,
   showNavigation = true,
-  showTodayButton = false,
   indicators,
   holidays,
-  className = '',
-  styles = {},
 }) => {
   const isControlled = controlledView !== undefined;
   const [internalView, setInternalView] = useState<CalendarView>(defaultView);
@@ -102,7 +98,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   }, [activeView, activeCurrentDate, onDateRangeChange]);
 
   return (
-    <div className={`calendar-container flex flex-col ${className} ${styles.container || ''}`}>
+    <div className={`calendar-container flex flex-col`}>
       {/* 캘린더 뷰 */}
       {activeView === 'weekly' ? (
         <WeekView
@@ -115,7 +111,6 @@ export const Calendar: React.FC<CalendarProps> = ({
           showNavigation={showNavigation}
           selectedView={activeView}
           onViewChange={handleViewChange}
-          className={styles.weekView}
         />
       ) : (
         <MonthView
@@ -128,7 +123,6 @@ export const Calendar: React.FC<CalendarProps> = ({
           showNavigation={showNavigation}
           selectedView={activeView}
           onViewChange={handleViewChange}
-          className={styles.monthView}
         />
       )}
     </div>

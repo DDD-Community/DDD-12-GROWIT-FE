@@ -18,7 +18,6 @@ export const MonthView: React.FC<MonthViewProps> = ({
   showNavigation,
   selectedView,
   onViewChange,
-  className = '',
 }) => {
   // 월간 날짜 배열 계산 (42개)
   const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
@@ -44,7 +43,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
   }, [onMonthChange]);
 
   return (
-    <div className={`flex flex-col gap-5 ${className}`}>
+    <div className={`flex flex-col gap-5`}>
       {/* 월 헤더 */}
       {showNavigation && (
         <MonthHeader
