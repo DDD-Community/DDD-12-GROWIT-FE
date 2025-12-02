@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonthHeaderProps } from '../../types';
-import { formatMonth } from '../../utils';
+import { formatMonthYear } from '../../utils';
 import { ViewSwitcher } from '../common/ViewSwitcher';
 
 /**
@@ -14,7 +14,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
   onViewChange,
   className = '',
 }) => {
-  const monthLabel = formatMonth(currentMonth);
+  const monthLabel = formatMonthYear(currentMonth);
 
   return (
     <div className={`flex items-center justify-between ${className}`}>

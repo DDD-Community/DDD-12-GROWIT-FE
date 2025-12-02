@@ -35,6 +35,13 @@ export const formatMonth = (date: Date): string => {
 };
 
 /**
+ * 연도 + 월 표시 포맷 ("2025년 1월")
+ */
+export const formatMonthYear = (date: Date): string => {
+  return format(date, 'yyyy년 M월', { locale: ko });
+};
+
+/**
  * ISO 8601 날짜 문자열로 변환 (API 키로 사용)
  * @example toDateKey(new Date()) // '2025-01-01'
  */
