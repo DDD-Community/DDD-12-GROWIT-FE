@@ -19,6 +19,8 @@
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "date-holidays": "^3.26.5",
     "lucide-react": "^0.519.0",
     "motion": "^12.19.1",
     "next": "15.3.3",
