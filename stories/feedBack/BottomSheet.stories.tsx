@@ -39,70 +39,75 @@ export const Playground: Story = {
           <Button size="xl" text="바텀시트 열기" onClick={showSheet} />
         </div>
         <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
-          <BottomSheet.Title>
-            <div className="flex items-center justify-between w-full p-5">
-              <button onClick={closeSheet}>
-                <X size={24} className="text-primary-normal" />
-              </button>
-              <div className="flex items-center gap-2 text-primary-normal">
-                <Folder size={24} />
-                제목
-              </div>
-              <button>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17L4 12"
-                    stroke="#3AEE49"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          </BottomSheet.Title>
-          <BottomSheet.Content>
-            <BottomSheetNavigator>
-              <FirstScreen />
-            </BottomSheetNavigator>
-          </BottomSheet.Content>
+          <BottomSheetNavigator>
+            <FirstScreen closeSheet={closeSheet} />
+          </BottomSheetNavigator>
         </BottomSheet>
       </>
     );
   },
 };
 
-const FirstScreen = () => {
+const FirstScreen = ({ closeSheet }: { closeSheet: () => void }) => {
   const { push } = useBottomSheetNavigator();
   return (
-    <div className="flex flex-col gap-4">
-      <div className="w-full">
-        <Button size="lg" text="다음 화면으로 이동" onClick={() => push(<SecondScreen />)} />
-      </div>
-      <TextArea placeholder="텍스트를 입력하세요" className="w-full" />
-      <div className="space-y-2">
-        <p className="text-sm text-label-normal">바텀시트 컨텐츠 영역입니다.</p>
-        <p className="text-sm text-label-normal">헤더를 드래그하여 높이를 조절할 수 있습니다.</p>
-      </div>
-    </div>
+    <>
+      <BottomSheet.Title>
+        <div className="flex items-center justify-between w-full p-5">
+          <button onClick={() => closeSheet()}>
+            <X size={24} className="text-primary-normal" />
+          </button>
+          <div className="flex items-center gap-2 text-primary-normal">
+            <Folder size={24} />
+            첫번째 화면
+          </div>
+          <button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M20 6L9 17L4 12" stroke="#3AEE49" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </BottomSheet.Title>
+      <BottomSheet.Content>
+        <div className="flex flex-col gap-4">
+          <div className="w-full">
+            <Button size="lg" text="다음 화면으로 이동" onClick={() => push(<SecondScreen />)} />
+          </div>
+          <TextArea placeholder="텍스트를 입력하세요" className="w-full" />
+          <div className="space-y-2">
+            <p className="text-sm text-label-normal">바텀시트 컨텐츠 영역입니다.</p>
+            <p className="text-sm text-label-normal">헤더를 드래그하여 높이를 조절할 수 있습니다.</p>
+          </div>
+        </div>
+      </BottomSheet.Content>
+    </>
   );
 };
 
 const SecondScreen = () => {
   const { pop } = useBottomSheetNavigator();
   return (
-    <div className="flex flex-col gap-4">
-      <button
-        type="button"
-        className="w-full h-full flex items-center gap-2 md:gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal focus:outline-none"
-        onClick={() => pop()}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-          <path d="M7 13L1 7L7 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        <span className="flex-1 text-left body-2-regular">뒤로 가기</span>
-      </button>
-    </div>
+    <>
+      <BottomSheet.Title>
+        <div className="flex items-center justify-between w-full p-2">
+          <button
+            type="button"
+            className="w-full h-full flex items-center gap-2 md:gap-4 px-4 py-3 rounded-lg bg-label-button-neutral text-white body-1-normal focus:outline-none"
+            onClick={() => pop()}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
+              <path d="M7 13L1 7L7 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span className="flex-1 text-left body-2-regular">뒤로 가기</span>
+          </button>
+        </div>
+      </BottomSheet.Title>
+      <BottomSheet.Content>
+        <div className="flex flex-col gap-4">
+          <p className="body-1-medium text-label-normal">2번째 화면입니다.</p>
+        </div>
+      </BottomSheet.Content>
+    </>
   );
 };
 
