@@ -36,13 +36,17 @@ axiosInstance.interceptors.response.use(
     // 403 errors (unauthorized access)
     if (error.response?.status === 403) {
       tokenController.clearTokens();
-      window.location.href = ROUTES.LOGIN;
+      if (typeof window !== 'undefined') {
+        window.location.href = ROUTES.LOGIN;
+      }
       return Promise.reject(error);
     }
 
     // 499 errors (프로모션 코드 입력 - 기간제)
     if (error.response?.status === 499) {
-      window.location.href = ROUTES.PROMOTION;
+      if (typeof window !== 'undefined') {
+        window.location.href = ROUTES.PROMOTION;
+      }
       return Promise.reject(error);
     }
 
@@ -67,7 +71,10 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         // If refresh fails, clear tokens and redirect to auth
         tokenController.clearTokens();
-        window.location.href = '/login';
+        // 서버 사이드에서는 window 객체가 없으므로 클라이언트에서만 리다이렉트
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       }
     }

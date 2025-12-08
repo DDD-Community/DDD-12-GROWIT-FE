@@ -11,7 +11,10 @@ export default function GoalCollectionNavButton() {
       className="flex flex-col items-center justify-center rounded-lg gap-2 cursor-pointer"
     >
       <Image src="/goal/earth-icon.png" alt="Goal Collection Nav Button" width={50} height={50} />
-      <span className="label-2-medium text-label-normal">행성 수집함</span>
+      <span className="label-2-medium text-label-normal">
+        종료 목표 <br />
+        수집함
+      </span>
     </button>
   );
 }
