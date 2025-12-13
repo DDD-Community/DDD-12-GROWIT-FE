@@ -13,6 +13,11 @@ export interface GetGoalListOption {
   year: number;
 }
 
+export async function getAllGoals(): Promise<Goal[]> {
+  const { data } = await apiClient.get<GoalListResponse>('/goals');
+  return data.data;
+}
+
 export async function getProgressGoals(): Promise<Goal[]> {
   const { data } = await apiClient.get<GoalListResponse>('/goals?status=PROGRESS');
   return data.data;

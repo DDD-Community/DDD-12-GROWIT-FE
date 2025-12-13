@@ -1,6 +1,5 @@
 import GoalCollectionNavButton from '@/feature/goal/goalCollectionNavButton';
 import PlanetSelectorContainer from '@/composite/goal/planetSelector/PlanetSelector';
-import GoalProgressSheet from '@/composite/goal/goalProgressSheet';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,9 +22,6 @@ export default async function GoalPageRoute() {
       </div>
 
       <PlanetSelectorContainer />
-      <section className="pb-16">
-        <GoalProgressSheet />
-      </section>
     </div>
   );
 }
