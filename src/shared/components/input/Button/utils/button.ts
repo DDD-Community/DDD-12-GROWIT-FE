@@ -1,6 +1,6 @@
 // 버튼 스타일을 가져오기 위한 유틸 함수
 
-export type ButtonVariants = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'brand' | 'select';
+export type ButtonVariants = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'brand' | 'select' | 'destructive';
 export type ButtonLayouts = 'normal' | 'icon-left' | 'icon-right' | 'icon-only';
 export type ButtonSize = 'sm' | 'ml' | 'lg' | 'xl';
 
@@ -47,6 +47,10 @@ const ButtonVariantMap = {
     enabled:
       'bg-label-button-neutral box-border border-2 border-[var(--color-brand-neon)] hover:bg-fill-strong focus:outline-4 focus:outline-solid focus:outline-line-normal text-label-normal',
     disabled: 'bg-interaction-disable text-label-disable border border-line-alternative cursor-not-allowed',
+  },
+  destructive: {
+    enabled: 'box-border hover:bg-fill-normal text-status-negative',
+    disabled: 'text-label-disable cursor-not-allowed',
   },
 } as const satisfies Record<
   ButtonVariants,

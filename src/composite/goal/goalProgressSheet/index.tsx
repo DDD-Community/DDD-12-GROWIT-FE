@@ -8,12 +8,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/components/dropdown-menu';
+import { TrashIcon, WarningIcon } from '@/shared/constants/icons';
 import { useGoalSelector } from '@/model/goal/context';
 import { getDaysUntilEndDate } from '@/shared/lib/utils';
+import { Modal } from '@/shared/components/feedBack/Modal';
+import { useState } from 'react';
+import Button from '@/shared/components/input/Button';
 
 export default function GoalProgressSheet() {
   const router = useRouter();
   const { currentGoal } = useGoalSelector();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   if (currentGoal === undefined || null) return <div className="w-full h-30 bg-transparent" />;
 
@@ -72,28 +77,9 @@ export default function GoalProgressSheet() {
                 <span>수정</span>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => currentGoal && router.push(`/goal/${currentGoal.id}`)}
-              variant="destructive"
-            >
+            <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)} variant="destructive">
               <span className="body-1-medium text-label-normal h-full flex items-center py-2 gap-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M10 11v6" />
-                  <path d="M14 11v6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                  <path d="M3 6h18" />
-                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                </svg>
+                <TrashIcon />
                 삭제
               </span>
             </DropdownMenuItem>
@@ -107,6 +93,38 @@ export default function GoalProgressSheet() {
           {currentGoal?.duration.startDate} ~ {currentGoal?.duration.endDate}
         </p>
       </div>
+      <DeleteGoalModal open={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onDelete={() => {}} />
     </div>
+  );
+}
+
+type DeleteGoalModalProps = {
+  open: boolean;
+  onClose: () => void;
+  onDelete: () => void;
+};
+function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title=""
+      renderContent={() => (
+        <div className="flex flex-col gap-5 min-w-[274px] items-center text-center">
+          <WarningIcon />
+          <p className="headline-1-bold text-label-normal">
+            목표 삭제 시, <br />
+            소중한 기록이 모두 사라져요!
+          </p>
+          <p className="body-2-normal text-label-alternative">그래도 목표를 삭제하실건가요?</p>
+        </div>
+      )}
+      renderFooter={() => (
+        <div className="flex gap-2 w-full">
+          <Button size="xl" variant="destructive" text="삭제" onClick={onDelete} />
+          <Button size="xl" variant="tertiary" text="취소" onClick={onClose} />
+        </div>
+      )}
+    />
   );
 }
