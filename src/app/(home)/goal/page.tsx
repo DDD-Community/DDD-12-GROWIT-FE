@@ -2,7 +2,6 @@ import GoalCollectionNavButton from '@/feature/goal/goalCollectionNavButton';
 import PlanetSelectorContainer from '@/composite/goal/planetSelector/PlanetSelector';
 import GoalProgressSheet from '@/composite/goal/goalProgressSheet';
 
-// 인증이 필요한 페이지이므로 항상 동적으로 렌더링
 export const dynamic = 'force-dynamic';
 
 export default async function GoalPageRoute() {
