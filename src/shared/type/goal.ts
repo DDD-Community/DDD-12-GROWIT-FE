@@ -19,7 +19,7 @@ export interface Goal {
   mentor: AIMentor;
   category: GoalCategoryEnum;
   plans: Plan[];
-  updateStatus: UpdateStatus;
+  updateStatus?: UpdateStatus;
 }
 
 export interface Plan {
