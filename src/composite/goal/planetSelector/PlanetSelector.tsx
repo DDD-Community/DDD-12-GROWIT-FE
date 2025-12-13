@@ -8,7 +8,7 @@ import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
-import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import { createAllGoalsQuery, createProgressGoalsQuery } from '@/model/goal/hooks';
 import { Suspense, useEffect, useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';

@@ -1,25 +1,15 @@
-'use client';
+import GoalEditFormContainer from '@/composite/goal/goalEditForm/GoalEditForm';
+import { notFound } from 'next/navigation';
 
-import { useParams } from 'next/navigation';
-import Header from '@/shared/components/layout/Header';
-import { GoalEditForm } from '@/composite/goal/goalEditForm';
-import { GoalProvider } from '@/model/goal/context';
+type GoalEditPageProps = {
+  params: Promise<{ goalId: string }>;
+};
 
-export default function GoalEditPage() {
-  const params = useParams();
-  const goalId = params.goalId as string;
+export default async function GoalEditPage({ params }: GoalEditPageProps) {
+  const resolvedParams = await params;
+  const goalId = resolvedParams.goalId;
 
-  return (
-    <div className="flex flex-1 flex-col min-h-screen bg-[#1B1C1E]">
-      {/* Header */}
-      <Header mode="title" title="목표 설정" />
+  if (!goalId || goalId === 'null' || goalId === undefined) notFound();
 
-      {/* Content */}
-      <div className="flex flex-1 px-6 py-5 pt-20">
-        <GoalProvider goalItemOption={{ goalId }}>
-          <GoalEditForm />
-        </GoalProvider>
-      </div>
-    </div>
-  );
+  return <GoalEditFormContainer goalId={goalId} />;
 }
