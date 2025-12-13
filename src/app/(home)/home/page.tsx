@@ -11,6 +11,7 @@ import { SelectedDayProvider } from '@/model/todo/selectedDay';
 import { AIMentorProvider } from '@/model/aiMentor/context';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { Calendar } from '@/feature/todo/calendar';
+import { TodoList } from '@/feature/todo/todoList';
 
 export default function MainPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -42,7 +43,8 @@ export default function MainPage() {
                           onDateSelect={setSelectedDate}
                           indicators={demoIndicators}
                         />
-                        <WeeklyPlanBoard />
+                        <TodoList />
+                        {/* <WeeklyPlanBoard /> */}
                       </div>
                     </div>
                     <div className="w-full px-4 mt-[32px] pb-[calc(100px+env(safe-area-inset-bottom))]">
