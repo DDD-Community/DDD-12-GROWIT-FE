@@ -3,11 +3,11 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-export default function GoalCollectionNavButton() {
+export const EndedGoalsNavButton = () => {
   const router = useRouter();
   return (
     <button
-      onClick={() => router.push('/goal/collection')}
+      onClick={() => router.push('/goal/ended')}
       className="flex flex-col items-center justify-center rounded-lg gap-2 cursor-pointer"
     >
       <Image src="/goal/earth-icon.png" alt="Goal Collection Nav Button" width={50} height={50} />
@@ -17,4 +17,4 @@ export default function GoalCollectionNavButton() {
       </span>
     </button>
   );
-}
+};

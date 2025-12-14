@@ -2,7 +2,7 @@
 
 import { useEffect, createContext, useContext, ReactNode, useState } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
 import { ChevronRight } from 'lucide-react';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';

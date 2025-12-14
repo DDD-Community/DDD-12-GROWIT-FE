@@ -1,4 +1,4 @@
-import GoalCollectionNavButton from '@/feature/goal/goalCollectionNavButton';
+import { EndedGoalsNavButton } from '@/feature/goal/EndedGoalsNavButton';
 import PlanetSelectorContainer from '@/composite/goal/planetSelector/PlanetSelector';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,7 @@ export default async function GoalPageRoute() {
   return (
     <div className="relative w-full h-full flex flex-col pb-2 justify-between bg-normal">
       <div className="w-full flex items-center justify-start px-5 pt-5">
-        <GoalCollectionNavButton />
+        <EndedGoalsNavButton />
       </div>
 
       <div className="absolute inset-0 w-full h-full opacity-[0.20] pointer-events-none">
