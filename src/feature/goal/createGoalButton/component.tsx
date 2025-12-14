@@ -1,5 +1,6 @@
 'use client';
 import Button from '@/shared/components/input/Button';
+import { ROUTES } from '@/shared/constants/routes';
 import { useRouter } from 'next/navigation';
 
 export const CreateGoalButton = ({ className }: { className?: string }) => {
@@ -28,7 +29,7 @@ export const CreateGoalButton = ({ className }: { className?: string }) => {
             </svg>
           </div>
         }
-        onClick={() => router.push('/home/create-goal')}
+        onClick={() => router.push(ROUTES.CREATE_GOAL)}
       />
     </div>
   );

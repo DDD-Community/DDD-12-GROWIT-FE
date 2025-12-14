@@ -1,13 +1,16 @@
 'use client';
 
 import { EditGoalFormElement } from '@/feature/goal/editGoalFormElement';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { Goal } from '@/shared/type/goal';
 import { Info } from 'lucide-react';
-import { EditGoalFormData } from '@/feature/goal/editGoalFormElement/type';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import Button from '@/shared/components/input/Button';
+import { createEditGoalMutation } from '@/model/goal/hooks';
+import { useToast } from '@/shared/components/feedBack/toast';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function GoalEditFormContainer({ goalId }: { goalId: string }) {
   const queryClient = useQueryClient();
@@ -26,20 +29,27 @@ export default function GoalEditFormContainer({ goalId }: { goalId: string }) {
 }
 
 export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
-  const handleFormSubmit = (data: EditGoalFormData) => {
-    // updateGoal({
-    //   request: data,
-    //   onSuccess: () => {
-    //     showToast('수정이 완료되었습니다.', 'success');
-    //     push(ROUTES.GOAL);
-    //   },
-    //   onError: () => showToast('수정에 실패했습니다.', 'error'),
-    // });
-  };
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { showToast } = useToast();
+
+  const { mutate: editGoal } = useMutation(
+    createEditGoalMutation({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.all() });
+        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
+        showToast('수정이 완료되었습니다.', 'success');
+        router.push(ROUTES.GOAL);
+      },
+      onError: () => {
+        showToast('수정에 실패했습니다.', 'error');
+      },
+    })
+  );
 
   return (
     <EditGoalFormElement.Provider initValue={currentGoal || undefined}>
-      <EditGoalFormElement.FormContainer onSubmit={handleFormSubmit}>
+      <EditGoalFormElement.FormContainer onSubmit={data => editGoal(data)}>
         <PageHeader
           title="목표 수정"
           rightSection={<Button type="submit" variant="tertiary" size="sm" text="완료" />}
@@ -49,8 +59,6 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
             <EditGoalFormElement.Name />
             <EditGoalFormElement.SelectStartDate />
             <EditGoalFormElement.SelectEndDate />
-
-            {/* TODO : 필드 활성화 상태 API 배포 시 삭제할 것 */}
             <div className="flex items-center gap-2">
               <Info className="w-4 h-4 text-[#FF6363]" />
               <span className="label-2-regular text-[#FF6363]">

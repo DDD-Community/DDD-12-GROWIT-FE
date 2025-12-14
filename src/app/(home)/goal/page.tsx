@@ -10,7 +10,7 @@ export default async function GoalPageRoute() {
         <GoalCollectionNavButton />
       </div>
 
-      <div className="absolute inset-0 w-full h-full opacity-[0.20]">
+      <div className="absolute inset-0 w-full h-full opacity-[0.20] pointer-events-none">
         {/* Gradient Overlay - 하단 부분을 더 밝게 조정 */}
         <div
           className="absolute inset-0 w-full h-full"

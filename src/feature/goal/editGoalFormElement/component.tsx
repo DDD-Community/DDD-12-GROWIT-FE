@@ -4,15 +4,9 @@ import { useEffect, createContext, useContext, ReactNode, useState } from 'react
 import { Goal } from '@/shared/type/goal';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
-import DatePicker from '@/shared/components/input/DatePicker';
-import { Calendar, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
-import {
-  formatDateToYYYYMMDD,
-  getEndDateByWeeks,
-  getTodayDate,
-  parseDateFromYYYYMMDD,
-} from '../createGoalFormElement/utils';
+import { formatDateToYYYYMMDD } from '../createGoalFormElement/utils';
 import { EditGoalFormData } from './type';
 import { convertFormDataToGoal } from './helper';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
@@ -105,12 +99,13 @@ const Name = () => {
 
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { control, watch, setValue } = useFormContext<EditGoalFormData>();
+  const { watch, setValue } = useFormContext<EditGoalFormData>();
   const startDate = watch('duration.startDate');
 
   return (
     <>
       <CellButton
+        type="button"
         onClick={() => {
           setOpenDatePanel(openDatePanel => !openDatePanel);
         }}
@@ -122,7 +117,7 @@ const SelectStartDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">오늘</span>
+            <span className="label-1-normal">{startDate}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
@@ -145,12 +140,13 @@ const SelectStartDate = () => {
 
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { control, watch, setValue } = useFormContext<EditGoalFormData>();
+  const { watch, setValue } = useFormContext<EditGoalFormData>();
   const endDate = watch('duration.endDate');
 
   return (
     <>
       <CellButton
+        type="button"
         onClick={() => {
           setOpenDatePanel(openDatePanel => !openDatePanel);
         }}
@@ -162,7 +158,7 @@ const SelectEndDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">오늘</span>
+            <span className="label-1-normal">{endDate}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
