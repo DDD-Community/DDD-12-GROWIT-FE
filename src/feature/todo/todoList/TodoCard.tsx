@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { Repeat } from 'lucide-react';
+import { Repeat, Flag } from 'lucide-react';
 
 interface TodoCardProps {
   todo: GoalTodo;
@@ -62,6 +62,11 @@ export const TodoCard = ({ todo, onToggle, onEdit }: TodoCardProps) => {
           </div>
         )}
       </div>
+      {todo.isImportant && (
+        <div className="flex items-center justify-center size-[24px] shrink-0">
+          <Flag className="w-[14px] h-[14px] text-[#c2c4c8] fill-[#c2c4c8]" />
+        </div>
+      )}
     </div>
   );
 };

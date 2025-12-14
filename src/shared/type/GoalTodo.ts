@@ -20,4 +20,5 @@ export interface GoalTodo {
   content: string;
   routine?: GoalTodoRoutine;
   isCompleted: boolean;
+  isImportant?: boolean;
 }
