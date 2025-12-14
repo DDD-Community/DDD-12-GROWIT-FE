@@ -44,7 +44,7 @@ export const TodoList = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[28px] mt-[20px]">
+    <div className="flex flex-col gap-[28px] mt-[20px] mb-[100px]">
       {groupedTodos.map(group => (
         <div key={group.goalId} className="flex flex-col gap-[8px]">
           {/* Goal 그룹 헤더 */}
