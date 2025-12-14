@@ -10,7 +10,7 @@ import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { createAllGoalsQuery, createProgressGoalsQuery } from '@/model/goal/hooks';
-import { Suspense, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { getToday } from '@/feature/goal/createGoalFormElement/utils';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
@@ -22,21 +22,10 @@ import { Swiper as SwiperType } from 'swiper/types';
 export default function PlanetSelectorContainer() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
-      <Suspense
-        fallback={
-          <div className="w-full h-full pt-36 bg-[#1C1C1E] items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
-              <p className="text-gray-100 text-sm font-medium">진행중인 목표를 불러오는 중입니다...</p>
-            </div>
-          </div>
-        }
-      >
-        <PlanetSelector />
-        <section className="pb-16">
-          <GoalProgressSheet />
-        </section>
-      </Suspense>
+      <PlanetSelector />
+      <section className="pb-16">
+        <GoalProgressSheet />
+      </section>
     </GoalProvider>
   );
 }

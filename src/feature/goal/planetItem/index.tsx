@@ -108,7 +108,7 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
           />
         </button>
         {isTooltipOpen && (
-          <ToolTip text="목표가 종료되면 행성을 수집할 수 있어요" position="top-center" className="top-0" />
+          <ToolTip text="목표가 종료되면 행성을 수집할 수 있어요" position="top-center" className="-top-4" />
         )}
       </div>
 

@@ -23,6 +23,11 @@ export async function getProgressGoals(): Promise<Goal[]> {
   return data.data;
 }
 
+export async function getEndedGoals(): Promise<Goal[]> {
+  const { data } = await apiClient.get<GoalListResponse>('/goals?status=ENDED');
+  return data.data;
+}
+
 export async function getGoalList(option?: GetGoalListOption) {
   const queryString = option ? qs.stringify(option) : '';
   const { data } = await apiClient.get<GoalListResponse>(`/goals?${queryString}`);
