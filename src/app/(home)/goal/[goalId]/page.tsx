@@ -1,4 +1,4 @@
-import GoalEditFormContainer from '@/composite/goal/goalEditForm/GoalEditForm';
+import GoalEditFormController from '@/composite/goal/goalEditForm/GoalEditForm';
 import { notFound } from 'next/navigation';
 
 type GoalEditPageProps = {
@@ -11,5 +11,5 @@ export default async function GoalEditPage({ params }: GoalEditPageProps) {
 
   if (!goalId || goalId === 'null' || goalId === undefined) notFound();
 
-  return <GoalEditFormContainer goalId={goalId} />;
+  return <GoalEditFormController goalId={goalId} />;
 }

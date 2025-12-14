@@ -10,16 +10,16 @@ import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { createAllGoalsQuery, createProgressGoalsQuery } from '@/model/goal/hooks';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { getToday } from '@/feature/goal/createGoalFormElement/utils';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import CreateNewGoal from './components/CreateNewGoal';
 import Button from '@/shared/components/input/Button';
 import GoalProgressSheet from '../goalProgressSheet';
 import { Swiper as SwiperType } from 'swiper/types';
+import { useShowEndedGoalsSheet } from './hooks';
 
-export default function PlanetSelectorContainer() {
+export default function PlanetSelectorScene() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
       <PlanetSelector />
@@ -36,8 +36,9 @@ export function PlanetSelector() {
   });
   const { setCurrentGoal } = useGoalSelector();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
+  useShowEndedGoalsSheet(allGoals, showSheet);
 
-  const renderGoals: (Goal | 'add-goal-section')[] = useMemo(() => {
+  const goalsWithAddGoalSlot: (Goal | 'add-goal-section')[] = useMemo(() => {
     return [...progressGoals, 'add-goal-section'];
   }, [progressGoals]);
 
@@ -46,15 +47,6 @@ export function PlanetSelector() {
     const activeGoal = progressGoals[activeIndex];
     setCurrentGoal(activeGoal);
   };
-
-  useEffect(() => {
-    const endedGoals = allGoals.filter(goal => goal.updateStatus === 'ENDED');
-    const todayCompletedGoals = endedGoals.filter(goal => goal.duration.endDate === getToday());
-    // 오늘 종료된 목표가 한개 이상 있을 경우 바텀시트가 나타남
-    if (todayCompletedGoals.length > 0) {
-      showSheet();
-    }
-  }, []);
 
   if (progressGoals && progressGoals.length === 0) {
     return <CreateNewGoal />;
@@ -74,7 +66,7 @@ export function PlanetSelector() {
           modules={[Navigation, Pagination]}
           onSlideChange={handleSlideChange}
         >
-          {renderGoals.map(goal => {
+          {goalsWithAddGoalSlot.map(goal => {
             if (goal === 'add-goal-section') {
               return (
                 <SwiperSlide key="add-goal-section">

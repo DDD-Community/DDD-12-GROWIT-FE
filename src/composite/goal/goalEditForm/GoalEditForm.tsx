@@ -12,7 +12,7 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 
-export default function GoalEditFormContainer({ goalId }: { goalId: string }) {
+export default function GoalEditFormController({ goalId }: { goalId: string }) {
   const queryClient = useQueryClient();
   const progressGoals = queryClient.getQueryData<Goal[]>(GoalQueryKeys.progress());
   const currentGoal = progressGoals?.find(goal => goal.id === goalId);
