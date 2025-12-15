@@ -2,7 +2,7 @@ name: Deploy Next.js App to EC2
 on:
   push:
     branches:
-      - main
+      - test
 env:
   DOCKER_IMAGE: wonchang0314/growit-fe
   CONTAINER_NAME: growit-next
