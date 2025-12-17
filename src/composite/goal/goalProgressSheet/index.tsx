@@ -121,7 +121,7 @@ function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
       )}
       renderFooter={() => (
         <div className="flex gap-2 w-full">
-          <Button size="xl" variant="destructive" text="삭제" onClick={onDelete} />
+          <Button size="xl" variant="tertiary" text="삭제" onClick={onDelete} className="text-status-negative" />
           <Button size="xl" variant="tertiary" text="취소" onClick={onClose} />
         </div>
       )}
