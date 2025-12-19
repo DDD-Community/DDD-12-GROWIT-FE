@@ -10,7 +10,7 @@ import { AIMentorProvider } from '@/model/aiMentor/context';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { Calendar, CalendarView } from '@/feature/todo/calendar';
 import { TodoList } from '@/feature/todo/todoList';
-import FloatingButton from '@/shared/components/input/FloatingButton';
+import { AddTodoBottomSheetAndButton } from '@/feature/todo/addTodoBottomSheet';
 
 export default function MainPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -55,11 +55,11 @@ export default function MainPage() {
                     </div>
                   </div>
                 </div>
-                <FloatingButton
-                  aria-label="투두 추가"
-                  onClick={() => {
-                    // TODO: 투두 추가 액션 연결
-                    console.log('플로팅 버튼 클릭');
+                <AddTodoBottomSheetAndButton
+                  selectedDate={selectedDate}
+                  onSubmit={data => {
+                    // TODO: 실제 투두 추가 API 연결
+                    console.log('투두 추가:', data);
                   }}
                 />
               </div>
