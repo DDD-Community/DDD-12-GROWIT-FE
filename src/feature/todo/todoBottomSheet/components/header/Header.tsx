@@ -2,12 +2,13 @@
 
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
-import { FlagIcon } from './icons';
-import type { AddTodoFormData } from '../types';
+import { FlagIcon } from '../icons';
+import type { TodoFormData } from '../../types';
 
 interface HeaderProps {
   selectedDate: Date;
   onSubmit: () => void;
+  submitLabel?: string;
 }
 
 const formatDate = (date: Date) => {
@@ -18,8 +19,8 @@ const formatDate = (date: Date) => {
   return `${month}월 ${day}일 ${dayName}`;
 };
 
-export const Header = ({ selectedDate, onSubmit }: HeaderProps) => {
-  const { watch, setValue } = useFormContext<AddTodoFormData>();
+export const Header = ({ selectedDate, onSubmit, submitLabel = '완료' }: HeaderProps) => {
+  const { watch, setValue } = useFormContext<TodoFormData>();
   const isImportant = watch('isImportant');
   const content = watch('content');
 
@@ -53,7 +54,7 @@ export const Header = ({ selectedDate, onSubmit }: HeaderProps) => {
             !isSubmitDisabled ? 'text-label-normal' : 'text-label-assistive'
           )}
         >
-          완료
+          {submitLabel}
         </button>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
-import { FolderIcon, ChevronRightIcon } from './icons';
-import type { AddTodoFormData } from '../types';
+import { FolderIcon, ChevronRightIcon } from '../icons';
+import type { TodoFormData } from '../../types';
 
 const MAX_LENGTH = 34;
 
@@ -14,7 +14,7 @@ interface ContentProps {
 }
 
 export const Content = ({ groups = [], autoFocus = true }: ContentProps) => {
-  const { watch, setValue, register } = useFormContext<AddTodoFormData>();
+  const { watch, setValue, register } = useFormContext<TodoFormData>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const content = watch('content');

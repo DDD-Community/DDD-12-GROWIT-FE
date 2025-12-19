@@ -10,7 +10,7 @@ import { AIMentorProvider } from '@/model/aiMentor/context';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { Calendar, CalendarView } from '@/feature/todo/calendar';
 import { TodoList } from '@/feature/todo/todoList';
-import { AddTodoBottomSheetAndButton } from '@/feature/todo/addTodoBottomSheet';
+import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
 
 export default function MainPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -55,7 +55,8 @@ export default function MainPage() {
                     </div>
                   </div>
                 </div>
-                <AddTodoBottomSheetAndButton
+                <TodoBottomSheet
+                  mode="add"
                   selectedDate={selectedDate}
                   onSubmit={data => {
                     // TODO: 실제 투두 추가 API 연결
