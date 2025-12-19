@@ -4,18 +4,20 @@ import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
-import { Header, Content } from './components';
-import { type TodoFormData, type TodoBottomSheetMode, TODO_DEFAULT_VALUES } from './types';
+import { Header, Content, DeleteButton } from './components';
+import { type TodoFormData, type TodoBottomSheetMode, type Goal, TODO_DEFAULT_VALUES } from './types';
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
   mode: TodoBottomSheetMode;
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 그룹 목록 */
-  groups?: { id: string; name: string }[];
+  /** 목표 목록 */
+  goals?: Goal[];
   /** 제출 핸들러 */
   onSubmit: (data: TodoFormData) => void;
+  /** 삭제 핸들러 (편집 모드에서만 사용) */
+  onDelete?: () => void;
   /** 편집 모드일 때 초기 데이터 */
   initialData?: TodoFormData;
   /** 편집 모드일 때 Todo ID */
@@ -28,18 +30,25 @@ interface TodoBottomSheetProps {
   onClose?: () => void;
   /** FloatingButton 표시 여부 (기본값: add 모드일 때만 표시) */
   showFloatingButton?: boolean;
+  /** 목표 선택 클릭 핸들러 */
+  onGoalSelect?: () => void;
+  /** 반복 선택 클릭 핸들러 */
+  onRepeatSelect?: () => void;
 }
 
 export const TodoBottomSheet = ({
   mode,
   selectedDate,
-  groups = [],
+  goals = [],
   onSubmit,
+  onDelete,
   initialData,
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
   onClose: externalOnClose,
   showFloatingButton,
+  onGoalSelect,
+  onRepeatSelect,
 }: TodoBottomSheetProps) => {
   // 내부 상태 관리 (외부 제어가 없을 때 사용)
   const internalSheet = useBottomSheet();
@@ -78,6 +87,11 @@ export const TodoBottomSheet = ({
     }
   };
 
+  const handleDelete = () => {
+    onDelete?.();
+    closeSheet();
+  };
+
   const submitLabel = mode === 'add' ? '완료' : '수정';
 
   return (
@@ -89,8 +103,14 @@ export const TodoBottomSheet = ({
             <Header selectedDate={selectedDate} onSubmit={handleSubmit} submitLabel={submitLabel} />
           </BottomSheet.Title>
           <BottomSheet.Content>
-            <Content groups={groups} autoFocus={isOpen} />
+            <Content goals={goals} autoFocus={isOpen} onGoalSelect={onGoalSelect} onRepeatSelect={onRepeatSelect} />
           </BottomSheet.Content>
+          {/* 편집 모드에서만 삭제 버튼 표시 */}
+          {mode === 'edit' && (
+            <div className="px-5 pb-5">
+              <DeleteButton onClick={handleDelete} />
+            </div>
+          )}
         </FormProvider>
       </BottomSheet>
     </>

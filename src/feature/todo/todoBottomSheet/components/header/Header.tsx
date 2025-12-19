@@ -2,7 +2,7 @@
 
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
-import { FlagIcon } from '../icons';
+import { FlagIcon } from '../shared/icons';
 import type { TodoFormData } from '../../types';
 
 interface HeaderProps {

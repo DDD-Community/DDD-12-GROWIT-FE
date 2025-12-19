@@ -3,23 +3,41 @@
 import { useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
-import { FolderIcon, ChevronRightIcon } from '../icons';
-import type { TodoFormData } from '../../types';
+import { GoalIcon, RepeatIcon } from '../shared/icons';
+import { SelectCell } from '../shared/selectCell';
+import type { TodoFormData, Goal, REPEAT_TYPE_LABELS } from '../../types';
 
 const MAX_LENGTH = 34;
 
 interface ContentProps {
-  groups?: { id: string; name: string }[];
+  /** 목표 목록 */
+  goals?: Goal[];
+  /** 자동 포커스 여부 */
   autoFocus?: boolean;
+  /** 목표 선택 클릭 핸들러 */
+  onGoalSelect?: () => void;
+  /** 반복 선택 클릭 핸들러 */
+  onRepeatSelect?: () => void;
+  /** 반복 타입 라벨 */
+  repeatLabels?: typeof REPEAT_TYPE_LABELS;
 }
 
-export const Content = ({ groups = [], autoFocus = true }: ContentProps) => {
+export const Content = ({
+  goals = [],
+  autoFocus = true,
+  onGoalSelect,
+  onRepeatSelect,
+  repeatLabels = { none: '없음', daily: '매일', weekly: '매주', monthly: '매월' },
+}: ContentProps) => {
   const { watch, setValue, register } = useFormContext<TodoFormData>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const content = watch('content');
-  const groupId = watch('groupId');
-  const selectedGroupName = groups.find(g => g.id === groupId)?.name;
+  const goalId = watch('goalId');
+  const repeatType = watch('repeatType');
+
+  const selectedGoalName = goals.find(g => g.id === goalId)?.name;
+  const repeatLabel = repeatLabels[repeatType] || '없음';
 
   // 마운트 시 입력 필드에 포커스
   useEffect(() => {
@@ -31,10 +49,10 @@ export const Content = ({ groups = [], autoFocus = true }: ContentProps) => {
   }, [autoFocus]);
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       {/* 텍스트 입력 */}
-      <div className="mb-5">
-        <div className="border-b border-white focus-within:border-brand-neon pb-2 transition-colors">
+      <div>
+        <div className="border-b-2 border-white focus-within:border-brand-neon pb-2 transition-colors">
           <input
             {...register('content')}
             ref={inputRef}
@@ -58,25 +76,20 @@ export const Content = ({ groups = [], autoFocus = true }: ContentProps) => {
         </div>
       </div>
 
-      {/* 그룹 선택 */}
-      {groups.length > 0 && (
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: 그룹 선택 구현
-          }}
-          className={cn('w-full flex items-center justify-between', 'bg-fill-primary rounded-lg', 'px-5 py-4')}
-        >
-          <div className="flex items-center gap-2">
-            <FolderIcon />
-            <span className="label-1-medium text-label-alternative">그룹</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="label-1-medium text-label-alternative">{selectedGroupName || '선택'}</span>
-            <ChevronRightIcon />
-          </div>
-        </button>
-      )}
+      {/* 선택 셀 목록 */}
+      <div className="flex flex-col gap-3">
+        {/* 목표 선택 */}
+        <SelectCell
+          icon={<GoalIcon />}
+          label="목표"
+          value={selectedGoalName}
+          placeholder="선택"
+          onClick={onGoalSelect}
+        />
+
+        {/* 반복 선택 */}
+        <SelectCell icon={<RepeatIcon />} label="반복" value={repeatLabel} onClick={onRepeatSelect} />
+      </div>
     </div>
   );
 };
