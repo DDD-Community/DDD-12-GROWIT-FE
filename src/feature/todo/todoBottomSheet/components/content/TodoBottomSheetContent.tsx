@@ -2,6 +2,7 @@
 
 import { useTodoFormContext } from '../../form';
 import { MainView } from './mainView';
+import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
@@ -16,7 +17,7 @@ interface TodoBottomSheetContentProps {
   /** 현재 뷰 */
   currentView: TodoBottomSheetView;
   /** 목표 선택 클릭 핸들러 */
-  onGoalSelect?: () => void;
+  onGoalSelect: () => void;
   /** 반복 선택 클릭 핸들러 */
   onRepeatSelect: () => void;
   /** 시작일 선택 클릭 핸들러 */
@@ -29,6 +30,8 @@ interface TodoBottomSheetContentProps {
   goBack: () => void;
   /** 메인 뷰로 바로 이동 */
   goToMain: () => void;
+  /** 목표 추가 핸들러 */
+  onAddGoal?: () => void;
 }
 
 export const TodoBottomSheetContent = ({
@@ -43,10 +46,13 @@ export const TodoBottomSheetContent = ({
   dateSelectInitialTab,
   goBack,
   goToMain,
+  onAddGoal,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
   switch (currentView) {
+    case 'goalSelect':
+      return <GoalSelectView onBack={goBack} goals={goals} onAddGoal={onAddGoal} />;
     case 'repeatSelect':
       return <RepeatSelectView onBack={goBack} onGoToDateSelect={onStartDateSelect} />;
     case 'dateSelect':

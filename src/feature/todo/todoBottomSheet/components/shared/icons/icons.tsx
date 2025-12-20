@@ -99,3 +99,29 @@ export const EndDateIcon = () => (
     />
   </svg>
 );
+
+/** 체크 아이콘 */
+export const CheckIcon = ({ className }: { className?: string }) => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path
+      d="M4.16667 10.8333L7.5 14.1667L15.8333 5.83333"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** 플러스 아이콘 */
+export const PlusIcon = ({ className }: { className?: string }) => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path
+      d="M10 4.16667V15.8333M4.16667 10H15.8333"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

@@ -34,8 +34,8 @@ interface TodoBottomSheetProps {
   onOpen?: () => void;
   /** 바텀시트 닫기 함수 (외부 제어용) */
   onClose?: () => void;
-  /** 목표 선택 클릭 핸들러 (외부 처리 시 사용) */
-  onGoalSelect?: () => void;
+  /** 목표 추가 클릭 핸들러 */
+  onAddGoal?: () => void;
 }
 
 export const TodoBottomSheet = ({
@@ -48,7 +48,7 @@ export const TodoBottomSheet = ({
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
   onClose: externalOnClose,
-  onGoalSelect,
+  onAddGoal,
 }: TodoBottomSheetProps) => {
   // 내부 상태 관리 (외부 제어가 없을 때 사용)
   const internalSheet = useBottomSheet();
@@ -65,6 +65,11 @@ export const TodoBottomSheet = ({
 
   // 날짜 선택 초기 탭 상태
   const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('startDate');
+
+  // 목표 선택 클릭 핸들러 (내부 스택 네비게이션)
+  const handleGoalSelect = () => {
+    navigateTo('goalSelect');
+  };
 
   // 반복 선택 클릭 핸들러 (내부 스택 네비게이션)
   const handleRepeatSelect = () => {
@@ -102,13 +107,14 @@ export const TodoBottomSheet = ({
             goals={goals}
             isOpen={isOpen}
             currentView={currentView}
-            onGoalSelect={onGoalSelect}
+            onGoalSelect={handleGoalSelect}
             onRepeatSelect={handleRepeatSelect}
             onStartDateSelect={handleStartDateSelect}
             onEndDateSelect={handleEndDateSelect}
             dateSelectInitialTab={dateSelectInitialTab}
             goBack={goBack}
             goToMain={goToMain}
+            onAddGoal={onAddGoal}
           />
         </StackView>
       </TodoFormProvider>

@@ -140,6 +140,7 @@ export const TodoListContainer = () => {
               onOpen={addSheet.showSheet}
               onClose={addSheet.closeSheet}
               onSubmit={handleAddSubmit}
+              onAddGoal={() => {}}
             />
 
             {/* 편집용 TodoBottomSheet */}
@@ -155,6 +156,7 @@ export const TodoListContainer = () => {
                 onClose={handleCloseEditSheet}
                 onSubmit={handleEditSubmit}
                 onDelete={handleDelete}
+                onAddGoal={() => {}}
               />
             )}
           </div>

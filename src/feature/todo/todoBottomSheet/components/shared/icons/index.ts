@@ -7,4 +7,6 @@ export {
   RepeatIcon,
   StartDateIcon,
   EndDateIcon,
+  CheckIcon,
+  PlusIcon,
 } from './icons';
