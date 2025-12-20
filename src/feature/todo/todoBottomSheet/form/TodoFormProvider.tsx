@@ -2,7 +2,9 @@
 
 import { useEffect, useCallback, createContext, useContext } from 'react';
 import { useForm, FormProvider, UseFormReturn } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { TodoFormData, TODO_DEFAULT_VALUES, TodoBottomSheetMode } from '../types';
+import { todoFormSchema } from './todoFormSchema';
 
 interface TodoFormContextType {
   /** form methods */
@@ -48,7 +50,9 @@ export const TodoFormProvider = ({
   children,
 }: TodoFormProviderProps) => {
   const methods = useForm<TodoFormData>({
+    resolver: zodResolver(todoFormSchema),
     defaultValues: mode === 'edit' && initialData ? initialData : TODO_DEFAULT_VALUES,
+    mode: 'onSubmit',
   });
 
   // 바텀시트 열릴 때 편집 모드면 초기 데이터 설정
@@ -63,13 +67,19 @@ export const TodoFormProvider = ({
     methods.reset(TODO_DEFAULT_VALUES);
   }, [methods]);
 
-  // 제출 핸들러
+  // 제출 핸들러 (react-hook-form의 handleSubmit 사용)
   const handleSubmit = useCallback(() => {
-    const data = methods.getValues();
-    if (data.content.trim()) {
-      onSubmit({ ...data, content: data.content.trim() });
-      onClose();
-    }
+    methods.handleSubmit(
+      // 유효성 검증 성공 시
+      data => {
+        onSubmit(data);
+        onClose();
+      },
+      // 유효성 검증 실패 시 (에러는 formState.errors에 자동 저장)
+      errors => {
+        console.log('Validation errors:', errors);
+      }
+    )();
   }, [methods, onSubmit, onClose]);
 
   // 삭제 핸들러

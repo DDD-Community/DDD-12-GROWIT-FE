@@ -71,7 +71,12 @@ export const MainView = ({
   onEndDateSelect,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: MainViewProps) => {
-  const { watch, setValue, register } = useFormContext<TodoFormData>();
+  const {
+    watch,
+    setValue,
+    register,
+    formState: { errors },
+  } = useFormContext<TodoFormData>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const content = watch('content');
@@ -80,10 +85,20 @@ export const MainView = ({
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
 
-  const isSubmitDisabled = !content?.trim();
+  const hasContentError = !!errors.content;
+  const hasRoutineDurationError = !!errors.routineDuration;
   const selectedGoalName = goals.find(g => g.id === goalId)?.name;
   const repeatLabel = repeatLabels[repeatType] || '없음';
   const hasRepeat = repeatType !== 'none';
+
+  // 제출 버튼 비활성화 조건
+  const isContentValid = content?.trim() && content.trim().length <= 34;
+  const isRoutineDurationValid =
+    repeatType === 'none' ||
+    (routineDuration?.startDate &&
+      routineDuration?.endDate &&
+      new Date(routineDuration.startDate) <= new Date(routineDuration.endDate));
+  const isSubmitDisabled = !isContentValid || !isRoutineDurationValid;
 
   // 마운트 시 입력 필드에 포커스
   useEffect(() => {
@@ -134,7 +149,12 @@ export const MainView = ({
         <div className="flex flex-col gap-5">
           {/* 텍스트 입력 */}
           <div>
-            <div className="border-b-2 border-white focus-within:border-brand-neon pb-2 transition-colors">
+            <div
+              className={cn(
+                'border-b-2 pb-2 transition-colors',
+                hasContentError ? 'border-status-negative' : 'border-white focus-within:border-brand-neon'
+              )}
+            >
               <input
                 {...register('content')}
                 ref={inputRef}
@@ -151,7 +171,12 @@ export const MainView = ({
                 maxLength={MAX_LENGTH}
               />
             </div>
-            <div className="flex justify-end mt-1">
+            <div className="flex justify-between mt-1">
+              {hasContentError ? (
+                <span className="label-2-medium text-status-negative">{errors.content?.message}</span>
+              ) : (
+                <span />
+              )}
               <span className="label-2-medium text-label-alternative">
                 ({content?.length ?? 0}/{MAX_LENGTH})
               </span>
@@ -178,20 +203,27 @@ export const MainView = ({
                 {/* 시작일 선택 */}
                 <SelectCell
                   icon={<StartDateIcon />}
-                  label="시작일"
+                  label="반복-시작일"
                   value={formatDateDisplay(routineDuration?.startDate)}
                   placeholder="선택"
                   onClick={onStartDateSelect}
+                  hasError={!routineDuration?.startDate}
                 />
 
                 {/* 종료일 선택 */}
                 <SelectCell
                   icon={<EndDateIcon />}
-                  label="종료일"
+                  label="반복-종료일"
                   value={formatDateDisplay(routineDuration?.endDate)}
                   placeholder="선택"
                   onClick={onEndDateSelect}
+                  hasError={!routineDuration?.endDate}
                 />
+
+                {/* 반복 기간 에러 메시지 */}
+                {hasRoutineDurationError && (
+                  <span className="label-2-medium text-status-negative px-1">{errors.routineDuration?.message}</span>
+                )}
               </>
             )}
           </div>
