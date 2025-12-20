@@ -227,14 +227,11 @@ export const MainView = ({
               </>
             )}
           </div>
+
+          {/* 삭제 버튼 */}
+          {showDeleteButton && onDelete && <DeleteButton onClick={onDelete} />}
         </div>
       </BottomSheet.Content>
-
-      {showDeleteButton && onDelete && (
-        <div className="px-5 pb-5">
-          <DeleteButton onClick={onDelete} />
-        </div>
-      )}
     </>
   );
 };
