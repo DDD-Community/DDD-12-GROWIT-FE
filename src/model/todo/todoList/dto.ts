@@ -1,5 +1,4 @@
 import { CommonResponse } from '@/shared/type/response';
-import { TodoResponse } from '@/shared/type/Todo';
 import { GoalTodo, GoalTodoGoal } from '@/shared/type/GoalTodo';
 
 export interface TodoByDateRequest {
@@ -24,11 +23,22 @@ export interface PutTodoRequest {
   content: string;
 }
 
-export interface PostAddTodoRequest {
-  goalId: string;
-  planId: string;
-  date: string; // 'YYYY-MM-DD'
-  content: string;
+export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY';
+
+export interface TodoRoutine {
+  duration: {
+    startDate: string; // 'YYYY-MM-DD'
+    endDate: string; // 'YYYY-MM-DD'
+  };
+  repeatType: RepeatType;
 }
 
-export interface PostAddTodoResponse extends CommonResponse<TodoResponse> {}
+export interface PostAddTodoRequest {
+  goalId: string | null; // 옵셔널 - 기타 일땐 null로 넣어주세요
+  date: string; // 'YYYY-MM-DD'
+  content: string;
+  isImportant: boolean;
+  routine?: TodoRoutine; // 루틴 설정 (옵셔널)
+}
+
+export interface PostAddTodoResponse extends CommonResponse<{ id: string }> {}

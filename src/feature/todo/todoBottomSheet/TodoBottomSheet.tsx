@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
-import { Header, Content, DeleteButton } from './components';
-import { type TodoFormData, type TodoBottomSheetMode, type Goal, TODO_DEFAULT_VALUES } from './types';
+import { StackView, useStackNavigation } from './components/shared/stackView';
+import { TodoBottomSheetContent } from './components/content';
+import { TodoFormProvider } from './form';
+import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type Goal } from './types';
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
@@ -30,10 +30,8 @@ interface TodoBottomSheetProps {
   onClose?: () => void;
   /** FloatingButton 표시 여부 (기본값: add 모드일 때만 표시) */
   showFloatingButton?: boolean;
-  /** 목표 선택 클릭 핸들러 */
+  /** 목표 선택 클릭 핸들러 (외부 처리 시 사용) */
   onGoalSelect?: () => void;
-  /** 반복 선택 클릭 핸들러 */
-  onRepeatSelect?: () => void;
 }
 
 export const TodoBottomSheet = ({
@@ -48,7 +46,6 @@ export const TodoBottomSheet = ({
   onClose: externalOnClose,
   showFloatingButton,
   onGoalSelect,
-  onRepeatSelect,
 }: TodoBottomSheetProps) => {
   // 내부 상태 관리 (외부 제어가 없을 때 사용)
   const internalSheet = useBottomSheet();
@@ -58,60 +55,53 @@ export const TodoBottomSheet = ({
   const showSheet = externalOnOpen ?? internalSheet.showSheet;
   const closeSheet = externalOnClose ?? internalSheet.closeSheet;
 
+  // 스택 네비게이션 훅 사용
+  const { currentView, direction, navigateTo, goBack, reset } = useStackNavigation<TodoBottomSheetView>({
+    initialView: 'main',
+    mainView: 'main',
+  });
+
   // FloatingButton 표시 여부 결정
   const shouldShowFloatingButton = showFloatingButton ?? mode === 'add';
 
-  const methods = useForm<TodoFormData>({
-    defaultValues: mode === 'edit' && initialData ? initialData : TODO_DEFAULT_VALUES,
-  });
-
-  // 바텀시트가 열릴 때 편집 모드면 초기 데이터 설정
-  useEffect(() => {
-    if (isOpen && mode === 'edit' && initialData) {
-      methods.reset(initialData);
-    }
-  }, [isOpen, mode, initialData, methods]);
-
-  // 바텀시트가 닫히면 폼 초기화
-  useEffect(() => {
-    if (!isOpen) {
-      methods.reset(TODO_DEFAULT_VALUES);
-    }
-  }, [isOpen, methods]);
-
-  const handleSubmit = () => {
-    const data = methods.getValues();
-    if (data.content.trim()) {
-      onSubmit({ ...data, content: data.content.trim() });
-      closeSheet();
-    }
+  // 반복 선택 클릭 핸들러 (내부 스택 네비게이션)
+  const handleRepeatSelect = () => {
+    navigateTo('repeatSelect');
   };
 
-  const handleDelete = () => {
-    onDelete?.();
-    closeSheet();
+  // 날짜 선택 클릭 핸들러 (내부 스택 네비게이션)
+  const handleDateSelect = () => {
+    navigateTo('dateSelect');
   };
-
-  const submitLabel = mode === 'add' ? '완료' : '수정';
 
   return (
     <>
       {shouldShowFloatingButton && <FloatingButton onClick={showSheet} aria-label="투두 추가" />}
       <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
-        <FormProvider {...methods}>
-          <BottomSheet.Title>
-            <Header selectedDate={selectedDate} onSubmit={handleSubmit} submitLabel={submitLabel} />
-          </BottomSheet.Title>
-          <BottomSheet.Content>
-            <Content goals={goals} autoFocus={isOpen} onGoalSelect={onGoalSelect} onRepeatSelect={onRepeatSelect} />
-          </BottomSheet.Content>
-          {/* 편집 모드에서만 삭제 버튼 표시 */}
-          {mode === 'edit' && (
-            <div className="px-5 pb-5">
-              <DeleteButton onClick={handleDelete} />
-            </div>
-          )}
-        </FormProvider>
+        <TodoFormProvider
+          mode={mode}
+          initialData={initialData}
+          isOpen={isOpen}
+          onSubmit={onSubmit}
+          onDelete={onDelete}
+          onClose={() => {
+            closeSheet();
+            reset();
+          }}
+        >
+          <StackView viewKey={currentView} direction={direction}>
+            <TodoBottomSheetContent
+              selectedDate={selectedDate}
+              goals={goals}
+              isOpen={isOpen}
+              currentView={currentView}
+              onGoalSelect={onGoalSelect}
+              onRepeatSelect={handleRepeatSelect}
+              onDateSelect={handleDateSelect}
+              goBack={goBack}
+            />
+          </StackView>
+        </TodoFormProvider>
       </BottomSheet>
     </>
   );

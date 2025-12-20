@@ -1,1 +1,10 @@
-export { FlagIcon, FolderIcon, ChevronRightIcon, GoalIcon, RepeatIcon } from './icons';
+export {
+  FlagIcon,
+  FolderIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  GoalIcon,
+  RepeatIcon,
+  StartDateIcon,
+  EndDateIcon,
+} from './icons';
