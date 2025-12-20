@@ -1,11 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
 import { StackView, useStackNavigation } from './components/shared/stackView';
 import { TodoBottomSheetContent } from './components/content';
 import { TodoFormProvider } from './form';
-import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type Goal } from './types';
+import {
+  type TodoFormData,
+  type TodoBottomSheetMode,
+  type TodoBottomSheetView,
+  type Goal,
+  type DateSelectTab,
+} from './types';
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
@@ -56,10 +63,12 @@ export const TodoBottomSheet = ({
   const closeSheet = externalOnClose ?? internalSheet.closeSheet;
 
   // 스택 네비게이션 훅 사용
-  const { currentView, direction, navigateTo, goBack, reset } = useStackNavigation<TodoBottomSheetView>({
+  const { currentView, direction, navigateTo, goBack, goToMain, reset } = useStackNavigation<TodoBottomSheetView>({
     initialView: 'main',
-    mainView: 'main',
   });
+
+  // 날짜 선택 초기 탭 상태
+  const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('startDate');
 
   // FloatingButton 표시 여부 결정
   const shouldShowFloatingButton = showFloatingButton ?? mode === 'add';
@@ -69,8 +78,15 @@ export const TodoBottomSheet = ({
     navigateTo('repeatSelect');
   };
 
-  // 날짜 선택 클릭 핸들러 (내부 스택 네비게이션)
-  const handleDateSelect = () => {
+  // 시작일 선택 클릭 핸들러
+  const handleStartDateSelect = () => {
+    setDateSelectInitialTab('startDate');
+    navigateTo('dateSelect');
+  };
+
+  // 종료일 선택 클릭 핸들러
+  const handleEndDateSelect = () => {
+    setDateSelectInitialTab('endDate');
     navigateTo('dateSelect');
   };
 
@@ -97,8 +113,11 @@ export const TodoBottomSheet = ({
               currentView={currentView}
               onGoalSelect={onGoalSelect}
               onRepeatSelect={handleRepeatSelect}
-              onDateSelect={handleDateSelect}
+              onStartDateSelect={handleStartDateSelect}
+              onEndDateSelect={handleEndDateSelect}
+              dateSelectInitialTab={dateSelectInitialTab}
               goBack={goBack}
+              goToMain={goToMain}
             />
           </StackView>
         </TodoFormProvider>

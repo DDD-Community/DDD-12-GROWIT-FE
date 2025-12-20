@@ -4,7 +4,7 @@ import { useTodoFormContext } from '../../form';
 import { MainView } from './mainView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
-import type { TodoBottomSheetView, Goal } from '../../types';
+import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
   /** 선택된 날짜 */
@@ -19,10 +19,16 @@ interface TodoBottomSheetContentProps {
   onGoalSelect?: () => void;
   /** 반복 선택 클릭 핸들러 */
   onRepeatSelect: () => void;
-  /** 날짜 선택 클릭 핸들러 */
-  onDateSelect: () => void;
-  /** 뒤로가기 핸들러 */
+  /** 시작일 선택 클릭 핸들러 */
+  onStartDateSelect: () => void;
+  /** 종료일 선택 클릭 핸들러 */
+  onEndDateSelect: () => void;
+  /** 날짜 선택 초기 탭 */
+  dateSelectInitialTab: DateSelectTab;
+  /** 뒤로가기 핸들러 (이전 뷰로) */
   goBack: () => void;
+  /** 메인 뷰로 바로 이동 */
+  goToMain: () => void;
 }
 
 export const TodoBottomSheetContent = ({
@@ -32,16 +38,19 @@ export const TodoBottomSheetContent = ({
   currentView,
   onGoalSelect,
   onRepeatSelect,
-  onDateSelect,
+  onStartDateSelect,
+  onEndDateSelect,
+  dateSelectInitialTab,
   goBack,
+  goToMain,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
   switch (currentView) {
     case 'repeatSelect':
-      return <RepeatSelectView onBack={goBack} onGoToDateSelect={onDateSelect} />;
+      return <RepeatSelectView onBack={goBack} onGoToDateSelect={onStartDateSelect} />;
     case 'dateSelect':
-      return <DateSelectView onBack={goBack} onComplete={goBack} />;
+      return <DateSelectView onBack={goBack} onComplete={goToMain} initialTab={dateSelectInitialTab} />;
     case 'main':
     default:
       return (
@@ -55,8 +64,8 @@ export const TodoBottomSheetContent = ({
           autoFocus={isOpen && currentView === 'main'}
           onGoalSelect={onGoalSelect}
           onRepeatSelect={onRepeatSelect}
-          onStartDateSelect={onDateSelect}
-          onEndDateSelect={onDateSelect}
+          onStartDateSelect={onStartDateSelect}
+          onEndDateSelect={onEndDateSelect}
         />
       );
   }

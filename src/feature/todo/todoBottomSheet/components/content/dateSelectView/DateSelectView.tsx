@@ -12,6 +12,8 @@ interface DateSelectViewProps {
   onBack: () => void;
   /** 완료 클릭 핸들러 */
   onComplete: () => void;
+  /** 초기 선택 탭 */
+  initialTab?: DateSelectTab;
 }
 
 /** 날짜를 YYYY-MM-DD 형식으로 포맷 */
@@ -29,12 +31,12 @@ const parseDateString = (dateString?: string): Date | undefined => {
   return new Date(year, month - 1, day);
 };
 
-export const DateSelectView = ({ onBack, onComplete }: DateSelectViewProps) => {
+export const DateSelectView = ({ onBack, onComplete, initialTab = 'startDate' }: DateSelectViewProps) => {
   const { watch, setValue } = useFormContext<TodoFormData>();
   const routineDuration = watch('routineDuration');
 
   // 현재 선택된 탭 (시작일/종료일)
-  const [activeTab, setActiveTab] = useState<DateSelectTab>('startDate');
+  const [activeTab, setActiveTab] = useState<DateSelectTab>(initialTab);
 
   // 선택된 날짜들
   const startDate = parseDateString(routineDuration?.startDate);
@@ -268,15 +270,23 @@ export const DateSelectView = ({ onBack, onComplete }: DateSelectViewProps) => {
               const isStartDate = isSameDay(day, startDate);
               const isEndDate = isSameDay(day, endDate);
               const isSelected = isStartDate || isEndDate;
-              const isFocused = isSameDay(day, focusedDate);
               const isInCurrentMonth = isCurrentMonth(day);
               const isToday = isSameDay(day, new Date());
+
+              // 현재 탭과 일치하는 선택된 날짜 (채워진 배경)
+              const isActiveSelected =
+                (activeTab === 'startDate' && isStartDate) || (activeTab === 'endDate' && isEndDate);
+              // 현재 탭과 불일치하는 선택된 날짜 (연한 배경)
+              const isInactiveSelected =
+                (activeTab === 'startDate' && isEndDate) || (activeTab === 'endDate' && isStartDate);
 
               // 종료일 선택 시, 시작일 이전 날짜는 선택 불가
               const isDisabled = activeTab === 'endDate' && startDate && day < startDate && !isSameDay(day, startDate);
 
               return (
-                <div key={index} className="flex items-center justify-center">
+                <div key={index} className="flex flex-col items-center justify-center">
+                  {/* 오늘 표시 점 */}
+                  <div className={cn('w-1 h-1 rounded-full mb-0.5', isToday ? 'bg-brand-neon' : 'invisible')} />
                   <button
                     type="button"
                     onClick={() => !isDisabled && handleDateSelect(day)}
@@ -284,11 +294,12 @@ export const DateSelectView = ({ onBack, onComplete }: DateSelectViewProps) => {
                     className={cn(
                       'relative w-[29px] h-[29px] flex items-center justify-center label-1-regular rounded-full transition-colors',
                       isDisabled && 'pointer-events-none opacity-30',
-                      isSelected && 'bg-brand-default text-label-inverse font-medium',
-                      !isSelected && isToday && 'bg-brand-default/10',
-                      !isSelected && !isToday && isInCurrentMonth && 'text-label-alternative',
+                      // 현재 탭과 일치하는 선택된 날짜: 채워진 초록 배경
+                      isActiveSelected && 'bg-brand-neon text-inverse-label label-1-medium',
+                      // 현재 탭과 불일치하는 선택된 날짜: 연한 초록 배경
+                      isInactiveSelected && 'bg-brand-neon/[0.12] text-text-primary label-1-medium',
+                      !isSelected && isInCurrentMonth && 'text-text-primary',
                       !isSelected && !isInCurrentMonth && 'text-label-assistive',
-                      isFocused && !isSelected && 'ring-2 ring-brand-default',
                       !isDisabled && !isSelected && 'hover:bg-fill-primary'
                     )}
                     aria-label={`${day.getFullYear()}년 ${day.getMonth() + 1}월 ${day.getDate()}일${isStartDate ? ', 시작일' : ''}${isEndDate ? ', 종료일' : ''}${isToday ? ', 오늘' : ''}`}
