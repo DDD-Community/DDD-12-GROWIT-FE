@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import FloatingButton from '@/shared/components/input/FloatingButton';
 import { StackView, useStackNavigation } from './components/shared/stackView';
 import { TodoBottomSheetContent } from './components/content';
 import { TodoFormProvider } from './form';
@@ -35,8 +34,6 @@ interface TodoBottomSheetProps {
   onOpen?: () => void;
   /** 바텀시트 닫기 함수 (외부 제어용) */
   onClose?: () => void;
-  /** FloatingButton 표시 여부 (기본값: add 모드일 때만 표시) */
-  showFloatingButton?: boolean;
   /** 목표 선택 클릭 핸들러 (외부 처리 시 사용) */
   onGoalSelect?: () => void;
 }
@@ -51,7 +48,6 @@ export const TodoBottomSheet = ({
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
   onClose: externalOnClose,
-  showFloatingButton,
   onGoalSelect,
 }: TodoBottomSheetProps) => {
   // 내부 상태 관리 (외부 제어가 없을 때 사용)
@@ -69,9 +65,6 @@ export const TodoBottomSheet = ({
 
   // 날짜 선택 초기 탭 상태
   const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('startDate');
-
-  // FloatingButton 표시 여부 결정
-  const shouldShowFloatingButton = showFloatingButton ?? mode === 'add';
 
   // 반복 선택 클릭 핸들러 (내부 스택 네비게이션)
   const handleRepeatSelect = () => {
@@ -91,38 +84,35 @@ export const TodoBottomSheet = ({
   };
 
   return (
-    <>
-      {shouldShowFloatingButton && <FloatingButton onClick={showSheet} aria-label="투두 추가" />}
-      <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
-        <TodoFormProvider
-          mode={mode}
-          initialData={initialData}
-          isOpen={isOpen}
-          onSubmit={onSubmit}
-          onDelete={onDelete}
-          onClose={() => {
-            closeSheet();
-            reset();
-          }}
-        >
-          <StackView viewKey={currentView} direction={direction}>
-            <TodoBottomSheetContent
-              selectedDate={selectedDate}
-              goals={goals}
-              isOpen={isOpen}
-              currentView={currentView}
-              onGoalSelect={onGoalSelect}
-              onRepeatSelect={handleRepeatSelect}
-              onStartDateSelect={handleStartDateSelect}
-              onEndDateSelect={handleEndDateSelect}
-              dateSelectInitialTab={dateSelectInitialTab}
-              goBack={goBack}
-              goToMain={goToMain}
-            />
-          </StackView>
-        </TodoFormProvider>
-      </BottomSheet>
-    </>
+    <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
+      <TodoFormProvider
+        mode={mode}
+        initialData={initialData}
+        isOpen={isOpen}
+        onSubmit={onSubmit}
+        onDelete={onDelete}
+        onClose={() => {
+          closeSheet();
+          reset();
+        }}
+      >
+        <StackView viewKey={currentView} direction={direction}>
+          <TodoBottomSheetContent
+            selectedDate={selectedDate}
+            goals={goals}
+            isOpen={isOpen}
+            currentView={currentView}
+            onGoalSelect={onGoalSelect}
+            onRepeatSelect={handleRepeatSelect}
+            onStartDateSelect={handleStartDateSelect}
+            onEndDateSelect={handleEndDateSelect}
+            dateSelectInitialTab={dateSelectInitialTab}
+            goBack={goBack}
+            goToMain={goToMain}
+          />
+        </StackView>
+      </TodoFormProvider>
+    </BottomSheet>
   );
 };
 
