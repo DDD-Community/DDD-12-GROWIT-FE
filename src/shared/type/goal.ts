@@ -6,6 +6,8 @@ export enum GoalCategoryEnum {
   IT_PROJECT = 'IT_PROJECT',
 }
 
+type UpdateStatus = 'ENDED' | 'PARTIALLY_UPDATABLE' | 'NOT_UPDATABLE' | 'string';
+
 export interface Goal {
   id: string;
   name: string;
@@ -17,6 +19,7 @@ export interface Goal {
   mentor: AIMentor;
   category: GoalCategoryEnum;
   plans: Plan[];
+  updateStatus?: UpdateStatus;
 }
 
 export interface Plan {

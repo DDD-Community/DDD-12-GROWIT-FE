@@ -15,7 +15,7 @@ export const ROUTES = {
   RETROSPECT: '/retrospect',
   PROMOTION: '/promotion',
   MYPAGE: '/mypage',
-  CREATE_GOAL: '/home/create-goal',
+  CREATE_GOAL: '/goal/create',
   ONBOARDING: '/onboarding',
   GOAL: '/goal',
   LOGIN: '/login',

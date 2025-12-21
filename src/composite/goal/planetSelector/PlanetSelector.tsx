@@ -1,102 +1,59 @@
 'use client';
 
-import Badge from '@/shared/components/display/Badge';
 import Image from 'next/image';
-import { CreateGoalButton, GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
-import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
+import { CreateGoalButton } from '@/feature/goal';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { useGTMActions } from '@/shared/hooks/useGTM';
-import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { PlanetItem } from '@/feature/goal/planetItem';
+import { useSuspenseQueries } from '@tanstack/react-query';
+import { createAllGoalsQuery, createProgressGoalsQuery } from '@/model/goal/hooks';
+import { useMemo } from 'react';
+import { Goal } from '@/shared/type/goal';
+import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
+import CreateNewGoal from './components/CreateNewGoal';
+import Button from '@/shared/components/input/Button';
+import GoalProgressSheet from '../goalProgressSheet';
+import { Swiper as SwiperType } from 'swiper/types';
+import { useShowEndedGoalsSheet } from './hooks';
 
-export default function PlanetSelectorContainer() {
+export default function PlanetSelectorScene() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
       <PlanetSelector />
+      <section className="pb-16">
+        <GoalProgressSheet />
+      </section>
     </GoalProvider>
   );
 }
 
 export function PlanetSelector() {
-  const { trackButtonClick } = useGTMActions();
-  const { goalList, deleteGoal } = useGoalSelector();
-  const { isOpen, selectedGoal, openModal, closeModal } = useGoalInfoModal();
+  const [{ data: progressGoals }, { data: allGoals }] = useSuspenseQueries({
+    queries: [createProgressGoalsQuery(), createAllGoalsQuery()],
+  });
+  const { setCurrentGoal } = useGoalSelector();
+  const { isOpen, showSheet, closeSheet } = useBottomSheet();
+  useShowEndedGoalsSheet(allGoals, showSheet);
 
-  const handlePlanetClick = (goal: Goal) => {
-    openModal(goal);
-    trackButtonClick({
-      eventName: GTM_EVENTS.GOAL_CLICK,
-      buttonName: GTM_BUTTON_NAME.PLANET,
-    });
+  const goalsWithAddGoalSlot: (Goal | 'add-goal-section')[] = useMemo(() => {
+    return [...progressGoals, 'add-goal-section'];
+  }, [progressGoals]);
+
+  const handleSlideChange = (swiper: SwiperType) => {
+    const activeIndex = swiper.activeIndex;
+    const activeGoal = progressGoals[activeIndex];
+    setCurrentGoal(activeGoal);
   };
 
-  const getGoalStatus = (goal: Goal) => {
-    const today = new Date();
-    const endDate = new Date(goal.duration.endDate);
-    return today > endDate ? '종료' : '진행중';
-  };
-
-  const getBadgeProps = (goal: Goal) => {
-    const status = getGoalStatus(goal);
-
-    if (status === '종료') {
-      return {
-        label: '종료',
-        color: 'bg-[rgba(112,115,124,0.22)]',
-        textColor: 'text-[rgba(194,196,200,0.88)]',
-      };
-    } else {
-      return {
-        label: '진행중',
-        color: 'bg-[rgba(53,217,66,0.4)]',
-        textColor: 'text-[#3AEE49]',
-      };
-    }
-  };
-
-  const getPlanetImage = (goal: Goal) => {
-    switch (goal.category) {
-      case GoalCategoryEnum.STUDY:
-        return '/goal/goal-progress.png';
-      case GoalCategoryEnum.FINANCE:
-        return '/goal/goal-progress.png';
-      case GoalCategoryEnum.IT_PROJECT:
-        return '/goal/goal-progress.png';
-      default:
-        return '/goal/goal-progress.png';
-    }
-  };
-
-  if (goalList && goalList.length === 0) {
-    return (
-      <div className="relative flex flex-col items-center justify-center">
-        <div className="w-40 h-40">
-          <Image
-            src="/goal/goal-empty.svg"
-            alt="Goal Empty"
-            width={160}
-            height={160}
-            className="w-full h-full"
-            priority
-          />
-        </div>
-        <div className="flex flex-col items-center justify-center gap-4">
-          <p className="text-label-neutral text-center">
-            진행중인 목표가 없습니다. <br /> 목표를 추가해주세요.
-          </p>
-          <div className="w-[113px] mx-auto">
-            <CreateGoalButton />
-          </div>
-        </div>
-      </div>
-    );
+  if (progressGoals && progressGoals.length === 0) {
+    return <CreateNewGoal />;
   }
 
   return (
-    <>
+    <div className="px-5">
       <div className="relative">
         <Swiper
           initialSlide={0}
@@ -107,61 +64,52 @@ export function PlanetSelector() {
             el: '.custom-pagination',
           }}
           modules={[Navigation, Pagination]}
+          onSlideChange={handleSlideChange}
         >
-          {goalList.map(goal => {
-            const badgeProps = getBadgeProps(goal);
-            const status = getGoalStatus(goal);
-            return (
-              <SwiperSlide key={goal.id}>
-                <div className="h-full w-full">
-                  <div className="gap-5 w-full">
-                    {/* Header */}
-                    <div className="px-2.5 py-2.5 w-full space-y-3">
-                      <div className="flex w-full justify-center">
-                        <Badge
-                          type="default"
-                          size="md"
-                          label={badgeProps.label}
-                          color={badgeProps.color}
-                          textColor={badgeProps.textColor}
-                          className={status === '종료' ? 'px-3 py-1 rounded-2xl' : ''}
-                        />
+          {goalsWithAddGoalSlot.map(goal => {
+            if (goal === 'add-goal-section') {
+              return (
+                <SwiperSlide key="add-goal-section">
+                  <div className="gap-5 w-full h-80 flex flex-col justify-center">
+                    <div className="flex flex-col items-center justify-center gap-6 px-5">
+                      <h2 className="body-2-normal text-label-neutral text-center">
+                        새로운 목표를 정해
+                        <br />
+                        행성을 추가해 보세요!
+                      </h2>
+                      <div className="w-36">
+                        <CreateGoalButton />
                       </div>
-
-                      <h2 className="heading-2-bold text-label-normal text-center">{goal.name}</h2>
-                    </div>
-
-                    {/* Planet Image */}
-                    <div className="flex w-full justify-center">
-                      <div
-                        className="relative cursor-pointer hover:scale-105 transition-transform w-full max-w-[220px] aspect-square"
-                        onClick={() => handlePlanetClick(goal)}
-                      >
-                        <div
-                          className="bg-cover bg-center w-full h-full"
-                          style={{
-                            backgroundImage: `url(${getPlanetImage(goal)})`,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* duration date */}
-                    <div className="flex w-full justify-center gap-2.5 px-4 py-2.5">
-                      <span className="body-1-medium text-label-neutral">
-                        {goal.duration.startDate}~{goal.duration.endDate}
-                      </span>
                     </div>
                   </div>
-                </div>
+                </SwiperSlide>
+              );
+            }
+            return (
+              <SwiperSlide key={goal.id}>
+                <PlanetItem goal={goal} />
               </SwiperSlide>
             );
           })}
         </Swiper>
+
         <div className="custom-pagination flex justify-center py-4" />
       </div>
 
-      <GoalInfoModal isOpen={isOpen} onClose={closeModal} onDelete={deleteGoal} goal={selectedGoal} />
-    </>
+      <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
+        <BottomSheet.Title>
+          <div className="flex flex-col items-center justify-center text-center space-y-2 p-5">
+            <h2 className="text-brand-neon body-1-normal">목표 종료</h2>
+            <p className="headline-1-bold text-text-strong">행성 꾸미기가 완료됐어요!</p>
+          </div>
+        </BottomSheet.Title>
+        <BottomSheet.Content>
+          <section className="flex flex-col items-center justify-center gap-4">
+            <Image src="/goal/goal-completed.png" alt="Goal Completed" width={160} height={160} priority />
+            <Button size="xl" text="행성 확인하기" onClick={closeSheet} />
+          </section>
+        </BottomSheet.Content>
+      </BottomSheet>
+    </div>
   );
 }
