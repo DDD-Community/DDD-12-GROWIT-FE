@@ -35,9 +35,19 @@ export const formatMonth = (date: Date): string => {
 };
 
 /**
- * 연도 + 월 표시 포맷 ("2025년 1월")
+ * 연도 + 월 표시 포맷 ("2025년 1월" 또는 "1월" - 올해인 경우 연도 제외)
  */
 export const formatMonthYear = (date: Date): string => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const dateYear = date.getFullYear();
+  
+  // 올해인 경우 연도 제외
+  if (dateYear === currentYear) {
+    return format(date, 'M월', { locale: ko });
+  }
+  
+  // 다른 연도인 경우 연도 포함
   return format(date, 'yyyy년 M월', { locale: ko });
 };
 
