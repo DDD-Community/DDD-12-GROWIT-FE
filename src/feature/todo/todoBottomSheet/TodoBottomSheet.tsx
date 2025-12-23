@@ -22,8 +22,10 @@ interface TodoBottomSheetProps {
   goals?: Goal[];
   /** 제출 핸들러 */
   onSubmit: (data: TodoFormData) => void;
-  /** 삭제 핸들러 (편집 모드에서만 사용) */
+  /** 삭제 핸들러 (편집 모드에서만 사용, 해당 투두만 삭제) */
   onDelete?: () => void;
+  /** 전체 반복 투두 삭제 핸들러 (편집 모드에서만 사용) */
+  onDeleteAllRepeats?: () => void;
   /** 편집 모드일 때 초기 데이터 */
   initialData?: TodoFormData;
   /** 편집 모드일 때 Todo ID */
@@ -44,6 +46,7 @@ export const TodoBottomSheet = ({
   goals = [],
   onSubmit,
   onDelete,
+  onDeleteAllRepeats,
   initialData,
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
@@ -93,6 +96,11 @@ export const TodoBottomSheet = ({
     navigateTo('dateEdit');
   };
 
+  // 삭제 선택 화면으로 이동 핸들러
+  const handleDeleteSelect = () => {
+    navigateTo('deleteSelect');
+  };
+
   return (
     <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
       <TodoFormProvider
@@ -101,6 +109,7 @@ export const TodoBottomSheet = ({
         isOpen={isOpen}
         onSubmit={onSubmit}
         onDelete={onDelete}
+        onDeleteAllRepeats={onDeleteAllRepeats}
         onClose={() => {
           closeSheet();
           reset();
@@ -121,6 +130,7 @@ export const TodoBottomSheet = ({
             goBack={goBack}
             goToMain={goToMain}
             onAddGoal={onAddGoal}
+            onDeleteSelect={handleDeleteSelect}
           />
         </StackView>
       </TodoFormProvider>

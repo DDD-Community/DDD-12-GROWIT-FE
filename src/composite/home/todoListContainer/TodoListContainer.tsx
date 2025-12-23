@@ -74,10 +74,36 @@ export const TodoListContainer = () => {
     [editingTodo]
   );
 
-  // Todo 삭제
+  // Todo 삭제 (해당 투두만 삭제)
   const handleDelete = useCallback(() => {
     if (!editingTodo) return;
     setTodos(prev => prev.filter(todo => todo.id !== editingTodo.id));
+    setEditingTodo(null);
+  }, [editingTodo]);
+
+  // 전체 반복 투두 삭제
+  const handleDeleteAllRepeats = useCallback(() => {
+    if (!editingTodo?.routine) return;
+
+    const editingRoutine = editingTodo.routine;
+
+    // 같은 routine을 가진 모든 투두 삭제
+    // routine의 startDate와 endDate, repeatType이 모두 일치하는 투두들을 찾아 삭제
+    setTodos(prev =>
+      prev.filter(todo => {
+        // routine이 없으면 유지
+        if (!todo.routine) return true;
+
+        // routine이 있지만 editingTodo의 routine과 다르면 유지
+        const todoRoutine = todo.routine;
+
+        return !(
+          editingRoutine.duration.startDate === todoRoutine.duration.startDate &&
+          editingRoutine.duration.endDate === todoRoutine.duration.endDate &&
+          editingRoutine.repeatType === todoRoutine.repeatType
+        );
+      })
+    );
     setEditingTodo(null);
   }, [editingTodo]);
 
@@ -156,6 +182,7 @@ export const TodoListContainer = () => {
                 onClose={handleCloseEditSheet}
                 onSubmit={handleEditSubmit}
                 onDelete={handleDelete}
+                onDeleteAllRepeats={handleDeleteAllRepeats}
                 onAddGoal={() => {}}
               />
             )}

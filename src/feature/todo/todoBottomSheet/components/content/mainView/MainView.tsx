@@ -20,7 +20,9 @@ interface MainViewProps {
   onSubmit: () => void;
   /** 제출 버튼 라벨 */
   submitLabel: string;
-  /** 삭제 핸들러 */
+  /** 삭제 선택 화면으로 이동 핸들러 (반복 투두일 경우) */
+  onDeleteSelect?: () => void;
+  /** 삭제 핸들러 (반복 투두가 아닐 경우 바로 삭제) */
   onDelete?: () => void;
   /** 삭제 버튼 표시 여부 */
   showDeleteButton?: boolean;
@@ -64,6 +66,7 @@ export const MainView = ({
   goals,
   onSubmit,
   submitLabel,
+  onDeleteSelect,
   onDelete,
   showDeleteButton = false,
   autoFocus = false,
@@ -234,7 +237,19 @@ export const MainView = ({
           </div>
 
           {/* 삭제 버튼 */}
-          {showDeleteButton && onDelete && <DeleteButton onClick={onDelete} />}
+          {showDeleteButton && (
+            <DeleteButton
+              onClick={() => {
+                // 반복 투두인 경우 삭제 선택 화면으로 이동
+                if (hasRepeat && onDeleteSelect) {
+                  onDeleteSelect();
+                } else if (onDelete) {
+                  // 반복 투두가 아닌 경우 바로 삭제
+                  onDelete();
+                }
+              }}
+            />
+          )}
         </div>
       </BottomSheet.Content>
     </>

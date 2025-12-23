@@ -11,8 +11,10 @@ interface TodoFormContextType {
   methods: UseFormReturn<TodoFormData>;
   /** 제출 핸들러 */
   handleSubmit: () => void;
-  /** 삭제 핸들러 */
+  /** 삭제 핸들러 (해당 투두만 삭제) */
   handleDelete: () => void;
+  /** 전체 반복 투두 삭제 핸들러 */
+  handleDeleteAllRepeats?: () => void;
   /** 폼 초기화 */
   resetForm: () => void;
   /** 제출 버튼 라벨 */
@@ -32,8 +34,10 @@ interface TodoFormProviderProps {
   isOpen: boolean;
   /** 제출 콜백 */
   onSubmit: (data: TodoFormData) => void;
-  /** 삭제 콜백 */
+  /** 삭제 콜백 (해당 투두만 삭제) */
   onDelete?: () => void;
+  /** 전체 반복 투두 삭제 콜백 */
+  onDeleteAllRepeats?: () => void;
   /** 바텀시트 닫기 콜백 */
   onClose: () => void;
   /** 자식 컴포넌트 */
@@ -46,6 +50,7 @@ export const TodoFormProvider = ({
   isOpen,
   onSubmit,
   onDelete,
+  onDeleteAllRepeats,
   onClose,
   children,
 }: TodoFormProviderProps) => {
@@ -82,11 +87,17 @@ export const TodoFormProvider = ({
     )();
   }, [methods, onSubmit, onClose]);
 
-  // 삭제 핸들러
+  // 삭제 핸들러 (해당 투두만 삭제)
   const handleDelete = useCallback(() => {
     onDelete?.();
     onClose();
   }, [onDelete, onClose]);
+
+  // 전체 반복 투두 삭제 핸들러
+  const handleDeleteAllRepeats = useCallback(() => {
+    onDeleteAllRepeats?.();
+    onClose();
+  }, [onDeleteAllRepeats, onClose]);
 
   const submitLabel = mode === 'add' ? '완료' : '수정';
   const showDeleteButton = mode === 'edit';
@@ -97,6 +108,7 @@ export const TodoFormProvider = ({
         methods,
         handleSubmit,
         handleDelete,
+        handleDeleteAllRepeats,
         resetForm,
         submitLabel,
         showDeleteButton,

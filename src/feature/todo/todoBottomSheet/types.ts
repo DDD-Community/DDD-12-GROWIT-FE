@@ -1,7 +1,7 @@
 export type TodoBottomSheetMode = 'add' | 'edit';
 
 /** 바텀시트 내부 뷰 상태 */
-export type TodoBottomSheetView = 'main' | 'goalSelect' | 'repeatSelect' | 'dateSelect' | 'dateEdit';
+export type TodoBottomSheetView = 'main' | 'goalSelect' | 'repeatSelect' | 'dateSelect' | 'dateEdit' | 'deleteSelect';
 
 /** 날짜 선택 탭 타입 */
 export type DateSelectTab = 'startDate' | 'endDate';

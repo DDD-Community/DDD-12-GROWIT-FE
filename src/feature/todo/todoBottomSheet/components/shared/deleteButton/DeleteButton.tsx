@@ -11,6 +11,8 @@ interface DeleteButtonProps {
   className?: string;
   /** 비활성화 여부 */
   disabled?: boolean;
+  /** 아이콘 표시 여부 (기본값: true) */
+  showIcon?: boolean;
 }
 
 const TrashIcon = () => (
@@ -25,14 +27,21 @@ const TrashIcon = () => (
   </svg>
 );
 
-export const DeleteButton = ({ onClick, text = '삭제', className, disabled = false }: DeleteButtonProps) => {
+export const DeleteButton = ({
+  onClick,
+  text = '삭제',
+  className,
+  disabled = false,
+  showIcon = true,
+}: DeleteButtonProps) => {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'w-full flex items-center justify-center gap-2',
+        'w-full flex items-center justify-center',
+        showIcon ? 'gap-2' : '',
         'h-[44px] px-[18px] py-[10px] rounded-[8px]',
         'shadow-[0px_1px_2px_0px_rgba(10,13,18,0.05)]',
         'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -40,7 +49,7 @@ export const DeleteButton = ({ onClick, text = '삭제', className, disabled = f
         className
       )}
     >
-      <TrashIcon />
+      {showIcon && <TrashIcon />}
       <span className="font-bold text-[16px] leading-[1.5] tracking-[0.057px] text-[#FF6363]">{text}</span>
     </button>
   );

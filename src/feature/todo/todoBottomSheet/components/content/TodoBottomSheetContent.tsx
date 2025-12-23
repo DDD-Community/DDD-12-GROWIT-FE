@@ -6,6 +6,7 @@ import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import { DateEditView } from './dateEditView';
+import { DeleteSelectView } from './deleteSelectView';
 import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
@@ -35,6 +36,8 @@ interface TodoBottomSheetContentProps {
   goToMain: () => void;
   /** 목표 추가 핸들러 */
   onAddGoal?: () => void;
+  /** 삭제 선택 화면으로 이동 핸들러 */
+  onDeleteSelect?: () => void;
 }
 
 export const TodoBottomSheetContent = ({
@@ -51,6 +54,7 @@ export const TodoBottomSheetContent = ({
   goBack,
   goToMain,
   onAddGoal,
+  onDeleteSelect,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
@@ -77,6 +81,8 @@ export const TodoBottomSheetContent = ({
           onEndDateSelect={onEndDateSelect}
         />
       );
+    case 'deleteSelect':
+      return <DeleteSelectView onBack={goBack} />;
     case 'main':
     default:
       return (
@@ -85,6 +91,7 @@ export const TodoBottomSheetContent = ({
           goals={goals}
           onSubmit={handleSubmit}
           submitLabel={submitLabel}
+          onDeleteSelect={onDeleteSelect}
           onDelete={handleDelete}
           showDeleteButton={showDeleteButton}
           autoFocus={isOpen && currentView === 'main'}
