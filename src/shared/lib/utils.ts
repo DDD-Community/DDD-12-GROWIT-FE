@@ -13,23 +13,47 @@ export function getDaysUntilEndDate(endDate: string): number {
   return diffDays;
 }
 
-export function getProgressPercentageByDateRange(startDate: string, endDate: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // 시간을 0으로 설정하여 일자 기준으로 비교
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
 
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
+export function getProgressPercentageByDateRange(startDate: string, endDate: string, now = new Date()): number {
+  // 날짜를 로컬 타임존 기준으로 파싱 (시간은 00:00:00)
+  const start = parseLocalDate(startDate);
+  const end = parseLocalDate(endDate);
 
-  const end = new Date(endDate);
-  end.setHours(0, 0, 0, 0);
+  // 현재 날짜를 정규화 (시간 제거)
+  const current = new Date(now);
+  current.setHours(0, 0, 0, 0);
 
-  const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-  const elapsedDays = Math.ceil((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  const startTime = start.getTime();
+  const endTime = end.getTime();
+  const currentTime = current.getTime();
 
-  if (totalDays <= 0) return 100; // 종료일이 시작일보다 이전이면 100%
-  if (elapsedDays <= 0) return 0; // 아직 시작일이 지나지 않았으면 0%
-  if (elapsedDays >= totalDays) return 100; // 종료일을 넘었으면 100%
+  // 시작일 이전이면 0%
+  if (currentTime < startTime) return 0;
+  // 종료일 이후면 100%
+  if (currentTime > endTime) return 100;
 
-  const percentage = (elapsedDays / totalDays) * 100;
+  // 전체 기간 계산 (일자 기준, 종료일 포함)
+  const totalDays = Math.floor((endTime - startTime) / (1000 * 60 * 60 * 24)) + 1;
+  // 경과 일수 계산 (시작일 포함)
+  const elapsedDays = Math.floor((currentTime - startTime) / (1000 * 60 * 60 * 24)) + 1;
+
+  // 진행률 계산
+  const percentage = Math.round((elapsedDays / totalDays) * 100);
   return Math.min(Math.max(percentage, 0), 100);
+}
+
+export function getMsUntilEndOfDay() {
+  const now = new Date();
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+  const msUntilEndOfDay = endOfDay.getTime() - now.getTime();
+
+  return msUntilEndOfDay;
 }

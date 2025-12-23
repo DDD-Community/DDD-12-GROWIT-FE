@@ -36,7 +36,6 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
   const { mutate: editGoal } = useMutation(
     createEditGoalMutation({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.all() });
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         showToast('수정이 완료되었습니다.', 'success');
         router.push(ROUTES.GOAL);
