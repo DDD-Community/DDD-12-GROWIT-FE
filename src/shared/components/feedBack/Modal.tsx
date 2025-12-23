@@ -5,11 +5,20 @@ import { DialogHTMLAttributes, useEffect, useRef } from 'react';
 interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   title?: string;
   onClose?: () => void;
+  renderHeader?: () => React.ReactNode;
   renderContent?: () => React.ReactNode;
   renderFooter?: () => React.ReactNode;
 }
 
-export const Modal = ({ open, onClose, title, renderContent, renderFooter, className = '' }: ModalProps) => {
+export const Modal = ({
+  open,
+  onClose,
+  title,
+  renderHeader,
+  renderContent,
+  renderFooter,
+  className = '',
+}: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // 바깥쪽 클릭 & ESC 클릭 시 닫히도록 설계
@@ -83,6 +92,7 @@ export const Modal = ({ open, onClose, title, renderContent, renderFooter, class
               className="absolute top-4 right-4"
             />
           )}
+          {renderHeader ? renderHeader() : <></>}
         </>
       )}
       <FlexBox direction="col" className="py-[20px] px-[24px] gap-5 overflow-y-visible">

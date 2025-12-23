@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 interface DateSelectorPanelProps {
   selectedDate: Date | null;
   focusedDate: Date;
-  isStartDate: boolean;
+  isStartDate?: boolean;
   allowedDaysOfWeek?: number[]; // 0: 일요일, 1: 월요일, ..., 6: 토요일
   minDate?: Date; // 최소 선택 가능 날짜
   maxDate?: Date; // 최대 선택 가능 날짜
@@ -192,7 +192,7 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
           <button
             type="button"
             onClick={() => navigateMonth('prev')}
-            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
+            className="p-2 rounded-full bg-fill-primary focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
             aria-label="이전 달"
           >
             <svg
@@ -220,7 +220,7 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
           <button
             type="button"
             onClick={() => navigateMonth('next')}
-            className="p-2 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
+            className="p-2 rounded-full bg-fill-primary focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-neon)]"
             aria-label="다음 달"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

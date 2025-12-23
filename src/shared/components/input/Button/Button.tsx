@@ -15,7 +15,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   className?: string;
 }
-const Button = ({
+const Button: React.FC<ButtonProps> = ({
   size,
   variant = 'primary',
   layout = 'normal',
@@ -26,7 +26,8 @@ const Button = ({
   status = 'idle',
   className = '',
   type,
-}: ButtonProps) => {
+  ...props
+}) => {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const Button = ({
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       type={type}
+      {...(props as any)}
     >
       {layout === 'normal' ? (
         <AnimatePresence mode="wait" initial={false}>
