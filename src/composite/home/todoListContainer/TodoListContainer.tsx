@@ -17,6 +17,7 @@ import { DEMO_INDICATORS } from './mock';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, createNewTodo } from './helper';
 import { FolderPlusIcon } from '@/feature/todo/todoBottomSheet/components/shared/icons';
+import { ROUTES } from '@/shared/constants/routes';
 
 export const TodoListContainer = () => {
   const [todos, setTodos] = useState<GoalTodo[]>(MOCK_TODOS);
@@ -117,6 +118,11 @@ export const TodoListContainer = () => {
     setEditingTodo(null);
   }, [editSheet]);
 
+  // 목표 추가 핸들러 (바텀시트에서 목표 추가 버튼 클릭 시)
+  const handleAddGoal = useCallback(() => {
+    router.push(ROUTES.CREATE_GOAL);
+  }, [router]);
+
   return (
     <TodoListContainerFormProvider>
       {({ selectedDate, calendarView, setSelectedDate, setCalendarView }) => {
@@ -162,7 +168,7 @@ export const TodoListContainer = () => {
                         layout="icon-left"
                         text="목표 추가하기"
                         icon={<FolderPlusIcon />}
-                        onClick={() => router.push('/home/create-goal')}
+                        onClick={handleAddGoal}
                         className="w-auto"
                       />
                     </div>
@@ -183,7 +189,7 @@ export const TodoListContainer = () => {
               onOpen={addSheet.showSheet}
               onClose={addSheet.closeSheet}
               onSubmit={handleAddSubmit}
-              onAddGoal={() => {}}
+              onAddGoal={handleAddGoal}
             />
 
             {/* 편집용 TodoBottomSheet */}
@@ -200,7 +206,7 @@ export const TodoListContainer = () => {
                 onSubmit={handleEditSubmit}
                 onDelete={handleDelete}
                 onDeleteAllRepeats={handleDeleteAllRepeats}
-                onAddGoal={() => {}}
+                onAddGoal={handleAddGoal}
               />
             )}
           </div>
