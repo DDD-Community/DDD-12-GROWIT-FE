@@ -64,7 +64,7 @@ export const TodoBottomSheet = ({
   });
 
   // 날짜 선택 초기 탭 상태
-  const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('startDate');
+  const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('endDate');
 
   // 목표 선택 클릭 핸들러 (내부 스택 네비게이션)
   const handleGoalSelect = () => {
@@ -86,6 +86,11 @@ export const TodoBottomSheet = ({
   const handleEndDateSelect = () => {
     setDateSelectInitialTab('endDate');
     navigateTo('dateSelect');
+  };
+
+  // 날짜 수정 클릭 핸들러
+  const handleDateEdit = () => {
+    navigateTo('dateEdit');
   };
 
   return (
@@ -111,6 +116,7 @@ export const TodoBottomSheet = ({
             onRepeatSelect={handleRepeatSelect}
             onStartDateSelect={handleStartDateSelect}
             onEndDateSelect={handleEndDateSelect}
+            onDateEdit={handleDateEdit}
             dateSelectInitialTab={dateSelectInitialTab}
             goBack={goBack}
             goToMain={goToMain}

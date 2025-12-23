@@ -5,6 +5,7 @@ import { MainView } from './mainView';
 import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
+import { DateEditView } from './dateEditView';
 import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
@@ -24,6 +25,8 @@ interface TodoBottomSheetContentProps {
   onStartDateSelect: () => void;
   /** 종료일 선택 클릭 핸들러 */
   onEndDateSelect: () => void;
+  /** 날짜 수정 클릭 핸들러 */
+  onDateEdit: () => void;
   /** 날짜 선택 초기 탭 */
   dateSelectInitialTab: DateSelectTab;
   /** 뒤로가기 핸들러 (이전 뷰로) */
@@ -43,6 +46,7 @@ export const TodoBottomSheetContent = ({
   onRepeatSelect,
   onStartDateSelect,
   onEndDateSelect,
+  onDateEdit,
   dateSelectInitialTab,
   goBack,
   goToMain,
@@ -54,9 +58,25 @@ export const TodoBottomSheetContent = ({
     case 'goalSelect':
       return <GoalSelectView onBack={goBack} goals={goals} onAddGoal={onAddGoal} />;
     case 'repeatSelect':
-      return <RepeatSelectView onBack={goBack} onGoToDateSelect={onStartDateSelect} />;
+      return <RepeatSelectView onBack={goBack} onGoToDateSelect={onEndDateSelect} />;
     case 'dateSelect':
-      return <DateSelectView onBack={goBack} onComplete={goToMain} initialTab={dateSelectInitialTab} />;
+      return (
+        <DateSelectView
+          onBack={goBack}
+          onComplete={goToMain}
+          initialTab={dateSelectInitialTab}
+          defaultDate={selectedDate}
+        />
+      );
+    case 'dateEdit':
+      return (
+        <DateEditView
+          onBack={goBack}
+          onRepeatSelect={onRepeatSelect}
+          onStartDateSelect={onStartDateSelect}
+          onEndDateSelect={onEndDateSelect}
+        />
+      );
     case 'main':
     default:
       return (
@@ -72,6 +92,7 @@ export const TodoBottomSheetContent = ({
           onRepeatSelect={onRepeatSelect}
           onStartDateSelect={onStartDateSelect}
           onEndDateSelect={onEndDateSelect}
+          onDateEdit={onDateEdit}
         />
       );
   }

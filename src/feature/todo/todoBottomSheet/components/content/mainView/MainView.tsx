@@ -34,6 +34,8 @@ interface MainViewProps {
   onStartDateSelect: () => void;
   /** 종료일 선택 클릭 핸들러 */
   onEndDateSelect: () => void;
+  /** 날짜 수정 클릭 핸들러 */
+  onDateEdit?: () => void;
   /** 반복 타입 라벨 */
   repeatLabels?: typeof REPEAT_TYPE_LABELS;
 }
@@ -69,6 +71,7 @@ export const MainView = ({
   onRepeatSelect,
   onStartDateSelect,
   onEndDateSelect,
+  onDateEdit,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: MainViewProps) => {
   const {
@@ -125,8 +128,10 @@ export const MainView = ({
             </button>
           </div>
 
-          {/* 날짜 제목 - 중앙 */}
-          <h2 className="body-1-bold text-white underline">{formatHeaderDate(selectedDate)}</h2>
+          {/* 날짜 제목 - 중앙 (클릭 시 날짜 수정 화면으로 이동) */}
+          <button type="button" onClick={onDateEdit} className="body-1-bold text-white underline">
+            {formatHeaderDate(selectedDate)}
+          </button>
 
           {/* 완료 버튼 - 오른쪽 영역 */}
           <div className="flex-1 flex justify-end">
