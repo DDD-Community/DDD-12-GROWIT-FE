@@ -1,6 +1,7 @@
 export {
   FlagIcon,
   FolderIcon,
+  FolderPlusIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
   GoalIcon,

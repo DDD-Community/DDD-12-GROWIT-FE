@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
+import Button from '@/shared/components/input/Button';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { TodoList } from '@/feature/todo/todoList';
 import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
@@ -14,10 +16,12 @@ import { CheerMessageCard } from './components/cheerMessageCard';
 import { DEMO_INDICATORS } from './mock';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, createNewTodo } from './helper';
+import { FolderPlusIcon } from '@/feature/todo/todoBottomSheet/components/shared/icons';
 
 export const TodoListContainer = () => {
   const [todos, setTodos] = useState<GoalTodo[]>(MOCK_TODOS);
   const [editingTodo, setEditingTodo] = useState<GoalTodo | null>(null);
+  const router = useRouter();
 
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
@@ -135,7 +139,7 @@ export const TodoListContainer = () => {
                 isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'
               }`}
             >
-              <div className={`flex flex-col ${isMonthlyView ? 'h-screen' : 'h-[calc(100vh-140px)]'}`}>
+              <div className={`flex flex-col ${isMonthlyView ? 'h-screen' : 'h-[calc(100vh-100px)]'}`}>
                 <div className="flex flex-col flex-1 gap-6">
                   <div className="px-4 md:px-0 pt-[24px]">
                     {/* 캘린더 */}
@@ -149,6 +153,19 @@ export const TodoListContainer = () => {
 
                     {/* Todo 리스트 */}
                     <TodoList todos={todos} onToggle={handleToggle} onEdit={handleEdit} />
+
+                    {/* 목표 추가 버튼 */}
+                    <div className="flex justify-center mb-[120px]">
+                      <Button
+                        size="ml"
+                        variant="tertiary"
+                        layout="icon-left"
+                        text="목표 추가하기"
+                        icon={<FolderPlusIcon />}
+                        onClick={() => router.push('/home/create-goal')}
+                        className="w-auto"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

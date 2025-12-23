@@ -125,3 +125,23 @@ export const PlusIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+
+/** 폴더 + 플러스 아이콘 (목표 추가) */
+export const FolderPlusIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M2.5 5.83333C2.5 4.45262 3.45263 3.33333 4.66667 3.33333H7.5L9.16667 5H15.3333C16.5474 5 17.5 6.11929 17.5 7.5V14.1667C17.5 15.5474 16.5474 16.6667 15.3333 16.6667H4.66667C3.45263 16.6667 2.5 15.5474 2.5 14.1667V5.83333Z"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 7.5V12.5M7.5 10H12.5"
+      stroke="white"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
