@@ -14,6 +14,8 @@ import {
   getNextMonth,
   getKoreanHolidaysInRange,
 } from './utils';
+import { startOfWeek, startOfMonth } from 'date-fns';
+import { WEEKDAY } from './utils/constants';
 
 /**
  * 통합 캘린더 컴포넌트
@@ -83,6 +85,23 @@ export const Calendar: React.FC<CalendarProps> = ({
     setInternalCurrentDate(prev => (direction === 'prev' ? getPreviousMonth(prev) : getNextMonth(prev)));
   }, []);
 
+  // 오늘 버튼 클릭 핸들러
+  const handleTodayClick = useCallback(() => {
+    const today = new Date();
+    
+    if (activeView === 'weekly') {
+      // 주간 뷰: 오늘 날짜가 포함된 주의 일요일로 이동
+      const weekStart = startOfWeek(today, { weekStartsOn: WEEKDAY.SUNDAY });
+      setInternalCurrentDate(weekStart);
+      onDateSelect(today);
+    } else {
+      // 월간 뷰: 오늘 날짜가 포함된 달의 첫날로 이동
+      const monthStart = startOfMonth(today);
+      setInternalCurrentDate(monthStart);
+      onDateSelect(today);
+    }
+  }, [activeView, onDateSelect]);
+
   // 날짜 범위 변경 시 콜백 호출
   useEffect(() => {
     if (!onDateRangeChange) return;
@@ -111,6 +130,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           showNavigation={showNavigation}
           selectedView={activeView}
           onViewChange={handleViewChange}
+          onTodayClick={handleTodayClick}
         />
       ) : (
         <MonthView
@@ -123,6 +143,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           showNavigation={showNavigation}
           selectedView={activeView}
           onViewChange={handleViewChange}
+          onTodayClick={handleTodayClick}
         />
       )}
     </div>

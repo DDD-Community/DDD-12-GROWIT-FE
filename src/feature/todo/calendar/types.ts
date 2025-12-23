@@ -38,6 +38,7 @@ export interface WeekViewProps {
   showNavigation: boolean;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
+  onTodayClick?: () => void;
 }
 
 /**
@@ -53,6 +54,7 @@ export interface MonthViewProps {
   showNavigation: boolean;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
+  onTodayClick?: () => void;
 }
 
 /**
@@ -112,6 +114,7 @@ export interface DateHeaderProps {
   holidayLabel?: string;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
+  onTodayClick?: () => void;
   className?: string;
 }
 
@@ -124,6 +127,7 @@ export interface MonthHeaderProps {
   onNext: () => void;
   selectedView: CalendarView;
   onViewChange: (view: CalendarView) => void;
+  onTodayClick?: () => void;
   className?: string;
 }
 
