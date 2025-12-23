@@ -10,7 +10,7 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { TrashIcon, WarningIcon } from '@/shared/constants/icons';
 import { useGoalSelector } from '@/model/goal/context';
-import { getDaysUntilEndDate } from '@/shared/lib/utils';
+import { getDaysUntilEndDate, getProgressPercentageByDateRange } from '@/shared/lib/utils';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
@@ -22,10 +22,10 @@ export default function GoalProgressSheet() {
 
   if (currentGoal === undefined || null) return <div className="w-full h-30 bg-transparent" />;
 
-  const progressPercentage = currentGoal?.plans.length
-    ? (currentGoal.plans.length / currentGoal.plans.length) * 100
+  const progressPercentage = currentGoal
+    ? getProgressPercentageByDateRange(currentGoal.duration.startDate, currentGoal.duration.endDate)
     : 0;
-  const daysUntilEndDate = currentGoal?.duration.endDate ? getDaysUntilEndDate(currentGoal.duration.endDate) : 0;
+  const daysUntilEndDate = currentGoal ? getDaysUntilEndDate(currentGoal.duration.endDate) : 0;
 
   return (
     <div className="w-full max-h-40 h-full bg-elevated-normal rounded-t-lg border-t border-line-normal">

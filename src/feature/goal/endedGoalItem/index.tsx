@@ -14,6 +14,7 @@ type EndedGoalItemProps = {
 };
 export const EndedGoalItem = ({ goal, isEditMode = false, checked, onCheck }: EndedGoalItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <EndedGoalItemModal open={isModalOpen} onClose={() => setIsModalOpen(false)} goal={goal} />

@@ -15,7 +15,6 @@ interface GoalContextType {
   isLoading: boolean;
   goalList: Goal[];
   currentGoal: Goal | null;
-  currentPlans: Goal['plans'];
   setCurrentGoal: (goal: Goal) => void;
   refetchGoalList: (goalListOption?: GetGoalListOption, shouldThrow?: boolean) => Promise<void>;
   refetchCurrentGoal: (option?: GetGoalOption, shouldThrow?: boolean) => Promise<void>;
@@ -138,14 +137,13 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
     fetchCurrentGoal();
   }, []);
 
-  const currentPlans = currentGoal?.plans || [];
+  //const currentPlans = currentGoal?.plans || [];
 
   const value: GoalContextType = {
     isLoading,
     goalList,
     currentGoal,
     setCurrentGoal,
-    currentPlans,
     refetchGoalList: fetchGoalList,
     refetchCurrentGoal: fetchCurrentGoal,
     deleteGoal: fetchDeleteGoal,
