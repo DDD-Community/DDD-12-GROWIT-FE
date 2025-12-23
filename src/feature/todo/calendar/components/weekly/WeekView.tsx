@@ -19,6 +19,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   showNavigation,
   selectedView,
   onViewChange,
+  onTodayClick,
 }) => {
   // 주간 날짜 배열 계산
   const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
@@ -36,6 +37,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
         holidayLabel={selectedHolidayLabel}
         selectedView={selectedView}
         onViewChange={onViewChange}
+        onTodayClick={onTodayClick}
       />
 
       {/* 캘린더 */}

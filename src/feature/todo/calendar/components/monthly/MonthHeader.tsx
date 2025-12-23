@@ -2,6 +2,7 @@ import React from 'react';
 import { MonthHeaderProps } from '../../types';
 import { formatMonthYear } from '../../utils';
 import { ViewSwitcher } from '../common/ViewSwitcher';
+import { TodayButton } from '../common/TodayButton';
 
 /**
  * 월 헤더 컴포넌트 ("◀ 1월 ▶")
@@ -12,6 +13,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
   onNext,
   selectedView,
   onViewChange,
+  onTodayClick,
   className = '',
 }) => {
   const monthLabel = formatMonthYear(currentMonth);
@@ -49,7 +51,10 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
         </button>
       </div>
 
-      <ViewSwitcher selectedView={selectedView} onViewChange={onViewChange} />
+      <div className="flex items-center gap-3">
+        <TodayButton onClick={onTodayClick} />
+        <ViewSwitcher selectedView={selectedView} onViewChange={onViewChange} />
+      </div>
     </div>
   );
 };

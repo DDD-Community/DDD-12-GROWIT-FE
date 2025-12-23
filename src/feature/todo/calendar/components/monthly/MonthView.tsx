@@ -18,6 +18,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
   showNavigation,
   selectedView,
   onViewChange,
+  onTodayClick,
 }) => {
   // 월간 날짜 배열 계산 (42개)
   const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
@@ -52,6 +53,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
           onNext={handleNext}
           selectedView={selectedView}
           onViewChange={onViewChange}
+          onTodayClick={onTodayClick}
         />
       )}
 

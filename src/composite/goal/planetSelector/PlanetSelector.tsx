@@ -1,15 +1,24 @@
 'use client';
 
 import Badge from '@/shared/components/display/Badge';
+import Image from 'next/image';
 import { CreateGoalButton, GoalInfoModal, useGoalInfoModal } from '@/feature/goal';
 import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { useGoalSelector } from '@/model/goal/context';
+import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+
+export default function PlanetSelectorContainer() {
+  return (
+    <GoalProvider goalListOption={{ year: 2025 }}>
+      <PlanetSelector />
+    </GoalProvider>
+  );
+}
 
 export function PlanetSelector() {
   const { trackButtonClick } = useGTMActions();
@@ -51,22 +60,36 @@ export function PlanetSelector() {
   const getPlanetImage = (goal: Goal) => {
     switch (goal.category) {
       case GoalCategoryEnum.STUDY:
-        return '/planet/planet-green.png';
+        return '/goal/goal-progress.png';
       case GoalCategoryEnum.FINANCE:
-        return '/planet/planet-orange.png';
+        return '/goal/goal-progress.png';
       case GoalCategoryEnum.IT_PROJECT:
-        return '/planet/planet-blue.png';
+        return '/goal/goal-progress.png';
       default:
-        return '/planet/planet-green.png';
+        return '/goal/goal-progress.png';
     }
   };
 
   if (goalList && goalList.length === 0) {
     return (
-      <div className="relative space-y-4 py-62 my-auto">
-        <p className="text-label-neutral text-center">진행중인 목표가 없습니다.</p>
-        <div className="w-[113px] mx-auto">
-          <CreateGoalButton />
+      <div className="relative flex flex-col items-center justify-center">
+        <div className="w-40 h-40">
+          <Image
+            src="/goal/goal-empty.svg"
+            alt="Goal Empty"
+            width={160}
+            height={160}
+            className="w-full h-full"
+            priority
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <p className="text-label-neutral text-center">
+            진행중인 목표가 없습니다. <br /> 목표를 추가해주세요.
+          </p>
+          <div className="w-[113px] mx-auto">
+            <CreateGoalButton />
+          </div>
         </div>
       </div>
     );
@@ -74,7 +97,7 @@ export function PlanetSelector() {
 
   return (
     <>
-      <div className="relative mt-10">
+      <div className="relative">
         <Swiper
           initialSlide={0}
           pagination={{
@@ -111,11 +134,11 @@ export function PlanetSelector() {
                     {/* Planet Image */}
                     <div className="flex w-full justify-center">
                       <div
-                        className="relative cursor-pointer hover:scale-105 transition-transform w-full max-w-[294px] aspect-square"
+                        className="relative cursor-pointer hover:scale-105 transition-transform w-full max-w-[220px] aspect-square"
                         onClick={() => handlePlanetClick(goal)}
                       >
                         <div
-                          className="rounded-full bg-cover bg-center w-full h-full"
+                          className="bg-cover bg-center w-full h-full"
                           style={{
                             backgroundImage: `url(${getPlanetImage(goal)})`,
                           }}
