@@ -7,7 +7,6 @@ import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
 import { ChevronRight } from 'lucide-react';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
 import { formatDateToYYYYMMDD } from '../createGoalFormElement/utils';
-import { EditGoalFormData } from './type';
 import { convertFormDataToGoal } from './helper';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
 import { CellButton } from '@/shared/components/input/CellButton';
@@ -35,13 +34,13 @@ interface EditGoalFormProviderProps {
 
 interface EditGoalFormContainerProps {
   children: React.ReactNode;
-  onSubmit?: (data: EditGoalFormData) => void;
+  onSubmit?: (data: Goal) => void;
 }
 
 const Provider = ({ children, initValue }: EditGoalFormProviderProps) => {
   const formData = convertFormDataToGoal(initValue);
 
-  const methods = useForm<EditGoalFormData>({
+  const methods = useForm<Goal>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: formData,
@@ -68,7 +67,7 @@ const EditGoalStateProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const FormContainer = ({ children, onSubmit }: EditGoalFormContainerProps) => {
-  const { handleSubmit } = useFormContext<EditGoalFormData>();
+  const { handleSubmit } = useFormContext<Goal>();
 
   return (
     <form className="flex flex-1 flex-col" onSubmit={onSubmit ? handleSubmit(onSubmit) : undefined}>
@@ -82,7 +81,7 @@ const Name = () => {
     watch,
     register,
     formState: { errors },
-  } = useFormContext<EditGoalFormData>();
+  } = useFormContext<Goal>();
 
   return (
     <InputUnderline
@@ -99,7 +98,7 @@ const Name = () => {
 
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<EditGoalFormData>();
+  const { watch, setValue } = useFormContext<Goal>();
   const startDate = watch('duration.startDate');
 
   return (
@@ -140,7 +139,7 @@ const SelectStartDate = () => {
 
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<EditGoalFormData>();
+  const { watch, setValue } = useFormContext<Goal>();
   const endDate = watch('duration.endDate');
 
   return (

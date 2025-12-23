@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Plan, Retrospect } from './type';
+import { Retrospect } from './type';
 import { getWeeklyRetrospectByGoalId } from './inProgress/api';
 import { putWeeklyRetrospect } from '@/feature/retrospects/weeklyRetrospect/api';
 import { useToast } from '@/shared/components/feedBack/toast';
 
 export const useWeeklyRetrospect = (id: string) => {
   const [weeklyRetrospect, setWeeklyRetrospect] = useState<Retrospect[]>([]);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const { showToast } = useToast();

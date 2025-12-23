@@ -17,8 +17,6 @@ const GoalRoadMapDesktop = () => {
     return null;
   }
 
-  const { toBe, plans } = currentGoal;
-
   return (
     <aside className="hidden md:block w-full p-6">
       <article>
@@ -26,7 +24,7 @@ const GoalRoadMapDesktop = () => {
           <EarthIcon />
           로드맵
         </h2>
-        {toBe && <GetRoadMap beforeAfter={toBe as any} plans={plans} />}
+        <GetRoadMap beforeAfter={{ asIs: '', toBe: '' }} plans={[]} />
       </article>
     </aside>
   );
@@ -43,8 +41,6 @@ const GoalRoadMapMobile = () => {
     return null;
   }
 
-  const { toBe, plans } = currentGoal;
-
   return (
     <>
       <button
@@ -57,7 +53,7 @@ const GoalRoadMapMobile = () => {
         </span>
         <MoveIcon />
       </button>
-      {isOpen && plans.length && toBe && (
+      {isOpen && (
         <div className="fixed inset-0 bg-black/50 z-120 md:hidden">
           <div className="fixed inset-0 z-130 flex flex-col items-center justify-center gap-2 md:relative md:z-auto">
             <FlexBox className="w-[335px] justify-end">
@@ -80,7 +76,7 @@ const GoalRoadMapMobile = () => {
                 }
               />
             </FlexBox>
-            <GetRoadMap beforeAfter={toBe as any} plans={plans} />
+            <GetRoadMap beforeAfter={{ asIs: '', toBe: '' }} plans={[]} />
           </div>
         </div>
       )}

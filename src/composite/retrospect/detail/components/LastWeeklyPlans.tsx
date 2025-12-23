@@ -7,21 +7,21 @@ import { useRouter, useParams } from 'next/navigation';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { useEffect, useState } from 'react';
 import { getGoalById, getWeeklyTodos, WeeklyTodosData } from '../api';
-import { Goal, Plan } from '@/shared/type/goal';
+import { Goal } from '@/shared/type/goal';
 import { useWeeklyTodos } from '../hooks/useWeeklyTodos';
 
 export const LastWeeklyPlans = () => {
   const router = useRouter();
   const goalId = useParams<{ id: string }>().id;
   const [goal, setGoal] = useState<Goal | null>(null);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<any[]>([]);
   const [totalWeeklyTodos, setTotalWeeklyTodos] = useState<WeeklyTodosData[]>([]); // 모든 주차의 todos를 담는 상태
   const { weeklyStates, selectedDay, setSelectedDay, selectedDayTodos, handleWeekChange, currentWeek } = useWeeklyTodos(
     totalWeeklyTodos,
     plans
   );
 
-  const getAllWeeklyTodos = async (goalId: string, plansData: Plan[]) => {
+  const getAllWeeklyTodos = async (goalId: string, plansData: any[]) => {
     // 모든 주차 데이터를 병렬로 가져오기
     const allWeeklyTodos = await Promise.all(
       plansData.map(async plan => {
@@ -41,11 +41,10 @@ export const LastWeeklyPlans = () => {
     const initData = async () => {
       const res = await getGoalById(goalId);
       const goalData = res.data;
-      const plansData = goalData.plans;
       setGoal(goalData);
-      setPlans(plansData);
+      setPlans([]);
 
-      const weeklyTodos = await getAllWeeklyTodos(goalId, plansData);
+      const weeklyTodos = await getAllWeeklyTodos(goalId, []);
       setTotalWeeklyTodos(weeklyTodos);
     };
     initData();
