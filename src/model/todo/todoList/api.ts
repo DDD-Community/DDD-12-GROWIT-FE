@@ -43,7 +43,7 @@ export const todoListApi = {
 
   getTodoCountByDate: async (req: TodoCountByDateRequest) => {
     const { from, to } = req;
-    const { data } = await apiClient.get<TodoCountByDateResponse>(`/todos?from=${from}&to=${to}`);
+    const { data } = await apiClient.get<TodoCountByDateResponse>(`/todos/count?from=${from}&to=${to}`);
     return data.data;
   },
 };

@@ -17,8 +17,8 @@ export const convertTodoCountToIndicators = (todoCountData: TodoCountByDateItem[
   }
 
   todoCountData.forEach(item => {
-    // 각 날짜의 goals 배열에서 todoCnt 합산
-    const totalCount = item.goals?.reduce((sum, goal) => sum + (goal.todoCnt || 0), 0) || 0;
+    // 각 날짜의 goals 배열에서 todoCount 합산
+    const totalCount = item.goals?.reduce((sum, goal) => sum + (goal.todoCount || 0), 0) || 0;
 
     // 투두가 있으면 초록색 점 표시
     if (totalCount > 0) {

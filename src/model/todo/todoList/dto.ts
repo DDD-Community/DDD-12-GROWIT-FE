@@ -52,7 +52,7 @@ export interface TodoCountByDateRequest {
 
 export interface TodoCountByGoal {
   id: string;
-  todoCnt: number;
+  todoCount: number;
 }
 
 export interface TodoCountByDateItem {
