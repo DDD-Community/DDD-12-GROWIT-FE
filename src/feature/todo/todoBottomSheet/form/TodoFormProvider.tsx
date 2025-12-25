@@ -115,6 +115,7 @@ export const TodoFormProvider = ({
               goalId: data.goalId ?? null,
               date: dateString,
               content: data.content,
+              isImportant: data.isImportant,
               routine:
                 data.repeatType !== 'none' && data.routineDuration
                   ? {
@@ -129,6 +130,7 @@ export const TodoFormProvider = ({
           }
           // 쿼리 무효화하여 데이터 다시 가져오기
           queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+          queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
           onClose();
         } catch (error) {
           console.error(mode === 'add' ? 'Todo 추가 실패:' : 'Todo 수정 실패:', error);
@@ -149,6 +151,8 @@ export const TodoFormProvider = ({
       await deleteTodoMutation.mutateAsync(todoId);
       // 쿼리 무효화하여 데이터 다시 가져오기
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+      // Todo count 쿼리도 무효화
+      queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
     } catch (error) {
       console.error('Todo 삭제 실패:', error);
@@ -193,6 +197,8 @@ export const TodoFormProvider = ({
 
       // 쿼리 무효화하여 데이터 다시 가져오기
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+      // Todo count 쿼리도 무효화
+      queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
     } catch (error) {
       console.error('반복 투두 삭제 실패:', error);

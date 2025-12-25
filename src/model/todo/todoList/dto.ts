@@ -32,6 +32,7 @@ export interface PutTodoRequest {
   goalId: string | null; // 목표 ID (기타일 경우 null)
   date: string; // 'YYYY-MM-DD'
   content: string;
+  isImportant: boolean;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
 }
 

@@ -37,6 +37,7 @@ export const TodoList = ({ selectedDate, onEdit }: TodoListProps) => {
         await patchTodoStatusMutation.mutateAsync({ todoId, isCompleted });
         // 쿼리 무효화하여 데이터 다시 가져오기
         queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+        queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       } catch (error) {
         console.error('Todo 상태 변경 실패:', error);
       }
