@@ -1,7 +1,6 @@
 'use client';
 
 import { z } from 'zod';
-import type { FormRepeatType } from '../types';
 
 /**
  * 반복 타입 enum

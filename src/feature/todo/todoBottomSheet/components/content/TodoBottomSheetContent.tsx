@@ -7,13 +7,11 @@ import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import { DateEditView } from './dateEditView';
 import { DeleteSelectView } from './deleteSelectView';
-import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
+import type { TodoBottomSheetView, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 목표 목록 */
-  goals: Goal[];
   /** 바텀시트 열림 상태 */
   isOpen: boolean;
   /** 현재 뷰 */
@@ -42,7 +40,6 @@ interface TodoBottomSheetContentProps {
 
 export const TodoBottomSheetContent = ({
   selectedDate,
-  goals,
   isOpen,
   currentView,
   onGoalSelect,
@@ -60,7 +57,7 @@ export const TodoBottomSheetContent = ({
 
   switch (currentView) {
     case 'goalSelect':
-      return <GoalSelectView onBack={goBack} goals={goals} onAddGoal={onAddGoal} />;
+      return <GoalSelectView onBack={goBack} onAddGoal={onAddGoal} />;
     case 'repeatSelect':
       return <RepeatSelectView onBack={goBack} onGoToDateSelect={onEndDateSelect} />;
     case 'dateSelect':
@@ -88,7 +85,6 @@ export const TodoBottomSheetContent = ({
       return (
         <MainView
           selectedDate={selectedDate}
-          goals={goals}
           onSubmit={handleSubmit}
           submitLabel={submitLabel}
           onDeleteSelect={onDeleteSelect}

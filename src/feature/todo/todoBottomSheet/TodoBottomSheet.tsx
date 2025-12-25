@@ -5,31 +5,20 @@ import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/Bottom
 import { StackView, useStackNavigation } from './components/shared/stackView';
 import { TodoBottomSheetContent } from './components/content';
 import { TodoFormProvider } from './form';
-import {
-  type TodoFormData,
-  type TodoBottomSheetMode,
-  type TodoBottomSheetView,
-  type Goal,
-  type DateSelectTab,
-} from './types';
+import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type DateSelectTab } from './types';
+import { GoalTodo } from '@/shared/type/GoalTodo';
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
   mode: TodoBottomSheetMode;
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 목표 목록 */
-  goals?: Goal[];
-  /** 제출 핸들러 */
-  onSubmit: (data: TodoFormData) => void;
-  /** 삭제 핸들러 (편집 모드에서만 사용, 해당 투두만 삭제) */
-  onDelete?: () => void;
-  /** 전체 반복 투두 삭제 핸들러 (편집 모드에서만 사용) */
-  onDeleteAllRepeats?: () => void;
   /** 편집 모드일 때 초기 데이터 */
   initialData?: TodoFormData;
   /** 편집 모드일 때 Todo ID */
   todoId?: string;
+  /** 편집 모드일 때 Todo 데이터 (전체 반복 투두 삭제용) */
+  editingTodo?: GoalTodo | null;
   /** 바텀시트 열림 상태 (외부 제어용) */
   isOpen?: boolean;
   /** 바텀시트 열기 함수 (외부 제어용) */
@@ -43,11 +32,9 @@ interface TodoBottomSheetProps {
 export const TodoBottomSheet = ({
   mode,
   selectedDate,
-  goals = [],
-  onSubmit,
-  onDelete,
-  onDeleteAllRepeats,
   initialData,
+  todoId,
+  editingTodo,
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
   onClose: externalOnClose,
@@ -107,18 +94,18 @@ export const TodoBottomSheet = ({
         mode={mode}
         initialData={initialData}
         isOpen={isOpen}
-        onSubmit={onSubmit}
-        onDelete={onDelete}
-        onDeleteAllRepeats={onDeleteAllRepeats}
+        selectedDate={selectedDate}
+        todoId={todoId}
+        editingTodo={editingTodo}
         onClose={() => {
           closeSheet();
           reset();
         }}
+        onAddGoal={onAddGoal}
       >
         <StackView viewKey={currentView} direction={direction}>
           <TodoBottomSheetContent
             selectedDate={selectedDate}
-            goals={goals}
             isOpen={isOpen}
             currentView={currentView}
             onGoalSelect={handleGoalSelect}

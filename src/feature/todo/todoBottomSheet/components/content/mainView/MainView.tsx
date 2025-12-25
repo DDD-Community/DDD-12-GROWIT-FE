@@ -1,21 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { cn } from '@/shared/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { DeleteButton } from '../../shared/deleteButton';
-import { FlagIcon, GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
+import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
+import { MainViewHeader } from './MainViewHeader';
+import { TodoInput } from './TodoInput';
 import type { Goal, TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
-
-const MAX_LENGTH = 34;
+import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { getProgressGoals } from '@/model/goal/api';
 
 interface MainViewProps {
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 목표 목록 */
-  goals: Goal[];
   /** 제출 핸들러 */
   onSubmit: () => void;
   /** 제출 버튼 라벨 */
@@ -42,15 +41,6 @@ interface MainViewProps {
   repeatLabels?: typeof REPEAT_TYPE_LABELS;
 }
 
-/** 헤더 날짜 포맷 (M월 D일 요일) */
-const formatHeaderDate = (date: Date) => {
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-  const dayName = dayNames[date.getDay()];
-  return `${month}월 ${day}일 ${dayName}`;
-};
-
 /** 날짜를 YY.MM.DD 형식으로 포맷 */
 const formatDateDisplay = (dateString?: string): string => {
   if (!dateString) return '';
@@ -63,7 +53,6 @@ const formatDateDisplay = (dateString?: string): string => {
 
 export const MainView = ({
   selectedDate,
-  goals,
   onSubmit,
   submitLabel,
   onDeleteSelect,
@@ -77,123 +66,41 @@ export const MainView = ({
   onDateEdit,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: MainViewProps) => {
+  const { data: goals = [] } = useQuery({
+    queryKey: GoalQueryKeys.progress(),
+    queryFn: getProgressGoals,
+  });
+
   const {
     watch,
-    setValue,
-    register,
     formState: { errors },
   } = useFormContext<TodoFormData>();
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const content = watch('content');
-  const isImportant = watch('isImportant');
   const goalId = watch('goalId');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
 
-  const hasContentError = !!errors.content;
   const hasRoutineDurationError = !!errors.routineDuration;
   const selectedGoalName = goals.find(g => g.id === goalId)?.name;
   const repeatLabel = repeatLabels[repeatType] || '없음';
   const hasRepeat = repeatType !== 'none';
 
-  // 제출 버튼 비활성화 조건
-  const isContentValid = content?.trim() && content.trim().length <= 34;
-  const isRoutineDurationValid =
-    repeatType === 'none' ||
-    (routineDuration?.startDate &&
-      routineDuration?.endDate &&
-      new Date(routineDuration.startDate) <= new Date(routineDuration.endDate));
-  const isSubmitDisabled = !isContentValid || !isRoutineDurationValid;
-
-  // 마운트 시 입력 필드에 포커스
-  useEffect(() => {
-    if (autoFocus) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 300);
-    }
-  }, [autoFocus]);
-
   return (
     <>
       <BottomSheet.Title>
-        <div className="w-full flex items-center px-5 pt-2 pb-4">
-          {/* 중요 표시 버튼 - 왼쪽 영역 */}
-          <div className="flex-1 flex justify-start">
-            <button
-              type="button"
-              onClick={() => setValue('isImportant', !isImportant)}
-              className="w-6 h-6 flex items-center justify-center"
-              aria-label={isImportant ? '중요 표시 해제' : '중요 표시'}
-            >
-              <FlagIcon filled={isImportant} />
-            </button>
-          </div>
-
-          {/* 날짜 제목 - 중앙 (클릭 시 날짜 수정 화면으로 이동) */}
-          <button type="button" onClick={onDateEdit} className="body-1-bold text-white underline">
-            {formatHeaderDate(selectedDate)}
-          </button>
-
-          {/* 완료 버튼 - 오른쪽 영역 */}
-          <div className="flex-1 flex justify-end">
-            <button
-              type="button"
-              onClick={onSubmit}
-              disabled={isSubmitDisabled}
-              className={cn(
-                'label-1-bold px-[14px] py-2 rounded-lg',
-                !isSubmitDisabled ? 'text-label-normal' : 'text-label-assistive'
-              )}
-            >
-              {submitLabel}
-            </button>
-          </div>
-        </div>
+        <MainViewHeader
+          selectedDate={selectedDate}
+          submitLabel={submitLabel}
+          onDateEdit={onDateEdit}
+          onSubmit={onSubmit}
+        />
       </BottomSheet.Title>
 
       <BottomSheet.Content>
         <div className="flex flex-col gap-5">
-          {/* 텍스트 입력 */}
-          <div>
-            <div
-              className={cn(
-                'border-b-2 pb-2 transition-colors',
-                hasContentError ? 'border-status-negative' : 'border-white focus-within:border-brand-neon'
-              )}
-            >
-              <input
-                {...register('content')}
-                ref={inputRef}
-                type="text"
-                value={content ?? ''}
-                onChange={e => setValue('content', e.target.value.slice(0, MAX_LENGTH))}
-                placeholder="할 일을 입력해주세요"
-                className={cn(
-                  'w-full bg-transparent',
-                  'body-1-normal text-label-normal',
-                  'placeholder:text-label-assistive',
-                  'focus:outline-none'
-                )}
-                maxLength={MAX_LENGTH}
-              />
-            </div>
-            <div className="flex justify-between mt-1">
-              {hasContentError ? (
-                <span className="label-2-medium text-status-negative">{errors.content?.message}</span>
-              ) : (
-                <span />
-              )}
-              <span className="label-2-medium text-label-alternative">
-                ({content?.length ?? 0}/{MAX_LENGTH})
-              </span>
-            </div>
-          </div>
+          <TodoInput autoFocus={autoFocus} />
 
-          {/* 선택 셀 목록 */}
           <div className="flex flex-col gap-3">
-            {/* 목표 선택 */}
             <SelectCell
               icon={<GoalIcon />}
               label="목표"
@@ -201,11 +108,7 @@ export const MainView = ({
               placeholder="선택"
               onClick={onGoalSelect}
             />
-
-            {/* 반복 선택 */}
             <SelectCell icon={<RepeatIcon />} label="반복" value={repeatLabel} onClick={onRepeatSelect} />
-
-            {/* 반복이 설정된 경우에만 시작일/종료일 표시 */}
             {hasRepeat && (
               <>
                 {/* 시작일 선택 */}
@@ -228,15 +131,12 @@ export const MainView = ({
                   hasError={!routineDuration?.endDate}
                 />
 
-                {/* 반복 기간 에러 메시지 */}
                 {hasRoutineDurationError && (
                   <span className="label-2-medium text-status-negative px-1">{errors.routineDuration?.message}</span>
                 )}
               </>
             )}
           </div>
-
-          {/* 삭제 버튼 */}
           {showDeleteButton && (
             <DeleteButton
               onClick={() => {
@@ -256,4 +156,12 @@ export const MainView = ({
   );
 };
 
-export default MainView;
+// MainView.Header로 할당 (MainView 선언 후)
+MainView.Header = MainViewHeader;
+
+// TypeScript 타입 정의
+export type MainViewComponent = typeof MainView & {
+  Header: typeof MainViewHeader;
+};
+
+export default MainView as MainViewComponent;

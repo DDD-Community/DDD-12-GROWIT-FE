@@ -15,7 +15,6 @@ import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import CreateNewGoal from './components/CreateNewGoal';
 import Button from '@/shared/components/input/Button';
-import GoalProgressSheet from '../goalProgressSheet';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
 
@@ -23,9 +22,7 @@ export default function PlanetSelectorScene() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
       <PlanetSelector />
-      <section className="pb-16">
-        <GoalProgressSheet />
-      </section>
+      <section className="pb-16">{/* <GoalProgressSheet /> */}</section>
     </GoalProvider>
   );
 }

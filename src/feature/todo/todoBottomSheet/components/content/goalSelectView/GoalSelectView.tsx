@@ -1,15 +1,17 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { ChevronLeftIcon, CheckIcon, PlusIcon } from '../../shared/icons';
+import { GoalSelectViewLoading } from './GoalSelectViewLoading';
 import type { TodoFormData, Goal } from '../../../types';
+import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { getProgressGoals } from '@/model/goal/api';
 
 interface GoalSelectViewProps {
   /** 뒤로가기 클릭 핸들러 */
   onBack: () => void;
-  /** 목표 목록 */
-  goals: Goal[];
   /** 목표 추가 클릭 핸들러 */
   onAddGoal?: () => void;
 }
@@ -20,22 +22,28 @@ const DEFAULT_TODO_OPTION = {
   name: '기본 투두',
 };
 
-export const GoalSelectView = ({ onBack, goals, onAddGoal }: GoalSelectViewProps) => {
+export const GoalSelectView = ({ onBack, onAddGoal }: GoalSelectViewProps) => {
   const { watch, setValue } = useFormContext<TodoFormData>();
-  const currentGoalId = watch('goalId');
+  const { data: goals = [], isLoading } = useQuery({
+    queryKey: GoalQueryKeys.progress(),
+    queryFn: getProgressGoals,
+  });
 
-  // 목표 선택
+  const currentGoalId = watch('goalId');
+  const allOptions = [DEFAULT_TODO_OPTION, ...goals];
+
   const handleSelect = (goalId: string | null) => {
     setValue('goalId', goalId);
   };
 
-  // 완료 버튼 클릭
   const handleComplete = () => {
     onBack();
   };
 
-  // 기본 투두를 맨 위로, 나머지 목표 목록
-  const allOptions = [DEFAULT_TODO_OPTION, ...goals];
+
+  if (isLoading) {
+    return <GoalSelectViewLoading onBack={onBack} />;
+  }
 
   return (
     <>
