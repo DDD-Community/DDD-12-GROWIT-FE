@@ -11,7 +11,6 @@ import { TodoList } from '@/feature/todo/todoList';
 import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
 import { Calendar } from '@/feature/todo/calendar';
 import { CheerMessageCard } from './components/cheerMessageCard';
-import { DEMO_INDICATORS } from './mock';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData } from './helper';
 import { FolderPlusIcon } from '@/feature/todo/todoBottomSheet/components/shared/icons';
@@ -67,7 +66,6 @@ export const TodoListContainer = () => {
                     <Calendar
                       selectedDate={selectedDate}
                       onDateSelect={setSelectedDate}
-                      indicators={DEMO_INDICATORS}
                       view={calendarView}
                       onViewChange={setCalendarView}
                     />
