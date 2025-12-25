@@ -1,9 +1,11 @@
 import React, { useMemo, useCallback } from 'react';
+import { format } from 'date-fns';
 import { MonthViewProps } from '../../types';
 import { MonthHeader } from './MonthHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { WeekRow } from './WeekRow';
-import { getMonthDates, CALENDAR } from '../../utils';
+import { getMonthDates, getMonthRange, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
+import { useTodoCountByDate } from '@/model/todo/todoList/queries';
 
 /**
  * 월간 뷰 컴포넌트
@@ -22,6 +24,23 @@ export const MonthView: React.FC<MonthViewProps> = ({
 }) => {
   // 월간 날짜 배열 계산 (42개)
   const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
+
+  // 월의 시작일과 종료일 계산
+  const [monthStart, monthEnd] = useMemo(() => getMonthRange(currentDate), [currentDate]);
+
+  // 월간 날짜 범위의 투두 개수 조회
+  const fromDateString = useMemo(() => format(monthStart, 'yyyy-MM-dd'), [monthStart]);
+  const toDateString = useMemo(() => format(monthEnd, 'yyyy-MM-dd'), [monthEnd]);
+  const { data: todoCountData = [] } = useTodoCountByDate({
+    from: fromDateString,
+    to: toDateString,
+  });
+
+  // 투두 개수를 indicators 형식으로 변환 및 병합
+  const mergedIndicators = useMemo(() => {
+    const todoIndicators = convertTodoCountToIndicators(todoCountData);
+    return mergeIndicators(indicators, todoIndicators);
+  }, [indicators, todoCountData]);
 
   // 6주로 분할
   const weeks = useMemo(() => {
@@ -70,7 +89,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
               dates={weekDates}
               selectedDate={selectedDate}
               currentMonth={currentDate}
-              indicators={indicators}
+              indicators={mergedIndicators}
               holidays={holidays}
               onDateSelect={onDateSelect}
             />
