@@ -1,5 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { TodoByDateRequest, PatchTodoStatusRequest, PutTodoRequest, PostAddTodoRequest } from './dto';
+import {
+  TodoByDateRequest,
+  TodoCountByDateRequest,
+  PatchTodoStatusRequest,
+  PutTodoRequest,
+  PostAddTodoRequest,
+} from './dto';
 import { todoListQueryKeys } from './queryKeys';
 import { todoListApi } from './api';
 
@@ -8,6 +14,14 @@ export const useTodosByDate = (req: TodoByDateRequest) => {
     queryKey: todoListQueryKeys.getTodosByDate(req.date),
     queryFn: () => todoListApi.getTodosByDate(req),
     enabled: !!req.date,
+  });
+};
+
+export const useTodoCountByDate = (req: TodoCountByDateRequest) => {
+  return useQuery({
+    queryKey: todoListQueryKeys.getTodoCountByDate(req),
+    queryFn: () => todoListApi.getTodoCountByDate(req),
+    enabled: !!req.from && !!req.to,
   });
 };
 

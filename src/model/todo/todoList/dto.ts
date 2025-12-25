@@ -42,3 +42,20 @@ export interface PostAddTodoRequest {
 }
 
 export interface PostAddTodoResponse extends CommonResponse<{ id: string }> {}
+
+export interface TodoCountByDateRequest {
+  from: string; // YYYY-MM-DD 형식
+  to: string; // YYYY-MM-DD 형식
+}
+
+export interface TodoCountByGoal {
+  id: string;
+  todoCnt: number;
+}
+
+export interface TodoCountByDateItem {
+  date: string; // YYYY-MM-DD 형식
+  goals: TodoCountByGoal[];
+}
+
+export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}

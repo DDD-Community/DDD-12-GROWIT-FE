@@ -9,6 +9,8 @@ import {
   PutTodoRequest,
   PostAddTodoRequest,
   PostAddTodoResponse,
+  TodoCountByDateRequest,
+  TodoCountByDateResponse,
 } from './dto';
 
 export const todoListApi = {
@@ -37,6 +39,12 @@ export const todoListApi = {
   postAddTodo: async (req: PostAddTodoRequest) => {
     const response = await apiClient.post<PostAddTodoResponse, PostAddTodoRequest>('/todos', req);
     return response.data;
+  },
+
+  getTodoCountByDate: async (req: TodoCountByDateRequest) => {
+    const { from, to } = req;
+    const { data } = await apiClient.get<TodoCountByDateResponse>(`/todos?from=${from}&to=${to}`);
+    return data.data;
   },
 };
 
