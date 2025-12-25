@@ -17,13 +17,7 @@ export interface PatchTodoStatusRequest {
   isCompleted: boolean;
 }
 
-export interface PutTodoRequest {
-  todoId: string;
-  date: string;
-  content: string;
-}
-
-export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY';
+export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'YEARLY';
 
 export interface TodoRoutine {
   duration: {
@@ -31,6 +25,14 @@ export interface TodoRoutine {
     endDate: string; // 'YYYY-MM-DD'
   };
   repeatType: RepeatType;
+}
+
+export interface PutTodoRequest {
+  todoId: string; // URL 파라미터용
+  goalId: string | null; // 목표 ID (기타일 경우 null)
+  date: string; // 'YYYY-MM-DD'
+  content: string;
+  routine?: TodoRoutine; // 루틴 설정 (옵셔널)
 }
 
 export interface PostAddTodoRequest {

@@ -112,8 +112,19 @@ export const TodoFormProvider = ({
             // Todo 수정
             await putTodoMutation.mutateAsync({
               todoId,
+              goalId: data.goalId ?? null,
               date: dateString,
               content: data.content,
+              routine:
+                data.repeatType !== 'none' && data.routineDuration
+                  ? {
+                      repeatType: data.repeatType,
+                      duration: {
+                        startDate: data.routineDuration.startDate,
+                        endDate: data.routineDuration.endDate,
+                      },
+                    }
+                  : undefined,
             });
           }
           // 쿼리 무효화하여 데이터 다시 가져오기
