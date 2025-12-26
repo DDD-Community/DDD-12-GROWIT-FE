@@ -98,8 +98,6 @@ function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoal
     setCheckedGoals(newCheckedGoals);
   };
 
-  console.log(endedGoals);
-
   return (
     <ul className="grid grid-cols-2 gap-3 p-5">
       {!endedGoals || !endedGoals.length ? (

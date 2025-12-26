@@ -1,10 +1,18 @@
 import { queryOptions, mutationOptions, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { GoalQueryKeys } from './queryKeys';
-import { getProgressGoals, putEditGoal, getEndedGoals, deleteGoal } from './api';
+import { getProgressGoals, putEditGoal, getEndedGoals, deleteGoal, getAllGoals } from './api';
 import { Goal } from '@/shared/type/goal';
 import { GoalFormData } from '@/shared/type/form';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 import { postCreateGoal } from '@/feature/goal/confimGoal/api';
+
+export const createAllGoalsQuery = (option?: Omit<UseQueryOptions<Goal[], Error>, 'queryKey' | 'queryFn'>) => {
+  return queryOptions({
+    ...option,
+    queryKey: GoalQueryKeys.all(),
+    queryFn: getAllGoals,
+  });
+};
 
 export const createProgressGoalsQuery = (option?: Omit<UseQueryOptions<Goal[], Error>, 'queryKey' | 'queryFn'>) => {
   return queryOptions({
