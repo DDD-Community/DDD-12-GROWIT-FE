@@ -3,17 +3,13 @@
 import { useMemo, useCallback } from 'react';
 import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import { TodoCard } from './TodoCard';
-import { TodoListEmpty } from './TodoListEmpty';
+import { TodoCard } from './components/TodoCard';
+import { TodoListEmpty } from './components/TodoListEmpty';
+import { TodoListLoading, TodoListError } from './components';
 import { useTodosByDate, usePatchTodoStatus } from '@/model/todo/todoList/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
-
-interface GoalGroup {
-  goalId: string;
-  goalName: string;
-  todos: GoalTodo[];
-}
+import { transformTodosData, groupAndSortTodos } from './helper';
 
 interface TodoListProps {
   /** 선택된 날짜 */
@@ -23,19 +19,19 @@ interface TodoListProps {
 }
 
 export const TodoList = ({ selectedDate, onEdit }: TodoListProps) => {
+  const queryClient = useQueryClient();
+  const patchTodoStatusMutation = usePatchTodoStatus();
+
   const dateString = format(selectedDate, 'yyyy-MM-dd');
   const { data: todosData, isLoading, error } = useTodosByDate({ date: dateString });
 
-  // Mutations
-  const patchTodoStatusMutation = usePatchTodoStatus();
-  const queryClient = useQueryClient();
+  const todos = useMemo(() => transformTodosData(todosData), [todosData]);
+  const groupedTodos = useMemo(() => groupAndSortTodos(todos), [todos]);
 
-  // Todo 완료 상태 토글
   const handleToggle = useCallback(
     async (todoId: string, isCompleted: boolean) => {
       try {
         await patchTodoStatusMutation.mutateAsync({ todoId, isCompleted });
-        // 쿼리 무효화하여 데이터 다시 가져오기
         queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
         queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       } catch (error) {
@@ -45,67 +41,9 @@ export const TodoList = ({ selectedDate, onEdit }: TodoListProps) => {
     [patchTodoStatusMutation, queryClient, dateString]
   );
 
-  // API 응답을 GoalTodo[] 형식으로 변환
-  const todos: GoalTodo[] = useMemo(() => {
-    if (!todosData) return [];
-    return todosData
-      .map(item => ({
-        ...item.todo,
-        goal: item.goal || item.todo.goal || { name: '미분류' },
-      }))
-      .filter(todo => todo.goal); // goal이 없는 경우 필터링
-  }, [todosData]);
-
-  // goal별로 그룹화
-  const groupedTodos = useMemo<GoalGroup[]>(() => {
-    const groupMap = new Map<string, GoalGroup>();
-
-    todos.forEach(todo => {
-      if (!todo.goal) return; // goal이 없으면 스킵
-
-      const goalId = todo.goal.id ?? todo.goal.name ?? 'default';
-      const goalName = todo.goal.name || '미분류';
-      const existingGroup = groupMap.get(goalId);
-      if (existingGroup) {
-        existingGroup.todos.push(todo);
-      } else {
-        groupMap.set(goalId, {
-          goalId,
-          goalName,
-          todos: [todo],
-        });
-      }
-    });
-
-    return Array.from(groupMap.values());
-  }, [todos]);
-
-  // 로딩 상태
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-[28px] mt-[20px] mb-[20px]">
-        <div className="text-center text-label-alternative">로딩 중...</div>
-      </div>
-    );
-  }
-
-  // 에러 상태
-  if (error) {
-    return (
-      <div className="flex flex-col gap-[28px] mt-[20px] mb-[20px]">
-        <div className="text-center text-label-alternative">데이터를 불러오는 중 오류가 발생했습니다.</div>
-      </div>
-    );
-  }
-
-  // 빈 상태
-  if (groupedTodos.length === 0) {
-    return (
-      <div className="mt-[20px] mb-[20px]">
-        <TodoListEmpty />
-      </div>
-    );
-  }
+  if (isLoading) return <TodoListLoading />;
+  if (error) return <TodoListError />;
+  if (groupedTodos.length === 0) return <TodoListEmpty />;
 
   return (
     <div className="flex flex-col gap-[28px] mt-[20px] mb-[20px]">

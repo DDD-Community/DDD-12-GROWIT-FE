@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
@@ -15,6 +16,34 @@ import { TodoListContainerFormProvider } from './form';
 import { convertToFormData } from './helper';
 import { FolderPlusIcon } from '@/feature/todo/todoBottomSheet/components/shared/icons';
 import { ROUTES } from '@/shared/constants/routes';
+import { useTodosByDate } from '@/model/todo/todoList/queries';
+
+// 목표 추가 버튼 컴포넌트 (훅 사용을 위해 분리)
+const AddGoalButton = ({ selectedDate, onAddGoal }: { selectedDate: Date; onAddGoal: () => void }) => {
+  const dateString = format(selectedDate, 'yyyy-MM-dd');
+  const { data: todosData } = useTodosByDate({ date: dateString });
+
+  const todoCount = todosData?.length ?? 0;
+
+  // todo가 없으면 버튼 숨김
+  if (todoCount === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex justify-center mb-[120px]">
+      <Button
+        size="ml"
+        variant="tertiary"
+        layout="icon-left"
+        text="목표 추가하기"
+        icon={<FolderPlusIcon />}
+        onClick={onAddGoal}
+        className="w-auto"
+      />
+    </div>
+  );
+};
 
 export const TodoListContainer = () => {
   const [editingTodo, setEditingTodo] = useState<GoalTodo | null>(null);
@@ -55,7 +84,7 @@ export const TodoListContainer = () => {
 
             {/* 메인 컨텐츠 영역 */}
             <div
-              className={`absolute left-0 right-0 max-w-sm:mx-[20px] sm:mx-[40px] mx-auto bg-normal shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
+              className={`absolute left-0 right-0 max-w-sm:mx-[20px] sm:mx-[40px] mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
                 isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'
               }`}
             >
@@ -73,18 +102,8 @@ export const TodoListContainer = () => {
                     {/* Todo 리스트 */}
                     <TodoList selectedDate={selectedDate} onEdit={handleEdit} />
 
-                    {/* 목표 추가 버튼 */}
-                    <div className="flex justify-center mb-[120px]">
-                      <Button
-                        size="ml"
-                        variant="tertiary"
-                        layout="icon-left"
-                        text="목표 추가하기"
-                        icon={<FolderPlusIcon />}
-                        onClick={handleAddGoal}
-                        className="w-auto"
-                      />
-                    </div>
+                    {/* 목표 추가 버튼 (todo가 없을 때만 표시) */}
+                    <AddGoalButton selectedDate={selectedDate} onAddGoal={handleAddGoal} />
                   </div>
                 </div>
               </div>

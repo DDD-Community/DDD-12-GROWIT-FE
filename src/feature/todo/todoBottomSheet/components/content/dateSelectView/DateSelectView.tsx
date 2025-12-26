@@ -134,6 +134,7 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
           selectedStartDate={startDate}
           selectedEndDate={endDate}
           activeTab={activeTab}
+          repeatType={repeatType}
           initialFocusDate={startDate}
         />
       </BottomSheet.Content>

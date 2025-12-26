@@ -3,7 +3,8 @@
 import { useFormContext } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import { ChevronLeftIcon, CheckIcon, PlusIcon } from '../../shared/icons';
+import { ChevronLeftIcon, PlusIcon } from '../../shared/icons';
+import { OptionCell } from '../../shared/optionCell/OptionCell';
 import { GoalSelectViewLoading } from './GoalSelectViewLoading';
 import type { TodoFormData, Goal } from '../../../types';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
@@ -40,7 +41,6 @@ export const GoalSelectView = ({ onBack, onAddGoal }: GoalSelectViewProps) => {
     onBack();
   };
 
-
   if (isLoading) {
     return <GoalSelectViewLoading onBack={onBack} />;
   }
@@ -59,21 +59,18 @@ export const GoalSelectView = ({ onBack, onAddGoal }: GoalSelectViewProps) => {
         </div>
       </BottomSheet.Title>
       <BottomSheet.Content>
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col gap-2">
           {allOptions.map(option => {
             const isSelected = currentGoalId === option.id;
+            const optionValue = option.id ?? 'default';
             return (
-              <button
-                key={option.id ?? 'default'}
-                type="button"
+              <OptionCell
+                key={optionValue}
+                value={optionValue}
+                label={option.name}
+                isSelected={isSelected}
                 onClick={() => handleSelect(option.id)}
-                className="flex items-center justify-center gap-2 px-[14px] py-2 rounded-lg"
-              >
-                {isSelected && <CheckIcon className="text-brand-neon" />}
-                <span className={isSelected ? 'body-1-bold text-label-normal' : 'body-1-normal text-label-normal'}>
-                  {option.name}
-                </span>
-              </button>
+              />
             );
           })}
         </div>
