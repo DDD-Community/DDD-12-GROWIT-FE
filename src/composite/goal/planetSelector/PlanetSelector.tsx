@@ -8,8 +8,8 @@ import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
-import { useSuspenseQueries } from '@tanstack/react-query';
-import { createAllGoalsQuery, createProgressGoalsQuery } from '@/model/goal/hooks';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createProgressGoalsQuery } from '@/model/goal/hooks';
 import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
@@ -18,6 +18,7 @@ import Button from '@/shared/components/input/Button';
 import GoalProgressSheet from '../goalProgressSheet';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
+import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 
 export default function PlanetSelectorScene() {
   return (
@@ -31,12 +32,17 @@ export default function PlanetSelectorScene() {
 }
 
 export function PlanetSelector() {
-  const [{ data: progressGoals }, { data: allGoals }] = useSuspenseQueries({
-    queries: [createProgressGoalsQuery(), createAllGoalsQuery()],
-  });
+  const msUntilEndOfDay = getMsUntilEndOfDay();
+  const { data: progressGoals } = useSuspenseQuery(
+    createProgressGoalsQuery({
+      // 캐시 무효화가 없다면, 현재 시간부터 하루가 끝나기전까지 유지되어도 괜찮다 판단
+      staleTime: msUntilEndOfDay,
+      gcTime: msUntilEndOfDay,
+    })
+  );
   const { setCurrentGoal } = useGoalSelector();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
-  useShowEndedGoalsSheet(allGoals, showSheet);
+  useShowEndedGoalsSheet(showSheet);
 
   const goalsWithAddGoalSlot: (Goal | 'add-goal-section')[] = useMemo(() => {
     return [...progressGoals, 'add-goal-section'];

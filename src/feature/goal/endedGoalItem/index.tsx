@@ -5,6 +5,7 @@ import Badge from '@/shared/components/display/Badge';
 import Button from '@/shared/components/input/Button';
 import { useEffect, useRef, useState } from 'react';
 import { ToolTip } from '@/shared/components/display/ToolTip';
+import { getProgressPercentageByDateRange } from '@/shared/lib/utils';
 
 type EndedGoalItemProps = {
   goal: Goal;
@@ -14,6 +15,7 @@ type EndedGoalItemProps = {
 };
 export const EndedGoalItem = ({ goal, isEditMode = false, checked, onCheck }: EndedGoalItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <EndedGoalItemModal open={isModalOpen} onClose={() => setIsModalOpen(false)} goal={goal} />
@@ -30,16 +32,18 @@ export const EndedGoalItem = ({ goal, isEditMode = false, checked, onCheck }: En
           )}
           <Image
             id="ended-goal-image"
-            src="/goal/goal-progress.png"
+            src={goal.planet.image.done}
             width={100}
             height={100}
             alt={goal.name}
             className="object-cover"
             priority
           />
-          <label htmlFor="ended-goal-image" className="caption-1-regular text-text-secondary">
-            행성 이름
-          </label>
+          {goal.planet.name && (
+            <label htmlFor="ended-goal-image" className="caption-1-regular text-text-secondary">
+              {goal.planet.name}
+            </label>
+          )}
         </button>
         <div className="flex flex-col gap-2">
           <h3 className="body-2-bold text-text-strong">{goal.name}</h3>
@@ -62,6 +66,7 @@ type EndedGoalItemModalProps = {
 };
 
 function EndedGoalItemModal({ open, onClose, goal }: EndedGoalItemModalProps) {
+  const progressPercentage = getProgressPercentageByDateRange(goal.duration.startDate, goal.duration.endDate);
   const dialogRef = useRef<HTMLDialogElement>(null);
   // 바깥쪽 클릭 & ESC 클릭 시 닫히도록 설계
   useEffect(() => {
@@ -95,7 +100,7 @@ function EndedGoalItemModal({ open, onClose, goal }: EndedGoalItemModalProps) {
       className={`min-w-3xs max-w-xs bg-elevated-assistive rounded-[20px] shadow-xl border-0 fixed inset-0 m-auto overflow-visible`}
     >
       <article className="absolute -top-16 right-4 z-10">
-        <ToolTip text="행성 이름" position="top-center" />
+        <ToolTip text={goal.planet.name} position="top-center" />
         <Image src="/goal/goal-progress.png" alt={goal.name} width={120} height={120} className="relative" />
       </article>
       <section className="flex flex-col w-full items-center justify-center py-[20px] px-[24px] gap-5 overflow-y-visible">
@@ -115,14 +120,11 @@ function EndedGoalItemModal({ open, onClose, goal }: EndedGoalItemModalProps) {
             </p>
           </div>
           <span className="label-1-regular text-text-primary">
-            투두 완료율: <span className="label-1-bold text-brand-neon">15%</span>
+            투두 완료율: <span className="label-1-bold text-brand-neon">{progressPercentage}%</span>
           </span>
         </div>
 
-        <p className="text-text-strong text-pretty">
-          GROWIT MVP 개발과 사회문제 해결형 서비스 기획, 스타트업·VC 트렌드 리서치를 병행하며 실행력과 전략적 감각을
-          개발하면서 4주 목표를 실행했습니다.
-        </p>
+        {goal.analysis && <p className="text-text-strong text-pretty">{goal.analysis}</p>}
       </section>
       <div id="modal-portal-layer" className="relative" />
       <div className="w-full pt-[16px] pb-[24px] px-[24px] justify-end gap-2">

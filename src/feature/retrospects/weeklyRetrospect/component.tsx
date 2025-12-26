@@ -1,13 +1,13 @@
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Accordion } from '@/shared/components/layout/Accordion';
 import { WeeklyRetrospectBox } from '@/feature/retrospects/weeklyRetrospect/components/WeeklyRetrospectBox';
-import { Plan, Retrospect } from '@/composite/retrospect/type';
+import { Retrospect } from '@/composite/retrospect/type';
 import { useMemo, useState } from 'react';
 
 interface WeeklyRetrospectProps {
   goalId?: string;
   weeklyRetrospect: (Retrospect | null)[];
-  plans: Plan[];
+  plans: any[];
   updateWeeklyRetrospect: (
     weeklyRetrospectId: string,
     newRetrospect: { keep: string; problem: string; tryNext: string }

@@ -10,22 +10,38 @@ import {
 } from '@/shared/components/dropdown-menu';
 import { TrashIcon, WarningIcon } from '@/shared/constants/icons';
 import { useGoalSelector } from '@/model/goal/context';
-import { getDaysUntilEndDate } from '@/shared/lib/utils';
+import { getDaysUntilEndDate, getProgressPercentageByDateRange } from '@/shared/lib/utils';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createDeleteGoalMutation } from '@/model/goal/hooks';
+import { GoalQueryKeys } from '@/model/goal/queryKeys';
 
 export default function GoalProgressSheet() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { currentGoal } = useGoalSelector();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  if (currentGoal === undefined || null) return <div className="w-full h-30 bg-transparent" />;
+  const { mutateAsync: deleteGoal } = useMutation(
+    createDeleteGoalMutation({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
+        setIsDeleteModalOpen(false);
+      },
+      onError: () => {
+        showToast('목표 삭제에 실패했습니다.', 'error');
+      },
+    })
+  );
 
-  const progressPercentage = currentGoal?.plans.length
-    ? (currentGoal.plans.length / currentGoal.plans.length) * 100
+  if (!currentGoal) return <div className="w-full h-30 bg-transparent" />;
+
+  const progressPercentage = currentGoal
+    ? getProgressPercentageByDateRange(currentGoal.duration.startDate, currentGoal.duration.endDate)
     : 0;
-  const daysUntilEndDate = currentGoal?.duration.endDate ? getDaysUntilEndDate(currentGoal.duration.endDate) : 0;
+  const daysUntilEndDate = currentGoal ? getDaysUntilEndDate(currentGoal.duration.endDate) : 0;
 
   return (
     <div className="w-full max-h-40 h-full bg-elevated-normal rounded-t-lg border-t border-line-normal">
@@ -93,7 +109,11 @@ export default function GoalProgressSheet() {
           {currentGoal?.duration.startDate} ~ {currentGoal?.duration.endDate}
         </p>
       </div>
-      <DeleteGoalModal open={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onDelete={() => {}} />
+      <DeleteGoalModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={() => deleteGoal(currentGoal.id)}
+      />
     </div>
   );
 }
@@ -127,4 +147,7 @@ function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
       )}
     />
   );
+}
+function showToast(arg0: string, arg1: string) {
+  throw new Error('Function not implemented.');
 }

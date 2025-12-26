@@ -4,13 +4,12 @@ import Button from '@/shared/components/input/Button';
 import { useState } from 'react';
 import { TextArea } from '@/shared/components/input/TextArea';
 import { postAddRetrospect } from '../../addRetroSpect/api';
-import { Plan } from '@/shared/type/goal';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 
 interface MissedWeeklyRetrospect {
   goalId?: string;
-  plan: Plan;
+  plan: any;
 }
 
 // 지나간 주차 미작성 컴포넌트 (새로 추가)

@@ -1,7 +1,6 @@
 import { useAIMentorAdvice } from '@/model/aiMentor/context';
 import { GoalRecommendationRequest } from './GoalRecommendationRequest';
 import { AIRecommendation } from './AIRecommendation';
-import { useGoalSelector } from '@/model/goal/context';
 import { useWeeklyGoalRecommendationByAI } from './hooks';
 
 interface WeeklyGoalBoardProps {
@@ -20,7 +19,6 @@ export const WeeklyGoalBoard = ({
   onSuccessAddPlan,
   refetchGoal,
 }: WeeklyGoalBoardProps) => {
-  const { currentGoal } = useGoalSelector();
   const { aiMentorAdvice } = useAIMentorAdvice();
   const { getAndPutWeeklyGoalRecommendationByAI } = useWeeklyGoalRecommendationByAI({
     goalId,
@@ -28,7 +26,7 @@ export const WeeklyGoalBoard = ({
     isRecommendationChecked: aiMentorAdvice?.isChecked || false,
   });
 
-  const aiMentor = currentGoal?.mentor;
+  const aiMentor = 'TIM_COOK';
   const isPlanContentExist = selectedPlanContent !== '' && selectedPlanContent !== undefined;
 
   // 이번주 AI 목표 추천을 확인하지 않았을 경우

@@ -22,6 +22,10 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
     const [currentMonth, setCurrentMonth] = useState(focusedDate);
     const gridRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+      setCurrentMonth(focusedDate);
+    }, [focusedDate]);
+
     // 패널이 열릴 때 포커스를 그리드로 이동
     useEffect(() => {
       if (gridRef.current) {
@@ -255,7 +259,7 @@ const DateSelectorPanel = React.forwardRef<HTMLDivElement, DateSelectorPanelProp
           tabIndex={0}
           onKeyDown={handleKeyDown}
         >
-          {days.map((day, index) => {
+          {days.map(day => {
             const isSelected = !!selectedDate && isSameDay(day, selectedDate);
             const isFocused = isSameDay(day, focusedDate);
             const isInCurrentMonth = isCurrentMonth(day);

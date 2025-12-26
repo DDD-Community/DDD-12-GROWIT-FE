@@ -2,12 +2,11 @@
 
 import { useEffect, createContext, useContext, ReactNode, useState } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext, Controller } from 'react-hook-form';
 import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
 import { ChevronRight } from 'lucide-react';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
 import { formatDateToYYYYMMDD } from '../createGoalFormElement/utils';
-import { EditGoalFormData } from './type';
 import { convertFormDataToGoal } from './helper';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
 import { CellButton } from '@/shared/components/input/CellButton';
@@ -35,13 +34,13 @@ interface EditGoalFormProviderProps {
 
 interface EditGoalFormContainerProps {
   children: React.ReactNode;
-  onSubmit?: (data: EditGoalFormData) => void;
+  onSubmit?: (data: Goal) => void;
 }
 
 const Provider = ({ children, initValue }: EditGoalFormProviderProps) => {
   const formData = convertFormDataToGoal(initValue);
 
-  const methods = useForm<EditGoalFormData>({
+  const methods = useForm<Goal>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: formData,
@@ -68,7 +67,7 @@ const EditGoalStateProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const FormContainer = ({ children, onSubmit }: EditGoalFormContainerProps) => {
-  const { handleSubmit } = useFormContext<EditGoalFormData>();
+  const { handleSubmit } = useFormContext<Goal>();
 
   return (
     <form className="flex flex-1 flex-col" onSubmit={onSubmit ? handleSubmit(onSubmit) : undefined}>
@@ -82,7 +81,7 @@ const Name = () => {
     watch,
     register,
     formState: { errors },
-  } = useFormContext<EditGoalFormData>();
+  } = useFormContext<Goal>();
 
   return (
     <InputUnderline
@@ -99,8 +98,10 @@ const Name = () => {
 
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<EditGoalFormData>();
-  const startDate = watch('duration.startDate');
+  const { watch, setValue } = useFormContext<Goal>();
+  const today = new Date();
+  const startDateValue = watch('duration.startDate');
+  const startDate = new Date(startDateValue);
 
   return (
     <>
@@ -117,21 +118,18 @@ const SelectStartDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">{startDate}</span>
+            <span className="label-1-normal">{startDateValue}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
       />
       {openDatePanel && (
         <DateSelectorPanel
-          selectedDate={new Date()}
-          focusedDate={new Date()}
-          onDateSelect={date => {
-            setValue('duration.startDate', formatDateToYYYYMMDD(date));
-          }}
-          onFocusedDateChange={date => {
-            setValue('duration.startDate', formatDateToYYYYMMDD(date));
-          }}
+          selectedDate={startDate}
+          focusedDate={startDate}
+          onDateSelect={date => setValue('duration.startDate', formatDateToYYYYMMDD(date))}
+          onFocusedDateChange={date => setValue('duration.startDate', formatDateToYYYYMMDD(date))}
+          minDate={today}
         />
       )}
     </>
@@ -140,8 +138,11 @@ const SelectStartDate = () => {
 
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<EditGoalFormData>();
-  const endDate = watch('duration.endDate');
+  const { watch, setValue } = useFormContext<Goal>();
+  const startDateValue = watch('duration.startDate');
+  const startDate = new Date(startDateValue);
+  const endDateValue = watch('duration.endDate');
+  const endDate = new Date(endDateValue);
 
   return (
     <>
@@ -158,21 +159,22 @@ const SelectEndDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">{endDate}</span>
+            <span className="label-1-normal">{endDateValue}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
       />
       {openDatePanel && (
         <DateSelectorPanel
-          selectedDate={new Date()}
-          focusedDate={new Date()}
+          selectedDate={endDate}
+          focusedDate={endDate}
           onDateSelect={date => {
             setValue('duration.endDate', formatDateToYYYYMMDD(date));
           }}
           onFocusedDateChange={date => {
             setValue('duration.endDate', formatDateToYYYYMMDD(date));
           }}
+          minDate={new Date(startDate.getTime() + 24 * 60 * 60 * 1000)} // 시작일 + 1일
         />
       )}
     </>

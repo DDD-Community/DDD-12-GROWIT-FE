@@ -44,7 +44,7 @@ export default function EndedGoalsContainer() {
 
   const handleDelete = async () => {
     if (!isEditMode) return;
-    await deleteGoals(checkedGoals);
+    if (checkedGoals.size > 0) await deleteGoals(checkedGoals);
     setCheckedGoals(new Set());
     setIsEditMode(false);
   };

@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useMemo, ReactNode, useEffect, useRef, useCallback } from 'react';
-import { Goal, Plan } from '@/shared/type/goal';
+import { Goal } from '@/shared/type/goal';
 import { initCurrentWeekIndex } from './utils';
 
 interface PlanSelectorContextValue {
-  plans: Plan[];
+  plans: any[];
   selectedPlanId: string;
   selectedPlanContent: string;
   selectedWeekIndex: number;
@@ -20,7 +20,7 @@ interface PlanSelectorContextValue {
 const PlanSelectorContext = createContext<PlanSelectorContextValue | undefined>(undefined);
 
 export const PlanSelectorProvider = ({ children, goal }: { children: ReactNode; goal: Goal }) => {
-  const plans = goal?.plans || [];
+  const plans: any[] = [];
 
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const selectedPlanId = plans[selectedPlanIndex]?.id || '';
@@ -47,7 +47,7 @@ export const PlanSelectorProvider = ({ children, goal }: { children: ReactNode; 
       setSelectedPlanIndex(newIdx);
     }
   };
-  
+
   const goNext = () => {
     const newIdx = selectedPlanIndex < plans.length - 1 ? selectedPlanIndex + 1 : selectedPlanIndex;
     if (newIdx !== selectedPlanIndex) {

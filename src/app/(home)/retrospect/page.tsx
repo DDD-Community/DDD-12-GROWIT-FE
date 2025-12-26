@@ -1,7 +1,5 @@
-import Navigation from '@/composite/retrospect/navigation/component';
-
 const RetrospectPage = () => {
-  return <Navigation />;
+  return <></>;
 };
 
 export default RetrospectPage;
