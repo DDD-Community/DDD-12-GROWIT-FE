@@ -3,6 +3,7 @@
 import { useContext, createContext } from 'react';
 import { AnimatePresence, motion, useMotionValue, useSpring, type PanInfo, type MotionValue } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { cn } from '@/shared/lib/utils';
 
 // 높이 타입 정의: 'auto' | '{x}px' | '{x}%'
 export type BottomSheetHeight = 'auto' | `${number}px` | `${number}%`;
@@ -251,8 +252,10 @@ const SheetTitle = ({ children }: { children: React.ReactNode }) => {
 };
 
 // Content 컴포넌트
-const SheetContent = ({ children }: { children: React.ReactNode }) => {
-  return <section className="bg-transparent p-4 max-h-[80%] h-full overflow-y-auto">{children}</section>;
+const SheetContent = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  return (
+    <section className={cn('bg-transparent p-4 max-h-[80%] h-full overflow-y-auto', className)}>{children}</section>
+  );
 };
 
 export const BottomSheet = ({

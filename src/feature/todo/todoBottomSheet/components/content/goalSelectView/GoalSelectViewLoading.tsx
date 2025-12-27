@@ -23,7 +23,7 @@ export const GoalSelectViewLoading = ({ onBack }: GoalSelectViewLoadingProps) =>
           </button>
         </div>
       </BottomSheet.Title>
-      <BottomSheet.Content>
+      <BottomSheet.Content className="overflow-y-hidden">
         <div className="flex justify-center py-8">
           <span className="text-label-alternative">로딩 중...</span>
         </div>

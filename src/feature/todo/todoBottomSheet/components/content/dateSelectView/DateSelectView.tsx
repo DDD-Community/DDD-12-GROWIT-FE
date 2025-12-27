@@ -126,7 +126,7 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
         </div>
       </BottomSheet.Title>
 
-      <BottomSheet.Content>
+      <BottomSheet.Content className="overflow-y-hidden">
         <BottomSheetCalendar
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}

@@ -89,7 +89,7 @@ export const DateEditView = ({
         </div>
       </BottomSheet.Title>
 
-      <BottomSheet.Content>
+      <BottomSheet.Content className="overflow-y-hidden">
         {/* 캘린더 - 루틴 날짜 하이라이트 */}
         <BottomSheetCalendar
           currentMonth={currentMonth}

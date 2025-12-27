@@ -96,7 +96,7 @@ export const MainView = ({
         />
       </BottomSheet.Title>
 
-      <BottomSheet.Content>
+      <BottomSheet.Content className="overflow-y-hidden">
         <div className="flex flex-col gap-5">
           <TodoInput autoFocus={autoFocus} />
 
