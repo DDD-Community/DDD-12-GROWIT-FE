@@ -33,6 +33,8 @@ interface TodoBottomSheetContentProps {
   goToMain: () => void;
   /** 삭제 선택 화면으로 이동 핸들러 */
   onDeleteSelect?: () => void;
+  /** 수정 선택 화면으로 이동 핸들러 (반복 투두) */
+  onEditSelect?: () => void;
 }
 
 export const TodoBottomSheetContent = ({
@@ -48,6 +50,7 @@ export const TodoBottomSheetContent = ({
   goBack,
   goToMain,
   onDeleteSelect,
+  onEditSelect,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
@@ -90,6 +93,7 @@ export const TodoBottomSheetContent = ({
           onStartDateSelect={onStartDateSelect}
           onEndDateSelect={onEndDateSelect}
           onDateEdit={onDateEdit}
+          onEditSelect={onEditSelect}
         />
       );
   }

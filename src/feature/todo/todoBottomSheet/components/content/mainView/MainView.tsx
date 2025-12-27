@@ -39,6 +39,8 @@ interface MainViewProps {
   onDateEdit?: () => void;
   /** 반복 타입 라벨 */
   repeatLabels?: typeof REPEAT_TYPE_LABELS;
+  /** 수정 선택 화면으로 이동 핸들러 (반복 투두일 경우) */
+  onEditSelect?: () => void;
 }
 
 /** 날짜를 YY.MM.DD 형식으로 포맷 */
@@ -65,6 +67,7 @@ export const MainView = ({
   onEndDateSelect,
   onDateEdit,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
+  onEditSelect,
 }: MainViewProps) => {
   const { data: goals = [] } = useQuery({
     queryKey: GoalQueryKeys.progress(),
@@ -85,6 +88,15 @@ export const MainView = ({
   const repeatLabel = repeatLabels[repeatType] || '없음';
   const hasRepeat = repeatType !== 'none';
 
+  // 제출 핸들러: 반복 투두이고 수정 모드(showDeleteButton === true)이면 EditBottomSheet 표시
+  const handleSubmitClick = () => {
+    if (hasRepeat && showDeleteButton && onEditSelect) {
+      onEditSelect();
+    } else {
+      onSubmit();
+    }
+  };
+
   return (
     <>
       <BottomSheet.Title>
@@ -92,7 +104,7 @@ export const MainView = ({
           selectedDate={selectedDate}
           submitLabel={submitLabel}
           onDateEdit={onDateEdit}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmitClick}
         />
       </BottomSheet.Title>
 

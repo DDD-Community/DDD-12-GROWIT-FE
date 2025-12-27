@@ -5,7 +5,7 @@ import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/Bottom
 import { StackView, useStackNavigation } from './components/shared/stackView';
 import { UnsavedChangesModal } from './components/shared/unsavedChangesModal';
 import { TodoBottomSheetContent } from './components/content';
-import { DeleteBottomSheet } from './components/content/deleteSelectView';
+import { DeleteBottomSheet, EditBottomSheet } from './components/subBottomSheet';
 import { TodoFormProvider, useTodoFormContext } from './form';
 import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type DateSelectTab } from './types';
 
@@ -74,7 +74,7 @@ export const TodoBottomSheet = ({
   onOpen,
   onClose,
 }: TodoBottomSheetProps) => {
-  // 삭제 BottomSheet 상태
+  const editSheet = useBottomSheet();
   const deleteSheet = useBottomSheet();
 
   // 스택 네비게이션 훅 사용
@@ -117,8 +117,13 @@ export const TodoBottomSheet = ({
     deleteSheet.showSheet();
   };
 
-  // 메인 BottomSheet는 삭제 BottomSheet가 열려있지 않을 때만 표시
-  const isMainSheetOpen = isOpen && !deleteSheet.isOpen;
+  // 수정 BottomSheet 열기 핸들러 (반복 투두용)
+  const handleEditSelect = () => {
+    editSheet.showSheet();
+  };
+
+  // 메인 BottomSheet는 삭제/수정 BottomSheet가 열려있지 않을 때만 표시
+  const isMainSheetOpen = isOpen && !deleteSheet.isOpen && !editSheet.isOpen;
 
   return (
     <TodoFormProvider
@@ -131,7 +136,7 @@ export const TodoBottomSheet = ({
         reset();
       }}
     >
-      {/* 메인 BottomSheet - 삭제 모드가 아닐 때만 표시 */}
+      {/* 메인 BottomSheet - 삭제/수정 모드가 아닐 때만 표시 */}
       <TodoBottomSheetWrapper isOpen={isMainSheetOpen} onOpen={onOpen}>
         <StackView viewKey={currentView} direction={direction}>
           <TodoBottomSheetContent
@@ -147,12 +152,16 @@ export const TodoBottomSheet = ({
             goBack={goBack}
             goToMain={goToMain}
             onDeleteSelect={handleDeleteSelect}
+            onEditSelect={handleEditSelect}
           />
         </StackView>
       </TodoBottomSheetWrapper>
 
       {/* 삭제 전용 BottomSheet */}
       <DeleteBottomSheet isOpen={deleteSheet.isOpen} onClose={deleteSheet.closeSheet} />
+
+      {/* 수정 전용 BottomSheet (반복 투두) */}
+      <EditBottomSheet isOpen={editSheet.isOpen} onClose={editSheet.closeSheet} />
     </TodoFormProvider>
   );
 };

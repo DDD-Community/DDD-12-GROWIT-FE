@@ -13,6 +13,8 @@ interface DeleteButtonProps {
   disabled?: boolean;
   /** 아이콘 표시 여부 (기본값: true) */
   showIcon?: boolean;
+  /** 버튼 스타일 변형 (기본값: 'danger') */
+  variant?: 'danger' | 'default';
 }
 
 const TrashIcon = () => (
@@ -27,12 +29,18 @@ const TrashIcon = () => (
   </svg>
 );
 
+const textColorMap = {
+  danger: 'text-[#FF6363]',
+  default: 'text-white',
+};
+
 export const DeleteButton = ({
   onClick,
   text = '삭제',
   className,
   disabled = false,
   showIcon = true,
+  variant = 'danger',
 }: DeleteButtonProps) => {
   return (
     <button
@@ -50,7 +58,9 @@ export const DeleteButton = ({
       )}
     >
       {showIcon && <TrashIcon />}
-      <span className="font-bold text-[16px] leading-[1.5] tracking-[0.057px] text-[#FF6363]">{text}</span>
+      <span className={cn('font-bold text-[16px] leading-[1.5] tracking-[0.057px]', textColorMap[variant])}>
+        {text}
+      </span>
     </button>
   );
 };
