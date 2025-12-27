@@ -100,12 +100,7 @@ export const MainView = ({
   return (
     <>
       <BottomSheet.Title>
-        <MainViewHeader
-          selectedDate={selectedDate}
-          submitLabel={submitLabel}
-          onDateEdit={onDateEdit}
-          onSubmit={handleSubmitClick}
-        />
+        <MainViewHeader submitLabel={submitLabel} onDateEdit={onDateEdit} onSubmit={handleSubmitClick} />
       </BottomSheet.Title>
 
       <BottomSheet.Content className="overflow-y-hidden">

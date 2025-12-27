@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { format } from 'date-fns';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { ChevronLeftIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
@@ -59,21 +60,29 @@ export const DateEditView = ({
   onEndDateSelect,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: DateEditViewProps) => {
-  const { watch } = useFormContext<TodoFormData>();
+  const { watch, setValue } = useFormContext<TodoFormData>();
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
+  const todoDate = watch('date');
 
   const startDate = parseDateString(routineDuration?.startDate);
   const endDate = parseDateString(routineDuration?.endDate);
+  const selectedTodoDate = parseDateString(todoDate);
 
   // 캘린더 상태
-  const [currentMonth, setCurrentMonth] = useState(() => startDate || new Date());
+  const [currentMonth, setCurrentMonth] = useState(() => selectedTodoDate || startDate || new Date());
 
   // 반복 요약
   const repeatSummary = useMemo(() => getRepeatSummary(repeatType, startDate), [repeatType, startDate]);
 
   // 반복 설정 여부
   const hasRepeat = repeatType !== 'none';
+
+  // 날짜 선택 핸들러 - form의 date 필드 업데이트
+  const handleDateSelect = (date: Date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    setValue('date', dateString);
+  };
 
   return (
     <>
@@ -90,15 +99,17 @@ export const DateEditView = ({
       </BottomSheet.Title>
 
       <BottomSheet.Content className="overflow-y-hidden">
-        {/* 캘린더 - 루틴 날짜 하이라이트 */}
+        {/* 캘린더 - 날짜 선택 및 루틴 날짜 하이라이트 */}
         <BottomSheetCalendar
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
-          selectedStartDate={startDate}
-          selectedEndDate={endDate}
+          onDateSelect={handleDateSelect}
+          selectedDate={selectedTodoDate}
+          selectedStartDate={hasRepeat ? startDate : undefined}
+          selectedEndDate={hasRepeat ? endDate : undefined}
           repeatType={repeatType}
           enableKeyboardNav={false}
-          initialFocusDate={startDate}
+          initialFocusDate={selectedTodoDate || startDate}
         />
 
         {/* 하단 정보 셀 */}

@@ -17,6 +17,7 @@ export const convertToFormData = (todo: GoalTodo): TodoFormData => ({
   goalId: todo.goal.id ?? null,
   repeatType: (todo.routine?.repeatType as FormRepeatType) ?? 'none',
   isImportant: todo.isImportant ?? false,
+  date: todo.date,
   routineDuration: todo.routine?.duration,
 });
 

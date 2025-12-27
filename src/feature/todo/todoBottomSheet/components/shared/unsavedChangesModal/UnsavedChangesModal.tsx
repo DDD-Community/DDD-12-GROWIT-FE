@@ -26,8 +26,8 @@ export const UnsavedChangesModal = ({ isOpen, onClose, onConfirm }: UnsavedChang
       )}
       renderFooter={() => (
         <>
-          <Button size="xl" variant="tertiary" text="나가기" onClick={onConfirm} />
-          <Button size="xl" text="취소" onClick={onClose} />
+          <Button size="xl" text="나가기" onClick={onConfirm} />
+          <Button size="xl" variant="tertiary" text="취소" onClick={onClose} />
         </>
       )}
     />

@@ -25,9 +25,11 @@ interface BottomSheetCalendarProps {
   onMonthChange: (month: Date) => void;
   /** 날짜 선택 핸들러 */
   onDateSelect?: (date: Date) => void;
-  /** 선택된 시작일 */
+  /** 선택된 투두 날짜 (단일 날짜 하이라이트) */
+  selectedDate?: Date;
+  /** 선택된 시작일 (루틴용) */
   selectedStartDate?: Date;
-  /** 선택된 종료일 */
+  /** 선택된 종료일 (루틴용) */
   selectedEndDate?: Date;
   /** 활성 탭 (시작일/종료일) - 기본 렌더러에서 스타일 구분용 */
   activeTab?: ActiveDateTab;
@@ -97,6 +99,7 @@ export const BottomSheetCalendar = ({
   currentMonth,
   onMonthChange,
   onDateSelect,
+  selectedDate,
   selectedStartDate,
   selectedEndDate,
   activeTab = 'startDate',
@@ -114,9 +117,11 @@ export const BottomSheetCalendar = ({
   /** 기본 날짜 셀 렌더러 */
   const defaultRenderDateCell = useCallback(
     ({ date, isInCurrentMonth, isToday }: DateCellInfo) => {
+      // 선택된 투두 날짜 (단일 날짜)
+      const isSelectedDate = isSameDay(date, selectedDate);
       const isStartDate = isSameDay(date, selectedStartDate);
       const isEndDate = isSameDay(date, selectedEndDate);
-      const isSelected = isStartDate || isEndDate;
+      const isSelected = isSelectedDate || isStartDate || isEndDate;
 
       // 반복 주기에 포함된 날짜인지 확인
       const dateString = formatDateToString(date);
@@ -141,17 +146,22 @@ export const BottomSheetCalendar = ({
             className={cn(
               'relative w-[29px] h-[29px] flex items-center justify-center label-1-regular rounded-full transition-colors',
               isDisabled && 'pointer-events-none opacity-30',
-              // 반복 주기에 포함된 날짜: 채워진 초록 배경
-              isRepeatDate && 'bg-brand-neon text-inverse-label label-1-medium',
+              // 선택된 투두 날짜: 흰색 배경
+              isSelectedDate && 'bg-white text-black label-1-medium',
+              // 반복 주기에 포함된 날짜: 채워진 초록 배경 (selectedDate가 아닌 경우)
+              !isSelectedDate && isRepeatDate && 'bg-brand-neon text-inverse-label label-1-medium',
               // 현재 탭과 일치하는 선택된 날짜: 채워진 초록 배경
-              !isRepeatDate && isActiveSelected && 'bg-brand-neon text-inverse-label label-1-medium',
+              !isSelectedDate && !isRepeatDate && isActiveSelected && 'bg-brand-neon text-inverse-label label-1-medium',
               // 현재 탭과 불일치하는 선택된 날짜: 연한 초록 배경
-              !isRepeatDate && isInactiveSelected && 'bg-brand-neon/12 text-text-primary label-1-medium',
-              !isRepeatDate && !isSelected && isInCurrentMonth && 'text-text-primary',
-              !isRepeatDate && !isSelected && !isInCurrentMonth && 'text-label-assistive',
+              !isSelectedDate &&
+                !isRepeatDate &&
+                isInactiveSelected &&
+                'bg-brand-neon/12 text-text-primary label-1-medium',
+              !isSelectedDate && !isRepeatDate && !isSelected && isInCurrentMonth && 'text-text-primary',
+              !isSelectedDate && !isRepeatDate && !isSelected && !isInCurrentMonth && 'text-label-assistive',
               !isDisabled && !isSelected && !isRepeatDate && 'hover:bg-fill-primary'
             )}
-            aria-label={`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일${isStartDate ? ', 시작일' : ''}${isEndDate ? ', 종료일' : ''}${isRepeatDate ? ', 반복일' : ''}${isToday ? ', 오늘' : ''}`}
+            aria-label={`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일${isSelectedDate ? ', 선택됨' : ''}${isStartDate ? ', 시작일' : ''}${isEndDate ? ', 종료일' : ''}${isRepeatDate ? ', 반복일' : ''}${isToday ? ', 오늘' : ''}`}
             aria-selected={isSelected || isRepeatDate}
             aria-disabled={isDisabled}
             tabIndex={-1}
@@ -161,7 +171,7 @@ export const BottomSheetCalendar = ({
         </>
       );
     },
-    [onDateSelect, selectedStartDate, selectedEndDate, activeTab, repeatDates]
+    [onDateSelect, selectedDate, selectedStartDate, selectedEndDate, activeTab, repeatDates]
   );
 
   const dateCellRenderer = renderDateCell ?? defaultRenderDateCell;

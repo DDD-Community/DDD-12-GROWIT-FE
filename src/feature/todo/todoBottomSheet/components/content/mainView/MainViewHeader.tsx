@@ -5,6 +5,13 @@ import { cn } from '@/shared/lib/utils';
 import { FlagIcon } from '../../shared/icons';
 import type { TodoFormData } from '../../../types';
 
+/** 날짜 문자열을 Date 객체로 파싱 */
+const parseDateString = (dateString?: string): Date | undefined => {
+  if (!dateString) return undefined;
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? undefined : date;
+};
+
 /** 헤더 날짜 포맷 (M월 D일 요일) */
 const formatHeaderDate = (date: Date) => {
   const month = date.getMonth() + 1;
@@ -15,8 +22,6 @@ const formatHeaderDate = (date: Date) => {
 };
 
 interface MainViewHeaderProps {
-  /** 선택된 날짜 */
-  selectedDate: Date;
   /** 날짜 수정 클릭 핸들러 */
   onDateEdit?: () => void;
   /** 제출 핸들러 */
@@ -26,7 +31,7 @@ interface MainViewHeaderProps {
 }
 
 /** MainView 헤더 컴포넌트 */
-export const MainViewHeader = ({ selectedDate, onDateEdit, onSubmit, submitLabel }: MainViewHeaderProps) => {
+export const MainViewHeader = ({ onDateEdit, onSubmit, submitLabel }: MainViewHeaderProps) => {
   const { watch, setValue } = useFormContext<TodoFormData>();
 
   // 필요한 데이터 가져오기
@@ -34,6 +39,10 @@ export const MainViewHeader = ({ selectedDate, onDateEdit, onSubmit, submitLabel
   const content = watch('content');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
+  const todoDate = watch('date');
+
+  // 폼의 date 필드를 Date 객체로 변환
+  const displayDate = parseDateString(todoDate) || new Date();
 
   // UI 상태 계산 (컴포넌트 내부에서 계산)
   const isContentValid = content?.trim() && content.trim().length <= 34;
@@ -64,7 +73,7 @@ export const MainViewHeader = ({ selectedDate, onDateEdit, onSubmit, submitLabel
 
       {/* 날짜 제목 - 중앙 (클릭 시 날짜 수정 화면으로 이동) */}
       <button type="button" onClick={onDateEdit} className="body-1-bold text-white underline">
-        {formatHeaderDate(selectedDate)}
+        {formatHeaderDate(displayDate)}
       </button>
 
       {/* 완료 버튼 - 오른쪽 영역 */}
