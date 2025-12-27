@@ -21,6 +21,10 @@ interface TodoFormContextType {
   handleDeleteAllRepeats?: () => void;
   /** 폼 초기화 */
   resetForm: () => void;
+  /** 폼 값이 변경되었는지 확인 */
+  checkFormDirty: () => boolean;
+  /** 폼 리셋 후 닫기 */
+  closeWithReset: () => void;
   /** 제출 버튼 라벨 */
   submitLabel: string;
   /** 삭제 버튼 표시 여부 */
@@ -66,6 +70,20 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
   const resetForm = useCallback(() => {
     methods.reset(TODO_DEFAULT_VALUES);
   }, [methods]);
+
+  // 폼 값이 변경되었는지 확인
+  const checkFormDirty = useCallback(() => {
+    const currentValues = methods.getValues();
+    // edit 모드: 초기 values와 비교, add 모드: 기본값과 비교
+    const compareTarget = mode === 'edit' && values ? values : TODO_DEFAULT_VALUES;
+    return JSON.stringify(currentValues) !== JSON.stringify(compareTarget);
+  }, [methods, mode, values]);
+
+  // 폼 리셋 후 닫기
+  const closeWithReset = useCallback(() => {
+    resetForm();
+    onClose();
+  }, [resetForm, onClose]);
 
   // 제출 핸들러 (react-hook-form의 handleSubmit 사용)
   const handleSubmit = useCallback(() => {
@@ -167,6 +185,8 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
         handleDelete,
         handleDeleteAllRepeats,
         resetForm,
+        checkFormDirty,
+        closeWithReset,
         submitLabel,
         showDeleteButton,
       }}

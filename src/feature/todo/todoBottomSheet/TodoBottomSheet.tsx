@@ -3,10 +3,50 @@
 import { useState } from 'react';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { StackView, useStackNavigation } from './components/shared/stackView';
+import { UnsavedChangesModal } from './components/shared/unsavedChangesModal';
 import { TodoBottomSheetContent } from './components/content';
 import { DeleteBottomSheet } from './components/content/deleteSelectView';
-import { TodoFormProvider } from './form';
+import { TodoFormProvider, useTodoFormContext } from './form';
 import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type DateSelectTab } from './types';
+
+// BottomSheet wrapper 컴포넌트 (useTodoFormContext 사용을 위해 TodoFormProvider 내부에서 사용)
+interface TodoBottomSheetWrapperProps {
+  isOpen: boolean;
+  onOpen: () => void;
+  children: React.ReactNode;
+}
+
+const TodoBottomSheetWrapper = ({ isOpen, onOpen, children }: TodoBottomSheetWrapperProps) => {
+  const { checkFormDirty, closeWithReset } = useTodoFormContext();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const handleCloseSheet = () => {
+    if (checkFormDirty()) {
+      setIsConfirmModalOpen(true);
+    } else {
+      closeWithReset();
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setIsConfirmModalOpen(false);
+    closeWithReset();
+  };
+
+  return (
+    <>
+      <BottomSheet isOpen={isOpen} showSheet={onOpen} closeSheet={handleCloseSheet} height="auto">
+        {children}
+      </BottomSheet>
+
+      <UnsavedChangesModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmClose}
+      />
+    </>
+  );
+};
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
@@ -92,7 +132,7 @@ export const TodoBottomSheet = ({
       }}
     >
       {/* 메인 BottomSheet - 삭제 모드가 아닐 때만 표시 */}
-      <BottomSheet isOpen={isMainSheetOpen} showSheet={onOpen} closeSheet={onClose} height="auto">
+      <TodoBottomSheetWrapper isOpen={isMainSheetOpen} onOpen={onOpen}>
         <StackView viewKey={currentView} direction={direction}>
           <TodoBottomSheetContent
             selectedDate={selectedDate}
@@ -109,7 +149,7 @@ export const TodoBottomSheet = ({
             onDeleteSelect={handleDeleteSelect}
           />
         </StackView>
-      </BottomSheet>
+      </TodoBottomSheetWrapper>
 
       {/* 삭제 전용 BottomSheet */}
       <DeleteBottomSheet isOpen={deleteSheet.isOpen} onClose={deleteSheet.closeSheet} />
