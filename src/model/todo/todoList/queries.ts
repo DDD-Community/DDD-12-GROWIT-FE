@@ -5,6 +5,7 @@ import {
   PatchTodoStatusRequest,
   PutTodoRequest,
   PostAddTodoRequest,
+  DeleteTodoRequest,
 } from './dto';
 import { todoListQueryKeys } from './queryKeys';
 import { todoListApi } from './api';
@@ -42,7 +43,7 @@ export const usePutTodo = () => {
 export const useDeleteTodo = () => {
   return useMutation({
     mutationKey: todoListQueryKeys.deleteTodo(),
-    mutationFn: (todoId: string) => todoListApi.deleteTodo(todoId),
+    mutationFn: (req: DeleteTodoRequest) => todoListApi.deleteTodo(req),
   });
 };
 

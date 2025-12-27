@@ -62,3 +62,11 @@ export interface TodoCountByDateItem {
 }
 
 export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}
+
+/** 반복 투두 삭제 타입 */
+export type RoutineDeleteType = 'SINGLE' | 'FROM_DATE' | 'ALL';
+
+export interface DeleteTodoRequest {
+  todoId: string;
+  routineDeleteType: RoutineDeleteType;
+}

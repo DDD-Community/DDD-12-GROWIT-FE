@@ -148,8 +148,8 @@ export const TodoFormProvider = ({
     if (!todoId) return;
 
     try {
-      // todo 삭제 및 query 무효화
-      await deleteTodoMutation.mutateAsync(todoId);
+      // todo 삭제 및 query 무효화 (SINGLE: 해당 투두만 삭제)
+      await deleteTodoMutation.mutateAsync({ todoId, routineDeleteType: 'SINGLE' });
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
       queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
@@ -160,46 +160,18 @@ export const TodoFormProvider = ({
 
   // 전체 반복 투두 삭제 핸들러
   const handleDeleteAllRepeats = useCallback(async () => {
-    if (!editingTodo?.routine) return;
-
-    const editingRoutine = editingTodo.routine;
+    if (!todoId) return;
 
     try {
-      // 캐시에서 현재 날짜의 todos 가져오기
-      const cachedData = queryClient.getQueryData(todoListQueryKeys.getTodosByDate(dateString));
-      const todosData = cachedData as Array<{ todo: GoalTodo; goal: any }> | undefined;
-
-      if (!todosData) {
-        console.error('캐시된 데이터를 찾을 수 없습니다.');
-        return;
-      }
-
-      // API 응답을 GoalTodo[] 형식으로 변환
-      const todos: GoalTodo[] = todosData.map(item => ({
-        ...item.todo,
-        goal: item.goal,
-      }));
-
-      // 같은 routine을 가진 모든 투두 삭제
-      const todosToDelete = todos.filter(todo => {
-        if (!todo.routine) return false;
-        const todoRoutine = todo.routine;
-        return (
-          editingRoutine.duration.startDate === todoRoutine.duration.startDate &&
-          editingRoutine.duration.endDate === todoRoutine.duration.endDate &&
-          editingRoutine.repeatType === todoRoutine.repeatType
-        );
-      });
-
-      // 모든 repeat 투두 삭제 및 query 무효화
-      await Promise.all(todosToDelete.map(todo => deleteTodoMutation.mutateAsync(todo.id)));
+      // 전체 반복 투두 삭제 (ALL: 모든 반복 투두 삭제)
+      await deleteTodoMutation.mutateAsync({ todoId, routineDeleteType: 'ALL' });
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
       queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
     } catch (error) {
       console.error('반복 투두 삭제 실패:', error);
     }
-  }, [editingTodo, deleteTodoMutation, queryClient, dateString, onClose]);
+  }, [todoId, deleteTodoMutation, queryClient, dateString, onClose]);
 
   const submitLabel = mode === 'add' ? '완료' : '수정';
   const showDeleteButton = mode === 'edit';
