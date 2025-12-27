@@ -26,19 +26,19 @@ export const HomeIconInActive = (props: IconProps) => (
   />
 );
 
-export const RetrospectIcon = (props: IconProps) => (
+export const AdviceIcon = (props: IconProps) => (
   <Image
     src="/icon/navigation-retrospect.svg"
-    alt="회고"
+    alt="조언"
     width={props.width || 22}
     height={props.height || 22}
     className={`brightness-0 invert ${props.className || ''}`}
   />
 );
-export const RetrospectIconInactive = (props: IconProps) => (
+export const AdviceIconInactive = (props: IconProps) => (
   <Image
     src="/icon/navigation-retrospect.svg"
-    alt="회고"
+    alt="조언"
     width={props.width || 22}
     height={props.height || 22}
     className={props.className || ''}

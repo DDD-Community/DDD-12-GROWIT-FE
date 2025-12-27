@@ -3,11 +3,10 @@
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { EndedGoalItem } from '@/feature/goal/endedGoalItem';
-import { createEndedGoalsQuery } from '@/model/goal/hooks';
+import { GoalQuery, GoalMutation } from '@/model/goal/hooks';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { createDeleteGoalsMutation } from '@/model/goal/hooks';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { Goal } from '@/shared/type/goal';
@@ -19,7 +18,7 @@ export default function EndedGoalsContainer() {
   const [checkedGoals, setCheckedGoals] = useState<Set<Goal['id']>>(new Set());
 
   const { mutateAsync: deleteGoals } = useMutation(
-    createDeleteGoalsMutation({
+    GoalMutation.deleteGoals({
       // 낙관적 업데이트 적용
       onMutate: () => {
         const previousData = queryClient.getQueryData<Goal[]>(GoalQueryKeys.ended());
@@ -86,7 +85,7 @@ type EndedGoalsListProps = {
 };
 
 function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoalsListProps) {
-  const { data: endedGoals } = useSuspenseQuery(createEndedGoalsQuery());
+  const { data: endedGoals } = useSuspenseQuery(GoalQuery.getEndedGoals());
 
   const handleCheck = (goalId: Goal['id']) => {
     const newCheckedGoals = new Set(checkedGoals);

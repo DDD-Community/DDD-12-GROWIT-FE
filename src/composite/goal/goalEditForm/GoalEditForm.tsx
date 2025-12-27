@@ -7,7 +7,7 @@ import { Goal } from '@/shared/type/goal';
 import { Info } from 'lucide-react';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import Button from '@/shared/components/input/Button';
-import { createEditGoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/hooks';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
@@ -34,7 +34,7 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
   const { showToast } = useToast();
 
   const { mutate: editGoal } = useMutation(
-    createEditGoalMutation({
+    GoalMutation.editGoal({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         showToast('수정이 완료되었습니다.', 'success');

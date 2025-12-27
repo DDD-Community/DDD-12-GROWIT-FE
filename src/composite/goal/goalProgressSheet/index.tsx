@@ -15,17 +15,19 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createDeleteGoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/hooks';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { useToast } from '@/shared/components/feedBack/toast';
 
 export default function GoalProgressSheet() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const { currentGoal } = useGoalSelector();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const { mutateAsync: deleteGoal } = useMutation(
-    createDeleteGoalMutation({
+    GoalMutation.deleteGoal({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         setIsDeleteModalOpen(false);
@@ -147,7 +149,4 @@ function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
       )}
     />
   );
-}
-function showToast(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
 }

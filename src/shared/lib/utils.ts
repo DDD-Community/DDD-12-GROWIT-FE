@@ -57,3 +57,12 @@ export function getMsUntilEndOfDay() {
 
   return msUntilEndOfDay;
 }
+
+export function getCurrentWeek(startDate: string, endDate: string): number {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const currentWeek = Math.max(1, Math.floor(diffDays / 7) + 1);
+  return currentWeek;
+}

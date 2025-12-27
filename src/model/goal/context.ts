@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, createContext, useContext, ReactNode,
 import { Goal } from '@/shared/type/goal';
 import { CommonError } from '@/shared/type/response';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { getGoalList, deleteGoal, putEditGoal, GetGoalListOption, getGoalItem, GetGoalOption } from './api';
+import GoalApi, { GetGoalListOption, GetGoalOption } from './api';
 
 interface ServerRequest<Request> {
   request: Request;
@@ -41,7 +41,7 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
       try {
         setLoading(true);
 
-        const goals = await getGoalList(option);
+        const goals = await GoalApi.getGoalList(option);
         setGoalList(goals);
 
         setLoading(false);
@@ -72,7 +72,7 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
     try {
       setLoading(true);
 
-      const goals = await getGoalItem(option);
+      const goals = await GoalApi.getGoalItem(option);
       setCurrentGoal(goals);
       setLoading(false);
     } catch (err) {
@@ -100,7 +100,7 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
     try {
       setLoading(true);
 
-      await deleteGoal(goalId);
+      await GoalApi.deleteGoal(goalId);
       await fetchGoalList();
 
       setLoading(false);
@@ -121,7 +121,7 @@ export function GoalProvider({ children, goalListOption, goalItemOption }: GoalP
     try {
       setLoading(true);
 
-      await putEditGoal(request);
+      await GoalApi.putEditGoal(request);
       await fetchGoalList();
 
       onSuccess?.();

@@ -3,7 +3,7 @@
 import { CreateGoalFormElement } from '@/feature/goal';
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
-import { createCreateGoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
@@ -15,7 +15,7 @@ export const CreateGoalForm = () => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { mutate: createGoal } = useMutation(
-    createCreateGoalMutation({
+    GoalMutation.createGoal({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         router.push(ROUTES.GOAL);
