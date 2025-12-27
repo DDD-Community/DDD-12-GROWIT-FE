@@ -23,6 +23,10 @@ interface BottomSheetContextType {
   springHeight: MotionValue<number>;
   initDragHeight: React.MutableRefObject<number>;
   heightMode: BottomSheetHeight;
+  // auto 모드용
+  contentHeight: number;
+  setContentHeight: (height: number) => void;
+  autoSpringHeight: MotionValue<number>;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextType | null>(null);
@@ -62,6 +66,92 @@ const parseHeightToPixels = (heightMode: BottomSheetHeight, viewportHeight: numb
   return viewportHeight * 0.55; // 기본값
 };
 
+interface SnapPoints {
+  closed: number;
+  half: number;
+  expanded: number;
+}
+
+// 스냅 포인트 계산 훅
+const useSnapPoints = (heightMode: BottomSheetHeight) => {
+  const [snapPoints, setSnapPoints] = useState<SnapPoints>({
+    closed: 0,
+    half: 0,
+    expanded: 0,
+  });
+  const [minHeight, setMinHeight] = useState(200);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const viewportHeight = window.innerHeight;
+    const parsedHeight = parseHeightToPixels(heightMode, viewportHeight);
+
+    // auto 모드가 아닌 경우에만 스냅 포인트 설정
+    const initialHeight = parsedHeight === 'auto' ? viewportHeight * 0.55 : parsedHeight;
+
+    setSnapPoints({
+      closed: 0,
+      half: initialHeight,
+      expanded: viewportHeight * 0.9,
+    });
+    setMinHeight(Math.min(initialHeight * 0.5, viewportHeight * 0.3));
+  }, [heightMode]);
+
+  return { snapPoints, minHeight };
+};
+
+// auto 모드 높이 관리 훅
+const useAutoHeight = () => {
+  const [contentHeight, setContentHeight] = useState(0);
+  const autoHeight = useMotionValue(0);
+  const autoSpringHeight = useSpring(autoHeight, {
+    stiffness: 400,
+    damping: 50,
+  });
+
+  // contentHeight가 변경되면 autoHeight 업데이트
+  useEffect(() => {
+    if (contentHeight > 0) {
+      autoHeight.set(contentHeight);
+    }
+  }, [contentHeight, autoHeight]);
+
+  return { contentHeight, setContentHeight, autoSpringHeight };
+};
+
+// 컨텐츠 높이 측정 컴포넌트 (auto 모드 전용)
+const AutoHeightContent = ({ children }: { children: React.ReactNode }) => {
+  const { isOpen, heightMode, setContentHeight } = useBottomSheetContext();
+  const ref = useRef<HTMLDivElement>(null);
+
+  const isAutoHeight = heightMode === 'auto';
+
+  useEffect(() => {
+    if (!isAutoHeight || !isOpen) return;
+
+    const element = ref.current;
+    if (!element) return;
+
+    // 초기 높이 측정
+    const initialHeight = element.getBoundingClientRect().height;
+    if (initialHeight > 0) {
+      setContentHeight(initialHeight);
+    }
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) {
+        setContentHeight(entry.contentRect.height);
+      }
+    });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isAutoHeight, isOpen, setContentHeight]);
+
+  return <div ref={ref}>{children}</div>;
+};
+
 // Provider 컴포넌트
 const BottomSheetProvider = ({
   children,
@@ -70,37 +160,15 @@ const BottomSheetProvider = ({
   closeSheet,
   heightMode = '55%',
 }: BottomSheetProviderProps) => {
-  const [snapPoints, setSnapPoints] = useState({
-    closed: 0,
-    half: 0,
-    expanded: 0,
-  });
-  const [minHeight, setMinHeight] = useState(200);
+  const { snapPoints, minHeight } = useSnapPoints(heightMode);
+  const { contentHeight, setContentHeight, autoSpringHeight } = useAutoHeight();
+
   const height = useMotionValue(0);
   const springHeight = useSpring(height, {
     stiffness: 400,
     damping: 50,
   });
   const initDragHeight = useRef(0);
-
-  // 뷰포트 높이 기반 스냅 포인트 설정
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const viewportHeight = window.innerHeight;
-      const parsedHeight = parseHeightToPixels(heightMode, viewportHeight);
-
-      // auto 모드가 아닌 경우에만 스냅 포인트 설정
-      const initialHeight = parsedHeight === 'auto' ? viewportHeight * 0.55 : parsedHeight;
-
-      const newSnapPoints = {
-        closed: 0,
-        half: initialHeight,
-        expanded: viewportHeight * 0.9,
-      };
-      setSnapPoints(newSnapPoints);
-      setMinHeight(Math.min(initialHeight * 0.5, viewportHeight * 0.3));
-    }
-  }, [heightMode]);
 
   // 열릴 때 초기 높이 설정 및 body 스크롤 잠금
   useEffect(() => {
@@ -130,6 +198,9 @@ const BottomSheetProvider = ({
         springHeight,
         initDragHeight,
         heightMode,
+        contentHeight,
+        setContentHeight,
+        autoSpringHeight,
       }}
     >
       {children}
@@ -139,9 +210,14 @@ const BottomSheetProvider = ({
 
 // Root 컴포넌트 (오버레이 + 시트 컨테이너)
 const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
-  const { isOpen, closeSheet, springHeight, snapPoints, heightMode } = useBottomSheetContext();
+  const { isOpen, closeSheet, springHeight, snapPoints, heightMode, contentHeight, autoSpringHeight } =
+    useBottomSheetContext();
 
   const isAutoHeight = heightMode === 'auto';
+  const isMeasured = contentHeight > 0;
+
+  // auto 모드: 측정 전에는 'auto', 측정 후에는 스프링 애니메이션 적용
+  const resolvedHeight = isAutoHeight ? (isMeasured ? autoSpringHeight : 'auto') : springHeight;
 
   return (
     <AnimatePresence>
@@ -163,17 +239,18 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
           <motion.aside
             key="bottom-sheet"
             style={{
-              height: isAutoHeight ? 'auto' : springHeight,
+              height: resolvedHeight,
               maxHeight: '90vh',
               touchAction: 'none',
               willChange: 'height',
+              overflow: 'hidden',
             }}
             initial={{ height: 0 }}
-            animate={{ height: isAutoHeight ? 'auto' : snapPoints.half }}
+            animate={{ height: isAutoHeight ? (isMeasured ? contentHeight : 'auto') : snapPoints.half }}
             exit={{ height: 0 }}
             className="fixed bottom-0 left-1/2 -translate-x-1/2 bg-elevated-assistive max-w-96 w-full rounded-t-lg z-999"
           >
-            {children}
+            <AutoHeightContent>{children}</AutoHeightContent>
           </motion.aside>
         </>
       )}

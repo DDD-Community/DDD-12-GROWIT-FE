@@ -226,7 +226,7 @@ export const BottomSheetCalendar = ({
   const today = new Date();
 
   return (
-    <div>
+    <div className="h-[340px] overflow-hidden">
       {/* 월 네비게이션 */}
       <div className="flex items-center justify-between">
         <button

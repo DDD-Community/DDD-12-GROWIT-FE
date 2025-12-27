@@ -43,7 +43,7 @@ export const StackView = ({
   direction,
   children,
   variants = defaultVariants,
-  duration = 0.2,
+  duration = 0.25,
   className,
 }: StackViewProps) => {
   return (

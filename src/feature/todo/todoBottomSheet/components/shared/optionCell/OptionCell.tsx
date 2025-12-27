@@ -51,7 +51,7 @@ export function OptionCell<T extends string>({
             isSelected ? 'font-bold text-white' : 'font-normal text-[#c2c4c8]'
           )}
         >
-          {label}
+        {label}
         </span>
       </span>
       {isSelected && <CheckIcon />}

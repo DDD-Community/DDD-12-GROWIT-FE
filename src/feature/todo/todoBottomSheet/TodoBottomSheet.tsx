@@ -17,12 +17,12 @@ interface TodoBottomSheetProps {
   values?: TodoFormData;
   /** 편집 모드일 때 Todo ID */
   todoId?: string;
-  /** 바텀시트 열림 상태 (외부 제어용) */
-  isOpen?: boolean;
-  /** 바텀시트 열기 함수 (외부 제어용) */
-  onOpen?: () => void;
-  /** 바텀시트 닫기 함수 (외부 제어용) */
-  onClose?: () => void;
+  /** 바텀시트 열림 상태 */
+  isOpen: boolean;
+  /** 바텀시트 열기 함수 */
+  onOpen: () => void;
+  /** 바텀시트 닫기 함수 */
+  onClose: () => void;
 }
 
 export const TodoBottomSheet = ({
@@ -30,17 +30,12 @@ export const TodoBottomSheet = ({
   selectedDate,
   values,
   todoId,
-  isOpen: externalIsOpen,
-  onOpen: externalOnOpen,
-  onClose: externalOnClose,
+  isOpen,
+  onOpen,
+  onClose,
 }: TodoBottomSheetProps) => {
-  // 내부 상태 관리 (외부 제어가 없을 때 사용)
-  const internalSheet = useBottomSheet();
-
-  // 외부 제어 또는 내부 상태 사용
-  const isOpen = externalIsOpen ?? internalSheet.isOpen;
-  const showSheet = externalOnOpen ?? internalSheet.showSheet;
-  const closeSheet = externalOnClose ?? internalSheet.closeSheet;
+  // 삭제 BottomSheet 상태
+  const deleteSheet = useBottomSheet();
 
   // 스택 네비게이션 훅 사용
   const { currentView, direction, navigateTo, goBack, goToMain, reset } = useStackNavigation<TodoBottomSheetView>({
@@ -49,9 +44,6 @@ export const TodoBottomSheet = ({
 
   // 날짜 선택 초기 탭 상태
   const [dateSelectInitialTab, setDateSelectInitialTab] = useState<DateSelectTab>('endDate');
-
-  // 삭제 BottomSheet 상태
-  const deleteSheet = useBottomSheet();
 
   // 목표 선택 클릭 핸들러 (내부 스택 네비게이션)
   const handleGoalSelect = () => {
@@ -65,14 +57,14 @@ export const TodoBottomSheet = ({
 
   // 시작일 선택 클릭 핸들러
   const handleStartDateSelect = () => {
-    setDateSelectInitialTab('startDate');
     navigateTo('dateSelect');
+    setDateSelectInitialTab('startDate');
   };
 
   // 종료일 선택 클릭 핸들러
   const handleEndDateSelect = () => {
-    setDateSelectInitialTab('endDate');
     navigateTo('dateSelect');
+    setDateSelectInitialTab('endDate');
   };
 
   // 날짜 수정 클릭 핸들러
@@ -95,12 +87,12 @@ export const TodoBottomSheet = ({
       values={values}
       selectedDate={selectedDate}
       onClose={() => {
-        closeSheet();
+        onClose();
         reset();
       }}
     >
       {/* 메인 BottomSheet - 삭제 모드가 아닐 때만 표시 */}
-      <BottomSheet isOpen={isMainSheetOpen} showSheet={showSheet} closeSheet={closeSheet} height="auto">
+      <BottomSheet isOpen={isMainSheetOpen} showSheet={onOpen} closeSheet={onClose} height="auto">
         <StackView viewKey={currentView} direction={direction}>
           <TodoBottomSheetContent
             selectedDate={selectedDate}
