@@ -7,39 +7,32 @@ import { TodoBottomSheetContent } from './components/content';
 import { DeleteBottomSheet } from './components/content/deleteSelectView';
 import { TodoFormProvider } from './form';
 import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type DateSelectTab } from './types';
-import { GoalTodo } from '@/shared/type/GoalTodo';
 
 interface TodoBottomSheetProps {
   /** 바텀시트 모드: 'add' (추가) 또는 'edit' (편집) */
   mode: TodoBottomSheetMode;
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 편집 모드일 때 초기 데이터 */
-  initialData?: TodoFormData;
+  /** 폼 값 (편집 모드일 때 외부에서 전달) */
+  values?: TodoFormData;
   /** 편집 모드일 때 Todo ID */
   todoId?: string;
-  /** 편집 모드일 때 Todo 데이터 (전체 반복 투두 삭제용) */
-  editingTodo?: GoalTodo | null;
   /** 바텀시트 열림 상태 (외부 제어용) */
   isOpen?: boolean;
   /** 바텀시트 열기 함수 (외부 제어용) */
   onOpen?: () => void;
   /** 바텀시트 닫기 함수 (외부 제어용) */
   onClose?: () => void;
-  /** 목표 추가 클릭 핸들러 */
-  onAddGoal?: () => void;
 }
 
 export const TodoBottomSheet = ({
   mode,
   selectedDate,
-  initialData,
+  values,
   todoId,
-  editingTodo,
   isOpen: externalIsOpen,
   onOpen: externalOnOpen,
   onClose: externalOnClose,
-  onAddGoal,
 }: TodoBottomSheetProps) => {
   // 내부 상태 관리 (외부 제어가 없을 때 사용)
   const internalSheet = useBottomSheet();
@@ -98,19 +91,16 @@ export const TodoBottomSheet = ({
   return (
     <TodoFormProvider
       mode={mode}
-      initialData={initialData}
-      isOpen={isOpen}
-      selectedDate={selectedDate}
       todoId={todoId}
-      editingTodo={editingTodo}
+      values={values}
+      selectedDate={selectedDate}
       onClose={() => {
         closeSheet();
         reset();
       }}
-      onAddGoal={onAddGoal}
     >
       {/* 메인 BottomSheet - 삭제 모드가 아닐 때만 표시 */}
-      <BottomSheet isOpen={isMainSheetOpen} showSheet={showSheet} closeSheet={closeSheet}>
+      <BottomSheet isOpen={isMainSheetOpen} showSheet={showSheet} closeSheet={closeSheet} height="auto">
         <StackView viewKey={currentView} direction={direction}>
           <TodoBottomSheetContent
             selectedDate={selectedDate}
@@ -124,7 +114,6 @@ export const TodoBottomSheet = ({
             dateSelectInitialTab={dateSelectInitialTab}
             goBack={goBack}
             goToMain={goToMain}
-            onAddGoal={onAddGoal}
             onDeleteSelect={handleDeleteSelect}
           />
         </StackView>

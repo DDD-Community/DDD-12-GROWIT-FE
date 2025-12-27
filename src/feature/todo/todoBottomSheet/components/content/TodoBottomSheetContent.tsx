@@ -31,8 +31,6 @@ interface TodoBottomSheetContentProps {
   goBack: () => void;
   /** 메인 뷰로 바로 이동 */
   goToMain: () => void;
-  /** 목표 추가 핸들러 */
-  onAddGoal?: () => void;
   /** 삭제 선택 화면으로 이동 핸들러 */
   onDeleteSelect?: () => void;
 }
@@ -49,14 +47,13 @@ export const TodoBottomSheetContent = ({
   dateSelectInitialTab,
   goBack,
   goToMain,
-  onAddGoal,
   onDeleteSelect,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
   switch (currentView) {
     case 'goalSelect':
-      return <GoalSelectView onBack={goBack} onAddGoal={onAddGoal} />;
+      return <GoalSelectView onBack={goBack} />;
     case 'repeatSelect':
       return <RepeatSelectView onBack={goBack} onGoToDateSelect={onEndDateSelect} />;
     case 'dateSelect':

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, createContext, useContext } from 'react';
+import { useCallback, createContext, useContext } from 'react';
 import { useForm, FormProvider, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -9,7 +9,6 @@ import { TodoFormData, TODO_DEFAULT_VALUES, TodoBottomSheetMode } from '../types
 import { todoFormSchema } from './todoFormSchema';
 import { usePutTodo, useDeleteTodo, usePostAddTodo } from '@/model/todo/todoList/queries';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
-import { GoalTodo } from '@/shared/type/GoalTodo';
 
 interface TodoFormContextType {
   /** form methods */
@@ -33,40 +32,24 @@ const TodoFormContext = createContext<TodoFormContextType | null>(null);
 interface TodoFormProviderProps {
   /** 바텀시트 모드 */
   mode: TodoBottomSheetMode;
-  /** 편집 모드일 때 초기 데이터 */
-  initialData?: TodoFormData;
-  /** 바텀시트 열림 상태 */
-  isOpen: boolean;
+  /** 폼 값 (편집 모드일 때 외부에서 전달) */
+  values?: TodoFormData;
   /** 선택된 날짜 */
   selectedDate: Date;
   /** 편집 모드일 때 Todo ID */
   todoId?: string;
-  /** 편집 모드일 때 Todo 데이터 (전체 반복 투두 삭제용) */
-  editingTodo?: GoalTodo | null;
   /** 바텀시트 닫기 콜백 */
   onClose: () => void;
-  /** 목표 추가 클릭 핸들러 */
-  onAddGoal?: () => void;
   /** 자식 컴포넌트 */
   children: React.ReactNode;
 }
 
-export const TodoFormProvider = ({
-  mode,
-  initialData,
-  isOpen,
-  selectedDate,
-  todoId,
-  editingTodo,
-  onClose,
-  onAddGoal,
-  children,
-}: TodoFormProviderProps) => {
+export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, children }: TodoFormProviderProps) => {
   const methods = useForm<TodoFormData>({
     resolver: zodResolver(todoFormSchema),
-    defaultValues: mode === 'edit' && initialData ? initialData : TODO_DEFAULT_VALUES,
+    defaultValues: TODO_DEFAULT_VALUES,
+    values: mode === 'edit' && values ? values : undefined,
     mode: 'onSubmit',
-    // form 상태를 유지하기 위해 keepValues 옵션 사용
     shouldUnregister: false,
   });
 
