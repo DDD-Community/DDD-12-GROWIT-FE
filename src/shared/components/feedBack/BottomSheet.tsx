@@ -4,6 +4,9 @@ import { useContext, createContext } from 'react';
 import { AnimatePresence, motion, useMotionValue, useSpring, type PanInfo, type MotionValue } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+// 높이 타입 정의: 'auto' | '{x}px' | '{x}%'
+export type BottomSheetHeight = 'auto' | `${number}px` | `${number}%`;
+
 // Context 타입 정의
 interface BottomSheetContextType {
   isOpen: boolean;
@@ -18,6 +21,7 @@ interface BottomSheetContextType {
   height: MotionValue<number>;
   springHeight: MotionValue<number>;
   initDragHeight: React.MutableRefObject<number>;
+  heightMode: BottomSheetHeight;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextType | null>(null);
@@ -36,9 +40,35 @@ interface BottomSheetProviderProps {
   showSheet: () => void;
   closeSheet: () => void;
   children: React.ReactNode;
+  heightMode?: BottomSheetHeight;
 }
+
+// 높이 문자열을 픽셀 값으로 변환하는 유틸리티 함수
+const parseHeightToPixels = (heightMode: BottomSheetHeight, viewportHeight: number): number | 'auto' => {
+  if (heightMode === 'auto') {
+    return 'auto';
+  }
+
+  if (heightMode.endsWith('px')) {
+    return parseInt(heightMode.slice(0, -2), 10);
+  }
+
+  if (heightMode.endsWith('%')) {
+    const percentage = parseInt(heightMode.slice(0, -1), 10);
+    return (viewportHeight * percentage) / 100;
+  }
+
+  return viewportHeight * 0.55; // 기본값
+};
+
 // Provider 컴포넌트
-const BottomSheetProvider = ({ children, isOpen, showSheet, closeSheet }: BottomSheetProviderProps) => {
+const BottomSheetProvider = ({
+  children,
+  isOpen,
+  showSheet,
+  closeSheet,
+  heightMode = '55%',
+}: BottomSheetProviderProps) => {
   const [snapPoints, setSnapPoints] = useState({
     closed: 0,
     half: 0,
@@ -56,15 +86,20 @@ const BottomSheetProvider = ({ children, isOpen, showSheet, closeSheet }: Bottom
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const viewportHeight = window.innerHeight;
+      const parsedHeight = parseHeightToPixels(heightMode, viewportHeight);
+
+      // auto 모드가 아닌 경우에만 스냅 포인트 설정
+      const initialHeight = parsedHeight === 'auto' ? viewportHeight * 0.55 : parsedHeight;
+
       const newSnapPoints = {
         closed: 0,
-        half: viewportHeight * 0.55,
+        half: initialHeight,
         expanded: viewportHeight * 0.9,
       };
       setSnapPoints(newSnapPoints);
-      setMinHeight(viewportHeight * 0.3);
+      setMinHeight(Math.min(initialHeight * 0.5, viewportHeight * 0.3));
     }
-  }, []);
+  }, [heightMode]);
 
   // 열릴 때 초기 높이 설정 및 body 스크롤 잠금
   useEffect(() => {
@@ -93,6 +128,7 @@ const BottomSheetProvider = ({ children, isOpen, showSheet, closeSheet }: Bottom
         height,
         springHeight,
         initDragHeight,
+        heightMode,
       }}
     >
       {children}
@@ -102,7 +138,9 @@ const BottomSheetProvider = ({ children, isOpen, showSheet, closeSheet }: Bottom
 
 // Root 컴포넌트 (오버레이 + 시트 컨테이너)
 const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
-  const { isOpen, closeSheet, springHeight, snapPoints } = useBottomSheetContext();
+  const { isOpen, closeSheet, springHeight, snapPoints, heightMode } = useBottomSheetContext();
+
+  const isAutoHeight = heightMode === 'auto';
 
   return (
     <AnimatePresence>
@@ -124,12 +162,13 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
           <motion.aside
             key="bottom-sheet"
             style={{
-              height: springHeight,
+              height: isAutoHeight ? 'auto' : springHeight,
+              maxHeight: '90vh',
               touchAction: 'none',
               willChange: 'height',
             }}
             initial={{ height: 0 }}
-            animate={{ height: snapPoints.half }}
+            animate={{ height: isAutoHeight ? 'auto' : snapPoints.half }}
             exit={{ height: 0 }}
             className="fixed bottom-0 left-1/2 -translate-x-1/2 bg-elevated-assistive max-w-96 w-full rounded-t-lg z-999"
           >
@@ -221,14 +260,17 @@ export const BottomSheet = ({
   isOpen,
   showSheet,
   closeSheet,
+  height,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
   showSheet: () => void;
   closeSheet: () => void;
+  /** 높이 설정: 'auto' | '{x}px' | '{x}%' (기본값: '55%') */
+  height?: BottomSheetHeight;
 }) => {
   return (
-    <BottomSheetProvider isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
+    <BottomSheetProvider isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet} heightMode={height}>
       <BottomSheetRoot>{children}</BottomSheetRoot>
     </BottomSheetProvider>
   );

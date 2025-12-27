@@ -6,7 +6,6 @@ import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import { DateEditView } from './dateEditView';
-import { DeleteSelectView } from './deleteSelectView';
 import type { TodoBottomSheetView, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
@@ -78,8 +77,6 @@ export const TodoBottomSheetContent = ({
           onEndDateSelect={onEndDateSelect}
         />
       );
-    case 'deleteSelect':
-      return <DeleteSelectView onBack={goBack} />;
     case 'main':
     default:
       return (

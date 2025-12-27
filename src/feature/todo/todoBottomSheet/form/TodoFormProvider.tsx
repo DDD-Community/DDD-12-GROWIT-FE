@@ -148,10 +148,9 @@ export const TodoFormProvider = ({
     if (!todoId) return;
 
     try {
+      // todo 삭제 및 query 무효화
       await deleteTodoMutation.mutateAsync(todoId);
-      // 쿼리 무효화하여 데이터 다시 가져오기
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
-      // Todo count 쿼리도 무효화
       queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
     } catch (error) {
@@ -192,12 +191,9 @@ export const TodoFormProvider = ({
         );
       });
 
-      // 모든 투두 삭제
+      // 모든 repeat 투두 삭제 및 query 무효화
       await Promise.all(todosToDelete.map(todo => deleteTodoMutation.mutateAsync(todo.id)));
-
-      // 쿼리 무효화하여 데이터 다시 가져오기
       queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
-      // Todo count 쿼리도 무효화
       queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
       onClose();
     } catch (error) {

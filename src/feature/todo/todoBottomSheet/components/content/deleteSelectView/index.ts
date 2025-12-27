@@ -1,1 +1,1 @@
-export { DeleteSelectView, default } from './DeleteSelectView';
+export { DeleteBottomSheet } from './DeleteBottomSheet';
