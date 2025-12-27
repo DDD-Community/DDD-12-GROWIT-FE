@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Goal } from '@/shared/type/goal';
 import { DropdownMenu, DropdownMenuItem } from '@/shared/components/dropdown-menu';
 import { DropdownMenuTrigger } from '@/shared/components/dropdown-menu';
@@ -12,6 +13,7 @@ type AdviceHeaderProps = {
 };
 
 export const AdviceHeader = ({ progressGoals, selectedGoal, setSelectedGoal }: AdviceHeaderProps) => {
+  const router = useRouter();
   return (
     <header className="w-full flex justify-between items-center px-5 py-4 body-1-normal text-text-strong">
       <DropdownMenu>
@@ -55,7 +57,7 @@ export const AdviceHeader = ({ progressGoals, selectedGoal, setSelectedGoal }: A
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-      <button>
+      <button onClick={() => router.push('/advice/history')} className="cursor-pointer">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
