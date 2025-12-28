@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 interface UseStackNavigationOptions<T extends string> {
   /** 초기 뷰 */
@@ -29,37 +29,32 @@ interface UseStackNavigationReturn<T extends string> {
 export function useStackNavigation<T extends string>({
   initialView,
 }: UseStackNavigationOptions<T>): UseStackNavigationReturn<T> {
-  const [currentView, setCurrentView] = useState<T>(initialView);
+  // 스택 히스토리 (현재 뷰 포함)
+  const [history, setHistory] = useState<T[]>([initialView]);
   const [direction, setDirection] = useState(0);
-  // 스택 히스토리 (현재 뷰 제외)
-  const historyRef = useRef<T[]>([]);
 
-  const navigateTo = useCallback(
-    (view: T) => {
-      setDirection(1);
-      historyRef.current.push(currentView);
-      setCurrentView(view);
-    },
-    [currentView]
-  );
+  const currentView = useMemo(() => history[history.length - 1], [history]);
+
+  const navigateTo = useCallback((view: T) => {
+    setDirection(1);
+    setHistory(prev => [...prev, view]);
+  }, []);
 
   const goBack = useCallback(() => {
-    if (historyRef.current.length > 0) {
+    setHistory(prev => {
+      if (prev.length <= 1) return prev;
       setDirection(-1);
-      const previousView = historyRef.current.pop()!;
-      setCurrentView(previousView);
-    }
+      return prev.slice(0, -1);
+    });
   }, []);
 
   const goToMain = useCallback(() => {
     setDirection(-1);
-    historyRef.current = [];
-    setCurrentView(initialView);
+    setHistory([initialView]);
   }, [initialView]);
 
   const reset = useCallback(() => {
-    historyRef.current = [];
-    setCurrentView(initialView);
+    setHistory([initialView]);
     setDirection(0);
   }, [initialView]);
 

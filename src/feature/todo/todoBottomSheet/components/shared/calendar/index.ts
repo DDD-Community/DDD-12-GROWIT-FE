@@ -1,4 +1,4 @@
-export { BottomSheetCalendar, type DateCellInfo, type ActiveDateTab } from './BottomSheetCalendar';
+export { BottomSheetCalendar, type DateCellInfo, type ActiveDateTab, type RepeatType } from './BottomSheetCalendar';
 export {
   formatDateToString,
   parseDateString,

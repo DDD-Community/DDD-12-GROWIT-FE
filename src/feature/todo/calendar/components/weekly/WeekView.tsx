@@ -1,10 +1,21 @@
 import React, { useMemo } from 'react';
+import { format } from 'date-fns';
 import { WeekViewProps } from '../../types';
 import { DateHeader } from './DateHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { DateCell } from '../common/DateCell';
 import { WeekNavigation } from './WeekNavigation';
-import { getWeekDates, getWeekRange, isToday, isSameDay, toDateKey, getDateNumber } from '../../utils';
+import {
+  getWeekDates,
+  getWeekRange,
+  isToday,
+  isSameDay,
+  toDateKey,
+  getDateNumber,
+  convertTodoCountToIndicators,
+  mergeIndicators,
+} from '../../utils';
+import { useTodoCountByDate } from '@/model/todo/todoList/queries';
 
 /**
  * 주간 뷰 컴포넌트
@@ -24,6 +35,20 @@ export const WeekView: React.FC<WeekViewProps> = ({
   // 주간 날짜 배열 계산
   const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
   const [weekStart, weekEnd] = useMemo(() => getWeekRange(currentDate), [currentDate]);
+
+  // 주간 날짜 범위의 투두 개수 조회
+  const fromDateString = useMemo(() => format(weekStart, 'yyyy-MM-dd'), [weekStart]);
+  const toDateString = useMemo(() => format(weekEnd, 'yyyy-MM-dd'), [weekEnd]);
+  const { data: todoCountData = [] } = useTodoCountByDate({
+    from: fromDateString,
+    to: toDateString,
+  });
+
+  // 투두 개수를 indicators 형식으로 변환 및 병합
+  const mergedIndicators = useMemo(() => {
+    const todoIndicators = convertTodoCountToIndicators(todoCountData);
+    return mergeIndicators(indicators, todoIndicators);
+  }, [indicators, todoCountData]);
 
   // 선택된 날짜의 공휴일 라벨
   const selectedDateKey = toDateKey(selectedDate);
@@ -59,7 +84,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
         <div className="flex justify-between">
           {weekDates.map(date => {
             const dateKey = toDateKey(date);
-            const indicatorColors = indicators?.[dateKey];
+            const indicatorColors = mergedIndicators?.[dateKey];
             const holidayLabel = holidays?.[dateKey];
 
             return (

@@ -1,45 +1,49 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
+import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import { TodoCard } from './TodoCard';
-
-interface GoalGroup {
-  goalId: string;
-  goalName: string;
-  todos: GoalTodo[];
-}
+import { TodoCard } from './components/TodoCard';
+import { TodoListEmpty } from './components/TodoListEmpty';
+import { TodoListLoading, TodoListError } from './components';
+import { useTodosByDate, usePatchTodoStatus } from '@/model/todo/todoList/queries';
+import { useQueryClient } from '@tanstack/react-query';
+import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
+import { transformTodosData, groupAndSortTodos } from './helper';
 
 interface TodoListProps {
-  /** Todo 목록 */
-  todos: GoalTodo[];
-  /** Todo 완료 상태 토글 핸들러 */
-  onToggle?: (todoId: string, isCompleted: boolean) => void;
+  /** 선택된 날짜 */
+  selectedDate: Date;
   /** Todo 편집 클릭 핸들러 */
   onEdit?: (todo: GoalTodo) => void;
 }
 
-export const TodoList = ({ todos, onToggle, onEdit }: TodoListProps) => {
-  // goal별로 그룹화
-  const groupedTodos = useMemo<GoalGroup[]>(() => {
-    const groupMap = new Map<string, GoalGroup>();
+export const TodoList = ({ selectedDate, onEdit }: TodoListProps) => {
+  const queryClient = useQueryClient();
+  const patchTodoStatusMutation = usePatchTodoStatus();
 
-    todos.forEach(todo => {
-      const goalId = todo.goal.id ?? todo.goal.name;
-      const existingGroup = groupMap.get(goalId);
-      if (existingGroup) {
-        existingGroup.todos.push(todo);
-      } else {
-        groupMap.set(goalId, {
-          goalId,
-          goalName: todo.goal.name,
-          todos: [todo],
-        });
+  const dateString = format(selectedDate, 'yyyy-MM-dd');
+  const { data: todosData, isLoading, error } = useTodosByDate({ date: dateString });
+
+  const todos = useMemo(() => transformTodosData(todosData), [todosData]);
+  const groupedTodos = useMemo(() => groupAndSortTodos(todos), [todos]);
+
+  const handleToggle = useCallback(
+    async (todoId: string, isCompleted: boolean) => {
+      try {
+        await patchTodoStatusMutation.mutateAsync({ todoId, isCompleted });
+        queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+        queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
+      } catch (error) {
+        console.error('Todo 상태 변경 실패:', error);
       }
-    });
+    },
+    [patchTodoStatusMutation, queryClient, dateString]
+  );
 
-    return Array.from(groupMap.values());
-  }, [todos]);
+  if (isLoading) return <TodoListLoading />;
+  if (error) return <TodoListError />;
+  if (groupedTodos.length === 0) return <TodoListEmpty />;
 
   return (
     <div className="flex flex-col gap-[28px] mt-[20px] mb-[20px]">
@@ -50,7 +54,7 @@ export const TodoList = ({ todos, onToggle, onEdit }: TodoListProps) => {
           {/* Todo 카드 리스트 */}
           <div className="flex flex-col gap-[8px]">
             {group.todos.map(todo => (
-              <TodoCard key={todo.id} todo={todo} onToggle={onToggle} onEdit={onEdit} />
+              <TodoCard key={todo.id} todo={todo} onToggle={handleToggle} onEdit={onEdit} />
             ))}
           </div>
         </div>

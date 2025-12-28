@@ -6,14 +6,11 @@ import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import { DateEditView } from './dateEditView';
-import { DeleteSelectView } from './deleteSelectView';
-import type { TodoBottomSheetView, Goal, DateSelectTab } from '../../types';
+import type { TodoBottomSheetView, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
   /** 선택된 날짜 */
   selectedDate: Date;
-  /** 목표 목록 */
-  goals: Goal[];
   /** 바텀시트 열림 상태 */
   isOpen: boolean;
   /** 현재 뷰 */
@@ -34,15 +31,14 @@ interface TodoBottomSheetContentProps {
   goBack: () => void;
   /** 메인 뷰로 바로 이동 */
   goToMain: () => void;
-  /** 목표 추가 핸들러 */
-  onAddGoal?: () => void;
   /** 삭제 선택 화면으로 이동 핸들러 */
   onDeleteSelect?: () => void;
+  /** 수정 선택 화면으로 이동 핸들러 (반복 투두) */
+  onEditSelect?: () => void;
 }
 
 export const TodoBottomSheetContent = ({
   selectedDate,
-  goals,
   isOpen,
   currentView,
   onGoalSelect,
@@ -53,14 +49,14 @@ export const TodoBottomSheetContent = ({
   dateSelectInitialTab,
   goBack,
   goToMain,
-  onAddGoal,
   onDeleteSelect,
+  onEditSelect,
 }: TodoBottomSheetContentProps) => {
   const { handleSubmit, handleDelete, submitLabel, showDeleteButton } = useTodoFormContext();
 
   switch (currentView) {
     case 'goalSelect':
-      return <GoalSelectView onBack={goBack} goals={goals} onAddGoal={onAddGoal} />;
+      return <GoalSelectView onBack={goBack} />;
     case 'repeatSelect':
       return <RepeatSelectView onBack={goBack} onGoToDateSelect={onEndDateSelect} />;
     case 'dateSelect':
@@ -81,14 +77,11 @@ export const TodoBottomSheetContent = ({
           onEndDateSelect={onEndDateSelect}
         />
       );
-    case 'deleteSelect':
-      return <DeleteSelectView onBack={goBack} />;
     case 'main':
     default:
       return (
         <MainView
           selectedDate={selectedDate}
-          goals={goals}
           onSubmit={handleSubmit}
           submitLabel={submitLabel}
           onDeleteSelect={onDeleteSelect}
@@ -100,6 +93,7 @@ export const TodoBottomSheetContent = ({
           onStartDateSelect={onStartDateSelect}
           onEndDateSelect={onEndDateSelect}
           onDateEdit={onDateEdit}
+          onEditSelect={onEditSelect}
         />
       );
   }

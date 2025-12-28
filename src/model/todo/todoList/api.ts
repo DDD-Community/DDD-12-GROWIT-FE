@@ -9,6 +9,9 @@ import {
   PutTodoRequest,
   PostAddTodoRequest,
   PostAddTodoResponse,
+  TodoCountByDateRequest,
+  TodoCountByDateResponse,
+  DeleteTodoRequest,
 } from './dto';
 
 export const todoListApi = {
@@ -29,14 +32,23 @@ export const todoListApi = {
     return data.data;
   },
 
-  deleteTodo: async (todoId: string) => {
-    const { data } = await apiClient.delete<CommonResponse>(`/todos/${todoId}`);
+  deleteTodo: async (req: DeleteTodoRequest) => {
+    const { todoId, routineDeleteType } = req;
+    const { data } = await apiClient.delete<CommonResponse<string>>(
+      `/todos/${todoId}?routineDeleteType=${routineDeleteType}`
+    );
     return data.data;
   },
 
   postAddTodo: async (req: PostAddTodoRequest) => {
     const response = await apiClient.post<PostAddTodoResponse, PostAddTodoRequest>('/todos', req);
     return response.data;
+  },
+
+  getTodoCountByDate: async (req: TodoCountByDateRequest) => {
+    const { from, to } = req;
+    const { data } = await apiClient.get<TodoCountByDateResponse>(`/todos/count?from=${from}&to=${to}`);
+    return data.data;
   },
 };
 

@@ -1,5 +1,15 @@
+import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { TodoFormData, FormRepeatType, Goal } from '@/feature/todo/todoBottomSheet/types';
+
+/** editingTodo 기본값 생성 함수 */
+export const getEditingTodoDefault = (): GoalTodo => ({
+  id: '',
+  goal: { name: '' },
+  date: format(new Date(), 'yyyy-MM-dd'),
+  content: '',
+  isCompleted: false,
+});
 
 /** GoalTodo를 TodoFormData로 변환 */
 export const convertToFormData = (todo: GoalTodo): TodoFormData => ({
@@ -7,6 +17,7 @@ export const convertToFormData = (todo: GoalTodo): TodoFormData => ({
   goalId: todo.goal.id ?? null,
   repeatType: (todo.routine?.repeatType as FormRepeatType) ?? 'none',
   isImportant: todo.isImportant ?? false,
+  date: todo.date,
   routineDuration: todo.routine?.duration,
 });
 

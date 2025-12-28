@@ -1,2 +1,2 @@
 export { TodoList } from './TodoList';
-export { TodoCard } from './TodoCard';
+export { TodoCard } from './components/TodoCard';

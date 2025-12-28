@@ -8,34 +8,53 @@ interface OptionCellProps<T extends string> {
   /** 표시할 라벨 */
   label: string;
   /** 선택 여부 */
-  isSelected: boolean;
+  isSelected?: boolean;
   /** 클릭 핸들러 */
   onClick: (value: T) => void;
+  /** 왼쪽 아이콘 */
+  leftIcon?: React.ReactNode;
   /** 추가 className */
   className?: string;
 }
 
 /**
  * 선택 가능한 옵션 셀 컴포넌트
- * - 선택 시 체크 아이콘 + Bold 텍스트 (흰색)
+ * - 선택 시 체크 아이콘 (오른쪽) + Bold 텍스트 (흰색)
  * - 미선택 시 Regular 텍스트 (회색)
+ * - leftIcon: 왼쪽에 아이콘 표시 가능
  */
-export function OptionCell<T extends string>({ value, label, isSelected, onClick, className }: OptionCellProps<T>) {
+export function OptionCell<T extends string>({
+  value,
+  label,
+  isSelected = false,
+  onClick,
+  leftIcon,
+  className,
+}: OptionCellProps<T>) {
   return (
     <button
       type="button"
       onClick={() => onClick(value)}
       className={cn(
-        'w-full flex items-center justify-center gap-2',
-        'px-5 py-3 rounded-lg',
+        'w-full flex items-center',
+        isSelected ? 'justify-between' : 'justify-start',
+        'px-[14px] py-[8px] rounded-[8px]',
         'transition-colors',
         className
       )}
     >
-      {isSelected && <CheckIcon />}
-      <span className={cn('body-1-normal', isSelected ? 'body-1-normal-bold text-white' : 'text-text-primary')}>
+      <span className="flex items-center gap-2">
+        {leftIcon}
+        <span
+          className={cn(
+            'text-[16px] leading-[1.5] tracking-[0.0912px]',
+            isSelected ? 'font-bold text-white' : 'font-normal text-[#c2c4c8]'
+          )}
+        >
         {label}
+        </span>
       </span>
+      {isSelected && <CheckIcon />}
     </button>
   );
 }

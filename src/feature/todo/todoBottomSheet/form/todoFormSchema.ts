@@ -1,7 +1,6 @@
 'use client';
 
 import { z } from 'zod';
-import type { FormRepeatType } from '../types';
 
 /**
  * 반복 타입 enum
@@ -37,6 +36,9 @@ export const todoFormSchema = z
 
     /** 중요 표시 */
     isImportant: z.boolean(),
+
+    /** 투두 날짜 (YYYY-MM-DD 형식) */
+    date: z.string().min(1, '날짜를 선택해주세요'),
 
     /** 루틴 기간 설정 (반복이 none이 아닐 때만 사용) */
     routineDuration: routineDurationSchema.optional(),

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
@@ -27,21 +27,9 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
   // 현재 선택된 탭 (시작일/종료일)
   const [activeTab, setActiveTab] = useState<DateSelectTab>(initialTab);
 
-  // 선택된 날짜들
-  const startDate = parseDateString(routineDuration?.startDate);
+  // 선택된 날짜들 (startDate가 없으면 defaultDate를 파생 상태로 사용)
+  const startDate = parseDateString(routineDuration?.startDate) || (repeatType !== 'none' ? defaultDate : undefined);
   const endDate = parseDateString(routineDuration?.endDate);
-
-  // 반복이 설정되어 있고, startDate가 없으면 defaultDate를 기본값으로 설정
-  useEffect(() => {
-    if (repeatType !== 'none' && !startDate && defaultDate) {
-      const dateString = formatDateToString(defaultDate);
-      setValue('routineDuration', {
-        ...routineDuration,
-        startDate: dateString,
-      } as TodoFormData['routineDuration']);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // 캘린더 상태
   const [currentMonth, setCurrentMonth] = useState(() => startDate || defaultDate || new Date());
@@ -70,13 +58,21 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
     }
   };
 
-  // 완료 버튼 활성화 조건: 시작일과 종료일 모두 선택됨
-  const isCompleteEnabled = !!routineDuration?.startDate && !!routineDuration?.endDate;
+  // 완료 버튼 활성화 조건: 시작일(파생 상태 포함)과 종료일 모두 있음
+  const isCompleteEnabled = !!startDate && !!routineDuration?.endDate;
 
   const handleComplete = () => {
-    if (isCompleteEnabled) {
-      onComplete();
+    if (!isCompleteEnabled) return;
+
+    // startDate가 폼에 없으면 defaultDate를 저장
+    if (!routineDuration?.startDate && startDate) {
+      setValue('routineDuration', {
+        ...routineDuration,
+        startDate: formatDateToString(startDate),
+      } as TodoFormData['routineDuration']);
     }
+
+    onComplete();
   };
 
   return (
@@ -126,7 +122,7 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
         </div>
       </BottomSheet.Title>
 
-      <BottomSheet.Content>
+      <BottomSheet.Content className="overflow-y-hidden">
         <BottomSheetCalendar
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
@@ -134,6 +130,8 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
           selectedStartDate={startDate}
           selectedEndDate={endDate}
           activeTab={activeTab}
+          repeatType={repeatType}
+          enableKeyboardNav={false}
           initialFocusDate={startDate}
         />
       </BottomSheet.Content>

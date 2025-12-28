@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { format } from 'date-fns';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { ChevronLeftIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
-import { BottomSheetCalendar, DateCellInfo, formatDateToString, parseDateString } from '../../shared/calendar';
-import { RoutineDateCell } from './RoutineDateCell';
+import { BottomSheetCalendar, parseDateString } from '../../shared/calendar';
 import type { TodoFormData, FormRepeatType, REPEAT_TYPE_LABELS } from '../../../types';
 
 interface DateEditViewProps {
@@ -30,51 +30,6 @@ const formatDateDisplay = (dateString?: string): string => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
   return `${year}.${month}.${day}`;
-};
-
-/** 반복 패턴에 따라 선택된 날짜들을 계산 */
-const getSelectedDates = (repeatType: FormRepeatType, startDate?: Date, endDate?: Date): Set<string> => {
-  const selectedDates = new Set<string>();
-
-  if (!startDate || !endDate || repeatType === 'none') {
-    return selectedDates;
-  }
-
-  const current = new Date(startDate);
-  const dayOfWeek = startDate.getDay();
-
-  while (current <= endDate) {
-    switch (repeatType) {
-      case 'DAILY':
-        selectedDates.add(formatDateToString(current));
-        current.setDate(current.getDate() + 1);
-        break;
-      case 'WEEKLY':
-        if (current.getDay() === dayOfWeek) {
-          selectedDates.add(formatDateToString(current));
-        }
-        current.setDate(current.getDate() + 1);
-        break;
-      case 'BIWEEKLY': {
-        const weeksDiff = Math.floor((current.getTime() - startDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
-        if (current.getDay() === dayOfWeek && weeksDiff % 2 === 0) {
-          selectedDates.add(formatDateToString(current));
-        }
-        current.setDate(current.getDate() + 1);
-        break;
-      }
-      case 'MONTHLY':
-        if (current.getDate() === startDate.getDate()) {
-          selectedDates.add(formatDateToString(current));
-        }
-        current.setDate(current.getDate() + 1);
-        break;
-      default:
-        current.setDate(current.getDate() + 1);
-    }
-  }
-
-  return selectedDates;
 };
 
 /** 반복 요약 텍스트 생성 */
@@ -105,21 +60,17 @@ export const DateEditView = ({
   onEndDateSelect,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: DateEditViewProps) => {
-  const { watch } = useFormContext<TodoFormData>();
+  const { watch, setValue } = useFormContext<TodoFormData>();
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
+  const todoDate = watch('date');
 
   const startDate = parseDateString(routineDuration?.startDate);
   const endDate = parseDateString(routineDuration?.endDate);
+  const selectedTodoDate = parseDateString(todoDate);
 
   // 캘린더 상태
-  const [currentMonth, setCurrentMonth] = useState(() => startDate || new Date());
-
-  // 선택된 날짜들 계산
-  const selectedDates = useMemo(
-    () => getSelectedDates(repeatType, startDate, endDate),
-    [repeatType, startDate, endDate]
-  );
+  const [currentMonth, setCurrentMonth] = useState(() => selectedTodoDate || startDate || new Date());
 
   // 반복 요약
   const repeatSummary = useMemo(() => getRepeatSummary(repeatType, startDate), [repeatType, startDate]);
@@ -127,23 +78,11 @@ export const DateEditView = ({
   // 반복 설정 여부
   const hasRepeat = repeatType !== 'none';
 
-  // 날짜 셀 렌더러 (루틴 날짜 하이라이트)
-  const renderDateCell = useCallback(
-    ({ date, isInCurrentMonth, isToday }: DateCellInfo) => {
-      const dateString = formatDateToString(date);
-      const isHighlighted = selectedDates.has(dateString);
-
-      return (
-        <RoutineDateCell
-          date={date}
-          isInCurrentMonth={isInCurrentMonth}
-          isToday={isToday}
-          isHighlighted={isHighlighted}
-        />
-      );
-    },
-    [selectedDates]
-  );
+  // 날짜 선택 핸들러 - form의 date 필드 업데이트
+  const handleDateSelect = (date: Date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    setValue('date', dateString);
+  };
 
   return (
     <>
@@ -159,14 +98,18 @@ export const DateEditView = ({
         </div>
       </BottomSheet.Title>
 
-      <BottomSheet.Content>
-        {/* 캘린더 - 루틴 날짜 하이라이트 */}
+      <BottomSheet.Content className="overflow-y-hidden">
+        {/* 캘린더 - 날짜 선택 및 루틴 날짜 하이라이트 */}
         <BottomSheetCalendar
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
-          renderDateCell={renderDateCell}
+          onDateSelect={handleDateSelect}
+          selectedDate={selectedTodoDate}
+          selectedStartDate={hasRepeat ? startDate : undefined}
+          selectedEndDate={hasRepeat ? endDate : undefined}
+          repeatType={repeatType}
           enableKeyboardNav={false}
-          initialFocusDate={startDate}
+          initialFocusDate={selectedTodoDate || startDate}
         />
 
         {/* 하단 정보 셀 */}

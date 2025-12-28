@@ -17,13 +17,7 @@ export interface PatchTodoStatusRequest {
   isCompleted: boolean;
 }
 
-export interface PutTodoRequest {
-  todoId: string;
-  date: string;
-  content: string;
-}
-
-export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY';
+export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'YEARLY';
 
 export interface TodoRoutine {
   duration: {
@@ -31,6 +25,15 @@ export interface TodoRoutine {
     endDate: string; // 'YYYY-MM-DD'
   };
   repeatType: RepeatType;
+}
+
+export interface PutTodoRequest {
+  todoId: string; // URL 파라미터용
+  goalId: string | null; // 목표 ID (기타일 경우 null)
+  date: string; // 'YYYY-MM-DD'
+  content: string;
+  isImportant: boolean;
+  routine?: TodoRoutine; // 루틴 설정 (옵셔널)
 }
 
 export interface PostAddTodoRequest {
@@ -42,3 +45,28 @@ export interface PostAddTodoRequest {
 }
 
 export interface PostAddTodoResponse extends CommonResponse<{ id: string }> {}
+
+export interface TodoCountByDateRequest {
+  from: string; // YYYY-MM-DD 형식
+  to: string; // YYYY-MM-DD 형식
+}
+
+export interface TodoCountByGoal {
+  id: string;
+  todoCount: number;
+}
+
+export interface TodoCountByDateItem {
+  date: string; // YYYY-MM-DD 형식
+  goals: TodoCountByGoal[];
+}
+
+export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}
+
+/** 반복 투두 삭제 타입 */
+export type RoutineDeleteType = 'SINGLE' | 'FROM_DATE' | 'ALL';
+
+export interface DeleteTodoRequest {
+  todoId: string;
+  routineDeleteType: RoutineDeleteType;
+}
