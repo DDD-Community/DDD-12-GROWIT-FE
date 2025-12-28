@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useFormContext } from 'react-hook-form';
 import { FunnelHeader, FunnelHeaderProvider } from '@/shared/components/layout/FunnelHeader';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
 import { WelcomeStep, GoalNameStep, DateStep, CompleteStep } from '@/composite/goal-onboard';
@@ -11,33 +12,31 @@ import { useFetchUserName } from '@/shared/hooks';
 import { createCreateGoalMutation } from '@/model/goal/hooks';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { CreateGoalFormElement } from '@/feature/goal';
+import { GoalFormData } from '@/shared/type/form';
+import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 
 const TOTAL_STEPS = 4;
 
-interface OnboardFormData {
-  goalName: string;
-  startDate: string;
-  endDate: string;
-}
-
-export default function GoalOnboardPage() {
+function GoalOnboardContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { fullUserName } = useFetchUserName();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<OnboardFormData>({
-    goalName: '',
-    startDate: '',
-    endDate: '',
-  });
-  const [errors, setErrors] = useState<{ goalName?: string }>({});
+  const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseData | null>(null);
+
+  const { watch } = useFormContext<GoalFormData>();
+  const goalName = watch('name');
+  const startDate = watch('durationDate.startDate');
+  const endDate = watch('durationDate.endDate');
 
   const { mutate: createGoal, isPending } = useMutation(
     createCreateGoalMutation({
-      onSuccess: () => {
+      onSuccess: data => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
+        setCreatedGoalData(data);
         setCurrentStep(4); // 완료 스텝으로 이동
       },
       onError: () => {
@@ -49,14 +48,9 @@ export default function GoalOnboardPage() {
   const validateStep = (): boolean => {
     switch (currentStep) {
       case 2:
-        if (!formData.goalName.trim()) {
-          setErrors({ goalName: '목표 이름을 입력해주세요.' });
-          return false;
-        }
-        setErrors({});
-        return true;
+        return !!goalName?.trim();
       case 3:
-        return !!formData.startDate && !!formData.endDate;
+        return !!startDate && !!endDate;
       default:
         return true;
     }
@@ -69,11 +63,11 @@ export default function GoalOnboardPage() {
       // 목표 생성 API 호출
       createGoal({
         category: '',
-        name: formData.goalName,
+        name: goalName,
         duration: 0,
         durationDate: {
-          startDate: formData.startDate,
-          endDate: formData.endDate,
+          startDate,
+          endDate,
         },
         toBe: '',
         plans: [],
@@ -117,9 +111,9 @@ export default function GoalOnboardPage() {
 
     switch (currentStep) {
       case 2:
-        return !formData.goalName.trim();
+        return !goalName?.trim();
       case 3:
-        return !formData.startDate || !formData.endDate;
+        return !startDate || !endDate;
       default:
         return false;
     }
@@ -130,24 +124,13 @@ export default function GoalOnboardPage() {
       case 1:
         return <WelcomeStep userName={fullUserName} />;
       case 2:
-        return (
-          <GoalNameStep
-            goalName={formData.goalName}
-            onChangeGoalName={name => setFormData(prev => ({ ...prev, goalName: name }))}
-            error={errors.goalName}
-          />
-        );
+        return <GoalNameStep />;
       case 3:
-        return (
-          <DateStep
-            startDate={formData.startDate}
-            endDate={formData.endDate}
-            onChangeStartDate={date => setFormData(prev => ({ ...prev, startDate: date }))}
-            onChangeEndDate={date => setFormData(prev => ({ ...prev, endDate: date }))}
-          />
-        );
+        return <DateStep />;
       case 4:
-        return <CompleteStep goalName={formData.goalName} />;
+        return (
+          <CompleteStep goalName={goalName} startDate={startDate} endDate={endDate} planet={createdGoalData?.planet} />
+        );
       default:
         return null;
     }
@@ -174,5 +157,13 @@ export default function GoalOnboardPage() {
         />
       </main>
     </FunnelHeaderProvider>
+  );
+}
+
+export default function GoalOnboardPage() {
+  return (
+    <CreateGoalFormElement.Provider>
+      <GoalOnboardContent />
+    </CreateGoalFormElement.Provider>
   );
 }

@@ -2,15 +2,9 @@
 
 import Image from 'next/image';
 import FlexBox from '@/shared/components/foundation/FlexBox';
-import { InputUnderline } from '@/shared/components/input/InputUnderline';
+import { CreateGoalFormElement } from '@/feature/goal';
 
-interface GoalNameStepProps {
-  goalName: string;
-  onChangeGoalName: (name: string) => void;
-  error?: string;
-}
-
-export const GoalNameStep = ({ goalName, onChangeGoalName, error }: GoalNameStepProps) => {
+export const GoalNameStep = () => {
   return (
     <FlexBox direction="col" className="flex-1 px-5 pt-6">
       <FlexBox direction="col" className="items-center mb-8">
@@ -21,16 +15,7 @@ export const GoalNameStep = ({ goalName, onChangeGoalName, error }: GoalNameStep
       </FlexBox>
 
       <div className="w-full">
-        <InputUnderline
-          label="최종 목표"
-          type="text"
-          placeholder="목표를 입력해주세요"
-          value={goalName}
-          onChange={e => onChangeGoalName(e.target.value)}
-          isError={!!error}
-          errorMessage={error}
-          maxLength={20}
-        />
+        <CreateGoalFormElement.Name />
       </div>
     </FlexBox>
   );

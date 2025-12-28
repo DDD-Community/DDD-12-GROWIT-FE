@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 
@@ -7,6 +8,13 @@ interface CompleteStepProps {
   goalName: string;
   startDate?: string;
   endDate?: string;
+  planet?: {
+    name: string;
+    image: {
+      done: string;
+      progress: string;
+    };
+  };
 }
 
 const formatDateRange = (startDate?: string, endDate?: string): string => {
@@ -26,7 +34,9 @@ const formatDateRange = (startDate?: string, endDate?: string): string => {
   return `${formatDate(start)} ~ ${formatDate(end)}`;
 };
 
-export const CompleteStep = ({ goalName, startDate, endDate }: CompleteStepProps) => {
+export const CompleteStep = ({ goalName, startDate, endDate, planet }: CompleteStepProps) => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   return (
     <FlexBox direction="col" className="flex-1 items-center px-5 pt-12">
       <FlexBox direction="col" className="items-center gap-2 text-center mb-8">
@@ -35,10 +45,31 @@ export const CompleteStep = ({ goalName, startDate, endDate }: CompleteStepProps
       </FlexBox>
 
       <div className="relative w-[200px] h-[200px] mb-4">
-        <Image src="/goal/goal-progress.png" alt="목표 행성" fill className="object-contain" priority />
+        {/* 로딩 중 placeholder */}
+        {!isImageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[160px] h-[160px] rounded-full bg-fill-normal animate-pulse" />
+          </div>
+        )}
+        <Image
+          src={planet?.image.progress || '/goal/goal-progress.png'}
+          alt="목표 행성"
+          fill
+          className={`object-contain transition-all duration-700 ease-out ${
+            isImageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+          }`}
+          priority
+          onLoad={() => setIsImageLoaded(true)}
+        />
       </div>
 
-      <p className="text-sm text-text-tertiary mb-8">과몰입 실버스피릿 행성</p>
+      <p
+        className={`text-sm text-text-tertiary mb-8 transition-opacity duration-500 delay-300 ${
+          isImageLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        {planet?.name ? `${planet.name} 행성` : '행성'}
+      </p>
 
       <div className="w-full bg-fill-normal rounded-2xl p-4">
         <h3 className="text-lg font-semibold text-white mb-2">{goalName}</h3>
