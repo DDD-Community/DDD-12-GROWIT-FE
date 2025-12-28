@@ -6,14 +6,19 @@ type AdviceChatRenderProps = {
   adviceChat?: AdviceChat | null;
   isSendingRequest?: boolean;
 };
+
+type BackgroundType = 'default' | 'writing' | 'sleeping' | 'noGoal';
+
 export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false }: AdviceChatRenderProps) => {
   if (!adviceChat) {
     return <NoGoalMessage />;
-  } else if (adviceChat.conversations.length === 0) {
-    return <OnboardingMessage />;
   }
+  const backgroundType: Extract<BackgroundType, 'default' | 'writing' | 'sleeping'> =
+    adviceChat.remainingCount === 0 ? 'sleeping' : isSendingRequest ? 'writing' : 'default';
 
-  const backgroundType = adviceChat.remainingCount === 0 ? 'sleeping' : isSendingRequest ? 'writing' : 'default';
+  if (!adviceChat.isGoalOnboardingCompleted) {
+    return <OnboardingMessage backgroundType={backgroundType} />;
+  }
 
   return (
     <>
@@ -30,7 +35,11 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
   );
 };
 
-function OnboardingMessage() {
+function OnboardingMessage({
+  backgroundType,
+}: {
+  backgroundType: Extract<BackgroundType, 'default' | 'writing' | 'sleeping'>;
+}) {
   return (
     <>
       <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
@@ -46,7 +55,7 @@ function OnboardingMessage() {
           </span>
         </div>
       </section>
-      <AdviceChatBackground type="default" />
+      <AdviceChatBackground type={backgroundType} />
     </>
   );
 }

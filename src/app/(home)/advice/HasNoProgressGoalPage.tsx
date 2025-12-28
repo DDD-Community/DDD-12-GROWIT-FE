@@ -1,5 +1,5 @@
-import { AdviceChatBackground } from '@/feature/advice/AdviceChatBackground';
-import { AdviceChatHistory } from '@/feature/advice/AdviceChatHistory';
+import { AdviceChatBackground } from '@/feature/advice/components/AdviceChatBackground';
+import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 
 export const HasNoProgressGoalPage = () => {
   return (

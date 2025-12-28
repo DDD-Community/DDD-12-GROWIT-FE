@@ -2,22 +2,23 @@
 
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { AdviceMutation, AdviceQuery } from '@/model/advice/hooks';
-import { AdviceHeader } from '@/feature/advice/AdviceHeader';
+import { AdviceHeader } from '@/feature/advice/components/AdviceHeader';
 import { GoalQuery } from '@/model/goal/hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { AdviceChat, AdviceStyle } from '@/model/advice/types';
-import { AdviceCountBadge } from '@/feature/advice/AdviceCountBadge';
-import { AdviceSendButton } from '@/feature/advice/AdviceSendButton';
+import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
+import { AdviceSendButton } from '@/feature/advice/components/AdviceSendButton';
 import { InputField } from '@/shared/components/input/InputField';
-import { AdviceStyleSelectSheet } from '@/feature/advice/AdviceStyleSelectSheet';
+import { AdviceStyleSelectSheet } from '@/feature/advice/components/AdviceStyleSelectSheet';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { ADVICE_STYLE_SELECT_ITEMS } from './constants';
 import { AdviceQueryKeys } from '@/model/advice/queryKeys';
-import { AdviceChatHistory } from '@/feature/advice/AdviceChatHistory';
+import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 import { HasNoProgressGoalPage } from '@/app/(home)/advice/HasNoProgressGoalPage';
+import { AdviceArrivalPopupProvider } from '@/feature/advice/hooks/useSubscribeAdviceArrival';
 
 export default function AdviceChatClient() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
@@ -31,7 +32,11 @@ export default function AdviceChatClient() {
 
   if (!progressGoals || !progressGoals.length) return <HasNoProgressGoalPage />;
 
-  return <AdviceChatClientContent progressGoals={progressGoals} adviceChat={adviceChat} />;
+  return (
+    <AdviceArrivalPopupProvider adviceChat={adviceChat}>
+      <AdviceChatClientContent progressGoals={progressGoals} adviceChat={adviceChat} />
+    </AdviceArrivalPopupProvider>
+  );
 }
 
 type AdviceChatClientContentProps = {
