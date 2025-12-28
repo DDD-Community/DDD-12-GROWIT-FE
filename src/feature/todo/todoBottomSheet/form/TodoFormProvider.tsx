@@ -186,7 +186,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     }
   }, [todoId, deleteTodoMutation, queryClient, methods, onClose]);
 
-  // 해당 투두만 수정 핸들러 (반복 투두) - 동일한 edit API 사용
+  // 해당 투두만 수정 핸들러 (반복 투두) - routineUpdateType: SINGLE
   const handleEditSingle = useCallback(() => {
     methods.handleSubmit(
       async (data: TodoFormData) => {
@@ -209,6 +209,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
                     },
                   }
                 : undefined,
+            routineUpdateType: 'SINGLE',
           });
           queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(data.date) });
           queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
@@ -223,7 +224,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     )();
   }, [methods, todoId, putTodoMutation, queryClient, onClose]);
 
-  // 전체 반복 투두 수정 핸들러 - 동일한 edit API 사용
+  // 전체 반복 투두 수정 핸들러 - routineUpdateType: ALL
   const handleEditAll = useCallback(() => {
     methods.handleSubmit(
       async (data: TodoFormData) => {
@@ -246,6 +247,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
                     },
                   }
                 : undefined,
+            routineUpdateType: 'ALL',
           });
           queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(data.date) });
           queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });

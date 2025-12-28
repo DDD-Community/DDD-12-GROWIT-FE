@@ -19,6 +19,12 @@ export interface PatchTodoStatusRequest {
 
 export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'YEARLY';
 
+/** 반복 투두 처리 타입 (공통) */
+export type RoutineActionType = 'SINGLE' | 'FROM_DATE' | 'ALL';
+
+/** 반복 투두 수정 타입 */
+export type RoutineUpdateType = RoutineActionType;
+
 export interface TodoRoutine {
   duration: {
     startDate: string; // 'YYYY-MM-DD'
@@ -34,6 +40,7 @@ export interface PutTodoRequest {
   content: string;
   isImportant: boolean;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
+  routineUpdateType?: RoutineUpdateType; // 반복 투두 수정 타입 (SINGLE, FROM_DATE, ALL)
 }
 
 export interface PostAddTodoRequest {
@@ -64,7 +71,7 @@ export interface TodoCountByDateItem {
 export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}
 
 /** 반복 투두 삭제 타입 */
-export type RoutineDeleteType = 'SINGLE' | 'FROM_DATE' | 'ALL';
+export type RoutineDeleteType = RoutineActionType;
 
 export interface DeleteTodoRequest {
   todoId: string;
