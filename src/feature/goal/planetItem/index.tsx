@@ -59,21 +59,9 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
     }
   };
 
-  const getPlanetImage = (goal: Goal) => {
-    switch (goal.category) {
-      case GoalCategoryEnum.STUDY:
-        return '/goal/goal-progress.png';
-      case GoalCategoryEnum.FINANCE:
-        return '/goal/goal-progress.png';
-      case GoalCategoryEnum.IT_PROJECT:
-        return '/goal/goal-progress.png';
-      default:
-        return '/goal/goal-progress.png';
-    }
-  };
-
   const badgeProps = getBadgeProps(goal);
   const status = getGoalStatus(goal);
+
   return (
     <div className="gap-5 w-full h-full flex flex-col justify-center">
       {/* Header */}
@@ -99,7 +87,7 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
           onClick={handlePlanetClick}
         >
           <Image
-            src={getPlanetImage(goal)}
+            src={status === '종료' ? goal.planet.image.done : goal.planet.image.progress}
             width={220}
             height={220}
             alt={goal.name}

@@ -94,7 +94,9 @@ const Name = () => {
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
   const { watch, setValue } = useFormContext<GoalFormData>();
-  const startDate = watch('durationDate.startDate');
+  const today = new Date();
+  const startDateValue = watch('durationDate.startDate');
+  const startDate = startDateValue ? new Date(startDateValue) : today;
 
   return (
     <>
@@ -111,21 +113,22 @@ const SelectStartDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">{startDate ? startDate : '날짜를 선택해주세요.'}</span>
+            <span className="label-1-normal">{startDateValue ? startDateValue : '날짜를 선택해주세요.'}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
       />
       {openDatePanel && (
         <DateSelectorPanel
-          selectedDate={new Date()}
-          focusedDate={new Date()}
+          selectedDate={startDate}
+          focusedDate={startDate}
           onDateSelect={date => {
             setValue('durationDate.startDate', formatDateToYYYYMMDD(date));
           }}
           onFocusedDateChange={date => {
             setValue('durationDate.startDate', formatDateToYYYYMMDD(date));
           }}
+          minDate={today}
         />
       )}
     </>
@@ -135,7 +138,11 @@ const SelectStartDate = () => {
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
   const { watch, setValue } = useFormContext<GoalFormData>();
-  const endDate = watch('durationDate.endDate');
+  const today = new Date();
+  const startDateValue = watch('durationDate.startDate');
+  const startDate = startDateValue ? new Date(startDateValue) : new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  const endDateValue = watch('durationDate.endDate');
+  const endDate = endDateValue ? new Date(endDateValue) : today;
 
   return (
     <>
@@ -152,21 +159,22 @@ const SelectEndDate = () => {
         )}
         renderRightSide={() => (
           <div className="flex items-center gap-2 text-text-strong">
-            <span className="label-1-normal">{endDate ? endDate : '날짜를 선택해주세요.'}</span>
+            <span className="label-1-normal">{endDateValue ? endDateValue : '날짜를 선택해주세요.'}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
         )}
       />
       {openDatePanel && (
         <DateSelectorPanel
-          selectedDate={new Date()}
-          focusedDate={new Date()}
+          selectedDate={endDate}
+          focusedDate={endDate ? endDate : today}
           onDateSelect={date => {
             setValue('durationDate.endDate', formatDateToYYYYMMDD(date));
           }}
           onFocusedDateChange={date => {
             setValue('durationDate.endDate', formatDateToYYYYMMDD(date));
           }}
+          minDate={startDate}
         />
       )}
     </>

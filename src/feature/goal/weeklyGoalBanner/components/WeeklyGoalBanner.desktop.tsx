@@ -41,16 +41,16 @@ const getColorTheme = (plansLength: number) => {
 export const WeeklyGoalBannerDesktop = ({ goal }: WeeklyGoalBannerProps) => {
   const currentWeek = calculateCurrentWeek(goal.duration.startDate, goal.duration.endDate);
   const durationLabel = `${goal.duration.startDate} ~ ${goal.duration.endDate}`;
-  const totalWeeks = Math.max(1, goal.plans?.length || 1);
+  const totalWeeks = Math.max(1, 4);
   const progressPercent = Math.min(100, Math.max(0, (currentWeek / totalWeeks) * 100));
 
-  const colorTheme = getColorTheme(goal.plans?.length || 0);
+  const colorTheme = getColorTheme(4);
 
   return (
     <div className="flex flex-col w-full rounded-2xl bg-[#111317] px-[24px] py-[28px] gap-[24px] relative overflow-hidden border border-[#23262F]">
       {/* 배경 이미지 - plans.length에 따라 다른 이미지 사용 */}
       <Image
-        src={goal.plans && goal.plans.length > 8 ? '/image/growit-character.jpeg' : '/image/growit-landing.png'}
+        src={'/image/growit-landing.png'}
         alt="background"
         fill
         className="object-cover object-[40%_15%] opacity-30 pointer-events-none z-0"

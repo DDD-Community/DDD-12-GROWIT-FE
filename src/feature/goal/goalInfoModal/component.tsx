@@ -6,7 +6,6 @@ import { useState } from 'react';
 import Badge from '@/shared/components/display/Badge';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
-import { AIMentorNames } from '@/feature/home/const';
 import FlexBox from '@/shared/components/foundation/FlexBox';
 import { Goal } from '@/shared/type/goal';
 import { DeleteConfirm } from './components/DeleteConfirm';
@@ -93,7 +92,7 @@ export function GoalInfoModal({ isOpen, onClose, onDelete, goal }: GoalInfoModal
         {/* Duration */}
         <div className="flex items-center gap-2.5">
           <span className="label-1-medium text-label-neutral">기간</span>
-          <span className="label-1-medium text-[#3AEE49]">{goal.plans.length}주</span>
+          <span className="label-1-medium text-[#3AEE49]">4주</span>
         </div>
 
         {/* Date Range */}
@@ -107,7 +106,7 @@ export function GoalInfoModal({ isOpen, onClose, onDelete, goal }: GoalInfoModal
         {/* Mentor */}
         <div className="flex items-center gap-2.5">
           <span className="label-1-medium text-label-neutral">멘토</span>
-          <span className="label-1-medium text-label-normal">{AIMentorNames[goal.mentor]}</span>
+          <span className="label-1-medium text-label-normal">TIM_COOK</span>
         </div>
       </div>
     </div>

@@ -4,17 +4,20 @@ import { CreateGoalFormElement } from '@/feature/goal';
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { createCreateGoalMutation } from '@/model/goal/hooks';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { GoalQueryKeys } from '@/model/goal/queryKeys';
 
 export const CreateGoalForm = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { mutate: createGoal } = useMutation(
     createCreateGoalMutation({
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         router.push(ROUTES.GOAL);
         showToast('목표 생성이 완료되었습니다.', 'success');
       },

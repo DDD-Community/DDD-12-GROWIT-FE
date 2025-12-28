@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw';
 import { Todo, DAY_OF_THE_WEEK } from '@/shared/type/Todo';
-import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
 
 // CORS preflight 요청 처리
 export const optionsHandler = http.options('*', () => {
@@ -13,79 +12,6 @@ export const optionsHandler = http.options('*', () => {
     },
   });
 });
-
-// 테스트용 Goal 데이터
-export const mockGoals: Goal[] = [
-  {
-    id: 'goal-1',
-    name: '프론트엔드 개발 마스터하기',
-    mentor: 'TIM_COOK',
-    duration: {
-      startDate: '2024-01-01',
-      endDate: '2024-03-31',
-    },
-    toBe: 'React 전문가가 되어 프로젝트를 주도할 수 있음',
-    category: GoalCategoryEnum.STUDY,
-    plans: [
-      {
-        id: 'plan-1',
-        content: 'React 컴포넌트 설계 및 리팩토링',
-        weekOfMonth: 1,
-      },
-      {
-        id: 'plan-2',
-        content: 'TypeScript와 React 연동',
-        weekOfMonth: 2,
-      },
-    ],
-  },
-  {
-    id: 'goal-2',
-    name: '디자인 시스템 구축',
-    mentor: 'CONFUCIUS',
-    duration: {
-      startDate: '2024-01-15',
-      endDate: '2024-02-28',
-    },
-    toBe: '일관성 있는 디자인 시스템',
-    category: GoalCategoryEnum.FINANCE,
-    plans: [
-      {
-        id: 'plan-3',
-        content: '디자인 토큰 정의 및 컴포넌트 설계',
-        weekOfMonth: 1,
-      },
-      {
-        id: 'plan-4',
-        content: '스토리북을 활용한 컴포넌트 문서화',
-        weekOfMonth: 2,
-      },
-    ],
-  },
-  {
-    id: 'goal-3',
-    name: '프로젝트 관리 역량 강화',
-    mentor: 'WARREN_BUFFETT',
-    duration: {
-      startDate: '2024-01-01',
-      endDate: '2024-04-30',
-    },
-    toBe: '프로젝트를 기획하고 관리할 수 있는 역량',
-    category: GoalCategoryEnum.STUDY,
-    plans: [
-      {
-        id: 'plan-5',
-        content: '프로젝트 기획 및 요구사항 분석',
-        weekOfMonth: 1,
-      },
-      {
-        id: 'plan-6',
-        content: '팀 협업 및 커뮤니케이션',
-        weekOfMonth: 2,
-      },
-    ],
-  },
-];
 
 // 테스트용 Todo 데이터 (요일별로 구성)
 export const mockTodosByPlan: Record<string, Record<DAY_OF_THE_WEEK, Todo[]>> = {
@@ -265,24 +191,6 @@ export const mockTodosByPlan: Record<string, Record<DAY_OF_THE_WEEK, Todo[]>> = 
 const getAllTodos = (): Todo[] => {
   return Object.values(mockTodosByPlan).flatMap(planTodos => Object.values(planTodos).flat());
 };
-
-// Goal 목록 조회
-export const getGoals = http.get('/mock/goals', () => {
-  return HttpResponse.json(
-    {
-      data: mockGoals,
-      message: 'Goal 목록을 성공적으로 조회했습니다.',
-    },
-    {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
-    }
-  );
-});
 
 // 주간 Todo 리스트 조회 (요일별로 그룹화)
 export const getWeeklyTodoList = http.get('/mock/todos', ({ request }) => {
@@ -690,7 +598,6 @@ function getDayOfWeek(dateString: string): DAY_OF_THE_WEEK {
 // 모든 Todo 핸들러들을 배열로 export
 export const todoHandlers = [
   optionsHandler,
-  getGoals,
   getWeeklyTodoList,
   getTodos,
   getTodoById,

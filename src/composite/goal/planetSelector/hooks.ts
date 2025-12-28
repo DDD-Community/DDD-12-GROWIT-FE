@@ -1,13 +1,22 @@
 import { getToday } from '@/feature/goal/createGoalFormElement/utils';
-import { Goal } from '@/shared/type/goal';
+import { createEndedGoalsQuery } from '@/model/goal/hooks';
+import { getMsUntilEndOfDay } from '@/shared/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-export const useShowEndedGoalsSheet = (allGoals: Goal[], showSheet: () => void) => {
+export const useShowEndedGoalsSheet = (showSheet: () => void) => {
+  const msUntilEndOfDay = getMsUntilEndOfDay();
+  const { data: endedGoals = [] } = useQuery(
+    createEndedGoalsQuery({
+      staleTime: msUntilEndOfDay,
+      gcTime: msUntilEndOfDay,
+    })
+  );
   useEffect(() => {
-    const endedGoals = allGoals.filter(goal => goal.updateStatus === 'ENDED');
     const todayCompletedGoals = endedGoals.filter(goal => goal.duration.endDate === getToday());
-    // 오늘 종료된 목표가 한개 이상 있을 경우 바텀시트가 나타남
-    if (todayCompletedGoals.length > 0) {
+    // 오늘 종료된 목표가 한개 이상 있고, 체크된 목표가 있을 경우 바텀시트가 나타남
+    const hasCheckedGoals = todayCompletedGoals.some(goal => goal.isChecked);
+    if (hasCheckedGoals) {
       showSheet();
     }
   }, []);
