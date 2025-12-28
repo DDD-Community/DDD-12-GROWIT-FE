@@ -155,7 +155,7 @@ export default function GoalOnboardPage() {
 
   return (
     <FunnelHeaderProvider>
-      <main className="flex flex-1 flex-col min-h-screen bg-normal">
+      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal">
         {currentStep > 1 && currentStep < 4 && (
           <FunnelHeader
             currentStep={currentStep - 1}
@@ -165,7 +165,7 @@ export default function GoalOnboardPage() {
           />
         )}
 
-        <div className="flex flex-1 flex-col">{renderStep()}</div>
+        <div className="flex flex-1 flex-col overflow-hidden">{renderStep()}</div>
 
         <FunnelNextButton
           text={getButtonText()}
