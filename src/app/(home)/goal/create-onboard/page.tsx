@@ -6,11 +6,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
 import { FunnelHeader, FunnelHeaderProvider } from '@/shared/components/layout/FunnelHeader';
 import { FunnelNextButton } from '@/shared/components/layout/FunnelNextButton';
+import { SwipeActionButton } from '@/shared/components/input/SwipeActionButton';
 import { WelcomeStep, GoalNameStep, DateStep, CompleteStep } from '@/composite/goal-onboard';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFetchUserName } from '@/shared/hooks';
 import { createCreateGoalMutation } from '@/model/goal/hooks';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
 import { GoalFormData } from '@/shared/type/form';
@@ -45,6 +47,17 @@ function GoalOnboardContent() {
     })
   );
 
+  const { mutate: updateOnboardStatus } = useMutation({
+    mutationFn: userApi.putOnboardStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: UserQueryKeys.onboardStatus() });
+      setCurrentStep(2);
+    },
+    onError: () => {
+      showToast('온보딩 등록에 실패했습니다.', 'error');
+    },
+  });
+
   const validateStep = (): boolean => {
     switch (currentStep) {
       case 2:
@@ -58,6 +71,12 @@ function GoalOnboardContent() {
 
   const handleNext = () => {
     if (!validateStep()) return;
+
+    if (currentStep === 1) {
+      // 온보딩 등록 API 호출
+      updateOnboardStatus();
+      return;
+    }
 
     if (currentStep === 3) {
       // 목표 생성 API 호출
@@ -150,11 +169,13 @@ function GoalOnboardContent() {
 
         <div className="flex flex-1 flex-col overflow-hidden">{renderStep()}</div>
 
-        <FunnelNextButton
-          text={getButtonText()}
-          onClick={currentStep === 4 ? handleComplete : handleNext}
-          disabled={isButtonDisabled()}
-        />
+        {currentStep === 4 ? (
+          <div className="fixed bottom-0 left-0 right-0 p-5 max-w-md mx-auto">
+            <SwipeActionButton text="목표 시작하기" onSwipeComplete={handleComplete} />
+          </div>
+        ) : (
+          <FunnelNextButton text={getButtonText()} onClick={handleNext} disabled={isButtonDisabled()} />
+        )}
       </main>
     </FunnelHeaderProvider>
   );
