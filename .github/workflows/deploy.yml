@@ -42,8 +42,8 @@ jobs:
           IMAGE="$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
           echo "Building $IMAGE"
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }} \
-            --build-arg NEXT_PUBLIC_REDIRECT_URL=${{ vars.NEXT_PUBLIC_REDIRECT_URL }} \
+            --build-arg NEXT_PUBLIC_API_URL=https://dev.grow-it.me \
+            --build-arg NEXT_PUBLIC_REDIRECT_URL=https://devweb.grow-it.me/oauth/callback \
             -t "$IMAGE" .
           docker push "$IMAGE"
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
