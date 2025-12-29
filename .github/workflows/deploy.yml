@@ -89,7 +89,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: growit-fe-service-v2
+          service: growit-fe-service-v3
           cluster: growit-fe-cluster
           wait-for-service-stability: false
 
