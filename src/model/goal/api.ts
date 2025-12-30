@@ -54,4 +54,13 @@ const GoalApi = {
   },
 };
 
+// Named exports for backward compatibility
+export const getAllGoals = GoalApi.getAllGoals;
+export const getProgressGoals = GoalApi.getProgressGoals;
+export const getEndedGoals = GoalApi.getEndedGoals;
+export const getGoalList = GoalApi.getGoalList;
+export const getGoalItem = GoalApi.getGoalItem;
+export const deleteGoal = GoalApi.deleteGoal;
+export const putEditGoal = GoalApi.putEditGoal;
+
 export default GoalApi;
