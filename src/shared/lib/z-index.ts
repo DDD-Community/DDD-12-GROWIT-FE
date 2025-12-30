@@ -19,6 +19,8 @@ export const Z_INDEX = {
   BOTTOM_NAVIGATION: 'z-[980]',
   MODAL: 'z-[980]',
 
+  FAB: 'z-[975]',
+
   DROPDOWN: 'z-[970]',
   POPOVER: 'z-[970]',
 
