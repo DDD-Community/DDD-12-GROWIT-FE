@@ -54,7 +54,7 @@ export const HasNoProgressGoalPage = () => {
         </button>
       </header>
       <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
-        <AdviceChatHistory />
+        <AdviceChatHistory adviceChat={null} />
 
         <AdviceChatBackground type="noGoal" />
       </main>

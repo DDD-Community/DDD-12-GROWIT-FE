@@ -20,7 +20,7 @@ export function AdviceArrivalPopupProvider({
   adviceChat: AdviceChat;
 }) {
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
-  subscribeDailyAdviceArrival((adviceChat.conversations = []));
+  subscribeDailyAdviceArrival(adviceChat.conversations || []);
 
   useEffect(() => {
     const handleOpenAdviceArrivalSheet = () => {

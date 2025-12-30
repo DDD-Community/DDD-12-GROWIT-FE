@@ -7,7 +7,7 @@ import { AdviceChatMessage } from '@/model/advice/types';
 import { useMemo } from 'react';
 
 export const AdviceHistoryClient = () => {
-  const { data: adviceChat } = useSuspenseQuery(AdviceQuery.getAdviceChat({}));
+  const { data: adviceChat } = useSuspenseQuery(AdviceQuery.getAdviceChat());
 
   // 주차별로 그룹핑
   const groupedByWeek = useMemo(() => {

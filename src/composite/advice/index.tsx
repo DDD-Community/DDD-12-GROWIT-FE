@@ -5,9 +5,9 @@ import { AdviceMutation, AdviceQuery } from '@/model/advice/hooks';
 import { AdviceHeader } from '@/feature/advice/components/AdviceHeader';
 import { GoalQuery } from '@/model/goal/hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { AdviceChat, AdviceStyle } from '@/model/advice/types';
+import { AdviceChat, AdviceChatMessage, AdviceStyle } from '@/model/advice/types';
 import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
 import { AdviceSendButton } from '@/feature/advice/components/AdviceSendButton';
 import { InputField } from '@/shared/components/input/InputField';
@@ -28,7 +28,12 @@ export default function AdviceChatClient() {
       gcTime: msUntilEndOfDay,
     })
   );
-  const { data: adviceChat } = useSuspenseQuery(AdviceQuery.getAdviceChat());
+  const { data: adviceChat } = useSuspenseQuery(
+    AdviceQuery.getAdviceChat({
+      staleTime: msUntilEndOfDay,
+      gcTime: msUntilEndOfDay,
+    })
+  );
 
   if (!progressGoals || !progressGoals.length) return <HasNoProgressGoalPage />;
 

@@ -1,79 +1,67 @@
 import { AdviceChat } from '@/model/advice/types';
-import { AdviceChatBox } from './AdviceChatBox';
+import { AdviceChatMessage } from './AdviceChatMessage';
 import { AdviceChatBackground } from './AdviceChatBackground';
+import { AdviceChatLoading } from './AdviceChatLoading';
+import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
 
 type AdviceChatRenderProps = {
-  adviceChat?: AdviceChat | null;
+  adviceChat: AdviceChat | null;
   isSendingRequest?: boolean;
 };
 
-type BackgroundType = 'default' | 'writing' | 'sleeping' | 'noGoal';
-
 export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false }: AdviceChatRenderProps) => {
+  const { displayMessages, backgroundType, shouldShowOnboarding } = useAdviceChatMessages(adviceChat, isSendingRequest);
+
+  // Early return: NoGoal 케이스
   if (!adviceChat) {
-    return <NoGoalMessage />;
-  }
-  const backgroundType: Extract<BackgroundType, 'default' | 'writing' | 'sleeping'> =
-    adviceChat.remainingCount === 0 ? 'sleeping' : isSendingRequest ? 'writing' : 'default';
-
-  if (!adviceChat.isGoalOnboardingCompleted) {
-    return <OnboardingMessage backgroundType={backgroundType} />;
+    return <AdviceChatMessage.NoGoal />;
   }
 
+  // Early return: 온보딩 케이스
+  if (shouldShowOnboarding) {
+    return <AdviceChatMessage.Onboarding backgroundType={backgroundType} />;
+  }
+
+  // 일반 채팅 히스토리 렌더링
   return (
     <>
       <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
-        {adviceChat.conversations.map(chatMessage => (
-          <div key={chatMessage.timestamp} className="flex flex-col gap-y-4">
-            <AdviceChatBox direction="right" content={chatMessage.userMessage} />
-            <AdviceChatBox direction="left" content={chatMessage.grorongResponse} />
-          </div>
-        ))}
+        {displayMessages.map((message, index) => {
+          // 로딩 메시지
+          if (isSendingRequest) {
+            return <AdviceChatLoading key={`loading-${index}`} direction="left" />;
+          }
+
+          // 오늘 대화 횟수 소진 안내메시지
+          if (message.isSystemMessage) {
+            return (
+              <AdviceChatMessage
+                key={`system-${index}`}
+                direction="left"
+                content={
+                  <span>
+                    오늘의 고민 상담은 끝이야!
+                    <br />
+                    내일 아침에 다시 만나!
+                    <br />
+                    <br />
+                    <span className="text-brand-neon label-1-bold">1일 3개 입력만 가능</span>
+                  </span>
+                }
+              />
+            );
+          }
+
+          // 일반 대화 메시지
+          return (
+            <div key={message.timestamp || `msg-${index}`} className="flex flex-col gap-y-4">
+              {message.userMessage && <AdviceChatMessage direction="right" content={message.userMessage} />}
+              {message.grorongResponse && <AdviceChatMessage direction="left" content={message.grorongResponse} />}
+            </div>
+          );
+        })}
       </section>
       <AdviceChatBackground type={backgroundType} />
     </>
   );
 };
-
-function OnboardingMessage({
-  backgroundType,
-}: {
-  backgroundType: Extract<BackgroundType, 'default' | 'writing' | 'sleeping'>;
-}) {
-  return (
-    <>
-      <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
-        <div className="flex flex-col gap-y-4">
-          <AdviceChatBox
-            direction="left"
-            content="안녕! 나는 너의 목표 달성을 함께할 그로롱이야
-앞으로 매일 아침 7시에, 너의 목표 현황을 요약하고 달성을 위한 조언해줄거야 :)"
-          />
-          <AdviceChatBox direction="left" content="한 가지 궁금한 게 있어, 이번 목표를 시작하게 된 계기는 뭐야?" />
-          <span className="caption-1-regular text-text-primary bg-fill-normal py-1 px-2 rounded-2xl shadow-sm inline text-center">
-            그로롱에게 목표에 대한 고민을 털어놓아보세요
-          </span>
-        </div>
-      </section>
-      <AdviceChatBackground type={backgroundType} />
-    </>
-  );
-}
-
-function NoGoalMessage() {
-  return (
-    <>
-      <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
-        <div className="flex flex-col gap-y-4">
-          <AdviceChatBox direction="left" content="음..아직 목표가 없네?" />
-          <AdviceChatBox
-            direction="left"
-            content="새로운 목표와 투두를 만들면
-너에게 딱 맞는 조언을 해줄게!"
-          />
-        </div>
-      </section>
-      <AdviceChatBackground type="noGoal" />
-    </>
-  );
-}
