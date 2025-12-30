@@ -14,9 +14,9 @@ export const Z_INDEX = {
   // 가장 높은 우선순위 - 사용자 알림
   TOAST: 'z-[9999]',
   POPUP: 'z-[9990]',
-  SHEET: 'z-[990]',
+  SHEET: 'z-99',
 
-  BOTTOM_NAVIGATION: 'z-[980]',
+  BOTTOM_NAVIGATION: 'z-20',
   MODAL: 'z-[980]',
 
   FAB: 'z-[975]',

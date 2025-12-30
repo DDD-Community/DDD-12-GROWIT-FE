@@ -233,7 +233,7 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
                 closeSheet();
               }
             }}
-            className="fixed inset-0 bg-black z-998"
+            className={`fixed inset-0 bg-black ${Z_INDEX.SHEET}`}
           />
           {/* 바텀시트 컨테이너 */}
           <motion.aside
@@ -248,7 +248,7 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
             initial={{ height: 0 }}
             animate={{ height: isAutoHeight ? (isMeasured ? contentHeight : 'auto') : snapPoints.half }}
             exit={{ height: 0 }}
-            className="fixed bottom-0 left-1/2 -translate-x-1/2 bg-elevated-assistive max-w-96 w-full rounded-t-lg z-999"
+            className={`fixed bottom-0 left-1/2 -translate-x-1/2 bg-bg-elevated max-w-md w-full rounded-t-lg ${Z_INDEX.SHEET}`}
           >
             <AutoHeightContent>{children}</AutoHeightContent>
           </motion.aside>

@@ -9,7 +9,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createProgressGoalsQuery } from '@/model/goal/hooks';
+import { GoalQuery } from '@/model/goal/hooks';
 import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
@@ -31,7 +31,7 @@ export default function PlanetSelectorScene() {
 export function PlanetSelector() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
   const { data: progressGoals } = useSuspenseQuery(
-    createProgressGoalsQuery({
+    GoalQuery.getProgressGoals({
       // 캐시 무효화가 없다면, 현재 시간부터 하루가 끝나기전까지 유지되어도 괜찮다 판단
       staleTime: msUntilEndOfDay,
       gcTime: msUntilEndOfDay,

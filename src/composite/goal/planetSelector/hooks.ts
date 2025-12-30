@@ -1,5 +1,5 @@
 import { getToday } from '@/feature/goal/createGoalFormElement/utils';
-import { createEndedGoalsQuery } from '@/model/goal/hooks';
+import { GoalQuery } from '@/model/goal/hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export const useShowEndedGoalsSheet = (showSheet: () => void) => {
   const msUntilEndOfDay = getMsUntilEndOfDay();
   const { data: endedGoals = [] } = useQuery(
-    createEndedGoalsQuery({
+    GoalQuery.getEndedGoals({
       staleTime: msUntilEndOfDay,
       gcTime: msUntilEndOfDay,
     })
