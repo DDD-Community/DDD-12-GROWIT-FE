@@ -47,7 +47,7 @@ const FloatingButton = ({
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className={cn(
-        'fixed bottom-24 right-6',
+        'fixed bottom-24 right-[max(1.5rem,calc(50vw-200px))]',
         Z_INDEX.FAB,
         'rounded-full bg-brand-neon text-static-black',
         'flex items-center justify-center',
