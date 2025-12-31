@@ -36,13 +36,13 @@ export const TodoListContainer = () => {
             {!isMonthlyView && <CheerMessageCard type="grorong" />}
 
             <div
-              className={`absolute left-0 right-0 max-w-sm:mx-[20px] sm:mx-[40px] mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
+              className={`absolute left-0 right-0 mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
                 isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'
               }`}
             >
               <div className={`flex flex-col ${isMonthlyView ? 'h-screen' : 'h-[calc(100vh-100px)]'}`}>
                 <div className="flex flex-col flex-1 gap-6">
-                  <div className="px-4 md:px-0 pt-[24px]">
+                  <div className="px-4 pt-[24px]">
                     <Calendar
                       view={calendarView}
                       selectedDate={selectedDate}
