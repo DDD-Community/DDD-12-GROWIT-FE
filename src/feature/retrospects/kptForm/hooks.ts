@@ -1,4 +1,4 @@
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 export interface KPTFormData {
   keep: string;
@@ -11,7 +11,7 @@ interface UseKPTFormOptions {
   mode?: 'onChange' | 'onBlur' | 'onSubmit' | 'onTouched' | 'all';
 }
 
-export const useKPTForm = (options?: UseKPTFormOptions): UseFormReturn<KPTFormData> => {
+export const useKPTForm = (options?: UseKPTFormOptions) => {
   return useForm<KPTFormData>({
     defaultValues: {
       keep: '',
@@ -21,7 +21,7 @@ export const useKPTForm = (options?: UseKPTFormOptions): UseFormReturn<KPTFormDa
     },
     mode: options?.mode || 'onChange',
     resolver: async data => {
-      const errors: Record<string, any> = {};
+      const errors: Record<string, { message: string }> = {};
 
       // Keep 검증
       if (!data.keep || data.keep.trim().length === 0) {
@@ -44,9 +44,10 @@ export const useKPTForm = (options?: UseKPTFormOptions): UseFormReturn<KPTFormDa
         errors.tryNext = { message: '10글자 이상 작성해주세요.' };
       }
 
+      const hasErrors = Object.keys(errors).length > 0;
       return {
-        values: data,
-        errors: Object.keys(errors).length > 0 ? errors : {},
+        values: hasErrors ? {} : data,
+        errors,
       };
     },
   });

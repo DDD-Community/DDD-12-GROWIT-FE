@@ -1,15 +1,23 @@
 'use client';
 
-import { InputHTMLAttributes, useState, useEffect } from 'react';
+import { InputHTMLAttributes, useState, useEffect, useCallback } from 'react';
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  version?: 'default' | 'underline';
+  label?: string;
   isError?: boolean;
   errorMessage?: string | null;
   description?: string;
 }
 
-export function InputField({ label, isError, errorMessage, description, ...props }: InputFieldProps) {
+export function InputField({
+  version = 'default',
+  label = '',
+  isError,
+  errorMessage,
+  description,
+  ...props
+}: InputFieldProps) {
   const [charCount, setCharCount] = useState(0);
 
   useEffect(() => {
@@ -25,18 +33,35 @@ export function InputField({ label, isError, errorMessage, description, ...props
     }
   };
 
+  // 스타일 클래스 생성 함수
+  const getInputClassName = useCallback(
+    (version: 'default' | 'underline', isError: boolean | undefined, errorMessage: string | null | undefined) => {
+      const baseClasses = 'w-full h-full py-3 text-white';
+      const errorClasses = isError || errorMessage ? 'border-status-negative' : '';
+      const placeholderClasses = version === 'underline' ? 'placeholder-text-tertiary' : 'placeholder-gray-500';
+
+      if (version === 'underline') {
+        // underline 스타일: 하단 테두리만, active/focus 시 brand-neon
+        return `${baseClasses} ${placeholderClasses} border-b active:border-brand-neon focus:border-brand-neon ${
+          errorClasses || 'border-label-assistive'
+        }`;
+      }
+
+      // default 스타일: 전체 테두리, rounded, 배경색
+      return `${baseClasses} ${placeholderClasses} px-4 rounded-lg bg-[#2C2C2E] border border-label-assistive focus:ring-2 ${
+        isError || errorMessage ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
+      }`;
+    },
+    []
+  );
+
+  const inputClassName = getInputClassName(version, isError, errorMessage);
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
       <div className="relative mb-1">
-        <input
-          maxLength={props.maxLength}
-          {...props}
-          onInput={handleInput}
-          className={`w-full h-full px-4 py-3 rounded-lg bg-[#2C2C2E] text-white border border-label-assistive placeholder-gray-500 focus:ring-2 ${
-            isError || errorMessage ? 'focus:ring-red-500 ring-2 ring-red-500' : 'focus:ring-primary-normal'
-          }`}
-        />
+        <input maxLength={props.maxLength} {...props} onInput={handleInput} className={inputClassName} />
         {isError ||
           (errorMessage && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
