@@ -1,0 +1,1 @@
+export { GoalOnboardRedirect } from './GoalOnboardRedirect';

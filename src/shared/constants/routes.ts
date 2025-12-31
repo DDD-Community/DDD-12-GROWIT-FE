@@ -17,6 +17,11 @@ export const ROUTES = {
   PROMOTION: '/promotion',
   MYPAGE: '/mypage',
   CREATE_GOAL: '/goal/create',
+  CREATE_GOAL_ONBOARD: '/goal/create-onboard',
+  /**
+   * @disabled [임시] 기존 온보딩페이지 deprecated 에 따라서 임시 비활성화
+   * @see GoalOnboardRedirect
+   */
   ONBOARDING: '/onboarding',
   GOAL: '/goal',
   LOGIN: '/login',
