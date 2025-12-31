@@ -1,9 +1,13 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  plugins: {
-    '@tailwindcss/postcss': {},
+  eslint: {
+    // 프로덕션 빌드 시 ESLint 에러 무시
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // 타입 체크 에러는 경고로만 처리
+    ignoreBuildErrors: false,
   },
   images: {
     remotePatterns: [

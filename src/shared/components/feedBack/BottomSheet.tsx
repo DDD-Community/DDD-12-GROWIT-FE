@@ -4,6 +4,7 @@ import { useContext, createContext } from 'react';
 import { AnimatePresence, motion, useMotionValue, useSpring, type PanInfo, type MotionValue } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/shared/lib/utils';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 // 높이 타입 정의: 'auto' | '{x}px' | '{x}%'
 export type BottomSheetHeight = 'auto' | `${number}px` | `${number}%`;
