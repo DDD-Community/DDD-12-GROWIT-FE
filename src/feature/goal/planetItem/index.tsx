@@ -81,24 +81,33 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
       </div>
 
       {/* Planet Image */}
-      <div className="relative">
-        <button
-          className="relative cursor-pointer transition-transform w-full flex items-center justify-center"
-          onClick={handlePlanetClick}
-        >
-          <Image
-            src={status === '종료' ? goal.planet.image.done : goal.planet.image.progress}
-            width={220}
-            height={220}
-            alt={goal.name}
-            className="object-cover"
-            priority
-          />
-        </button>
+      <button
+        className="relative cursor-pointer transition-transform w-full flex items-center justify-center"
+        onClick={handlePlanetClick}
+      >
+        <Image
+          src={status === '종료' ? goal.planet.image.done : goal.planet.image.progress}
+          width={200}
+          height={200}
+          alt={goal.name}
+          className="object-cover"
+          priority
+        />
         {isTooltipOpen && (
-          <ToolTip text="목표가 종료되면 행성을 수집할 수 있어요" position="top-center" className="-top-4" />
+          <ToolTip
+            text={
+              <p className="text-center">
+                목표가 종료되면 <br /> 행성을 수집할 수 있어요
+              </p>
+            }
+            position="top-center"
+            tailPosition="top-center"
+            className="inset-0"
+          />
         )}
-      </div>
+      </button>
+
+      <p className="caption-1-medium text-text-secondary text-center">{goal.planet.name}</p>
 
       {/* duration date */}
       <div className="flex w-full justify-center gap-2.5 px-4 py-2.5">

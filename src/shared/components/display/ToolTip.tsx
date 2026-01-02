@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect } from 'react';
 
 type ToolTipPosition =
   | 'top-left'
@@ -11,9 +11,10 @@ type ToolTipPosition =
   | 'left';
 
 interface ToolTipProps {
-  text: string;
+  text: string | React.ReactNode;
   className?: string;
   position?: ToolTipPosition;
+  tailPosition?: ToolTipPosition;
   autoHide?: boolean;
   autoHideDelay?: number; // 밀리초 단위
 }
@@ -39,8 +40,8 @@ const getPositionClasses = (position: ToolTipPosition) => {
   }
 };
 
-const getTailPositionClasses = (position: ToolTipPosition) => {
-  switch (position) {
+const getTailPositionClasses = (tailPosition: ToolTipPosition) => {
+  switch (tailPosition) {
     case 'top-left':
       return 'bottom-0 left-4 translate-y-full border-t-8 border-t-label-normal border-x-8 border-x-transparent';
     case 'top-center':
@@ -61,7 +62,14 @@ const getTailPositionClasses = (position: ToolTipPosition) => {
 };
 
 export const ToolTip = React.memo(
-  ({ text, className = '', position = 'bottom-center', autoHide = false, autoHideDelay = 2500 }: ToolTipProps) => {
+  ({
+    text,
+    className = '',
+    position = 'bottom-center',
+    tailPosition = 'bottom-center',
+    autoHide = false,
+    autoHideDelay = 2500,
+  }: ToolTipProps) => {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
@@ -80,15 +88,17 @@ export const ToolTip = React.memo(
 
     return (
       <div className={`absolute z-10 ${getPositionClasses(position)} ${className}`}>
-        <div className="relative py-2 px-3 bg-white rounded-xl caption-1-bold whitespace-nowrap text-black shadow-sm">
+        <div className="relative py-2 px-3 bg-white rounded-xl label-2-medium whitespace-nowrap text-black shadow-sm">
           {text}
           {/* 꼬리 */}
-          {/* <div className={`absolute ${getTailPositionClasses(position)} w-0 h-0`} /> */}
+          <div className={`absolute ${getTailPositionClasses(tailPosition)} w-0 h-0`} />
         </div>
       </div>
     );
   }
 );
+
+ToolTip.displayName = 'ToolTip';
 
 interface DarkToolTip {
   children: React.ReactNode;

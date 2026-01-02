@@ -18,12 +18,15 @@ import Button from '@/shared/components/input/Button';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
+import GoalProgressSheet from '../goalProgressSheet';
 
 export default function PlanetSelectorScene() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
       <PlanetSelector />
-      <section className="pb-16">{/* <GoalProgressSheet /> */}</section>
+      <section className="pb-16">
+        <GoalProgressSheet />
+      </section>
     </GoalProvider>
   );
 }
@@ -37,6 +40,7 @@ export function PlanetSelector() {
       gcTime: msUntilEndOfDay,
     })
   );
+  console.log(progressGoals);
   const { setCurrentGoal } = useGoalSelector();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
   useShowEndedGoalsSheet(showSheet);
