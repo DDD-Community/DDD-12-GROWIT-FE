@@ -15,7 +15,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { useState } from 'react';
 import Button from '@/shared/components/input/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
 

@@ -9,7 +9,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { PlanetItem } from '@/feature/goal/planetItem';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { GoalQuery } from '@/model/goal/hooks';
+import { GoalQuery } from '@/model/goal/queries';
 import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
@@ -40,7 +40,7 @@ export function PlanetSelector() {
       gcTime: msUntilEndOfDay,
     })
   );
-  console.log(progressGoals);
+
   const { setCurrentGoal } = useGoalSelector();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
   useShowEndedGoalsSheet(showSheet);

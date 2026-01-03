@@ -10,7 +10,7 @@ import { SwipeActionButton } from '@/shared/components/input/SwipeActionButton';
 import { WelcomeStep, GoalNameStep, DateStep, CompleteStep } from '@/composite/goal-onboard';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFetchUserName } from '@/shared/hooks';
-import { GoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';

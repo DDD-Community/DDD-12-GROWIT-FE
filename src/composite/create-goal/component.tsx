@@ -3,7 +3,7 @@
 import { CreateGoalFormElement } from '@/feature/goal';
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
-import { GoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';

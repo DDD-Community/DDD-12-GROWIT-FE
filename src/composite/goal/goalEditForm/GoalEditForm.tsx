@@ -7,7 +7,7 @@ import { Goal } from '@/shared/type/goal';
 import { Info } from 'lucide-react';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import Button from '@/shared/components/input/Button';
-import { GoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/queries';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';

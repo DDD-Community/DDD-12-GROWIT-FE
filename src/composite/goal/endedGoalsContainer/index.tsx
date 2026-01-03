@@ -3,7 +3,7 @@
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { EndedGoalItem } from '@/feature/goal/endedGoalItem';
-import { GoalQuery, GoalMutation } from '@/model/goal/hooks';
+import { GoalQuery, GoalMutation } from '@/model/goal/queries';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
