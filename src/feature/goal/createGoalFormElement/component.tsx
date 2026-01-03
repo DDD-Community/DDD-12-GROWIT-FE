@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useContext, ReactNode, useState } from 'react';
-import { GoalFormData } from '@/shared/type/form';
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CreateGoalFormType, createGoalFormSchema } from './dto';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { useFetchPostCreateGoal } from '@/feature/goal/confimGoal/hook';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
 import DateSelectorPanel from '@/feature/todo/weeklyTodoList/components/DateSelectorPanel';
 import { formatDateToYYYYMMDD } from './utils';
@@ -11,64 +11,38 @@ import { CellButton } from '@/shared/components/input/CellButton';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
 import { ChevronRight } from 'lucide-react';
 
-// CreateGoal 상태를 위한 Context
-interface CreateGoalContextType {
-  createGoalState: ReturnType<typeof useFetchPostCreateGoal>;
-}
-
-const CreateGoalContext = createContext<CreateGoalContextType | undefined>(undefined);
-
-// CreateGoal 상태를 사용하는 훅
-export const useCreateGoalState = () => {
-  const context = useContext(CreateGoalContext);
-  if (context === undefined) {
-    throw new Error('useCreateGoalState must be used within a CreateGoalFormProvider');
-  }
-  return context.createGoalState;
-};
-
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
-  initValue?: GoalFormData;
+  initValue?: CreateGoalFormType;
 }
 
 interface CreateGoalFormContainerProps {
   children: React.ReactNode;
-  onSubmit: (data: GoalFormData) => void;
+  onSubmit: (data: CreateGoalFormType) => void;
 }
 
 const Provider = ({ children }: CreateGoalFormProviderProps) => {
-  const methods = useForm<GoalFormData>({
+  const methods = useForm<CreateGoalFormType>({
+    resolver: zodResolver(createGoalFormSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
       name: '',
-      durationDate: {
+      duration: {
         startDate: '',
         endDate: '',
       },
     },
   });
 
-  return (
-    <FormProvider {...methods}>
-      <CreateGoalStateProvider>{children}</CreateGoalStateProvider>
-    </FormProvider>
-  );
-};
-
-// CreateGoal 상태를 관리하는 Provider
-const CreateGoalStateProvider = ({ children }: { children: ReactNode }) => {
-  const createGoalState = useFetchPostCreateGoal();
-
-  return <CreateGoalContext.Provider value={{ createGoalState }}>{children}</CreateGoalContext.Provider>;
+  return <FormProvider {...methods}>{children}</FormProvider>;
 };
 
 const FormContainer = ({ children, onSubmit }: CreateGoalFormContainerProps) => {
-  const { handleSubmit } = useFormContext<GoalFormData>();
+  const { handleSubmit } = useFormContext<CreateGoalFormType>();
 
   return (
-    <form className="flex flex-1 flex-col" onSubmit={onSubmit ? handleSubmit(onSubmit) : undefined}>
+    <form className="flex flex-1 flex-col" onSubmit={handleSubmit(onSubmit)}>
       {children}
     </form>
   );
@@ -78,7 +52,7 @@ const Name = () => {
   const {
     register,
     formState: { errors },
-  } = useFormContext<GoalFormData>();
+  } = useFormContext<CreateGoalFormType>();
   return (
     <InputUnderline
       label="최종 목표"
@@ -93,9 +67,9 @@ const Name = () => {
 
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<GoalFormData>();
+  const { watch, setValue } = useFormContext<CreateGoalFormType>();
   const today = new Date();
-  const startDateValue = watch('durationDate.startDate');
+  const startDateValue = watch('duration.startDate');
   const startDate = startDateValue ? new Date(startDateValue) : today;
 
   return (
@@ -123,10 +97,10 @@ const SelectStartDate = () => {
           selectedDate={startDate}
           focusedDate={startDate}
           onDateSelect={date => {
-            setValue('durationDate.startDate', formatDateToYYYYMMDD(date));
+            setValue('duration.startDate', formatDateToYYYYMMDD(date));
           }}
           onFocusedDateChange={date => {
-            setValue('durationDate.startDate', formatDateToYYYYMMDD(date));
+            setValue('duration.startDate', formatDateToYYYYMMDD(date));
           }}
           minDate={today}
         />
@@ -137,11 +111,11 @@ const SelectStartDate = () => {
 
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
-  const { watch, setValue } = useFormContext<GoalFormData>();
+  const { watch, setValue } = useFormContext<CreateGoalFormType>();
   const today = new Date();
-  const startDateValue = watch('durationDate.startDate');
+  const startDateValue = watch('duration.startDate');
   const startDate = startDateValue ? new Date(startDateValue) : new Date(today.getTime() + 24 * 60 * 60 * 1000);
-  const endDateValue = watch('durationDate.endDate');
+  const endDateValue = watch('duration.endDate');
   const endDate = endDateValue ? new Date(endDateValue) : today;
 
   return (
@@ -169,15 +143,35 @@ const SelectEndDate = () => {
           selectedDate={endDate}
           focusedDate={endDate ? endDate : today}
           onDateSelect={date => {
-            setValue('durationDate.endDate', formatDateToYYYYMMDD(date));
+            setValue('duration.endDate', formatDateToYYYYMMDD(date));
           }}
           onFocusedDateChange={date => {
-            setValue('durationDate.endDate', formatDateToYYYYMMDD(date));
+            setValue('duration.endDate', formatDateToYYYYMMDD(date));
           }}
           minDate={startDate}
         />
       )}
     </>
+  );
+};
+
+const DurationErrorMessage = () => {
+  const {
+    formState: { errors },
+  } = useFormContext<CreateGoalFormType>();
+
+  if (!errors || !errors.duration) return null;
+
+  return (
+    <p className="caption-1-medium text-text-danger mt-2 flex items-center gap-x-2">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M8.00016 14.6668C4.31816 14.6668 1.3335 11.6822 1.3335 8.00016C1.3335 4.31816 4.31816 1.3335 8.00016 1.3335C11.6822 1.3335 14.6668 4.31816 14.6668 8.00016C14.6668 11.6822 11.6822 14.6668 8.00016 14.6668ZM8.00016 13.3335C9.41465 13.3335 10.7712 12.7716 11.7714 11.7714C12.7716 10.7712 13.3335 9.41465 13.3335 8.00016C13.3335 6.58567 12.7716 5.22912 11.7714 4.22893C10.7712 3.22873 9.41465 2.66683 8.00016 2.66683C6.58567 2.66683 5.22912 3.22873 4.22893 4.22893C3.22873 5.22912 2.66683 6.58567 2.66683 8.00016C2.66683 9.41465 3.22873 10.7712 4.22893 11.7714C5.22912 12.7716 6.58567 13.3335 8.00016 13.3335ZM8.00016 4.66683C8.17697 4.66683 8.34654 4.73707 8.47157 4.86209C8.59659 4.98712 8.66683 5.15669 8.66683 5.3335V8.66683C8.66683 8.84364 8.59659 9.01321 8.47157 9.13823C8.34654 9.26326 8.17697 9.3335 8.00016 9.3335C7.82335 9.3335 7.65378 9.26326 7.52876 9.13823C7.40373 9.01321 7.3335 8.84364 7.3335 8.66683V5.3335C7.3335 5.15669 7.40373 4.98712 7.52876 4.86209C7.65378 4.73707 7.82335 4.66683 8.00016 4.66683ZM8.00016 11.3335C7.82335 11.3335 7.65378 11.2633 7.52876 11.1382C7.40373 11.0132 7.3335 10.8436 7.3335 10.6668C7.3335 10.49 7.40373 10.3204 7.52876 10.1954C7.65378 10.0704 7.82335 10.0002 8.00016 10.0002C8.17697 10.0002 8.34654 10.0704 8.47157 10.1954C8.59659 10.3204 8.66683 10.49 8.66683 10.6668C8.66683 10.8436 8.59659 11.0132 8.47157 11.1382C8.34654 11.2633 8.17697 11.3335 8.00016 11.3335Z"
+          fill="#FF6363"
+        />
+      </svg>
+      {errors.duration.message}
+    </p>
   );
 };
 
@@ -187,4 +181,5 @@ export const CreateGoalFormElement = {
   Name,
   SelectStartDate,
   SelectEndDate,
+  DurationErrorMessage,
 };

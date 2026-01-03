@@ -1,21 +1,7 @@
+import { CreateGoalRequestType } from '@/model/goal/dto';
 import { apiClient } from '@/shared/lib/apiClient';
 import { GoalFormData } from '@/shared/type/form';
 import { CommonResponse } from '@/shared/type/response';
-
-// API Request DTO - duration 필드 제외
-export interface CreateGoalRequestDto {
-  category: string;
-  name: string;
-  duration: {
-    startDate: string;
-    endDate: string;
-  };
-  toBe: string;
-  plans: {
-    content: string;
-    weekOfMonth: number;
-  }[];
-}
 
 export interface CreateGoalResponseData {
   id: string;
@@ -28,15 +14,15 @@ export interface CreateGoalResponseData {
   };
 }
 
-interface CreateGoalResponseDto extends CommonResponse<CreateGoalResponseData> {}
+type CreateGoalResponseType = CommonResponse<CreateGoalResponseData>;
 
 export async function postCreateGoal(formData: GoalFormData) {
   const { duration, durationDate, ...rest } = formData;
-  const dto: CreateGoalRequestDto = {
+  const dto: CreateGoalRequestType = {
     ...rest,
     duration: durationDate,
   };
-  const { data } = await apiClient.post<CreateGoalResponseDto, CreateGoalRequestDto>('/goals', dto);
+  const { data } = await apiClient.post<CreateGoalResponseType, CreateGoalRequestType>('/goals', dto);
 
   return data.data;
 }

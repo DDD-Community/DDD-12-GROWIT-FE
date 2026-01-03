@@ -2,6 +2,8 @@ import { apiClient } from '@/shared/lib/apiClient';
 import { Goal } from '@/shared/type/goal';
 import { CommonResponse } from '@/shared/type/response';
 import qs from 'qs';
+import { CreateGoalRequestType } from './dto';
+import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 
@@ -50,6 +52,11 @@ const GoalApi = {
 
   putEditGoal: async (req: Goal) => {
     const { data } = await apiClient.put<CommonResponse<string>>(`/goals/${req.id}`, req);
+    return data.data;
+  },
+
+  postGoal: async (formData: CreateGoalRequestType) => {
+    const { data } = await apiClient.post<CommonResponse<CreateGoalResponseData>>('/goals', formData);
     return data.data;
   },
 };

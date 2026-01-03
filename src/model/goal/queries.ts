@@ -2,9 +2,8 @@ import { queryOptions, mutationOptions, UseQueryOptions, UseMutationOptions } fr
 import { GoalQueryKeys } from './queryKeys';
 import GoalApi from './api';
 import { Goal } from '@/shared/type/goal';
-import { GoalFormData } from '@/shared/type/form';
 import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
-import { postCreateGoal } from '@/feature/goal/confimGoal/api';
+import { CreateGoalRequestType } from './dto';
 
 export const GoalQuery = {
   getAllGoals: (options?: Omit<UseQueryOptions<Goal[], Error>, 'queryKey' | 'queryFn'>) => {
@@ -60,11 +59,13 @@ export const GoalMutation = {
     });
   },
 
-  createGoal: (options?: Omit<UseMutationOptions<CreateGoalResponseData, Error, GoalFormData>, 'mutationFn'>) => {
-    return mutationOptions({
+  createGoal: (
+    options?: Omit<UseMutationOptions<CreateGoalResponseData, Error, CreateGoalRequestType>, 'mutationFn'>
+  ) => {
+    return mutationOptions<CreateGoalResponseData, Error, CreateGoalRequestType>({
       ...options,
       mutationKey: GoalQueryKeys.all(),
-      mutationFn: postCreateGoal,
+      mutationFn: GoalApi.postGoal,
     });
   },
 };

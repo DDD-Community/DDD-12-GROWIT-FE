@@ -81,15 +81,11 @@ function GoalOnboardContent() {
     if (currentStep === 3) {
       // 목표 생성 API 호출
       createGoal({
-        category: '',
         name: goalName,
-        duration: 0,
-        durationDate: {
+        duration: {
           startDate,
           endDate,
         },
-        toBe: '',
-        plans: [],
       });
       return;
     }
