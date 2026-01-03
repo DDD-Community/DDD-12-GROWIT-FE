@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { CreateGoalButton } from '@/feature/goal';
 
-export default function CreateNewGoal() {
+export function CreateNewGoalItem() {
   return (
     <div className="relative flex flex-col items-center justify-center px-5">
       <div className="w-40 h-40">

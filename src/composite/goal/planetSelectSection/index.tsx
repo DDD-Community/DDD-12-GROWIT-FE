@@ -7,20 +7,20 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { PlanetItem } from '@/feature/goal/planetItem';
+import { PlanetItem } from './components/PlanetItem';
+import { CreateNewGoalItem } from './components/CreateNewGoalItem';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { GoalQuery } from '@/model/goal/queries';
 import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import CreateNewGoal from './components/CreateNewGoal';
 import Button from '@/shared/components/input/Button';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import GoalProgressSheet from '../goalProgressSheet';
 
-export default function PlanetSelectorScene() {
+export default function PlanetSelectorSection() {
   return (
     <GoalProvider goalListOption={{ year: 2025 }}>
       <PlanetSelector />
@@ -45,6 +45,7 @@ export function PlanetSelector() {
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
   useShowEndedGoalsSheet(showSheet);
 
+  // 목표 리스트에 '목표 추가' 섹션을 포함한 배열 생성
   const goalsWithAddGoalSlot: (Goal | 'add-goal-section')[] = useMemo(() => {
     return [...progressGoals, 'add-goal-section'];
   }, [progressGoals]);
@@ -56,7 +57,7 @@ export function PlanetSelector() {
   };
 
   if (progressGoals && progressGoals.length === 0) {
-    return <CreateNewGoal />;
+    return <CreateNewGoalItem />;
   }
 
   return (
