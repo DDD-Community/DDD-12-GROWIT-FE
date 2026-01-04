@@ -64,7 +64,7 @@ export const GoalSelectView = ({ onBack }: GoalSelectViewProps) => {
           </button>
         </div>
       </BottomSheet.Title>
-      <BottomSheet.Content className="overflow-y-hidden">
+      <BottomSheet.Content>
         <div className="flex flex-col gap-2">
           {allOptions.map(option => {
             const isSelected = currentGoalId === option.id;

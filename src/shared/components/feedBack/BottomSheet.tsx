@@ -9,6 +9,12 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 // 높이 타입 정의: 'auto' | '{x}px' | '{x}%'
 export type BottomSheetHeight = 'auto' | `${number}px` | `${number}%`;
 
+// 바텀시트 높이 상수
+const HEADER_HEIGHT_VH = 10;
+const SHEET_MAX_HEIGHT_VH = 90;
+const SHEET_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH}vh`;
+const CONTENT_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH - HEADER_HEIGHT_VH}vh`;
+
 // Context 타입 정의
 interface BottomSheetContextType {
   isOpen: boolean;
@@ -241,7 +247,7 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
             key="bottom-sheet"
             style={{
               height: resolvedHeight,
-              maxHeight: '90vh',
+              maxHeight: SHEET_MAX_HEIGHT,
               touchAction: 'none',
               willChange: 'height',
               overflow: 'hidden',
@@ -332,7 +338,9 @@ const SheetTitle = ({ children }: { children: React.ReactNode }) => {
 // Content 컴포넌트
 const SheetContent = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
-    <section className={cn('bg-transparent p-4 max-h-[80%] h-full overflow-y-auto', className)}>{children}</section>
+    <section className={cn('bg-transparent p-4 overflow-y-auto', `max-h-[${CONTENT_MAX_HEIGHT}]`, className)}>
+      {children}
+    </section>
   );
 };
 
