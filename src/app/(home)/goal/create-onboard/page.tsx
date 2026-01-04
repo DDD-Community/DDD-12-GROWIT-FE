@@ -15,14 +15,22 @@ import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
-import { GoalFormData } from '@/shared/type/form';
+import type { GoalFormType } from '@/feature/goal/form/dto';
 import type { CreateGoalResponseType } from '@/model/goal/dto';
 
 const TOTAL_STEPS = 4;
 
-const preloadCompleteStepImage = () => {
-  const img = new Image();
-  img.src = '/goal-onboard/goal-onboard-4.png';
+const PRELOAD_IMAGES = [
+  '/goal-onboard/goal-onboard-2.png',
+  '/goal-onboard/goal-onboard-3.png',
+  '/goal-onboard/goal-onboard-4.png',
+];
+
+const preloadImages = () => {
+  PRELOAD_IMAGES.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
 };
 
 function GoalOnboardContent() {
@@ -35,16 +43,16 @@ function GoalOnboardContent() {
   const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseType | null>(null);
 
   useEffect(() => {
-    preloadCompleteStepImage();
+    preloadImages();
   }, []);
 
   const {
     watch,
     formState: { errors },
-  } = useFormContext<GoalFormData>();
+  } = useFormContext<GoalFormType>();
   const goalName = watch('name');
-  const startDate = watch('durationDate.startDate');
-  const endDate = watch('durationDate.endDate');
+  const startDate = watch('duration.startDate');
+  const endDate = watch('duration.endDate');
 
   const { mutate: createGoal, isPending } = useMutation(
     GoalMutation.createGoal({
