@@ -1,4 +1,4 @@
-import GoalEditFormController from '@/composite/goal/goalEditForm/GoalEditForm';
+import GoalEditFormController from '@/composite/goal/goalEditContainer/GoalEditForm';
 import { notFound } from 'next/navigation';
 
 type GoalEditPageProps = {

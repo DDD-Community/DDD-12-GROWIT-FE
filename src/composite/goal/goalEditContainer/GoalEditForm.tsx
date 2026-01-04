@@ -1,25 +1,22 @@
 'use client';
 
-import { EditGoalFormElement } from '@/feature/goal/editGoalFormElement';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { EditGoalFormElement } from '@/feature/goal/form/editGoalFormElement';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { GoalQuery } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { Goal } from '@/shared/type/goal';
-import { Info } from 'lucide-react';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import Button from '@/shared/components/input/Button';
 import { GoalMutation } from '@/model/goal/queries';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, notFound } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 
 export default function GoalEditFormController({ goalId }: { goalId: string }) {
-  const queryClient = useQueryClient();
-  const progressGoals = queryClient.getQueryData<Goal[]>(GoalQueryKeys.progress());
-  const currentGoal = progressGoals?.find(goal => goal.id === goalId);
+  const { data: currentGoal } = useQuery(GoalQuery.getGoalById(goalId));
 
   // 새로고침 대응을 위해 캐시가 없으면 현재 목표 패칭하는 로직 추가 예정
-
-  if (!currentGoal) return <div>목표를 찾을 수 없습니다</div>;
+  if (!currentGoal) notFound();
 
   return (
     <div className="flex flex-1 flex-col min-h-screen bg-[#1B1C1E]">
@@ -37,6 +34,7 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
     GoalMutation.editGoal({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
+        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.byId(currentGoal.id) });
         showToast('수정이 완료되었습니다.', 'success');
         router.push(ROUTES.GOAL);
       },
@@ -48,7 +46,9 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
 
   return (
     <EditGoalFormElement.Provider initValue={currentGoal || undefined}>
-      <EditGoalFormElement.FormContainer onSubmit={data => editGoal(data)}>
+      <EditGoalFormElement.FormContainer
+        onSubmit={data => editGoal({ ...currentGoal, name: data.name, duration: data.duration })}
+      >
         <PageHeader
           title="목표 수정"
           rightSection={<Button type="submit" variant="tertiary" size="sm" text="완료" />}
@@ -58,12 +58,7 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
             <EditGoalFormElement.Name />
             <EditGoalFormElement.SelectStartDate />
             <EditGoalFormElement.SelectEndDate />
-            <div className="flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#FF6363]" />
-              <span className="label-2-regular text-[#FF6363]">
-                기간에 포함되지 않는 투두는 자동으로 기본 투두로 이동돼요.
-              </span>
-            </div>
+            <EditGoalFormElement.DurationErrorMessage />
           </div>
         </div>
       </EditGoalFormElement.FormContainer>

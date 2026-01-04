@@ -16,7 +16,7 @@ import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
 import { GoalFormData } from '@/shared/type/form';
-import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
+import type { CreateGoalResponseType } from '@/model/goal/dto';
 
 const TOTAL_STEPS = 4;
 
@@ -27,7 +27,7 @@ function GoalOnboardContent() {
   const { fullUserName } = useFetchUserName();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseData | null>(null);
+  const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseType | null>(null);
 
   const { watch } = useFormContext<GoalFormData>();
   const goalName = watch('name');

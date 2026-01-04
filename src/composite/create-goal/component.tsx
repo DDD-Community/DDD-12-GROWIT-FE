@@ -38,8 +38,8 @@ export const CreateGoalForm = () => {
             <CreateGoalFormElement.Name />
             <CreateGoalFormElement.SelectStartDate />
             <CreateGoalFormElement.SelectEndDate />
+            <CreateGoalFormElement.DurationErrorMessage />
           </div>
-          <CreateGoalFormElement.DurationErrorMessage />
         </div>
       </CreateGoalFormElement.FormContainer>
     </CreateGoalFormElement.Provider>

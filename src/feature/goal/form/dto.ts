@@ -1,7 +1,7 @@
 import z from 'zod';
-import { createGoalRequestSchema } from '@/model/goal/dto';
+import { goalRequestSchema } from '@/model/goal/dto';
 
-export const createGoalFormSchema = createGoalRequestSchema.refine(
+export const goalFormSchema = goalRequestSchema.refine(
   data => {
     const start = new Date(data.duration.startDate);
     const end = new Date(data.duration.endDate);
@@ -18,4 +18,4 @@ export const createGoalFormSchema = createGoalRequestSchema.refine(
   }
 );
 
-export type CreateGoalFormType = z.infer<typeof createGoalRequestSchema>;
+export type GoalFormType = z.infer<typeof goalFormSchema>;

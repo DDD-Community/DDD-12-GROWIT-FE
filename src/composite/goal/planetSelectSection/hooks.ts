@@ -1,4 +1,4 @@
-import { getToday } from '@/feature/goal/createGoalFormElement/utils';
+import { getToday } from '@/feature/goal/form/createGoalFormElement/utils';
 import { GoalQuery } from '@/model/goal/queries';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { useQuery } from '@tanstack/react-query';
