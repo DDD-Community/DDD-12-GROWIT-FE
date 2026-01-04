@@ -1,4 +1,3 @@
-export { ConfirmGoalDialogButton } from './confimGoalDialogButton/component';
 export { CreateGoalFormElement } from './form/createGoalFormElement/component';
 export { CreateGoalButton } from './createGoalButton/component';
 export { WeeklyGoalProgress } from './weeklyGoalProgress/component';

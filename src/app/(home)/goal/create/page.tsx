@@ -1,6 +1,6 @@
 'use client';
 
-import { CreateGoalForm } from '@/composite/create-goal/component';
+import { CreateGoalForm } from '@/composite/goal/createGoalContainer/component';
 
 export default function CreateGoalPage() {
   return (
