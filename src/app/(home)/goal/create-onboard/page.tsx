@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
@@ -20,6 +20,11 @@ import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
 
 const TOTAL_STEPS = 4;
 
+const preloadCompleteStepImage = () => {
+  const img = new Image();
+  img.src = '/goal-onboard/goal-onboard-4.png';
+};
+
 function GoalOnboardContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -28,6 +33,10 @@ function GoalOnboardContent() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseData | null>(null);
+
+  useEffect(() => {
+    preloadCompleteStepImage();
+  }, []);
 
   const {
     watch,

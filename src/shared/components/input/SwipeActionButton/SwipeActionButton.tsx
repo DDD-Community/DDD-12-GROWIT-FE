@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 
@@ -13,6 +13,9 @@ interface SwipeActionButtonProps {
   threshold?: number;
 }
 
+const THUMB_SIZE = 52;
+const PADDING = 8;
+
 export const SwipeActionButton = ({
   text,
   onSwipeComplete,
@@ -21,35 +24,50 @@ export const SwipeActionButton = ({
   threshold = 1,
 }: SwipeActionButtonProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+
   const x = useMotionValue(0);
+  const background = useTransform(x, [0, 300], ['#333438', '#1b1c1e']);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const getMaxSwipeDistance = () => {
+  const getMaxSwipeDistance = useCallback(() => {
     if (!containerRef.current) return 200;
-    return containerRef.current.offsetWidth - 60; // 버튼 크기(52px) + 패딩(8px)
-  };
+    return containerRef.current.offsetWidth - THUMB_SIZE - PADDING;
+  }, []);
 
-  const background = useTransform(x, [0, getMaxSwipeDistance()], ['#333438', '#1b1c1e']);
+  const handleDrag = useCallback(
+    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      const maxDistance = getMaxSwipeDistance();
+      let newX = info.offset.x;
 
-  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      // 범위 제한: 0 ~ maxDistance
+      if (newX < 0) newX = 0;
+      if (newX > maxDistance) newX = maxDistance;
+
+      x.set(newX);
+    },
+    [getMaxSwipeDistance, x]
+  );
+
+  const handleDragEnd = useCallback(() => {
     const maxDistance = getMaxSwipeDistance();
     const thresholdDistance = maxDistance * threshold;
+    const currentX = x.get();
 
-    if (info.offset.x >= thresholdDistance) {
-      // 스와이프 완료 - 끝까지 애니메이션
+    if (currentX >= thresholdDistance) {
+      // threshold 넘었으면 끝까지 애니메이션 + 완료
       animate(x, maxDistance, { type: 'spring', stiffness: 400, damping: 30 });
       setIsCompleted(true);
       onSwipeComplete();
     } else {
-      // 원위치로 애니메이션
+      // threshold 안 넘었으면 원위치
       animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 });
     }
-  };
+  }, [getMaxSwipeDistance, threshold, x, onSwipeComplete]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setIsCompleted(false);
     animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 });
-  };
+  }, [x]);
 
   return (
     <motion.div
@@ -71,9 +89,10 @@ export const SwipeActionButton = ({
         className="relative z-10 p-1"
         drag={disabled || isCompleted ? false : 'x'}
         dragConstraints={{ left: 0, right: getMaxSwipeDistance() }}
-        dragElastic={0}
         dragMomentum={false}
+        dragElastic={0}
         style={{ x }}
+        onDrag={handleDrag}
         onDragEnd={handleDragEnd}
         onDoubleClick={isCompleted ? handleReset : undefined}
       >
