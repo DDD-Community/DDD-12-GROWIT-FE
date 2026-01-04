@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
@@ -35,11 +35,16 @@ export const GoalSelectView = ({ onBack }: GoalSelectViewProps) => {
   const currentGoalId = watch('goalId');
   const allOptions = [DEFAULT_TODO_OPTION, ...goals];
 
+  // 로컬 상태로 임시 선택값 관리 (완료 버튼 클릭 시에만 form에 적용)
+  const [tempGoalId, setTempGoalId] = useState<string | null>(currentGoalId);
+
   const handleSelect = (goalId: string | null) => {
-    setValue('goalId', goalId);
+    setTempGoalId(goalId);
   };
 
   const handleComplete = () => {
+    // 완료 버튼 클릭 시에만 form에 적용
+    setValue('goalId', tempGoalId);
     onBack();
   };
 
@@ -67,7 +72,7 @@ export const GoalSelectView = ({ onBack }: GoalSelectViewProps) => {
       <BottomSheet.Content>
         <div className="flex flex-col gap-2">
           {allOptions.map(option => {
-            const isSelected = currentGoalId === option.id;
+            const isSelected = tempGoalId === option.id;
             const optionValue = option.id ?? 'default';
             return (
               <OptionCell

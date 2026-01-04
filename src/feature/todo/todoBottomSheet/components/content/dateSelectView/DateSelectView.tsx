@@ -27,50 +27,47 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
   // 현재 선택된 탭 (시작일/종료일)
   const [activeTab, setActiveTab] = useState<DateSelectTab>(initialTab);
 
-  // 선택된 날짜들 (startDate가 없으면 defaultDate를 파생 상태로 사용)
-  const startDate = parseDateString(routineDuration?.startDate) || (repeatType !== 'none' ? defaultDate : undefined);
-  const endDate = parseDateString(routineDuration?.endDate);
+  // 폼의 현재 값 (기본값 포함)
+  const formStartDate =
+    parseDateString(routineDuration?.startDate) || (repeatType !== 'none' ? defaultDate : undefined);
+  const formEndDate = parseDateString(routineDuration?.endDate);
+
+  // 로컬 상태로 임시 선택값 관리 (완료 버튼 클릭 시에만 form에 적용)
+  const [tempStartDate, setTempStartDate] = useState<Date | undefined>(formStartDate);
+  const [tempEndDate, setTempEndDate] = useState<Date | undefined>(formEndDate);
 
   // 캘린더 상태
-  const [currentMonth, setCurrentMonth] = useState(() => startDate || defaultDate || new Date());
+  const [currentMonth, setCurrentMonth] = useState(() => tempStartDate || defaultDate || new Date());
 
   const handleDateSelect = (date: Date) => {
-    const dateString = formatDateToString(date);
-    const newDuration = { ...routineDuration } as { startDate?: string; endDate?: string };
-
     if (activeTab === 'startDate') {
-      newDuration.startDate = dateString;
-      setValue('routineDuration', newDuration as TodoFormData['routineDuration']);
+      setTempStartDate(date);
       // 시작일이 종료일보다 이후면 종료일 초기화
-      if (newDuration.endDate && dateString > newDuration.endDate) {
-        newDuration.endDate = undefined;
-        setValue('routineDuration', newDuration as TodoFormData['routineDuration']);
+      if (tempEndDate && date > tempEndDate) {
+        setTempEndDate(undefined);
       }
       // 시작일 선택 후 자동으로 종료일 탭으로 전환
       setActiveTab('endDate');
     } else {
       // 종료일은 시작일보다 이전일 수 없음
-      if (newDuration.startDate && dateString < newDuration.startDate) {
+      if (tempStartDate && date < tempStartDate) {
         return;
       }
-      newDuration.endDate = dateString;
-      setValue('routineDuration', newDuration as TodoFormData['routineDuration']);
+      setTempEndDate(date);
     }
   };
 
-  // 완료 버튼 활성화 조건: 시작일(파생 상태 포함)과 종료일 모두 있음
-  const isCompleteEnabled = !!startDate && !!routineDuration?.endDate;
+  // 완료 버튼 활성화 조건: 시작일과 종료일 모두 있음
+  const isCompleteEnabled = !!tempStartDate && !!tempEndDate;
 
   const handleComplete = () => {
     if (!isCompleteEnabled) return;
 
-    // startDate가 폼에 없으면 defaultDate를 저장
-    if (!routineDuration?.startDate && startDate) {
-      setValue('routineDuration', {
-        ...routineDuration,
-        startDate: formatDateToString(startDate),
-      } as TodoFormData['routineDuration']);
-    }
+    // 완료 버튼 클릭 시에만 form에 적용
+    setValue('routineDuration', {
+      startDate: formatDateToString(tempStartDate!),
+      endDate: formatDateToString(tempEndDate!),
+    });
 
     onComplete();
   };
@@ -127,12 +124,12 @@ export const DateSelectView = ({ onBack, onComplete, initialTab = 'endDate', def
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
           onDateSelect={handleDateSelect}
-          selectedStartDate={startDate}
-          selectedEndDate={endDate}
+          selectedStartDate={tempStartDate}
+          selectedEndDate={tempEndDate}
           activeTab={activeTab}
           repeatType={repeatType}
           enableKeyboardNav={false}
-          initialFocusDate={startDate}
+          initialFocusDate={tempStartDate}
         />
       </BottomSheet.Content>
     </>

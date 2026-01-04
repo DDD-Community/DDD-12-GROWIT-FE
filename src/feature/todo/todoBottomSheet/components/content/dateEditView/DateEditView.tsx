@@ -69,8 +69,11 @@ export const DateEditView = ({
   const endDate = parseDateString(routineDuration?.endDate);
   const selectedTodoDate = parseDateString(todoDate);
 
+  // 로컬 상태로 임시 선택값 관리 (완료 버튼 클릭 시에만 form에 적용)
+  const [tempDate, setTempDate] = useState<Date | undefined>(selectedTodoDate);
+
   // 캘린더 상태
-  const [currentMonth, setCurrentMonth] = useState(() => selectedTodoDate || startDate || new Date());
+  const [currentMonth, setCurrentMonth] = useState(() => tempDate || startDate || new Date());
 
   // 반복 요약
   const repeatSummary = useMemo(() => getRepeatSummary(repeatType, startDate), [repeatType, startDate]);
@@ -78,10 +81,17 @@ export const DateEditView = ({
   // 반복 설정 여부
   const hasRepeat = repeatType !== 'none';
 
-  // 날짜 선택 핸들러 - form의 date 필드 업데이트
+  // 날짜 선택 핸들러 - 로컬 상태만 업데이트
   const handleDateSelect = (date: Date) => {
-    const dateString = format(date, 'yyyy-MM-dd');
-    setValue('date', dateString);
+    setTempDate(date);
+  };
+
+  // 완료 버튼 클릭 - form에 적용
+  const handleComplete = () => {
+    if (tempDate) {
+      setValue('date', format(tempDate, 'yyyy-MM-dd'));
+    }
+    onBack();
   };
 
   return (
@@ -92,7 +102,7 @@ export const DateEditView = ({
             <ChevronLeftIcon />
           </button>
           <h2 className="body-1-normal-bold text-label-normal">날짜 수정</h2>
-          <button type="button" onClick={onBack} className="label-1-bold text-label-normal">
+          <button type="button" onClick={handleComplete} className="label-1-bold text-label-normal">
             완료
           </button>
         </div>
@@ -104,12 +114,12 @@ export const DateEditView = ({
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
           onDateSelect={handleDateSelect}
-          selectedDate={selectedTodoDate}
+          selectedDate={tempDate}
           selectedStartDate={hasRepeat ? startDate : undefined}
           selectedEndDate={hasRepeat ? endDate : undefined}
           repeatType={repeatType}
           enableKeyboardNav={false}
-          initialFocusDate={selectedTodoDate || startDate}
+          initialFocusDate={tempDate || startDate}
         />
 
         {/* 하단 정보 셀 */}

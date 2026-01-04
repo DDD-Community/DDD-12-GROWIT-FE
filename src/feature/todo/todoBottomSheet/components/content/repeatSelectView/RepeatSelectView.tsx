@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { ChevronLeftIcon } from '../../shared/icons';
@@ -25,20 +26,22 @@ export const RepeatSelectView = ({
   const { watch, setValue } = useFormContext<TodoFormData>();
   const currentRepeatType = watch('repeatType');
 
-  // 반복 타입 선택 (선택만 하고 이동하지 않음)
-  const handleSelect = (type: FormRepeatType) => {
-    setValue('repeatType', type);
+  // 로컬 상태로 임시 선택값 관리 (완료 버튼 클릭 시에만 form에 적용)
+  const [tempRepeatType, setTempRepeatType] = useState<FormRepeatType>(currentRepeatType);
 
-    // none 선택 시 routineDuration 초기화
-    if (type === 'none') {
-      setValue('routineDuration', undefined);
-    }
+  // 반복 타입 선택 (로컬 상태만 변경)
+  const handleSelect = (type: FormRepeatType) => {
+    setTempRepeatType(type);
   };
 
   // 완료 버튼 클릭
   const handleComplete = () => {
-    if (currentRepeatType === 'none') {
-      // 반복 없음이면 메인으로 돌아가기
+    // form에 적용
+    setValue('repeatType', tempRepeatType);
+
+    // none 선택 시 routineDuration 초기화
+    if (tempRepeatType === 'none') {
+      setValue('routineDuration', undefined);
       onBack();
     } else {
       // 반복 설정 시 → 날짜 선택 화면으로 이동
@@ -66,7 +69,7 @@ export const RepeatSelectView = ({
               key={type}
               value={type}
               label={repeatLabels[type]}
-              isSelected={currentRepeatType === type}
+              isSelected={tempRepeatType === type}
               onClick={handleSelect}
             />
           ))}
