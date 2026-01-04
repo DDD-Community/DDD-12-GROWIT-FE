@@ -7,6 +7,17 @@ import { ko } from 'date-fns/locale';
 export const WEEKDAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
 /**
+ * 날짜 문자열을 Date 객체로 파싱 (유효하지 않으면 undefined 반환)
+ * @example parseDateString('2025-01-01') // Date object
+ * @example parseDateString('invalid') // undefined
+ */
+export const parseDateString = (dateString?: string): Date | undefined => {
+  if (!dateString) return undefined;
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? undefined : date;
+};
+
+/**
  * 날짜를 원하는 형식으로 포맷팅
  * @example formatDate(new Date(), 'yyyy-MM-dd') // '2025-01-01'
  */
@@ -29,6 +40,16 @@ export const formatDateHeader = (date: Date): string => {
   const monthDay = format(date, 'MM.dd');
   const weekday = formatWeekday(date);
   return `${monthDay} ${weekday}요일`;
+};
+
+/**
+ * 월/일/요일 포맷 ("1월 15일 월")
+ */
+export const formatMonthDayWeekday = (date: Date): string => {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = formatWeekday(date);
+  return `${month}월 ${day}일 ${weekday}`;
 };
 
 /**
