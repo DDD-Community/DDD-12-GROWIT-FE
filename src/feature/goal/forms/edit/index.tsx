@@ -5,14 +5,14 @@ import { Goal } from '@/shared/type/goal';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { ChevronRight } from 'lucide-react';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
-import { formatDateToYYYYMMDD } from '../createGoalFormElement/utils';
+import { formatDateToYYYYMMDD } from '../shared/utils';
 import { convertFormDataToGoal } from './helper';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
 import { CellButton } from '@/shared/components/input/CellButton';
 import DateSelectorPanel from '@/feature/todo/weeklyTodoList/components/DateSelectorPanel';
 import type { GoalRequestType } from '@/model/goal/dto';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { goalFormSchema } from '../dto';
+import { goalFormSchema } from '../shared/dto';
 
 interface EditGoalFormProviderProps {
   children: React.ReactNode;

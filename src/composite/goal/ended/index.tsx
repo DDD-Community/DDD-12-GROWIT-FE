@@ -2,9 +2,9 @@
 
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
-import { EndedGoalItem } from '@/feature/goal/endedGoalItem';
+import { EndedGoalItem } from '@/feature/goal';
 import { GoalQuery, GoalMutation } from '@/model/goal/queries';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
@@ -112,7 +112,7 @@ type EndedGoalsListProps = {
 };
 
 function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoalsListProps) {
-  const { data: endedGoals } = useSuspenseQuery(GoalQuery.getEndedGoals());
+  const { data: endedGoals = [] } = useQuery(GoalQuery.getEndedGoals());
 
   const handleCheck = (goalId: Goal['id']) => {
     const newCheckedGoals = new Set(checkedGoals);

@@ -1,6 +1,6 @@
-import EndedGoalsContainer from '@/composite/goal/endedGoalsContainer';
+'use client';
 
-export const dynamic = 'force-dynamic';
+import EndedGoalsContainer from '@/composite/goal/ended';
 
 export default function EndedGoalsPage() {
   return <EndedGoalsContainer />;
