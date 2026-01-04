@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { AdviceQuery } from '@/model/advice/hooks';
+import { AdviceQuery } from '@/model/advice/queries';
 import { AdviceChatMessage } from '@/model/advice/types';
 import { useMemo } from 'react';
 

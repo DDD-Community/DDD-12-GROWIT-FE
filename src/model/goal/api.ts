@@ -2,6 +2,7 @@ import { apiClient } from '@/shared/lib/apiClient';
 import { Goal } from '@/shared/type/goal';
 import { CommonResponse } from '@/shared/type/response';
 import qs from 'qs';
+import type { GoalRequestType, CreateGoalResponseType } from './dto';
 
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 
@@ -43,13 +44,30 @@ const GoalApi = {
     return Array.isArray(data.data) ? data.data[0] : data.data;
   },
 
+  getGoalById: async (goalId: string) => {
+    const { data } = await apiClient.get<CommonResponse<Goal>>(`/goals/${goalId}`);
+    return data.data;
+  },
+
   deleteGoal: async (goalId: string) => {
     const { data } = await apiClient.delete<CommonResponse<string>>(`/goals/${goalId}`);
     return data.data;
   },
 
   putEditGoal: async (req: Goal) => {
-    const { data } = await apiClient.put<CommonResponse<string>>(`/goals/${req.id}`, req);
+    const payload = {
+      name: req.name,
+      duration: {
+        startDate: req.duration.startDate,
+        endDate: req.duration.endDate,
+      },
+    };
+    const { data } = await apiClient.put<CommonResponse<string>>(`/goals/${req.id}`, payload);
+    return data.data;
+  },
+
+  postGoal: async (formData: GoalRequestType) => {
+    const { data } = await apiClient.post<CommonResponse<CreateGoalResponseType>>('/goals', formData);
     return data.data;
   },
 };

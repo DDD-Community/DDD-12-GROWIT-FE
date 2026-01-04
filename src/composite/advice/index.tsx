@@ -1,9 +1,9 @@
 'use client';
 
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { AdviceMutation, AdviceQuery } from '@/model/advice/hooks';
+import { AdviceMutation, AdviceQuery } from '@/model/advice/queries';
 import { AdviceHeader } from '@/feature/advice/components/AdviceHeader';
-import { GoalQuery } from '@/model/goal/hooks';
+import { GoalQuery } from '@/model/goal/queries';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { useState } from 'react';
 import { Goal } from '@/shared/type/goal';

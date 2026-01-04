@@ -1,1 +1,0 @@
-export { GoalEditForm } from './GoalEditForm';
