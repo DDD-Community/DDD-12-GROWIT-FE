@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
@@ -15,10 +15,23 @@ import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
-import { GoalFormData } from '@/shared/type/form';
+import type { GoalFormType } from '@/feature/goal/form/dto';
 import type { CreateGoalResponseType } from '@/model/goal/dto';
 
 const TOTAL_STEPS = 4;
+
+const PRELOAD_IMAGES = [
+  '/goal-onboard/goal-onboard-2.png',
+  '/goal-onboard/goal-onboard-3.png',
+  '/goal-onboard/goal-onboard-4.png',
+];
+
+const preloadImages = () => {
+  PRELOAD_IMAGES.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+};
 
 function GoalOnboardContent() {
   const router = useRouter();
@@ -29,10 +42,17 @@ function GoalOnboardContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseType | null>(null);
 
-  const { watch } = useFormContext<GoalFormData>();
+  useEffect(() => {
+    preloadImages();
+  }, []);
+
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext<GoalFormType>();
   const goalName = watch('name');
-  const startDate = watch('durationDate.startDate');
-  const endDate = watch('durationDate.endDate');
+  const startDate = watch('duration.startDate');
+  const endDate = watch('duration.endDate');
 
   const { mutate: createGoal, isPending } = useMutation(
     GoalMutation.createGoal({
@@ -126,7 +146,7 @@ function GoalOnboardContent() {
 
     switch (currentStep) {
       case 2:
-        return !goalName?.trim();
+        return !goalName?.trim() || !!errors.name;
       case 3:
         return !startDate || !endDate;
       default:
@@ -153,13 +173,14 @@ function GoalOnboardContent() {
 
   return (
     <FunnelHeaderProvider>
-      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal">
+      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal-alternative">
         {currentStep > 1 && currentStep < 4 && (
           <FunnelHeader
             currentStep={currentStep - 1}
             totalSteps={TOTAL_STEPS - 2}
             onBack={handleBack}
             title="목표 추가"
+            showProgressBar={false}
           />
         )}
 

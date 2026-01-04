@@ -147,7 +147,7 @@ export const SignUpForm = () => {
         {errors.termsOfService && <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>}
       </div>
       {/* 추후 ios safe-area-inset-bottom 적용 필요 */}
-      <div className="fixed bottom-0 left-0 right-0 pb-10 px-5 max-w-md mx-auto bg-[#1B1C1E]">
+      <div className="fixed bottom-0 left-0 right-0 pb-10 px-5 max-w-md mx-auto bg-normal-alternative">
         <SignupDialogButton
           isValid={isValid}
           isSubmitting={isSubmitting}

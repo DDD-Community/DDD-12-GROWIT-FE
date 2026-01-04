@@ -30,7 +30,7 @@ export function OnboardingLayoutDesktop({
   characterImage,
 }: OnboardingLayoutDesktopProps) {
   return (
-    <div className="relative w-full h-full min-h-screen bg-[#1C1C1E] hidden md:flex flex-col">
+    <div className="relative w-full h-full min-h-screen bg-normal-alternative hidden md:flex flex-col">
       {/* 메인 컨텐츠 랜더링 */}
       <div className="flex-1 flex items-center justify-center px-8">{children}</div>
 

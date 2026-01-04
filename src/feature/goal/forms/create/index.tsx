@@ -49,6 +49,8 @@ const FormContainer = ({ children, onSubmit }: CreateGoalFormContainerProps) => 
   );
 };
 
+const MAX_NAME_LENGTH = 20;
+
 const Name = () => {
   const {
     register,
@@ -60,8 +62,10 @@ const Name = () => {
       type="text"
       placeholder="목표 이름을 입력해주세요."
       isError={!!errors.name}
-      errorMessage={errors.name?.message as string}
-      {...register('name', { required: '목표 이름을 입력해주세요.' })}
+      maxLength={MAX_NAME_LENGTH}
+      {...register('name', {
+        required: '목표 이름을 입력해주세요.',
+      })}
     />
   );
 };

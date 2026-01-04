@@ -17,7 +17,19 @@ export const InputUnderline = ({ label, isError, errorMessage, description, ...p
   }, [props.value]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCharCount(e.target.value.length);
+    const { maxLength } = props;
+    let value = e.target.value;
+
+    /**
+     * 한국어 입력 시 1글자 초과되는 문제 발생
+     * onChange 이벤트에서 글자 수 입력을 제한하는 방식으로 개선
+     */
+    if (maxLength && value.length > maxLength) {
+      value = value.slice(0, maxLength);
+      e.target.value = value;
+    }
+
+    setCharCount(value.length);
     if (props.onInput) {
       props.onInput(e);
     }
