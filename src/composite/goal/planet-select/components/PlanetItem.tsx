@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Badge from '@/shared/components/display/Badge';
 import { ToolTip } from '@/shared/components/display/ToolTip';
-import { Goal, GoalCategoryEnum } from '@/shared/type/goal';
+import { Goal } from '@/shared/type/goal';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 

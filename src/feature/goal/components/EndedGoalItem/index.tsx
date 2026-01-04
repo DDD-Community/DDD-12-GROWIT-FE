@@ -68,21 +68,20 @@ type EndedGoalItemModalProps = {
 function EndedGoalItemModal({ open, onClose, goal }: EndedGoalItemModalProps) {
   const progressPercentage = getProgressPercentageByDateRange(goal.duration.startDate, goal.duration.endDate);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  // 바깥쪽 클릭 & ESC 클릭 시 닫히도록 설계
-  useEffect(() => {
-    const handleEscapePress = (event: KeyboardEvent) => {
-      if (dialogRef.current && event.key === 'Escape') {
-        const otherModals = document.querySelectorAll('dialog[open]');
-        const isNestedModal = otherModals.length > 1;
 
-        if (!isNestedModal) {
-          onClose?.();
-        }
+  // 바깥쪽 클릭시 모달 닫히도록 설계
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (event.target === dialog) {
+        onClose();
       }
     };
-    document.addEventListener('keydown', handleEscapePress);
+    dialog.addEventListener('click', handleOutsideClick);
     return () => {
-      document.removeEventListener('keydown', handleEscapePress);
+      dialog.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
@@ -100,7 +99,7 @@ function EndedGoalItemModal({ open, onClose, goal }: EndedGoalItemModalProps) {
       className={`min-w-3xs max-w-xs bg-elevated-assistive rounded-[20px] shadow-xl border-0 fixed inset-0 m-auto overflow-visible`}
     >
       <article className="absolute -top-16 right-4 z-10">
-        <ToolTip text={goal.planet.name} position="top-center" />
+        <ToolTip text={goal.planet.name} position="top-center" tailPosition="top-center" />
         <Image src="/goal/goal-progress.png" alt={goal.name} width={120} height={120} className="relative" />
       </article>
       <section className="flex flex-col w-full items-center justify-center py-[20px] px-[24px] gap-5 overflow-y-visible">

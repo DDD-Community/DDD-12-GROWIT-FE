@@ -12,14 +12,14 @@ import { DeleteConfirm } from './components/DeleteConfirm';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
+interface GoalInfoModalActions {
+  onDelete: (goalId: string) => void;
+}
+
 interface GoalInfoModalProps extends GoalInfoModalActions {
   isOpen: boolean;
   onClose: () => void;
   goal?: Goal;
-}
-
-interface GoalInfoModalActions {
-  onDelete: (goalId: string) => void;
 }
 
 export function GoalInfoModal({ isOpen, onClose, onDelete, goal }: GoalInfoModalProps) {

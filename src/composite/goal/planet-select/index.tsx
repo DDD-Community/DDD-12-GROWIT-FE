@@ -9,38 +9,43 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { PlanetItem } from './components/PlanetItem';
 import { CreateNewGoalItem } from './components/CreateNewGoalItem';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { GoalQuery } from '@/model/goal/queries';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import Button from '@/shared/components/input/Button';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
-import GoalProgressSheet from '../goalProgressSheet';
+import GoalProgressSheet from '../progress';
 
 export default function PlanetSelectorSection() {
-  return (
-    <GoalProvider goalListOption={{ year: 2025 }}>
-      <PlanetSelector />
-      <section className="pb-16">
-        <GoalProgressSheet />
-      </section>
-    </GoalProvider>
-  );
-}
-
-export function PlanetSelector() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
-  const { data: progressGoals } = useSuspenseQuery(
+  const { data: progressGoals = [], isLoading: isGoalLoading } = useQuery(
     GoalQuery.getProgressGoals({
       // 캐시 무효화가 없다면, 현재 시간부터 하루가 끝나기전까지 유지되어도 괜찮다 판단
       staleTime: msUntilEndOfDay,
       gcTime: msUntilEndOfDay,
+      enabled: typeof window !== 'undefined',
     })
   );
 
+  if (isGoalLoading) return <GoalPageLoader />;
+
+  return (
+    <Suspense fallback={<GoalPageLoader />}>
+      <GoalProvider goalListOption={{ year: 2025 }}>
+        <PlanetSelector progressGoals={progressGoals} />
+        <section className="pb-16">
+          <GoalProgressSheet />
+        </section>
+      </GoalProvider>
+    </Suspense>
+  );
+}
+
+export function PlanetSelector({ progressGoals }: { progressGoals: Goal[] }) {
   const { setCurrentGoal } = useGoalSelector();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
   useShowEndedGoalsSheet(showSheet);
@@ -118,6 +123,15 @@ export function PlanetSelector() {
           </section>
         </BottomSheet.Content>
       </BottomSheet>
+    </div>
+  );
+}
+
+function GoalPageLoader() {
+  return (
+    <div className="w-full h-screen flex flex-col bg-normal items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
+      <p className="text-gray-100 text-sm font-medium">진행중인 목표를 불러오는 중입니다...</p>
     </div>
   );
 }

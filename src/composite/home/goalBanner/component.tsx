@@ -1,4 +1,4 @@
-import { WeeklyGoalBanner } from '@/feature/goal/weeklyGoalBanner';
+import { WeeklyGoalBanner } from '@/feature/goal';
 import { useGoalSelector } from '@/model/goal/context';
 
 export const GoalBanner = () => {

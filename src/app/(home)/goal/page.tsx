@@ -1,21 +1,18 @@
-import { EndedGoalsNavButton } from '@/feature/goal/EndedGoalsNavButton';
-import PlanetSelectorSection from '@/composite/goal/planetSelectSection';
-import { Suspense } from 'react';
+'use client';
 
-export const dynamic = 'force-dynamic';
+import { EndedGoalsNavButton } from '@/feature/goal';
+import PlanetSelectorSection from '@/composite/goal/planet-select';
 
-export default async function GoalPageRoute() {
+export default function GoalPageRoute() {
   return (
-    <Suspense fallback={<GoalPageLoader />}>
-      <div className="relative w-full h-full flex flex-col pb-2 justify-between bg-normal">
-        <div className="w-full flex items-center justify-start px-5 pt-5">
-          <EndedGoalsNavButton />
-        </div>
-        <GoalPageOverlay />
-        {/** 행성 swiper 섹션 */}
-        <PlanetSelectorSection />
+    <div className="relative w-full h-full flex flex-col pb-2 justify-between bg-normal">
+      <div className="w-full flex items-center justify-start px-5 pt-5">
+        <EndedGoalsNavButton />
       </div>
-    </Suspense>
+      <GoalPageOverlay />
+      {/** 행성 swiper 섹션 */}
+      <PlanetSelectorSection />
+    </div>
   );
 }
 

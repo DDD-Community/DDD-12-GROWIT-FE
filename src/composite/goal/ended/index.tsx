@@ -2,16 +2,18 @@
 
 import Button from '@/shared/components/input/Button';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
-import { EndedGoalItem } from '@/feature/goal/endedGoalItem';
+import { EndedGoalItem } from '@/feature/goal';
 import { GoalQuery, GoalMutation } from '@/model/goal/queries';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { Goal } from '@/shared/type/goal';
+import { useRouter } from 'next/navigation';
 
 export default function EndedGoalsContainer() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -48,6 +50,31 @@ export default function EndedGoalsContainer() {
     setIsEditMode(false);
   };
 
+  const renderLeftSection = () => {
+    return isEditMode ? (
+      <Button
+        type="button"
+        size="sm"
+        text="취소"
+        variant="tertiary"
+        className="text-text-primary"
+        onClick={handleDelete}
+      />
+    ) : (
+      <button type="button" onClick={() => router.back()} className="text-white">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    );
+  };
+
   const renderRightSection = () => {
     return isEditMode ? (
       <Button
@@ -72,7 +99,7 @@ export default function EndedGoalsContainer() {
 
   return (
     <main>
-      <PageHeader title="종료 목표 수집함" rightSection={renderRightSection()} />
+      <PageHeader title="종료 목표 수집함" leftSection={renderLeftSection()} rightSection={renderRightSection()} />
       <EndedGoalsList isEditMode={isEditMode} checkedGoals={checkedGoals} setCheckedGoals={setCheckedGoals} />
     </main>
   );
@@ -85,7 +112,7 @@ type EndedGoalsListProps = {
 };
 
 function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoalsListProps) {
-  const { data: endedGoals } = useSuspenseQuery(GoalQuery.getEndedGoals());
+  const { data: endedGoals = [] } = useQuery(GoalQuery.getEndedGoals());
 
   const handleCheck = (goalId: Goal['id']) => {
     const newCheckedGoals = new Set(checkedGoals);

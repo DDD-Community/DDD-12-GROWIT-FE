@@ -1,6 +1,6 @@
 'use client';
 
-import { EditGoalFormElement } from '@/feature/goal/form/editGoalFormElement';
+import { EditGoalFormElement } from '@/feature/goal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { GoalQuery } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
