@@ -15,7 +15,7 @@ import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
-import type { GoalFormType } from '@/feature/goal/form/dto';
+import type { GoalFormType } from '@/feature/goal';
 import type { CreateGoalResponseType } from '@/model/goal/dto';
 
 const TOTAL_STEPS = 4;

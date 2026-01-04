@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { GoalFormType } from '../dto';
-import { goalFormSchema } from '../dto';
+import type { GoalFormType } from '../shared/dto';
+import { goalFormSchema } from '../shared/dto';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { InputUnderline } from '@/shared/components/input/InputUnderline';
 import DateSelectorPanel from '@/feature/todo/weeklyTodoList/components/DateSelectorPanel';
-import { formatDateToYYYYMMDD } from './utils';
+import { formatDateToYYYYMMDD } from '../shared/utils';
 import { CellButton } from '@/shared/components/input/CellButton';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
 import { ChevronRight } from 'lucide-react';

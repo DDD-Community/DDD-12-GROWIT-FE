@@ -7,7 +7,7 @@ import { GoalQuery } from '@/model/goal/queries';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { useState } from 'react';
 import { Goal } from '@/shared/type/goal';
-import { AdviceChat, AdviceChatMessage, AdviceStyle } from '@/model/advice/types';
+import { AdviceChat, AdviceStyle } from '@/model/advice/types';
 import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
 import { AdviceSendButton } from '@/feature/advice/components/AdviceSendButton';
 import { InputField } from '@/shared/components/input/InputField';
@@ -19,6 +19,7 @@ import { AdviceQueryKeys } from '@/model/advice/queryKeys';
 import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 import { HasNoProgressGoalPage } from '@/app/(home)/advice/HasNoProgressGoalPage';
 import { AdviceArrivalPopupProvider } from '@/feature/advice/hooks/useSubscribeAdviceArrival';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 export default function AdviceChatClient() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
@@ -83,10 +84,12 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
   return (
     <>
       <AdviceHeader progressGoals={progressGoals} selectedGoal={selectedGoal} setSelectedGoal={setSelectedGoal} />
-      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
+      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative text-sm tracking-wide">
         <AdviceChatHistory adviceChat={adviceChat} isSendingRequest={isSendingRequest} />
 
-        <div className="bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 z-20">
+        <div
+          className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
+        >
           <nav className="w-full flex justify-between items-center pt-5">
             <button onClick={showSheet} className="flex items-center gap-x-2 body-1-normal text-text-strong">
               {ADVICE_STYLE_SELECT_ITEMS[selectedAdviceStyle].title}
