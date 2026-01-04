@@ -1,0 +1,1 @@
+export { EditGoalFormElement } from './component';

@@ -1,9 +1,9 @@
 import {
   HomeIcon,
-  RetrospectIcon,
   ProfileIcon,
   HomeIconInActive,
-  RetrospectIconInactive,
+  AdviceIcon,
+  AdviceIconInactive,
   ProfileIconInactive,
   GoalIcon,
   GoalIconInactive,
@@ -12,10 +12,16 @@ import { ComponentType } from 'react';
 
 export const ROUTES = {
   HOME: '/home',
+  ADVICE: '/advice',
   RETROSPECT: '/retrospect',
   PROMOTION: '/promotion',
   MYPAGE: '/mypage',
-  CREATE_GOAL: '/home/create-goal',
+  CREATE_GOAL: '/goal/create',
+  CREATE_GOAL_ONBOARD: '/goal/create-onboard',
+  /**
+   * @disabled [임시] 기존 온보딩페이지 deprecated 에 따라서 임시 비활성화
+   * @see GoalOnboardRedirect
+   */
   ONBOARDING: '/onboarding',
   GOAL: '/goal',
   LOGIN: '/login',
@@ -46,7 +52,7 @@ export const NAVIGATION_ROUTES: NavigationRoute[] = [
   },
   {
     path: ROUTES.RETROSPECT,
-    icon: RetrospectIcon,
+    icon: AdviceIcon,
     alt: 'Retrospect',
     title: '회고',
   },
@@ -74,13 +80,7 @@ export const NAVIGATION_ROUTES_MOBILE: NavigationRouteMobile[] = [
     alt: 'Home',
     title: '홈',
   },
-  {
-    path: ROUTES.RETROSPECT,
-    activeIcon: RetrospectIcon,
-    inActiveIcon: RetrospectIconInactive,
-    alt: 'Retrospect',
-    title: '회고',
-  },
+  { path: ROUTES.ADVICE, activeIcon: AdviceIcon, inActiveIcon: AdviceIconInactive, alt: 'Advice', title: '조언' },
   {
     path: ROUTES.GOAL,
     activeIcon: GoalIcon,

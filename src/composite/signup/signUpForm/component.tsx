@@ -7,6 +7,7 @@ import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
 import { SignupFormData } from './type';
 import { useFetchSignUp } from './hook';
 import Checkbox from '@/shared/components/input/Checkbox';
+import Badge from '@/shared/components/display/Badge';
 import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
 export const SignUpForm = () => {
@@ -35,7 +36,7 @@ export const SignUpForm = () => {
   return (
     <form className="space-y-6 w-full">
       <InputField
-        label="Email"
+        label="이메일"
         type="email"
         placeholder="가입할 이메일을 입력해주세요."
         {...register('email', {
@@ -116,9 +117,17 @@ export const SignUpForm = () => {
             rules={{ required: '개인정보 수집에 동의해주세요.' }}
             render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} />}
           />
+          <Badge
+            type="default"
+            size="sm"
+            label="필수"
+            color="bg-[rgba(255,99,99,0.16)]"
+            textColor="text-status-negative"
+          />
           <span className="text-gray-400 text-sm">개인정보 수집 동의</span>
         </label>
         {errors.privacyPolicy && <p className="text-xs text-red-500">{errors.privacyPolicy.message as string}</p>}
+
         <label className="flex items-center space-x-2">
           <Controller
             name="termsOfService"
@@ -126,16 +135,26 @@ export const SignUpForm = () => {
             rules={{ required: '이용 약관에 동의해주세요.' }}
             render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} />}
           />
+          <Badge
+            type="default"
+            size="sm"
+            label="필수"
+            color="bg-[rgba(255,99,99,0.16)]"
+            textColor="text-status-negative"
+          />
           <span className="text-gray-400 text-sm">이용 약관 동의</span>
         </label>
         {errors.termsOfService && <p className="text-xs text-red-500">{errors.termsOfService.message as string}</p>}
       </div>
-      <SignupDialogButton
-        isValid={isValid}
-        isSubmitting={isSubmitting}
-        isSignupSuccess={isSignupSuccess}
-        onClick={handleSubmit(fetchSignUp)}
-      />
+      {/* 추후 ios safe-area-inset-bottom 적용 필요 */}
+      <div className="fixed bottom-0 left-0 right-0 pb-10 px-5 max-w-md mx-auto bg-normal-alternative">
+        <SignupDialogButton
+          isValid={isValid}
+          isSubmitting={isSubmitting}
+          isSignupSuccess={isSignupSuccess}
+          onClick={handleSubmit(fetchSignUp)}
+        />
+      </div>
     </form>
   );
 };

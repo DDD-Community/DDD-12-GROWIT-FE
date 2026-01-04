@@ -1,0 +1,101 @@
+import React, { useMemo, useCallback } from 'react';
+import { format } from 'date-fns';
+import { MonthViewProps } from '../../types';
+import { MonthHeader } from './MonthHeader';
+import { WeekdayHeader } from '../common/WeekdayHeader';
+import { WeekRow } from './WeekRow';
+import { getMonthDates, getMonthRange, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
+import { useTodoCountByDate } from '@/model/todo/todoList/queries';
+
+/**
+ * 월간 뷰 컴포넌트
+ */
+export const MonthView: React.FC<MonthViewProps> = ({
+  selectedDate,
+  currentDate,
+  indicators = {},
+  holidays = {},
+  onDateSelect,
+  onMonthChange,
+  showNavigation,
+  selectedView,
+  onViewChange,
+  onTodayClick,
+}) => {
+  // 월간 날짜 배열 계산 (42개)
+  const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
+
+  // 월의 시작일과 종료일 계산
+  const [monthStart, monthEnd] = useMemo(() => getMonthRange(currentDate), [currentDate]);
+
+  // 월간 날짜 범위의 투두 개수 조회
+  const fromDateString = useMemo(() => format(monthStart, 'yyyy-MM-dd'), [monthStart]);
+  const toDateString = useMemo(() => format(monthEnd, 'yyyy-MM-dd'), [monthEnd]);
+  const { data: todoCountData = [] } = useTodoCountByDate({
+    from: fromDateString,
+    to: toDateString,
+  });
+
+  // 투두 개수를 indicators 형식으로 변환 및 병합
+  const mergedIndicators = useMemo(() => {
+    const todoIndicators = convertTodoCountToIndicators(todoCountData);
+    return mergeIndicators(indicators, todoIndicators);
+  }, [indicators, todoCountData]);
+
+  // 6주로 분할
+  const weeks = useMemo(() => {
+    const result: Date[][] = [];
+    for (let i = 0; i < CALENDAR.WEEKS_IN_MONTH; i++) {
+      const start = i * CALENDAR.DAYS_IN_WEEK;
+      result.push(monthDates.slice(start, start + CALENDAR.DAYS_IN_WEEK));
+    }
+    return result;
+  }, [monthDates]);
+
+  // 이전 달 이동
+  const handlePrevious = useCallback(() => {
+    onMonthChange?.('prev');
+  }, [onMonthChange]);
+
+  // 다음 달 이동
+  const handleNext = useCallback(() => {
+    onMonthChange?.('next');
+  }, [onMonthChange]);
+
+  return (
+    <div className={`flex flex-col gap-5`}>
+      {/* 월 헤더 */}
+      {showNavigation && (
+        <MonthHeader
+          currentMonth={currentDate}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          selectedView={selectedView}
+          onViewChange={onViewChange}
+          onTodayClick={onTodayClick}
+        />
+      )}
+
+      {/* 캘린더 */}
+      <div className="flex flex-col gap-2 pb-5">
+        {/* 요일 헤더 */}
+        <WeekdayHeader />
+
+        {/* 주 행들 */}
+        <div className="flex flex-col">
+          {weeks.map((weekDates, index) => (
+            <WeekRow
+              key={index}
+              dates={weekDates}
+              selectedDate={selectedDate}
+              currentMonth={currentDate}
+              indicators={mergedIndicators}
+              holidays={holidays}
+              onDateSelect={onDateSelect}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};

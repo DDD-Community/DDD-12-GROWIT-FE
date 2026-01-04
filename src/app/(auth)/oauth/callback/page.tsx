@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { KakaoSignupForm } from '@/composite/signup/signUpForm/KakaoSignupForm';
 import { tokenController } from '@/shared/lib/token';
 
@@ -44,7 +43,7 @@ export default function OAuthCallbackPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1 bg-[#1C1C1E] items-center justify-center">
+      <div className="w-full h-full bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">로그인 처리 중...</p>
@@ -56,7 +55,7 @@ export default function OAuthCallbackPage() {
   // 토큰이 있어서 로그인 성공한 경우
   if (hasTokens) {
     return (
-      <div className="flex flex-1 bg-[#1C1C1E] items-center justify-center">
+      <div className="w-full h-full bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">
@@ -69,12 +68,11 @@ export default function OAuthCallbackPage() {
 
   // 아직 가입이 안된 경우 (회원가입 폼 표시)
   return (
-    <div className="flex flex-1 h-screen bg-[#1C1C1E] overflow-hidden">
+    <div className="flex flex-col w-full h-full bg-normal-alternative overflow-hidden">
       {/* 왼쪽 회원가입 섹션 */}
-      <div className="flex flex-col w-full lg:w-1/2">
+      <div className="flex flex-col w-full">
         {/* 고정 헤더 */}
         <div className="flex flex-col items-start gap-[40px] p-10 md:p-[20px] pb-0">
-          <h1 className="text-2xl font-bold text-white pl-[4px]">GROWIT</h1>
           <Link href="/login" className="text-white">
             <span className="inline-flex items-center">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +84,7 @@ export default function OAuthCallbackPage() {
                   strokeLinejoin="round"
                 />
               </svg>
-              뒤로
+              {/* 뒤로 */}
             </span>
           </Link>
         </div>
@@ -100,13 +98,6 @@ export default function OAuthCallbackPage() {
             </h2>
             <KakaoSignupForm />
           </div>
-        </div>
-      </div>
-
-      {/* 오른쪽 이미지 섹션 - lg 크기 이상에서만 표시 */}
-      <div className="hidden lg:flex w-1/2 m-4 p-4 items-center justify-center">
-        <div className="relative w-full h-full rounded-[16px]">
-          <Image src="/landing.png" alt="Dashboard Preview" fill priority className="object-contain" />
         </div>
       </div>
     </div>

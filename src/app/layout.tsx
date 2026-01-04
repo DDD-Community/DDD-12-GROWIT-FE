@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { startMSWServer } from '../../mocks/server';
 import localFont from 'next/font/local';
 import MSWClientProvider from '../../mocks/mswClientProvider';
 import { ToastProvider } from '@/shared/components/feedBack/toast';
 import { GoogleTagManager } from '@next/third-parties/google';
-import { GTMProvider } from '@/shared/components/analytics/GTMProvider';
 import './globals.css';
+import TanstackQueryWrapper from './TanstackQueryWrapper';
 
 /** 루트 레이아웃 컴포넌트는 서버 컴포넌트이니 서버용 MSW 초기화 코드는 여기 맨위에서 실행하도록 했습니다 */
 import('../../mocks/server').then(async () => {
@@ -29,6 +29,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#0F0F10',
+  viewportFit: 'cover',
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,9 +43,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
-      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-[#1B1C1E]`}>
+      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-normal-alternative`}>
         <MSWClientProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <TanstackQueryWrapper>
+            <ToastProvider>{children}</ToastProvider>
+          </TanstackQueryWrapper>
         </MSWClientProvider>
       </body>
     </html>

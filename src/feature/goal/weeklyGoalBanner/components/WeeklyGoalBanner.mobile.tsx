@@ -42,10 +42,10 @@ export const WeeklyGoalBannerMobile = ({ goal }: WeeklyGoalBannerMobileProps) =>
   const router = useRouter();
   const currentWeek = calculateCurrentWeek(goal.duration.startDate, goal.duration.endDate);
   const durationLabel = `${goal.duration.startDate} ~ ${goal.duration.endDate}`;
-  const totalWeeks = Math.max(1, goal.plans?.length || 1);
+  const totalWeeks = Math.max(1, 4);
   const progressPercent = Math.min(100, Math.max(0, (currentWeek / totalWeeks) * 100));
 
-  const colorTheme = getColorTheme(goal.plans?.length || 0);
+  const colorTheme = getColorTheme(4);
 
   return (
     <>

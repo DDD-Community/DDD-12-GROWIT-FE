@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { GrorongAdvice } from '@/composite/home/cheerMessageCard/type';
+import { GrorongAdvice } from '@/composite/home/todoListContainer/components/cheerMessageCard/type';
 
 interface GrorongCardProps extends GrorongAdvice {}
 
@@ -28,7 +28,7 @@ export const GrorongCard = ({ mood, message, saying }: GrorongCardProps) => {
 
   return (
     <div className="absolute top-0 left-0 w-full h-[168px] z-0">
-      <div className="max-w-sm:mx-[20px] sm:mx-[40px] mx-auto h-full">
+      <div className="mx-auto h-full">
         <div className="relative pt-4 h-full px-4 pb-16">
           {/* 배경 이미지 */}
           <Image

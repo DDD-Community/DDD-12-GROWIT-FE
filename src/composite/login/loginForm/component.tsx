@@ -74,7 +74,7 @@ export const LoginForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div className="flex flex-col gap-[24px] pb-[40px]">
         <InputField
-          label="Email"
+          label="이메일"
           type="email"
           placeholder="이메일을 입력해주세요"
           {...register('email', {
@@ -88,7 +88,7 @@ export const LoginForm = () => {
           errorMessage={errors.email?.message as string}
         />
         <InputField
-          label="PW"
+          label="비밀번호"
           type="password"
           placeholder="비밀번호를 입력해주세요"
           {...register('password', {
@@ -102,14 +102,17 @@ export const LoginForm = () => {
           errorMessage={errors.password?.message as string}
         />
       </div>
-      <Button
-        type="submit"
-        text="로그인"
-        size={'xl'}
-        onClick={handleGTMEvent}
-        disabled={emailValue === '' || passwordValue === ''}
-        status={loading ? 'loading' : isSuccess ? 'success' : 'idle'}
-      />
+      {/* 추후 ios safe-area-inset-bottom 적용 필요 */}
+      <div className="fixed bottom-0 left-0 right-0 pb-10 px-5 max-w-md mx-auto bg-normal-alternative">
+        <Button
+          type="submit"
+          text="로그인"
+          size={'xl'}
+          onClick={handleGTMEvent}
+          disabled={emailValue === '' || passwordValue === ''}
+          status={loading ? 'loading' : isSuccess ? 'success' : 'idle'}
+        />
+      </div>
     </form>
   );
 };

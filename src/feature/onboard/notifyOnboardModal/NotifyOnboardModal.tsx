@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/shared/components/feedBack/Modal';
 import Button from '@/shared/components/input/Button';
@@ -8,6 +7,10 @@ import Image from 'next/image';
 import { useFetchUserName } from '@/shared/hooks';
 import { ROUTES } from '@/shared/constants/routes';
 
+/**
+ * @deprecated GoalOnboardRedirect 컴포넌트를 사용하세요.
+ * @see GoalOnboardRedirect
+ */
 export const NotifyOnboardModal = () => {
   const router = useRouter();
   const { fullUserName } = useFetchUserName();

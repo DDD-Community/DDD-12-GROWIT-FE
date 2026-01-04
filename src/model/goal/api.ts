@@ -2,6 +2,7 @@ import { apiClient } from '@/shared/lib/apiClient';
 import { Goal } from '@/shared/type/goal';
 import { CommonResponse } from '@/shared/type/response';
 import qs from 'qs';
+import type { GoalRequestType, CreateGoalResponseType } from './dto';
 
 interface GoalListResponse extends CommonResponse<Goal[]> {}
 
@@ -13,26 +14,71 @@ export interface GetGoalListOption {
   year: number;
 }
 
-export async function getGoalList(option?: GetGoalListOption) {
-  const queryString = option ? qs.stringify(option) : '';
-  const { data } = await apiClient.get<GoalListResponse>(`/goals?${queryString}`);
-  return data.data;
-}
+const GoalApi = {
+  getAllGoals: async (): Promise<Goal[]> => {
+    const { data } = await apiClient.get<GoalListResponse>('/goals');
+    return data.data;
+  },
 
-export async function getGoalItem(req?: GetGoalOption) {
-  const url = req?.goalId ? `/goals/${req.goalId}` : '/goals?status=PROGRESS';
-  const { data } = await apiClient.get<CommonResponse<Goal>>(url);
+  getProgressGoals: async (): Promise<Goal[]> => {
+    const { data } = await apiClient.get<GoalListResponse>('/goals?status=PROGRESS');
+    return data.data;
+  },
 
-  // TODO : Array 벗겨지면 해당 분기처리 코드 삭제필요
-  return Array.isArray(data.data) ? data.data[0] : data.data;
-}
+  getEndedGoals: async (): Promise<Goal[]> => {
+    const { data } = await apiClient.get<GoalListResponse>('/goals?status=ENDED');
+    return data.data;
+  },
 
-export async function deleteGoal(goalId: string) {
-  const { data } = await apiClient.delete<CommonResponse<string>>(`/goals/${goalId}`);
-  return data.data;
-}
+  getGoalList: async (option?: GetGoalListOption) => {
+    const queryString = option ? qs.stringify(option) : '';
+    const { data } = await apiClient.get<GoalListResponse>(`/goals?${queryString}`);
+    return data.data;
+  },
 
-export async function putEditGoal(req: Goal) {
-  const { data } = await apiClient.put<CommonResponse<string>>(`/goals/${req.id}`, req);
-  return data.data;
-}
+  getGoalItem: async (req?: GetGoalOption) => {
+    const url = req?.goalId ? `/goals/${req.goalId}` : '/goals?status=PROGRESS';
+    const { data } = await apiClient.get<CommonResponse<Goal>>(url);
+
+    // TODO : Array 벗겨지면 해당 분기처리 코드 삭제필요
+    return Array.isArray(data.data) ? data.data[0] : data.data;
+  },
+
+  getGoalById: async (goalId: string) => {
+    const { data } = await apiClient.get<CommonResponse<Goal>>(`/goals/${goalId}`);
+    return data.data;
+  },
+
+  deleteGoal: async (goalId: string) => {
+    const { data } = await apiClient.delete<CommonResponse<string>>(`/goals/${goalId}`);
+    return data.data;
+  },
+
+  putEditGoal: async (req: Goal) => {
+    const payload = {
+      name: req.name,
+      duration: {
+        startDate: req.duration.startDate,
+        endDate: req.duration.endDate,
+      },
+    };
+    const { data } = await apiClient.put<CommonResponse<string>>(`/goals/${req.id}`, payload);
+    return data.data;
+  },
+
+  postGoal: async (formData: GoalRequestType) => {
+    const { data } = await apiClient.post<CommonResponse<CreateGoalResponseType>>('/goals', formData);
+    return data.data;
+  },
+};
+
+// Named exports for backward compatibility
+export const getAllGoals = GoalApi.getAllGoals;
+export const getProgressGoals = GoalApi.getProgressGoals;
+export const getEndedGoals = GoalApi.getEndedGoals;
+export const getGoalList = GoalApi.getGoalList;
+export const getGoalItem = GoalApi.getGoalItem;
+export const deleteGoal = GoalApi.deleteGoal;
+export const putEditGoal = GoalApi.putEditGoal;
+
+export default GoalApi;

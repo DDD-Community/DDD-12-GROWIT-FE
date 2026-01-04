@@ -4,7 +4,7 @@ import Badge from '@/shared/components/display/Badge';
 import { TextArea } from '@/shared/components/input/TextArea';
 import Button from '@/shared/components/input/Button';
 import { useMemo, useState } from 'react';
-import { Plan, Retrospect } from '@/composite/retrospect/type';
+import { Retrospect } from '@/composite/retrospect/type';
 import { MissedWeeklyRetrospectBox } from './MissedWeeklyRetrospectBox';
 import { LockedWeeklyRetrospectBox } from './LockedWeeklyRetrospectBox';
 import { postAddRetrospect } from '../../addRetroSpect/api';
@@ -14,7 +14,7 @@ import { useGTMActions } from '@/shared/hooks/useGTM';
 interface WeeklyRetrospectBoxProps {
   goalId?: string | undefined;
   retrospect: Retrospect | null;
-  plan: Plan;
+  plan: any;
   isCurrentWeek: boolean;
   isPassedWeek: boolean; // 새로 추가된 prop
   updateWeeklyRetrospect: (

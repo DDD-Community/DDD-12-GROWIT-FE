@@ -14,18 +14,14 @@ export const Z_INDEX = {
   // 가장 높은 우선순위 - 사용자 알림
   TOAST: 'z-[9999]',
   POPUP: 'z-[9990]',
-  SHEET: 'z-[990]',
-
-  BOTTOM_NAVIGATION: 'z-[980]',
-  MODAL: 'z-[980]',
-
+  MODAL: 'z-[1000]',
+  SHEET: 'z-[999]',
+  BOTTOM_NAVIGATION: 'z-[990]',
+  FAB: 'z-[975]',
   DROPDOWN: 'z-[970]',
-  POPOVER: 'z-[970]',
-
+  POPOVER: 'z-[975]',
   HEADER: 'z-[960]',
-
   CONTENT: 'z-[950]',
-
   BACKGROUND: 'z-[940]',
 } as const;
 

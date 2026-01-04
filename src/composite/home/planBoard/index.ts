@@ -1,1 +1,0 @@
-export { WeeklyPlanBoard } from './component';

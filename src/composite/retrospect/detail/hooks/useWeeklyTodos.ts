@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { WeeklyTodosData } from '../api';
-import { Plan } from '@/shared/type/goal';
 
 const dayMapping = {
   월: 'MONDAY',
@@ -33,7 +32,7 @@ const getWeekDates = (startDate: string, endDate: string) => {
   return dates;
 };
 
-export const useWeeklyTodos = (totalWeeklyTodos: WeeklyTodosData[], plans: Plan[]) => {
+export const useWeeklyTodos = (totalWeeklyTodos: WeeklyTodosData[], plans: any[]) => {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [selectedDay, setSelectedDay] = useState<string>('월');
 
