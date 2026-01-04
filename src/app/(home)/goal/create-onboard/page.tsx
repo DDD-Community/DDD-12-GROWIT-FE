@@ -10,13 +10,13 @@ import { SwipeActionButton } from '@/shared/components/input/SwipeActionButton';
 import { WelcomeStep, GoalNameStep, DateStep, CompleteStep } from '@/composite/goal-onboard';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFetchUserName } from '@/shared/hooks';
-import { GoalMutation } from '@/model/goal/hooks';
+import { GoalMutation } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
 import { GoalFormData } from '@/shared/type/form';
-import { CreateGoalResponseData } from '@/feature/goal/confimGoal/api';
+import type { CreateGoalResponseType } from '@/model/goal/dto';
 
 const TOTAL_STEPS = 4;
 
@@ -32,7 +32,7 @@ function GoalOnboardContent() {
   const { fullUserName } = useFetchUserName();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseData | null>(null);
+  const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseType | null>(null);
 
   useEffect(() => {
     preloadCompleteStepImage();
@@ -93,15 +93,11 @@ function GoalOnboardContent() {
     if (currentStep === 3) {
       // 목표 생성 API 호출
       createGoal({
-        category: '',
         name: goalName,
-        duration: 0,
-        durationDate: {
+        duration: {
           startDate,
           endDate,
         },
-        toBe: '',
-        plans: [],
       });
       return;
     }

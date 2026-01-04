@@ -338,7 +338,11 @@ const SheetTitle = ({ children }: { children: React.ReactNode }) => {
 // Content 컴포넌트
 const SheetContent = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
-    <section className={cn('bg-transparent p-4 overflow-y-auto', `max-h-[${CONTENT_MAX_HEIGHT}]`, className)}>
+    <section 
+      // 동적 높이 적용 시, tailwind 는 적용되지 않아 inline 으로 적용
+      style={{ maxHeight: CONTENT_MAX_HEIGHT }}
+      className={cn('bg-transparent p-4 overflow-y-auto', className)}
+      >
       {children}
     </section>
   );
