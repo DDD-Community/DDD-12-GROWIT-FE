@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
-      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-[#0F0F10]`}>
+      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-normal-alternative`}>
         <MSWClientProvider>
           <TanstackQueryWrapper>
             <ToastProvider>{children}</ToastProvider>

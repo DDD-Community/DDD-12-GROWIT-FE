@@ -29,7 +29,10 @@ function GoalOnboardContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseData | null>(null);
 
-  const { watch } = useFormContext<GoalFormData>();
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext<GoalFormData>();
   const goalName = watch('name');
   const startDate = watch('durationDate.startDate');
   const endDate = watch('durationDate.endDate');
@@ -130,7 +133,7 @@ function GoalOnboardContent() {
 
     switch (currentStep) {
       case 2:
-        return !goalName?.trim();
+        return !goalName?.trim() || !!errors.name;
       case 3:
         return !startDate || !endDate;
       default:
@@ -157,7 +160,7 @@ function GoalOnboardContent() {
 
   return (
     <FunnelHeaderProvider>
-      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal">
+      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal-alternative">
         {currentStep > 1 && currentStep < 4 && (
           <FunnelHeader
             currentStep={currentStep - 1}
