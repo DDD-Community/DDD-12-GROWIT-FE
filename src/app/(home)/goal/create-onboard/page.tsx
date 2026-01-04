@@ -167,6 +167,7 @@ function GoalOnboardContent() {
             totalSteps={TOTAL_STEPS - 2}
             onBack={handleBack}
             title="목표 추가"
+            showProgressBar={false}
           />
         )}
 

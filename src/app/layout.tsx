@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { startMSWServer } from '../../mocks/server';
 import localFont from 'next/font/local';
 import MSWClientProvider from '../../mocks/mswClientProvider';
@@ -27,6 +27,12 @@ export const metadata: Metadata = {
     shortcut: '/logo-favicon.svg',
     apple: '/logo-favicon.svg',
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0F0F10',
+  viewportFit: 'cover',
+  initialScale: 1,
 };
 
 export default function RootLayout({

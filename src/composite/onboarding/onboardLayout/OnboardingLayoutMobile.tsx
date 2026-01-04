@@ -31,7 +31,7 @@ export function OnboardingLayoutMobile({
   characterImage,
 }: OnboardingLayoutMobileProps) {
   return (
-    <div className="fixed inset-0 w-full bg-[#1C1C1E] flex flex-col md:hidden overflow-hidden">
+    <div className="fixed inset-0 w-full bg-normal-alternative flex flex-col md:hidden overflow-hidden">
       <div className="px-6 pt-4 pb-4 flex justify-center items-end gap-2">
         {characterImage && (
           <div className="relative min-w-[80px] min-h-[80px]">
