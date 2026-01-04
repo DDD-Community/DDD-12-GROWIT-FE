@@ -10,6 +10,7 @@ interface FunnelHeaderProps {
   onBack?: () => void;
   title?: string;
   isVisible?: boolean;
+  showProgressBar?: boolean;
 }
 
 export const FunnelHeader = ({
@@ -18,6 +19,7 @@ export const FunnelHeader = ({
   onBack: propOnBack,
   title: propTitle = '',
   isVisible: propIsVisible,
+  showProgressBar = true,
 }: FunnelHeaderProps) => {
   const router = useRouter();
   const contextValue = useFunnelHeader();
@@ -45,7 +47,7 @@ export const FunnelHeader = ({
 
       {/* Mobile Header */}
       <div
-        className={`fixed top-0 left-0 right-0 z-50 max-w-md mx-auto ${currentStep === 1 ? 'bg-transparent' : 'bg-[#1C1C1E]'}`}
+        className={`fixed top-0 left-0 right-0 z-50 max-w-md mx-auto ${currentStep === 1 ? 'bg-transparent' : 'bg-normal-alternative'}`}
       >
         <div className="flex items-center justify-between px-4 py-3">
           <button
@@ -63,7 +65,7 @@ export const FunnelHeader = ({
           <div className="text-white text-sm min-w-[40px] text-right" />
         </div>
 
-        {currentStep > 1 && (
+        {showProgressBar && currentStep > 1 && (
           <div className="w-full px-4">
             <div className="h-1 bg-[#70737C38] rounded-full">
               <div

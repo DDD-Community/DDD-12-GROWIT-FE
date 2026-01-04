@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { startMSWServer } from '../../mocks/server';
 import localFont from 'next/font/local';
 import MSWClientProvider from '../../mocks/mswClientProvider';
@@ -29,6 +29,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#0F0F10',
+  viewportFit: 'cover',
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
-      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-[#0F0F10]`}>
+      <body className={`${pretendard.variable} flex h-[100dvh] font-pretendard pretendard bg-normal-alternative`}>
         <MSWClientProvider>
           <TanstackQueryWrapper>
             <ToastProvider>{children}</ToastProvider>

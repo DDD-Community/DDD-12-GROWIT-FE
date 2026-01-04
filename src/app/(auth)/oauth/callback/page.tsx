@@ -43,7 +43,7 @@ export default function OAuthCallbackPage() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full bg-[#1C1C1E] items-center justify-center">
+      <div className="w-full h-full bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">로그인 처리 중...</p>
@@ -55,7 +55,7 @@ export default function OAuthCallbackPage() {
   // 토큰이 있어서 로그인 성공한 경우
   if (hasTokens) {
     return (
-      <div className="w-full h-full bg-[#1C1C1E] items-center justify-center">
+      <div className="w-full h-full bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">
@@ -68,7 +68,7 @@ export default function OAuthCallbackPage() {
 
   // 아직 가입이 안된 경우 (회원가입 폼 표시)
   return (
-    <div className="flex flex-col w-full h-full bg-[#1C1C1E] overflow-hidden">
+    <div className="flex flex-col w-full h-full bg-normal-alternative overflow-hidden">
       {/* 왼쪽 회원가입 섹션 */}
       <div className="flex flex-col w-full">
         {/* 고정 헤더 */}
