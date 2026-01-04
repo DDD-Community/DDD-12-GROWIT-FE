@@ -94,3 +94,22 @@ AdviceChatMessage.NoGoal = function NoGoalMessage() {
     </>
   );
 };
+
+type DailyAdviceMessageProps = {
+  content: string;
+  timestamp: string;
+};
+AdviceChatMessage.DailyAdvice = function DailyAdviceMessage({ content, timestamp }: DailyAdviceMessageProps) {
+  const convertToKSTDate = (timestamp: string) => {
+    return new Date(new Date(timestamp).getTime() + 9 * 60 * 60 * 1000).toISOString().split('T')[0];
+  };
+  return (
+    <div className="pr-5">
+      <article className="inline-block w-fit max-w-full py-3 px-4 space-y-3 rounded-[20px] border-[0.5px] border-line-alternative text-pretty bg-fill-normal shadow-sm">
+        <span className="label-2-medium text-text-secondary">{convertToKSTDate(timestamp)}</span>
+        <h2 className="body-1-bold text-text-strong">오늘의 조언</h2>
+        <p className="text-text-strong font-medium">{content}</p>
+      </article>
+    </div>
+  );
+};

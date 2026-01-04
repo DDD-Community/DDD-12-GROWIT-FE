@@ -84,7 +84,7 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
   return (
     <>
       <AdviceHeader progressGoals={progressGoals} selectedGoal={selectedGoal} setSelectedGoal={setSelectedGoal} />
-      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
+      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative text-sm tracking-wide">
         <AdviceChatHistory adviceChat={adviceChat} isSendingRequest={isSendingRequest} />
 
         <div

@@ -27,11 +27,6 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
     <>
       <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
         {displayMessages.map((message, index) => {
-          // 로딩 메시지
-          if (isSendingRequest) {
-            return <AdviceChatLoading key={`loading-${index}`} direction="left" />;
-          }
-
           // 오늘 대화 횟수 소진 안내메시지
           if (message.isSystemMessage) {
             return (
@@ -50,6 +45,18 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
                 }
               />
             );
+          }
+
+          if (message.userMessage === '아침 조언 요청') {
+            return (
+              <div className="flex flex-col gap-y-4" key={`daily-advice-${index}`}>
+                <AdviceChatMessage.DailyAdvice content={message.grorongResponse} timestamp={message.timestamp || ''} />
+              </div>
+            );
+          }
+
+          if (message.isLoading !== undefined && message.isLoading) {
+            return <AdviceChatLoading direction="left" key={`loading-${index}`} />;
           }
 
           // 일반 대화 메시지
