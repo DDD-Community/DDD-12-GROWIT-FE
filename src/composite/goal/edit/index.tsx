@@ -1,7 +1,7 @@
 'use client';
 
 import { EditGoalFormElement } from '@/feature/goal';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { GoalQuery } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { Goal } from '@/shared/type/goal';
@@ -13,10 +13,11 @@ import { useRouter, notFound } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 
 export default function GoalEditFormController({ goalId }: { goalId: string }) {
-  const { data: currentGoal } = useQuery(GoalQuery.getGoalById(goalId));
+  const { data: currentGoal, isError } = useSuspenseQuery(GoalQuery.getGoalById(goalId));
 
-  // 새로고침 대응을 위해 캐시가 없으면 현재 목표 패칭하는 로직 추가 예정
-  if (!currentGoal) notFound();
+  if (isError || !currentGoal) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-1 flex-col min-h-screen bg-[#1B1C1E]">
