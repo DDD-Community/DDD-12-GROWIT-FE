@@ -3,7 +3,6 @@
 import { PlanSelectorProvider, usePlanSelector } from './hooks';
 import { useGoalSelector } from '@/model/goal/context';
 import { useSelectedDayActions } from '@/model/todo/selectedDay';
-import { CreateNewGoal } from './components/CreateNewGoal';
 
 interface PlanProviderProps {
   children: React.ReactNode;
