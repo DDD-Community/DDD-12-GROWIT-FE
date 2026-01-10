@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
-export type HeaderMode = 'logo' | 'title' | 'page';
+export type HeaderMode = 'logo' | 'title' | 'page' | 'landing';
 
 interface HeaderDesktopProps {
   mode?: HeaderMode;
@@ -27,6 +27,8 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
         return '마이페이지';
       case '/onboarding':
         return '온보딩';
+      case 'landing':
+        return 'Growit';
       default:
         return 'Growit';
     }
@@ -36,7 +38,7 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
     switch (mode) {
       case 'logo':
         return (
-          <div className="flex items-center gap-4 h-[32px]">
+          <div className="flex items-center gap-4 h-8">
             <Image src="/logo-text.svg" alt="Growit" height={32} width={130} />
           </div>
         );
@@ -52,6 +54,8 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
             <h1 className="text-base font-medium text-white">{getPageTitle()}</h1>
           </div>
         );
+      case 'landing':
+        return <h1 className="landing-title">{getPageTitle()}</h1>;
       default:
         return null;
     }
@@ -59,7 +63,7 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
 
   return (
     <>
-      <div className="hidden sm:flex w-full items-center justify-between px-[20px] py-[20px] shadow-sm">
+      <div className="hidden sm:flex w-full items-center justify-between p-5 shadow-sm">
         {renderLeftSection()}
         <div className="flex items-center gap-4">{rightSection || <React.Fragment />}</div>
       </div>

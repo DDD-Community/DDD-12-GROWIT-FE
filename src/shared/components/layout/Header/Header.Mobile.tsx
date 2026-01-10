@@ -15,7 +15,6 @@ interface HeaderMobileProps {
 export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobileProps) => {
   const pathname = usePathname();
   if (HEADER_CONFIG.hideHeaderPages.includes(pathname as any)) {
-  
     return null;
   }
 
@@ -31,13 +30,11 @@ export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobil
         {mode === 'logo' ? (
           <div className="flex items-center justify-between px-4 py-3">
             <Image src="/logo-text.svg" alt="Growit" height={32} width={100} />
-            <div className="flex items-center gap-3">{rightSection}</div>
+            <div className="flex items-center gap-3 min-w-10 h-10">{rightSection}</div>
           </div>
         ) : (
           <div className="flex items-center justify-between px-4 py-3 relative">
-            <div className="flex items-center gap-3 min-w-[40px] h-[40px]">
-              {shouldShowBackButton && <HeaderBackButton />}
-            </div>
+            <div className="flex items-center gap-3 min-w-10 h-10">{shouldShowBackButton && <HeaderBackButton />}</div>
 
             <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
               {mode === 'title' ? (
@@ -47,7 +44,7 @@ export const HeaderMobile = ({ mode = 'page', title, rightSection }: HeaderMobil
               )}
             </div>
 
-            <div className="flex items-center gap-3 min-w-[40px] h-[40px]">{rightSection}</div>
+            <div className="flex items-center gap-3 min-w-10 h-10">{rightSection}</div>
           </div>
         )}
       </div>
