@@ -7,6 +7,10 @@ import { useAIMentorAdvice } from '@/model/aiMentor/context';
 import { AdviceQuery } from '@/model/advice/queries';
 import { AttendanceStreakPopup } from '@/feature/todo/weeklyTodoList/components/AttendanceStreakPopup';
 
+/**
+ * @deprecated HomeBanner 컴포넌트를 사용해주세요.
+ * @see {@link @/composite/home/homeBanner/HomeBanner}
+ */
 export const CheerMessageCard = ({ type }: { type: 'grorong' | 'aiMentor' }) => {
   const { data: advice } = useQuery(AdviceQuery.getGrorongAdvice());
   const { aiMentorAdvice } = useAIMentorAdvice();
