@@ -24,3 +24,13 @@ export type AdviceChatRequest = {
   // 온보딩 메시지의 응답이 필요한가에 대해서 Optional
   isGoalOnboardingCompleted?: boolean;
 };
+
+export type GrorongMood = 'HAPPY' | 'NORMAL' | 'SAD';
+
+export type GrorongAdvice = {
+  saying: string;
+  message: string;
+  mood: GrorongMood;
+};
+
+export type GrorongAdviceResponse = CommonResponse<GrorongAdvice>;
