@@ -1,7 +1,7 @@
 import { mutationOptions, queryOptions, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 import { AdviceQueryKeys } from './queryKeys';
 import AdviceApi from './api';
-import { AdviceChat, AdviceChatRequest } from './types';
+import { AdviceChat, AdviceChatRequest, GrorongAdvice } from './types';
 
 export const AdviceQuery = {
   getAdviceChat: (options?: Omit<UseQueryOptions<AdviceChat, Error>, 'queryKey' | 'queryFn'>) => {
@@ -9,6 +9,14 @@ export const AdviceQuery = {
       ...options,
       queryKey: AdviceQueryKeys.chat(),
       queryFn: AdviceApi.getAdviceChat,
+    });
+  },
+
+  getGrorongAdvice: (options?: Omit<UseQueryOptions<GrorongAdvice, Error>, 'queryKey' | 'queryFn'>) => {
+    return queryOptions({
+      ...options,
+      queryKey: AdviceQueryKeys.grorong(),
+      queryFn: AdviceApi.getGrorongAdvice,
     });
   },
 };
