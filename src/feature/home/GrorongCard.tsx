@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { GrorongAdvice } from '@/composite/home/todoListContainer/components/cheerMessageCard/type';
+import { GrorongAdvice } from '@/model/advice/types';
 
 interface GrorongCardProps extends GrorongAdvice {}
 

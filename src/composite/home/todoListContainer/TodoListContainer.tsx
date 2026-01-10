@@ -7,10 +7,10 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 import { TodoList } from '@/feature/todo/todoList';
 import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
 import { Calendar } from '@/feature/todo/calendar';
-import { CheerMessageCard } from './components/cheerMessageCard';
 import { AddGoalButton } from './components/addGoalButton';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
+import { HomeBanner } from '../homeBanner';
 
 export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
@@ -33,8 +33,7 @@ export const TodoListContainer = () => {
 
         return (
           <div className="relative w-full">
-            {!isMonthlyView && <CheerMessageCard type="grorong" />}
-
+            <HomeBanner />
             <div
               className={`absolute left-0 right-0 mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
                 isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'

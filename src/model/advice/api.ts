@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/lib/apiClient';
-import { AdviceChatResponse, AdviceChatRequest } from './types';
+import { AdviceChatResponse, AdviceChatRequest, GrorongAdviceResponse } from './types';
 
 const AdviceApi = {
   getAdviceChat: async () => {
@@ -17,6 +17,15 @@ const AdviceApi = {
       return data.data;
     } catch (error) {
       throw new Error('조언 생성에 실패했습니다.');
+    }
+  },
+
+  getGrorongAdvice: async () => {
+    try {
+      const { data } = await apiClient.get<GrorongAdviceResponse>('/advice/grorong');
+      return data.data;
+    } catch (error) {
+      throw new Error('그로롱 조언 조회에 실패했습니다.');
     }
   },
 };

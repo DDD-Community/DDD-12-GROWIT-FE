@@ -55,7 +55,7 @@ export const todoListApi = {
 
 // ============ Legacy API (기존 API) ============
 
-interface TodoListResponse extends CommonResponse<Record<DAY_OF_THE_WEEK, Todo[]>> {}
+type TodoListResponse = CommonResponse<Record<DAY_OF_THE_WEEK, Todo[]>>;
 
 export interface TodoWeeklyListRequest {
   goalId: string;
