@@ -30,14 +30,8 @@ export const CollectPlanetFeatureSection = () => {
           src="/landing/section-8.png"
           width={350}
           height={650}
-          className="hidden lg:block shrink-0"
-          alt="eighth-section-image"
-        />
-        <Image
-          src="/landing/section-8.png"
-          width={200}
-          height={417}
-          className="block lg:hidden"
+          sizes="(max-width: 768px) 200px, 350px"
+          className="w-50 md:w-87.5 h-auto shrink-0"
           alt="eighth-section-image"
         />
       </MotionWrapper>

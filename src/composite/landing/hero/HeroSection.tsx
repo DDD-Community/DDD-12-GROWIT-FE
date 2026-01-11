@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Section from '@/shared/components/layout/Section';
 import { useRouter } from 'next/navigation';
-import { EarlyBirdEvent } from './components/EarlyBirdEvent';
+import { EarlyBirdEvent } from '../intro/components/EarlyBirdEvent';
 
 const HeroSection = () => {
   const router = useRouter();

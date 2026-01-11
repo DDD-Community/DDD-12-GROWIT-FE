@@ -19,13 +19,6 @@ const pretendard = localFont({
   variable: '--font-pretendard',
 });
 
-const moonget = localFont({
-  src: '../../public/fonts/MoonGetHeavy.otf',
-  display: 'swap',
-  weight: '800',
-  variable: '--font-moonget',
-});
-
 export const metadata: Metadata = {
   title: 'Growit',
   description: '주간 목표 설정과 투두 관리를 통해 목표를 달성하세요. Growit과 함께 성장하세요.',
@@ -50,9 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
-      <body
-        className={`${pretendard.variable} ${moonget.variable} flex h-svh font-pretendard pretendard bg-normal-alternative`}
-      >
+      <body className={`${pretendard.variable} flex h-svh font-pretendard pretendard bg-normal-alternative`}>
         <MSWClientProvider>
           <TanstackQueryWrapper>
             <ToastProvider>{children}</ToastProvider>

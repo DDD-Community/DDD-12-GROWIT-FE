@@ -25,14 +25,8 @@ export const QuestioningSection = () => {
           src="/landing/section-2.png"
           width={391}
           height={440}
-          className="hidden md:block shrink-0"
-          alt="second-section-image"
-        />
-        <Image
-          src="/landing/section-2.png"
-          width={230}
-          height={260}
-          className="block md:hidden"
+          sizes="(max-width: 768px) 230px, 260px"
+          className="w-57.5 md:w-97.75 h-auto shrink-0"
           alt="second-section-image"
         />
       </MotionWrapper>
