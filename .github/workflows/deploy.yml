@@ -55,6 +55,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_REDIRECT_URL=${{ vars.NEXT_PUBLIC_REDIRECT_URL }}
+          NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL=${{ vars.NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL }}
+          EOF
+
       - name: Build, tag, and push image
         id: build-image
         env:
@@ -63,10 +71,7 @@ jobs:
         run: |
           IMAGE="$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
           echo "Building $IMAGE for ${{ needs.setup.outputs.environment }}"
-          docker build \
-            --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }} \
-            --build-arg NEXT_PUBLIC_REDIRECT_URL=${{ vars.NEXT_PUBLIC_REDIRECT_URL }} \
-            -t "$IMAGE" .
+          docker build -t "$IMAGE" .
           docker push "$IMAGE"
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
 

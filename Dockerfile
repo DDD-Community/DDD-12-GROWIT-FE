@@ -8,11 +8,8 @@ RUN yarn install
 
 COPY . .
 
-# 빌드 시 환경 변수 전달
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_REDIRECT_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_REDIRECT_URL=$NEXT_PUBLIC_REDIRECT_URL
+# CI에서 .env 파일을 동적으로 생성하여 환경변수 전달
+# GitHub Actions에서 각 환경별 Variables로 생성됨
 
 RUN yarn build
 
