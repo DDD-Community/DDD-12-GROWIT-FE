@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import Section from '@/shared/components/layout/Section';
 import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 import LandingPageCommonStyle from '../constants';
+import { EarlyBirdEvent } from './components/EarlyBirdEvent';
 
 export const IntroSection = () => {
   return (
@@ -27,28 +27,8 @@ export const IntroSection = () => {
             <span className="bg-linear-to-brand">그로잇</span>으로 너의 인생이 바꿜거야
           </h1>
         </MotionWrapper>
-        <Button />
+        <EarlyBirdEvent />
       </div>
     </Section>
-  );
-};
-
-const Button = () => {
-  return (
-    <Link
-      className="text-text-strong text-base font-bold border border-[#393939] bg-white/15 hover:bg-white/30 transition-colors duration-300 rounded-lg py-2.5 px-4.5 flex items-center justify-center gap-1 hover:bg-[rgba(57, 57, 57, 1)]"
-      href="#"
-    >
-      APP 얼리버드 신청
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path
-          d="M1 6.83333H12.6667M12.6667 6.83333L6.83333 1M12.6667 6.83333L6.83333 12.6667"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </Link>
   );
 };

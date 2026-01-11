@@ -31,14 +31,8 @@ export const AddGoalFeatureSection = () => {
           src="/landing/section-5.png"
           width={350}
           height={650}
-          className="hidden lg:block shrink-0"
-          alt="fifth-section-image"
-        />
-        <Image
-          src="/landing/section-5.png"
-          width={200}
-          height={417}
-          className="block lg:hidden"
+          sizes="(max-width: 768px) 200px, 350px"
+          className="w-50 md:w-87.5 h-auto shrink-0"
           alt="fifth-section-image"
         />
       </MotionWrapper>

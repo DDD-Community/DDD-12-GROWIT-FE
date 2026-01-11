@@ -20,16 +20,6 @@
   }
 
   /* --- 랜딩페이지 관련 스타일 --- */
-  /* 랜딩 페이지의 타이틀 폰트 스타일 */
-  .landing-title {
-    color: var(--Text-Strong, #fff);
-    font-family: var(--font-moonget);
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: normal;
-    letter-spacing: 2.88px;
-  }
 
   .bg-linear-to-brand {
     background: radial-gradient(

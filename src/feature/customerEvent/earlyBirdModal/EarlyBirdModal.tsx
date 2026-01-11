@@ -53,7 +53,7 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
       onClose={onClose}
       title="얼리버드 신청"
       renderContent={() => (
-        <form className="gap-[20px] min-w-[300px] sm:min-w-[350px]" onSubmit={e => e.preventDefault()}>
+        <form className="gap-5 min-w-75 sm:min-w-87.5" onSubmit={e => e.preventDefault()}>
           <Controller
             name="phone"
             control={control}
@@ -100,7 +100,7 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
                     textColor="text-[#FF6363]"
                   />
                   <Link target="_blank" href={urls.customerInfoEarlyBird}>
-                    <span className="text-[rgba(194,196,200,0.88)] text-sm font-normal underline cursor-pointer hover:text-white transition-colors">
+                    <span className="text-label-neutral text-sm font-normal underline cursor-pointer hover:text-white transition-colors">
                       개인정보 수집 동의
                     </span>
                   </Link>

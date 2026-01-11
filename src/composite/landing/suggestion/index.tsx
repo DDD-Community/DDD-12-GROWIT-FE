@@ -25,14 +25,8 @@ export const SuggestionSection = () => {
           src="/landing/section-3.png"
           width={356}
           height={469}
-          className="hidden md:block shrink-0"
-          alt="third-section-image"
-        />
-        <Image
-          src="/landing/section-3.png"
-          width={205}
-          height={270}
-          className="block md:hidden"
+          sizes="(max-width: 768px) 205px, 356px"
+          className="w-51.25 md:w-89 h-auto shrink-0"
           alt="third-section-image"
         />
       </MotionWrapper>

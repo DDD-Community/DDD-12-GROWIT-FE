@@ -22,43 +22,14 @@ export const FundingDiscountSection = () => {
       </MotionWrapper>
 
       {/* 우측 이미지 컨테이너 */}
-      <MotionWrapper
-        {...LandingPageCommonStyle.fadeIn.right}
-        className="relative w-full flex items-center justify-start"
-      >
-        {/* 툴팁: 컨테이너 상단 중앙 고정 */}
+      <MotionWrapper {...LandingPageCommonStyle.fadeIn.right} className="relative flex items-center justify-between">
         <DarkToolTip>귀여운 키링도 준다구요!</DarkToolTip>
-
-        {/* 첫 번째 이미지 (모바일: 상단 중앙, 데스크톱: 좌측 중앙) */}
         <Image
-          src="/landing/key-ring.png"
-          width={318}
-          height={509}
-          alt="first-key-ring-image"
-          className="-rotate-20 hidden md:block"
-        />
-        <Image
-          src="/landing/key-ring.png"
-          width={159}
-          height={254}
-          alt="first-key-ring-image"
-          className="-rotate-20 block md:hidden mt-4"
-        />
-
-        {/* 두 번째 이미지 (모바일: 하단 중앙, 데스크톱: 우측 중앙) */}
-        <Image
-          src="/landing/key-ring-2.png"
-          width={357}
-          height={357}
-          alt="second-key-ring-image"
-          className="hidden md:block absolute top-1/6 left-1/2 rotate-6"
-        />
-        <Image
-          src="/landing/key-ring-2.png"
-          width={178}
-          height={178}
-          alt="second-key-ring-image"
-          className="absolute md:hidden top-1/6 left-1/2 rotate-6"
+          src="/landing/key-rings.png"
+          width={500}
+          height={400}
+          sizes="(max-width: 768px) 300px 200px"
+          alt="character-key-ring-image"
         />
       </MotionWrapper>
     </Section>
@@ -71,7 +42,7 @@ function FundingNavButton() {
       href="#"
       className="bg-fill-brand-neon body-1-bold py-2.5 px-4.5 rounded-lg bg-brand-neon hover:bg-brand-neon/90 text-text-inverse flex items-center gap-x-2"
     >
-      와디즈 펀딩 바로가기
+      1월 중순 오픈 예정
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path
           d="M1 6.83333H12.6667M12.6667 6.83333L6.83333 1M12.6667 6.83333L6.83333 12.6667"
@@ -88,7 +59,7 @@ function FundingNavButton() {
 
 function DarkToolTip({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`absolute z-10 top-0 left-1/2 transform -translate-x-1/2`}>
+    <div className={`absolute z-10 -top-10 left-1/2 transform -translate-x-1/2`}>
       <div className="relative py-2 px-3 bg-bg-default rounded-xl label-2-medium whitespace-nowrap text-white shadow-sm">
         {children}
         {/* 꼬리 */}
