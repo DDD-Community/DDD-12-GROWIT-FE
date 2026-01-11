@@ -17,7 +17,7 @@ const HeaderActions = () => {
 
     checkAuth();
     window.addEventListener('storage', checkAuth);
-    
+
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
@@ -27,29 +27,21 @@ const HeaderActions = () => {
     router.push('/login');
   };
 
-  const handleSignup = () => {
-    router.push('/signup');
-  };
+  // const handleSignup = () => {
+  //   router.push('/signup');
+  // };
 
   const handleGoHome = () => {
     router.push('/home');
   };
 
   if (isLoggedIn) {
-    return (
-      <Button 
-        variant="primary" 
-        size="sm" 
-        text="홈으로 돌아가기" 
-        onClick={handleGoHome} 
-      />
-    );
+    return <Button variant="primary" size="ml" text="홈으로 돌아가기" onClick={handleGoHome} />;
   }
 
   return (
     <div className="flex items-center gap-3">
-      <Button variant="tertiary" size="sm" text="로그인" onClick={handleLogin} />
-      <Button variant="primary" size="sm" text="시작하기" onClick={handleSignup} />
+      <Button variant="primary" size="ml" text="웹에서 시작" onClick={handleLogin} />
     </div>
   );
 };
