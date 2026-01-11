@@ -34,7 +34,7 @@ export const HomeBanner = () => {
 
   return (
     <div className="relative w-full h-[168px] overflow-hidden">
-      <video className="absolute inset-0 w-full h-full object-cover" src={videoUrl} autoPlay loop muted playsInline />
+      <video className="absolute inset-0 w-full h-full object-cover" src={videoUrl} autoPlay muted playsInline />
       {bannerMessage && (
         <div className="absolute top-1/4 left-4 z-10 max-w-[70%]">
           <p className="text-[18px] font-bold text-white leading-tight whitespace-pre-line">{bannerMessage}</p>
