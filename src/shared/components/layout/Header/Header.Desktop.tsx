@@ -63,7 +63,9 @@ export const HeaderDesktop = ({ mode = 'page', title, rightSection }: HeaderDesk
 
   return (
     <>
-      <div className="hidden sm:flex w-full items-center justify-between p-5 shadow-sm">
+      <div
+        className={`hidden sm:flex w-full items-center justify-between p-5 ${mode === 'landing' ? '' : 'shadow-sm'}`}
+      >
         {renderLeftSection()}
         <div className="flex items-center gap-4">{rightSection || <React.Fragment />}</div>
       </div>

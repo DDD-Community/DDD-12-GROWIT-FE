@@ -1,10 +1,17 @@
 import Image from 'next/image';
 import Section from '@/shared/components/layout/Section';
+import LandingPageCommonStyle from '../constants';
+import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 
-export const FifthSection = () => {
+export const AddGoalFeatureSection = () => {
   return (
-    <Section className="w-full flex flex-col md:flex-row items-center justify-center md:justify-between p-5 lg:p-28 bg-bg-default">
-      <div className="flex flex-col items-start gap-y-8 mb-12 md:mb-0 w-full animate-fade-in-left">
+    <Section
+      className={`w-full flex flex-col md:flex-row items-center justify-center md:justify-between ${LandingPageCommonStyle.padding} bg-bg-default`}
+    >
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.left}
+        className="flex flex-col items-start gap-y-8 mb-12 md:mb-0 w-full"
+      >
         <p className="font-bold text-brand-neon text-xl lg:text-2xl">목표 추가</p>
         <h2 className="text-3xl md:text-5xl font-bold text-text-tertiary leading-[140%]">
           목표 세우기가 <br />
@@ -14,9 +21,12 @@ export const FifthSection = () => {
         <p className="max-w-3xl text-base font-medium md:text-lg lg:text-xl text-text-secondary">
           목표명과 종료일만 설정하면 30초 안에 목표 설정 끝 !
         </p>
-      </div>
+      </MotionWrapper>
 
-      <article className="border-4 border-[rgba(26,26,26,0.7)] rounded-xl overflow-hidden animate-fade-in-right">
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.right}
+        className="border-4 border-[rgba(26,26,26,0.7)] rounded-xl overflow-hidden"
+      >
         <Image
           src="/landing/section-5.png"
           width={350}
@@ -31,7 +41,7 @@ export const FifthSection = () => {
           className="block lg:hidden"
           alt="fifth-section-image"
         />
-      </article>
+      </MotionWrapper>
     </Section>
   );
 };

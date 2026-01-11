@@ -1,10 +1,17 @@
 import Section from '@/shared/components/layout/Section';
 import Image from 'next/image';
+import LandingPageCommonStyle from '../constants';
+import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 
-export const EighthSection = () => {
+export const CollectPlanetFeatureSection = () => {
   return (
-    <Section className="w-full flex flex-col md:flex-row items-center justify-center lg:justify-between p-5 md:p-28 bg-bg-default">
-      <div className="flex flex-col items-start gap-y-8 mb-12 md:mb-0 w-full animate-fade-in-left">
+    <Section
+      className={`w-full flex flex-col md:flex-row items-center justify-center lg:justify-between ${LandingPageCommonStyle.padding} bg-bg-default`}
+    >
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.left}
+        className="flex flex-col items-start gap-y-8 mb-12 md:mb-0 w-full"
+      >
         <p className="font-bold text-brand-neon text-xl lg:text-2xl">행성 수집</p>
         <h2 className="text-3xl md:text-5xl font-bold text-text-strong leading-[140%]">
           목표 유형별로 다양한 <br />
@@ -13,9 +20,12 @@ export const EighthSection = () => {
         <p className="max-w-3xl text-base font-medium md:text-lg lg:text-xl text-text-secondary">
           귀여운 행성 뱃지를 수집하는 재미까지 더해졌어요.
         </p>
-      </div>
+      </MotionWrapper>
 
-      <article className="border-4 border-[rgba(26,26,26,0.7)] rounded-xl overflow-hidden animate-fade-in-right">
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.right}
+        className="border-4 border-[rgba(26,26,26,0.7)] rounded-xl overflow-hidden"
+      >
         <Image
           src="/landing/section-8.png"
           width={350}
@@ -30,7 +40,7 @@ export const EighthSection = () => {
           className="block lg:hidden"
           alt="eighth-section-image"
         />
-      </article>
+      </MotionWrapper>
     </Section>
   );
 };

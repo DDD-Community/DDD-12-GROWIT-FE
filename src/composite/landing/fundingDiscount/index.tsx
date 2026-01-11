@@ -1,21 +1,31 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Section from '@/shared/components/layout/Section';
+import LandingPageCommonStyle from '../constants';
+import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 
-export const NinthSection = () => {
+export const FundingDiscountSection = () => {
   return (
-    <Section className="w-full flex flex-col gap-y-5 md:flex-row items-center justify-center lg:justify-between p-5 md:p-28 bg-white">
-      <div className="flex flex-col items-center md:items-start gap-y-6 mb-12 md:mb-0 w-full animate-fade-in-left">
+    <Section
+      className={`w-full flex flex-col gap-y-5 md:flex-row items-center justify-center lg:justify-between ${LandingPageCommonStyle.padding} bg-white`}
+    >
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.left}
+        className="flex flex-col items-center md:items-start gap-y-6 mb-12 md:mb-0 w-full"
+      >
         <h2 className="text-3xl md:text-5xl font-bold text-text-inverse leading-[140%]">
           와디즈로 <br />
           그로잇 구독료 <br />
           50% 할인받기
         </h2>
         <FundingNavButton />
-      </div>
+      </MotionWrapper>
 
       {/* 우측 이미지 컨테이너 */}
-      <article className="relative w-full flex items-center justify-start animate-fade-in-right">
+      <MotionWrapper
+        {...LandingPageCommonStyle.fadeIn.right}
+        className="relative w-full flex items-center justify-start"
+      >
         {/* 툴팁: 컨테이너 상단 중앙 고정 */}
         <DarkToolTip>귀여운 키링도 준다구요!</DarkToolTip>
 
@@ -50,7 +60,7 @@ export const NinthSection = () => {
           alt="second-key-ring-image"
           className="absolute md:hidden top-1/6 left-1/2 rotate-6"
         />
-      </article>
+      </MotionWrapper>
     </Section>
   );
 };

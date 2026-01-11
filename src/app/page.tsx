@@ -1,30 +1,30 @@
 import { Header } from '@/shared/components/layout';
 import { HeaderActions } from '@/composite/landing/headerAction';
-import { FirstSection } from '@/composite/landing/first';
-import { SecondSection } from '@/composite/landing/second';
-import { ThirdSection } from '@/composite/landing/third';
-import { FourthSection } from '@/composite/landing/fourth';
-import { FifthSection } from '@/composite/landing/fifth';
-import { SixthSection } from '@/composite/landing/sixth';
-import { SeventhSection } from '@/composite/landing/seventh';
-import { EighthSection } from '@/composite/landing/eighth';
-import { NinthSection } from '@/composite/landing/ninth';
-import { TenthSection } from '@/composite/landing/tenth';
+import { IntroSection } from '@/composite/landing/intro';
+import { QuestioningSection } from '@/composite/landing/questioning';
+import { SuggestionSection } from '@/composite/landing/suggestion';
+import { StoryVideoSection } from '@/composite/landing/storyVideo';
+import { AddGoalFeatureSection } from '@/composite/landing/addGoal';
+import { ManageTodoFeatureSection } from '@/composite/landing/manageTodo';
+import { GoalAdviceFeatureSection } from '@/composite/landing/goalAdvice';
+import { CollectPlanetFeatureSection } from '@/composite/landing/collectPlanet';
+import { FundingDiscountSection } from '@/composite/landing/fundingDiscount';
+import { LaunchSection } from '@/composite/landing/launch';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen w-fulls overflow-x-hidden bg-normal">
+    <div className="min-h-screen w-full overflow-x-hidden bg-normal">
       <Header mode="landing" rightSection={<HeaderActions />} />
-      <FirstSection />
-      <SecondSection />
-      <ThirdSection />
-      <FourthSection />
-      <FifthSection />
-      <SixthSection />
-      <SeventhSection />
-      <EighthSection />
-      <NinthSection />
-      <TenthSection />
+      <IntroSection />
+      <QuestioningSection />
+      <SuggestionSection />
+      <StoryVideoSection />
+      <AddGoalFeatureSection />
+      <ManageTodoFeatureSection />
+      <GoalAdviceFeatureSection />
+      <CollectPlanetFeatureSection />
+      <FundingDiscountSection />
+      <LaunchSection />
     </div>
   );
 }
