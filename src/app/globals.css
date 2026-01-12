@@ -19,6 +19,41 @@
       sans-serif;
   }
 
+  /* --- 랜딩페이지 관련 스타일 --- */
+
+  .bg-linear-to-brand {
+    background: radial-gradient(
+      183.7% 161.62% at 23.89% 135.58%,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(173, 248, 180, 0.8) 20.19%,
+      rgba(88, 255, 103, 0.8) 42.79%,
+      rgba(100, 238, 170, 0.8) 61.54%,
+      rgba(136, 237, 255, 0.8) 83.84%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-linear-to-space {
+    background:
+      linear-gradient(227deg, rgba(15, 15, 16, 0) 4.85%, rgba(15, 15, 16, 0.65) 23.95%, #010101 73.59%),
+      url('/landing/section-4-bg.jpg');
+  }
+
+  .landing-ten-bg {
+    background:
+      radial-gradient(
+        62.51% 62.51% at 50% 37.49%,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.45) 75.14%,
+        rgba(0, 0, 0, 0.8) 87.5%,
+        #000 100%
+      ),
+      url('/landing/section-10-bg.png') lightgray 50% / cover no-repeat;
+
+    backdrop-filter: blur(10px);
+  }
   * {
     @apply border-border outline-ring/50;
   }

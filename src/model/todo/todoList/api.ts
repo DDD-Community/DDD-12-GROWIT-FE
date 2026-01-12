@@ -27,9 +27,8 @@ export const todoListApi = {
   },
 
   putTodo: async (req: PutTodoRequest) => {
-    const { todoId, routineUpdateType, ...putReq } = req;
-    const queryParam = routineUpdateType ? `?routineUpdateType=${routineUpdateType}` : '';
-    const { data } = await apiClient.put<CommonResponse<TodoResponse>>(`/todos/${todoId}${queryParam}`, putReq);
+    const { todoId, ...putReq } = req;
+    const { data } = await apiClient.put<CommonResponse<TodoResponse>>(`/todos/${todoId}`, putReq);
     return data.data;
   },
 

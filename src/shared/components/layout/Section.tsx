@@ -20,7 +20,7 @@ const Section = ({ children, className, ...props }: SectionProps) => {
   return (
     <section
       tabIndex={0}
-      className={cn('min-h-screen', 'flex items-center', 'pt-[160px] pb-16 sm:pb-20', className)}
+      className={cn('min-h-screen', 'flex items-center', 'pt-40 pb-16 sm:pb-20', className)}
       {...props}
     >
       {children}

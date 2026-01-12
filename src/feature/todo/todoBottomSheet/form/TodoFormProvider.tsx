@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, createContext, useContext } from 'react';
+import { useCallback, createContext, useContext, useMemo } from 'react';
 import { useForm, FormProvider, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -56,16 +56,30 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
   // 선택된 날짜를 YYYY-MM-DD 형식으로 변환
   const initialDateString = format(selectedDate, 'yyyy-MM-dd');
 
-  // add 모드일 때 사용할 기본값 (date 포함)
-  const addModeDefaults: TodoFormData = {
-    ...TODO_DEFAULT_VALUES,
-    date: initialDateString,
-  };
+  // add 모드일 때 사용할 기본값 (date 포함) - selectedDate 변경 시에만 재계산
+  const addModeDefaults = useMemo<TodoFormData>(
+    () => ({
+      ...TODO_DEFAULT_VALUES,
+      date: initialDateString,
+    }),
+    [initialDateString]
+  );
+
+  // form의 values 옵션: add 모드일 때도 selectedDate 변경을 반영
+  const formValues = useMemo(() => {
+    if (mode === 'edit' && values) {
+      return values;
+    }
+    if (mode === 'add') {
+      return addModeDefaults;
+    }
+    return undefined;
+  }, [mode, values, addModeDefaults]);
 
   const methods = useForm<TodoFormData>({
     resolver: zodResolver(todoFormSchema),
     defaultValues: addModeDefaults,
-    values: mode === 'edit' && values ? values : undefined,
+    values: formValues,
     mode: 'onSubmit',
     shouldUnregister: false,
   });
