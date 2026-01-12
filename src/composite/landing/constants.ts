@@ -1,5 +1,6 @@
 const LandingPageCommonStyle = {
   padding: 'px-5 md:px-10 lg:px-28',
+  innerContainer: 'max-w-[1200px] w-full mx-auto',
   fadeIn: {
     default: {
       initial: { opacity: 0 },
