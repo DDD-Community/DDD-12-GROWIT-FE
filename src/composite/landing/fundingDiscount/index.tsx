@@ -6,32 +6,34 @@ import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 
 export const FundingDiscountSection = () => {
   return (
-    <Section
-      className={`w-full flex flex-col gap-y-5 md:flex-row items-center justify-center lg:justify-between ${LandingPageCommonStyle.padding} bg-white`}
-    >
-      <MotionWrapper
-        {...LandingPageCommonStyle.fadeIn.left}
-        className="flex flex-col items-center md:items-start gap-y-6 mb-12 md:mb-0 w-full"
+    <Section className="w-full bg-white">
+      <div
+        className={`flex flex-col gap-y-5 md:flex-row items-center justify-center lg:justify-between ${LandingPageCommonStyle.padding} ${LandingPageCommonStyle.innerContainer}`}
       >
-        <h2 className="text-3xl md:text-5xl font-bold text-text-inverse leading-[140%]">
-          와디즈로 <br />
-          그로잇 구독료 <br />
-          50% 할인받기
-        </h2>
-        <FundingNavButton />
-      </MotionWrapper>
+        <MotionWrapper
+          {...LandingPageCommonStyle.fadeIn.left}
+          className="flex flex-col items-center md:items-start gap-y-6 mb-12 md:mb-0 w-full"
+        >
+          <h2 className="text-3xl md:text-5xl font-bold text-text-inverse leading-[140%]">
+            와디즈로 <br />
+            그로잇 구독료 <br />
+            50% 할인받기
+          </h2>
+          <FundingNavButton />
+        </MotionWrapper>
 
-      {/* 우측 이미지 컨테이너 */}
-      <MotionWrapper {...LandingPageCommonStyle.fadeIn.right} className="relative flex items-center justify-between">
-        <DarkToolTip>귀여운 키링도 준다구요!</DarkToolTip>
-        <Image
-          src="/landing/key-rings.png"
-          width={500}
-          height={400}
-          sizes="(max-width: 768px) 300px 200px"
-          alt="character-key-ring-image"
-        />
-      </MotionWrapper>
+        {/* 우측 이미지 컨테이너 */}
+        <MotionWrapper {...LandingPageCommonStyle.fadeIn.right} className="relative flex items-center justify-between">
+          <DarkToolTip>귀여운 키링도 준다구요!</DarkToolTip>
+          <Image
+            src="/landing/key-rings.png"
+            width={500}
+            height={400}
+            sizes="(max-width: 768px) 300px 200px"
+            alt="character-key-ring-image"
+          />
+        </MotionWrapper>
+      </div>
     </Section>
   );
 };
