@@ -1,4 +1,5 @@
 import Button from '@/shared/components/input/Button';
+import Image from 'next/image';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRouter } from 'next/navigation';
 
@@ -108,5 +109,60 @@ AdviceChatMessage.DailyAdvice = function DailyAdviceMessage({ content, timestamp
         <p className="text-text-strong font-medium">{content}</p>
       </article>
     </div>
+  );
+};
+
+AdviceChatMessage.Limit = function LimitMessage() {
+  return (
+    <>
+      <AdviceChatMessage
+        direction="left"
+        content={
+          <Image
+            src="/advice/emoji-advice-sleeping.gif"
+            alt="sleeping-grorong"
+            width={150}
+            height={150}
+            className="object-contain"
+          />
+        }
+      />
+      <AdviceChatMessage
+        direction="left"
+        content={
+          <span>
+            오늘의 고민 상담은 끝이야!
+            <br />
+            내일 아침에 다시 만나!
+            <br />
+            <br />
+            <span className="text-brand-neon label-1-bold">1일 3개 입력만 가능</span>
+          </span>
+        }
+      />
+    </>
+  );
+};
+
+AdviceChatMessage.Loading = function LoadingMessage() {
+  return (
+    <>
+      <AdviceChatMessage
+        direction="left"
+        content={
+          <Image
+            src="/advice/emoji-advice-writing.gif"
+            alt="writting-grorong"
+            width={150}
+            height={150}
+            className="object-contain"
+          />
+        }
+      />
+      <AdviceChatMessage
+        direction="left"
+        content={<span>열심히 고민중이야 좀만 기다려줘</span>}
+      />
+    </>
   );
 };

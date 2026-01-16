@@ -1,6 +1,5 @@
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceChatMessage } from './AdviceChatMessage';
-import { AdviceChatLoading } from './AdviceChatLoading';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
 
 type AdviceChatRenderProps = {
@@ -24,26 +23,11 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
   // 일반 채팅 히스토리 렌더링
   return (
     <>
-      <section className="px-5 pb-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
+      <section className="px-5 pb-[138px] absolute inset-0 overflow-y-auto z-10 space-y-4">
         {displayMessages.map((message, index) => {
           // 오늘 대화 횟수 소진 안내메시지
           if (message.isSystemMessage) {
-            return (
-              <AdviceChatMessage
-                key={`system-${index}`}
-                direction="left"
-                content={
-                  <span>
-                    오늘의 고민 상담은 끝이야!
-                    <br />
-                    내일 아침에 다시 만나!
-                    <br />
-                    <br />
-                    <span className="text-brand-neon label-1-bold">1일 3개 입력만 가능</span>
-                  </span>
-                }
-              />
-            );
+            return <AdviceChatMessage.Limit key={`system-${index}`} />;
           }
 
           if (message.userMessage === '아침 조언 요청') {
@@ -54,8 +38,9 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
             );
           }
 
+          // 로딩 메시지
           if (message.isLoading !== undefined && message.isLoading) {
-            return <AdviceChatLoading direction="left" key={`loading-${index}`} />;
+            return <AdviceChatMessage.Loading key={`loading-${index}`} />;
           }
 
           // 일반 대화 메시지
