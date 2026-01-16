@@ -37,7 +37,7 @@ AdviceChatMessage.Onboarding = function OnboardingMessage({
 }) {
   return (
     <>
-      <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
+      <section className="px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
         <div className="flex flex-col gap-y-4">
           <AdviceChatMessage
             direction="left"
@@ -60,7 +60,7 @@ AdviceChatMessage.NoGoal = function NoGoalMessage() {
   const router = useRouter();
   return (
     <>
-      <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
+      <section className="px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
         <div className="flex flex-col gap-y-4">
           <AdviceChatMessage direction="left" content="음..아직 목표가 없네?" />
           <div className="pr-5">

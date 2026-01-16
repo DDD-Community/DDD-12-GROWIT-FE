@@ -1,4 +1,3 @@
-import { AdviceChatBackground } from '@/feature/advice/components/AdviceChatBackground';
 import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 
 export const HasNoProgressGoalPage = () => {
@@ -55,8 +54,6 @@ export const HasNoProgressGoalPage = () => {
       </header>
       <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
         <AdviceChatHistory adviceChat={null} />
-
-        <AdviceChatBackground type="noGoal" />
       </main>
     </>
   );

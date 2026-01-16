@@ -1,6 +1,5 @@
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceChatMessage } from './AdviceChatMessage';
-import { AdviceChatBackground } from './AdviceChatBackground';
 import { AdviceChatLoading } from './AdviceChatLoading';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
 
@@ -25,7 +24,7 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
   // 일반 채팅 히스토리 렌더링
   return (
     <>
-      <section className="h-[calc(100vh-398px)] px-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
+      <section className="px-5 pb-5 absolute inset-0 overflow-y-auto z-10 space-y-4">
         {displayMessages.map((message, index) => {
           // 오늘 대화 횟수 소진 안내메시지
           if (message.isSystemMessage) {
@@ -68,7 +67,6 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
           );
         })}
       </section>
-      <AdviceChatBackground type={backgroundType} />
     </>
   );
 };
