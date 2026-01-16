@@ -82,7 +82,7 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
   };
 
   return (
-    <>
+    <div className="flex flex-col flex-1 bg-[url('/advice/advice-chat-bg.png')] bg-cover bg-center">
       <AdviceHeader progressGoals={progressGoals} selectedGoal={selectedGoal} setSelectedGoal={setSelectedGoal} />
       <main className="flex flex-1 flex-col relative text-sm tracking-wide">
         <AdviceChatHistory adviceChat={adviceChat} isSendingRequest={isSendingRequest} />
@@ -135,6 +135,6 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
           setSelectedAdviceStyle={setSelectedAdviceStyle}
         />
       </div>
-    </>
+    </div>
   );
 }

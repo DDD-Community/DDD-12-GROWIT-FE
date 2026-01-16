@@ -1,7 +1,6 @@
 import Button from '@/shared/components/input/Button';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRouter } from 'next/navigation';
-import { AdviceChatBackground } from './AdviceChatBackground';
 
 type AdviceChatMessageType = 'onboarding' | 'loading' | 'text';
 
@@ -50,7 +49,6 @@ AdviceChatMessage.Onboarding = function OnboardingMessage({
           </span>
         </div>
       </section>
-      <AdviceChatBackground type={backgroundType} />
     </>
   );
 };
@@ -90,7 +88,6 @@ AdviceChatMessage.NoGoal = function NoGoalMessage() {
           </div>
         </div>
       </section>
-      <AdviceChatBackground type="noGoal" />
     </>
   );
 };

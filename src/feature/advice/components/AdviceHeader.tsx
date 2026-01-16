@@ -15,7 +15,7 @@ type AdviceHeaderProps = {
 export const AdviceHeader = ({ progressGoals, selectedGoal, setSelectedGoal }: AdviceHeaderProps) => {
   const router = useRouter();
   return (
-    <header className="w-full flex justify-between items-center px-5 py-4 body-1-normal text-text-strong">
+    <header className="w-full flex justify-between items-center px-5 py-4 body-1-normal text-text-strong bg-transparent">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="gap-x-2 flex items-center py-2">
