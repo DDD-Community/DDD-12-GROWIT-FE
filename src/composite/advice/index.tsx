@@ -82,60 +82,59 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
   };
 
   return (
-    <>
+    <div className="flex flex-col flex-1 bg-[url('/advice/advice-chat-bg.png')] bg-cover bg-center">
       <AdviceHeader progressGoals={progressGoals} selectedGoal={selectedGoal} setSelectedGoal={setSelectedGoal} />
-      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative text-sm tracking-wide">
+      <main className="flex flex-1 flex-col relative text-sm tracking-wide">
         <AdviceChatHistory adviceChat={adviceChat} isSendingRequest={isSendingRequest} />
-
-        <div
-          className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
-        >
-          <nav className="w-full flex justify-between items-center pt-5">
-            <button onClick={showSheet} className="flex items-center gap-x-2 body-1-normal text-text-strong">
-              {ADVICE_STYLE_SELECT_ITEMS[selectedAdviceStyle].title}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-            <AdviceCountBadge adviceCount={adviceChat.remainingCount} />
-          </nav>
-          <section className="pb-5 w-full flex items-center gap-x-2">
-            <div className="flex-1">
-              <InputField
-                version="underline"
-                name="advice-message"
-                value={userMessage}
-                onChange={e => setUserMessage(e.target.value)}
-                placeholder="지금 목표에서 뭐부터 하면 좋을까?"
-              />
-            </div>
-            <AdviceSendButton
-              type="button"
-              onKeyDown={e => e.key === 'Enter' && handleRequestAdvice()}
-              onClick={handleRequestAdvice}
-              disabled={userMessage.length === 0 || adviceChat.remainingCount === 0 || !adviceChat}
-            />
-          </section>
-
-          <AdviceStyleSelectSheet
-            isOpen={isOpen}
-            showSheet={showSheet}
-            closeSheet={closeSheet}
-            selectedAdviceStyle={selectedAdviceStyle}
-            setSelectedAdviceStyle={setSelectedAdviceStyle}
-          />
-        </div>
       </main>
-    </>
+      <div
+        className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
+      >
+        <nav className="w-full flex justify-between items-center pt-5">
+          <button onClick={showSheet} className="flex items-center gap-x-2 body-1-normal text-text-strong">
+            {ADVICE_STYLE_SELECT_ITEMS[selectedAdviceStyle].title}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <AdviceCountBadge adviceCount={adviceChat.remainingCount} />
+        </nav>
+        <section className="pb-5 w-full flex items-center gap-x-2">
+          <div className="flex-1">
+            <InputField
+              version="underline"
+              name="advice-message"
+              value={userMessage}
+              onChange={e => setUserMessage(e.target.value)}
+              placeholder="지금 목표에서 뭐부터 하면 좋을까?"
+            />
+          </div>
+          <AdviceSendButton
+            type="button"
+            onKeyDown={e => e.key === 'Enter' && handleRequestAdvice()}
+            onClick={handleRequestAdvice}
+            disabled={userMessage.length === 0 || adviceChat.remainingCount === 0 || !adviceChat}
+          />
+        </section>
+
+        <AdviceStyleSelectSheet
+          isOpen={isOpen}
+          showSheet={showSheet}
+          closeSheet={closeSheet}
+          selectedAdviceStyle={selectedAdviceStyle}
+          setSelectedAdviceStyle={setSelectedAdviceStyle}
+        />
+      </div>
+    </div>
   );
 }
