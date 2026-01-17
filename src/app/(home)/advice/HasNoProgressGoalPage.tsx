@@ -1,9 +1,8 @@
-import { AdviceChatBackground } from '@/feature/advice/components/AdviceChatBackground';
 import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 
 export const HasNoProgressGoalPage = () => {
   return (
-    <>
+    <div className="bg-[url('/advice/advice-chat-bg.png')] bg-cover bg-center min-h-[calc(100vh-56px)]">
       <header className="w-full flex justify-between items-center px-5 py-4 body-1-normal text-text-strong">
         <button className="gap-x-2 flex items-center py-2">
           <svg
@@ -55,9 +54,7 @@ export const HasNoProgressGoalPage = () => {
       </header>
       <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
         <AdviceChatHistory adviceChat={null} />
-
-        <AdviceChatBackground type="noGoal" />
       </main>
-    </>
+    </div>
   );
 };
