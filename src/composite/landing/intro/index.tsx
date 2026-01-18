@@ -24,7 +24,7 @@ export const IntroSection = () => {
       <div className={`relative z-20 flex flex-col items-center ${LandingPageCommonStyle.innerContainer} ${LandingPageCommonStyle.padding}`}>
         <MotionWrapper {...LandingPageCommonStyle.fadeIn.default}>
           <h1 className="text-4xl md:text-6xl font-extrabold text-center text-text-strong animate-fade-in bg-clip-text leading-tight mb-6">
-            <span className="bg-linear-to-brand">그로잇</span>으로 너의 인생이 바꿜거야
+            <span className="bg-linear-to-brand">그로잇</span>으로 너의 인생이 바뀔거야
           </h1>
         </MotionWrapper>
         <EarlyBirdEvent />
