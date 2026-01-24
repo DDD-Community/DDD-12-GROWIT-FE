@@ -116,14 +116,23 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
               name="advice-message"
               value={userMessage}
               onChange={e => setUserMessage(e.target.value)}
-              placeholder="지금 목표에서 뭐부터 하면 좋을까?"
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing && userMessage.length > 0 && !isSendingRequest) {
+                  handleRequestAdvice();
+                }
+              }}
+              disabled={adviceChat.remainingCount === 0 || isSendingRequest}
+              placeholder={
+                adviceChat.remainingCount === 0
+                  ? '오늘의 조언 횟수를 모두 사용했어요'
+                  : '지금 목표에서 뭐부터 하면 좋을까?'
+              }
             />
           </div>
           <AdviceSendButton
             type="button"
-            onKeyDown={e => e.key === 'Enter' && handleRequestAdvice()}
             onClick={handleRequestAdvice}
-            disabled={userMessage.length === 0 || adviceChat.remainingCount === 0 || !adviceChat}
+            disabled={userMessage.length === 0 || adviceChat.remainingCount === 0 || !adviceChat || isSendingRequest}
           />
         </section>
 
