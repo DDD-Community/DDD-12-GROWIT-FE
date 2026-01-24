@@ -9,12 +9,11 @@ import { useState } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { AdviceChat, AdviceStyle } from '@/model/advice/types';
 import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
-import { AdviceSendButton } from '@/feature/advice/components/AdviceSendButton';
-import { InputField } from '@/shared/components/input/InputField';
+import { AdviceInputSection } from '@/feature/advice/components/AdviceInputSection';
+import { AdviceStyleSheetTrigger } from '@/feature/advice/components/AdviceStyleSheetTrigger';
 import { AdviceStyleSelectSheet } from '@/feature/advice/components/AdviceStyleSelectSheet';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { useToast } from '@/shared/components/feedBack/toast';
-import { ADVICE_STYLE_SELECT_ITEMS } from './constants';
 import { AdviceQueryKeys } from '@/model/advice/queryKeys';
 import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
 import { HasNoProgressGoalPage } from '@/app/(home)/advice/HasNoProgressGoalPage';
@@ -53,7 +52,6 @@ type AdviceChatClientContentProps = {
 function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClientContentProps) {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(progressGoals[0] ?? null);
   const [selectedAdviceStyle, setSelectedAdviceStyle] = useState<AdviceStyle>('BASIC');
-  const [userMessage, setUserMessage] = useState('');
 
   const queryClient = useQueryClient();
   const { showToast } = useToast();
@@ -61,7 +59,6 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
   const { mutateAsync: requestAdvice, isPending: isSendingRequest } = useMutation(
     AdviceMutation.requestAdvice({
       onSuccess: () => {
-        setUserMessage('');
         queryClient.invalidateQueries({ queryKey: AdviceQueryKeys.chat() });
       },
       onError: () => {
@@ -70,12 +67,12 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
     })
   );
 
-  const handleRequestAdvice = () => {
+  const handleRequestAdvice = (userMessage: string) => {
     if (!selectedGoal) return;
     const adviceChatRequest = {
       week: 1,
+      userMessage,
       goalId: selectedGoal.id,
-      userMessage: userMessage,
       adviceStyle: selectedAdviceStyle,
     };
     requestAdvice(adviceChatRequest);
@@ -91,50 +88,14 @@ function AdviceChatClientContent({ progressGoals, adviceChat }: AdviceChatClient
         className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
       >
         <nav className="w-full flex justify-between items-center pt-5">
-          <button onClick={showSheet} className="flex items-center gap-x-2 body-1-normal text-text-strong">
-            {ADVICE_STYLE_SELECT_ITEMS[selectedAdviceStyle].title}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
+          <AdviceStyleSheetTrigger selectedAdviceStyle={selectedAdviceStyle} onClick={showSheet} />
           <AdviceCountBadge adviceCount={adviceChat.remainingCount} />
         </nav>
-        <section className="pb-5 w-full flex items-center gap-x-2">
-          <div className="flex-1">
-            <InputField
-              version="underline"
-              name="advice-message"
-              value={userMessage}
-              onChange={e => setUserMessage(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && !e.nativeEvent.isComposing && userMessage.length > 0 && !isSendingRequest) {
-                  handleRequestAdvice();
-                }
-              }}
-              disabled={adviceChat.remainingCount === 0 || isSendingRequest}
-              placeholder={
-                adviceChat.remainingCount === 0
-                  ? '오늘의 조언 횟수를 모두 사용했어요'
-                  : '지금 목표에서 뭐부터 하면 좋을까?'
-              }
-            />
-          </div>
-          <AdviceSendButton
-            type="button"
-            onClick={handleRequestAdvice}
-            disabled={userMessage.length === 0 || adviceChat.remainingCount === 0 || !adviceChat || isSendingRequest}
-          />
-        </section>
+        <AdviceInputSection
+          remainingCount={adviceChat.remainingCount}
+          isSendingRequest={isSendingRequest}
+          onSubmit={handleRequestAdvice}
+        />
 
         <AdviceStyleSelectSheet
           isOpen={isOpen}
