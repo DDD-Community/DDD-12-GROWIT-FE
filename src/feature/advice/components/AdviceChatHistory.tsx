@@ -1,14 +1,20 @@
+import { useEffect, useRef } from 'react';
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceChatMessage } from './AdviceChatMessage';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
+import { useAdviceFormContext } from '../hooks/useAdviceFormContext';
 
-type AdviceChatRenderProps = {
-  adviceChat: AdviceChat | null;
-  isSendingRequest?: boolean;
-};
-
-export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false }: AdviceChatRenderProps) => {
+export const AdviceChatHistory = ({ adviceChat = null }: { adviceChat: AdviceChat | null }) => {
+  const { isSendingRequest } = useAdviceFormContext();
   const { displayMessages, backgroundType, shouldShowOnboarding } = useAdviceChatMessages(adviceChat, isSendingRequest);
+
+  const scrollRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    }
+  }, [displayMessages]);
 
   // Early return: NoGoal 케이스
   if (!adviceChat) {
@@ -23,7 +29,7 @@ export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false 
   // 일반 채팅 히스토리 렌더링
   return (
     <>
-      <section className="px-5 pb-[138px] absolute inset-0 overflow-y-auto z-10 space-y-4">
+      <section ref={scrollRef} className="px-5 pb-34.5 absolute inset-0 overflow-y-auto z-10 space-y-4">
         {displayMessages.map((message, index) => {
           // 오늘 대화 횟수 소진 안내메시지
           if (message.isSystemMessage) {
