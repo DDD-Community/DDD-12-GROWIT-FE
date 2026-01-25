@@ -1,8 +1,7 @@
-import React from 'react';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { InputField } from '@/shared/components/input/InputField';
-import { ButtonHTMLAttributes } from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import { AdviceFormSchema } from '../AdviceSubmitFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ADVICE_STYLE_SELECT_ITEMS } from '@/composite/advice/constants';
@@ -19,7 +18,7 @@ type AdviceFormRootProps = {
   children: React.ReactNode;
 };
 export const AdviceFormRoot = ({ goalId, children }: AdviceFormRootProps) => {
-  const { requestAdvice, isSendingRequest, remainingCount } = useAdviceFormContext();
+  const { requestAdvice } = useAdviceFormContext();
   const formMethods = useForm<AdviceChatRequest>({
     defaultValues: {
       week: 1,
@@ -31,9 +30,9 @@ export const AdviceFormRoot = ({ goalId, children }: AdviceFormRootProps) => {
     resolver: zodResolver(AdviceFormSchema),
   });
 
-  const handleRequestAdvice = (input: AdviceChatRequest, e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
-    if (!goalId || isSendingRequest || remainingCount <= 0) return;
+  const handleRequestAdvice = (input: AdviceChatRequest, e?: React.BaseSyntheticEvent) => {
+    e?.preventDefault();
+    if (!goalId) return;
     const adviceChatRequest = {
       week: 1,
       goalId: goalId,
@@ -48,7 +47,7 @@ export const AdviceFormRoot = ({ goalId, children }: AdviceFormRootProps) => {
   return (
     <FormProvider {...formMethods}>
       <form
-        onSubmit={e => handleRequestAdvice(formMethods.getValues(), e)}
+        onSubmit={formMethods.handleSubmit((data, e) => handleRequestAdvice(data, e))}
         className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
       >
         {children}
@@ -66,8 +65,7 @@ const AdviceSubmitInput = () => {
 
 const AdviceSubmitButton = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { formState, watch } = useFormContext<AdviceChatRequest>();
-  const { isSendingRequest, remainingCount } = useAdviceFormContext();
-  const isDisabled = isSendingRequest || formState.isSubmitting || !watch('userMessage') || remainingCount <= 0;
+  const isDisabled = formState.isSubmitting || !watch('userMessage');
   const buttonClasses = `${isDisabled ? 'bg-fill-normal cursor-not-allowed' : 'bg-white cursor-pointer'}`;
 
   return (
