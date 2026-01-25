@@ -2,14 +2,12 @@ import { useEffect, useRef } from 'react';
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceChatMessage } from './AdviceChatMessage';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
+import { useAdviceFormContext } from '../hooks/useAdviceFormContext';
 
-type AdviceChatRenderProps = {
-  adviceChat: AdviceChat | null;
-  isSendingRequest?: boolean;
-};
-
-export const AdviceChatHistory = ({ adviceChat = null, isSendingRequest = false }: AdviceChatRenderProps) => {
+export const AdviceChatHistory = ({ adviceChat = null }: { adviceChat: AdviceChat | null }) => {
+  const { isSendingRequest } = useAdviceFormContext();
   const { displayMessages, backgroundType, shouldShowOnboarding } = useAdviceChatMessages(adviceChat, isSendingRequest);
+
   const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {

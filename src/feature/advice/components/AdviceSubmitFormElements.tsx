@@ -5,14 +5,10 @@ import { InputField } from '@/shared/components/input/InputField';
 import { ButtonHTMLAttributes } from 'react';
 import { AdviceFormSchema } from '../AdviceSubmitFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UseMutateAsyncFunction } from '@tanstack/react-query';
 import { ADVICE_STYLE_SELECT_ITEMS } from '@/composite/advice/constants';
-import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import { AdviceFormContext } from '../components/AdviceFormContext';
-import { useAdviceFormContext } from '../hooks/useAdviceFormContext';
+import { useAdviceFormContext, useAdviceStyleSelectContext } from '../hooks/useAdviceFormContext';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import type { AdviceChat, AdviceChatRequest, AdviceStyle } from '@/model/advice/types';
-
+import type { AdviceChatRequest, AdviceStyle } from '@/model/advice/types';
 /**
  * 조언(일기) 제출 폼
  * 현재는 목표별로 조언을 제출하지 않기 때문에 폼 제출에 사용할 목표는 진행중인 목표 중 첫 번째 목표로 고정합니다.
@@ -20,11 +16,10 @@ import type { AdviceChat, AdviceChatRequest, AdviceStyle } from '@/model/advice/
 
 type AdviceFormRootProps = {
   goalId?: string;
-  requestAdvice: UseMutateAsyncFunction<AdviceChat, Error, AdviceChatRequest, unknown>;
-  isSendingRequest: boolean;
   children: React.ReactNode;
 };
-export const AdviceFormRoot = ({ goalId, requestAdvice, isSendingRequest, children }: AdviceFormRootProps) => {
+export const AdviceFormRoot = ({ goalId, children }: AdviceFormRootProps) => {
+  const { requestAdvice, isSendingRequest, remainingCount } = useAdviceFormContext();
   const formMethods = useForm<AdviceChatRequest>({
     defaultValues: {
       week: 1,
@@ -35,11 +30,10 @@ export const AdviceFormRoot = ({ goalId, requestAdvice, isSendingRequest, childr
     mode: 'onSubmit',
     resolver: zodResolver(AdviceFormSchema),
   });
-  const { isOpen, showSheet, closeSheet } = useBottomSheet();
 
   const handleRequestAdvice = (input: AdviceChatRequest, e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    if (!goalId || isSendingRequest) return;
+    if (!goalId || isSendingRequest || remainingCount <= 0) return;
     const adviceChatRequest = {
       week: 1,
       goalId: goalId,
@@ -47,25 +41,18 @@ export const AdviceFormRoot = ({ goalId, requestAdvice, isSendingRequest, childr
       adviceStyle: input.adviceStyle,
     };
     requestAdvice(adviceChatRequest);
+    // 사용자 메시지만 초기화
+    formMethods.setValue('userMessage', '');
   };
 
   return (
     <FormProvider {...formMethods}>
-      <AdviceFormContext.Provider
-        value={{
-          isPending: isSendingRequest,
-          isAdviceStyleSheetOpen: isOpen,
-          openAdviceStyleSheet: showSheet,
-          closeAdviceStyleSheet: closeSheet,
-        }}
+      <form
+        onSubmit={e => handleRequestAdvice(formMethods.getValues(), e)}
+        className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
       >
-        <form
-          onSubmit={e => handleRequestAdvice(formMethods.getValues(), e)}
-          className={`bg-elevated-normal flex flex-col gap-y-2 rounded-t-2xl px-5 w-full sticky bottom-0 ${Z_INDEX.SHEET}`}
-        >
-          {children}
-        </form>
-      </AdviceFormContext.Provider>
+        {children}
+      </form>
     </FormProvider>
   );
 };
@@ -79,8 +66,8 @@ const AdviceSubmitInput = () => {
 
 const AdviceSubmitButton = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { formState, watch } = useFormContext<AdviceChatRequest>();
-  const { isPending } = useAdviceFormContext();
-  const isDisabled = isPending || formState.isSubmitting || !watch('userMessage') || props.disabled;
+  const { isSendingRequest, remainingCount } = useAdviceFormContext();
+  const isDisabled = isSendingRequest || formState.isSubmitting || !watch('userMessage') || remainingCount <= 0;
   const buttonClasses = `${isDisabled ? 'bg-fill-normal cursor-not-allowed' : 'bg-white cursor-pointer'}`;
 
   return (
@@ -104,7 +91,7 @@ const AdviceSubmitButton = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement
 };
 
 const AdviceStyleSelectTrigger = ({ children }: { children: React.ReactNode }) => {
-  const { openAdviceStyleSheet } = useAdviceFormContext();
+  const { openSheet } = useAdviceStyleSelectContext();
   const { watch } = useFormContext<AdviceChatRequest>();
 
   return (
@@ -113,7 +100,7 @@ const AdviceStyleSelectTrigger = ({ children }: { children: React.ReactNode }) =
         type="button"
         onClick={e => {
           e.stopPropagation();
-          openAdviceStyleSheet();
+          openSheet();
         }}
         className="flex items-center gap-x-2 body-1-normal text-text-strong"
       >
@@ -138,7 +125,7 @@ const AdviceStyleSelectTrigger = ({ children }: { children: React.ReactNode }) =
 };
 
 const AdviceStyleSelectSheet = () => {
-  const { isAdviceStyleSheetOpen, openAdviceStyleSheet, closeAdviceStyleSheet } = useAdviceFormContext();
+  const { isSheetOpen, openSheet, closeSheet } = useAdviceStyleSelectContext();
   const adviceStyleValues = Object.values(ADVICE_STYLE_SELECT_ITEMS);
   const adviceStyleKeys = Object.keys(ADVICE_STYLE_SELECT_ITEMS) as AdviceStyle[];
 
@@ -146,10 +133,10 @@ const AdviceStyleSelectSheet = () => {
   const selectedAdviceStyle = watch('adviceStyle');
 
   return (
-    <BottomSheet isOpen={isAdviceStyleSheetOpen} showSheet={openAdviceStyleSheet} closeSheet={closeAdviceStyleSheet}>
+    <BottomSheet isOpen={isSheetOpen} showSheet={openSheet} closeSheet={closeSheet}>
       <BottomSheet.Title>
         <div className="w-full justify-start items-center p-5">
-          <button type="button" onClick={closeAdviceStyleSheet} className="text-text-strong">
+          <button type="button" onClick={closeSheet} className="text-text-strong">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -178,7 +165,7 @@ const AdviceStyleSelectSheet = () => {
                 isSelected={selectedAdviceStyle === currentKey}
                 onSelect={() => {
                   setValue('adviceStyle', currentKey);
-                  closeAdviceStyleSheet();
+                  closeSheet();
                 }}
               />
             );
