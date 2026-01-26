@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 //import { todoHandlers } from './domain/todo';
+import { adviceHandlers } from './domain/advice';
 import { getContribution } from '../src/composite/home/contributionGraph/api';
 
 // 테스트용 더미 데이터
@@ -73,4 +74,4 @@ const getJobRoles = http.get('/resource/jobroles', () => {
 });
 
 // 이 배열에 api 함수들을 넣어 작동
-export const handlers = [getUsers, login, reissue, getJobRoles, getContribution];
+export const handlers = [getUsers, login, reissue, getJobRoles, getContribution, ...adviceHandlers];

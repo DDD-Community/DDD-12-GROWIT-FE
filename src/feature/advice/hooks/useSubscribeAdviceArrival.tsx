@@ -12,7 +12,7 @@ interface DailyAdviceCheckedStorage {
 const IS_DAILY_ADVICE_CHECKED = 'isDailyAdviceChecked';
 
 /** 아침 조언 도착 팝업 제공자, 커스텀 이벤트 구독 및 바텀시트 팝업 담당 */
-export function AdviceArrivalPopupProvider({
+export function AdviceArrivalPopupWrapper({
   children,
   adviceChat,
 }: {
