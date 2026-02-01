@@ -11,10 +11,22 @@ import { AddGoalButton } from './components/addGoalButton';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
 import { HomeBanner } from '../homeBanner';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useCallback } from 'react';
 
 export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
+  const { trackButtonClick } = useGTMActions();
+
+  const handleOpenAddSheet = useCallback(() => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME,
+      buttonName: GTM_BUTTON_NAME.TODO_ADD,
+    });
+    addSheet.showSheet();
+  }, []);
 
   return (
     <TodoListContainerFormProvider>
@@ -55,13 +67,13 @@ export const TodoListContainer = () => {
               </div>
             </div>
 
-            <FloatingButton onClick={addSheet.showSheet} aria-label="투두 추가" />
+            <FloatingButton onClick={handleOpenAddSheet} aria-label="투두 추가" />
 
             {/* 추가용 TodoBottomSheet */}
             <TodoBottomSheet
               mode="add"
               isOpen={addSheet.isOpen}
-              onOpen={addSheet.showSheet}
+              onOpen={handleOpenAddSheet}
               onClose={addSheet.closeSheet}
               selectedDate={selectedDate}
             />

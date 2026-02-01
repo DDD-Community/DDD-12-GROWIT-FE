@@ -17,6 +17,7 @@ export enum GTM_EVENTS {
   GOAL_CLICK = 'goal_click',
 
   // home
+  HOME = 'home',
   HOME_AI_CLICK = 'home_ai_click',
   HOME_TODO_CLICK = 'home_todo_click',
   HOME_GOAL_CLICK = 'home_goal_click',
@@ -60,12 +61,18 @@ export enum GTM_BUTTON_NAME {
   PLANET_EDIT = 'planet_edit',
 
   // Home 페이지
+  TODAY = 'today',
+  WEEK = 'week',
+  MONTH = 'month',
+  TODO_DONE = 'todo_done',
+  TODO_EDIT = 'todo_edit',
+  TODO_ADD = 'todo_add',
+  
   AI_ADVICE = 'ai_advice',
   REVIEW = 'review',
   TODO_CHECK = 'todo_check',
   ADD_TODO = 'add_todo',
   TODO = 'todo',
-  TODO_EDIT = 'todo_edit',
   GOAL_OPEN = 'goal_open',
   GOAL_EDIT = 'goal_edit',
   TODO_DELETE = 'todo_delete',

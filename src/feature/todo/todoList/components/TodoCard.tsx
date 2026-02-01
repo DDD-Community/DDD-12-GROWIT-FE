@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { Repeat, Flag } from 'lucide-react';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface TodoCardProps {
   todo: GoalTodo;
@@ -24,6 +26,7 @@ const getRepeatLabel = (repeatType?: string) => {
 
 export const TodoCard = ({ todo, onToggle, onEdit }: TodoCardProps) => {
   const [checked, setChecked] = useState(todo.isCompleted);
+  const { trackButtonClick } = useGTMActions();
 
   useEffect(() => {
     setChecked(todo.isCompleted);
@@ -32,10 +35,18 @@ export const TodoCard = ({ todo, onToggle, onEdit }: TodoCardProps) => {
   const handleCheck = () => {
     const newChecked = !checked;
     setChecked(newChecked);
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME,
+      buttonName: GTM_BUTTON_NAME.TODO_DONE,
+    });
     onToggle?.(todo.id, newChecked);
   };
 
   const handleClickContent = () => {
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME,
+      buttonName: GTM_BUTTON_NAME.TODO_EDIT,
+    });
     onEdit?.(todo);
   };
 

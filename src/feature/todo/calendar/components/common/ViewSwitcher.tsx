@@ -1,11 +1,24 @@
 import React from 'react';
 import { ViewSwitcherProps, CalendarView } from '../../types';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 /**
  * 뷰 전환 버튼 (Segmented Control)
  */
 export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ selectedView, onViewChange, className = '' }) => {
+  const { trackButtonClick } = useGTMActions();
+
   const handleViewChange = (view: CalendarView) => {
+    const VIEW_GTM_BUTTON_NAME: Record<CalendarView, GTM_BUTTON_NAME> = {
+      weekly: GTM_BUTTON_NAME.WEEK,
+      monthly: GTM_BUTTON_NAME.MONTH,
+    };
+
+    trackButtonClick({
+      eventName: GTM_EVENTS.HOME,
+      buttonName: VIEW_GTM_BUTTON_NAME[view],
+    });
     onViewChange(view);
   };
 
