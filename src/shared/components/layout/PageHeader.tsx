@@ -6,9 +6,10 @@ type PageHeaderProps = {
   title?: string;
   leftSection?: React.ReactNode;
   rightSection?: React.ReactNode;
+  onBackExtend?: () => void;
 };
 
-export const PageHeader = ({ title = '제목', leftSection, rightSection }: PageHeaderProps) => {
+export const PageHeader = ({ title = '제목', leftSection, rightSection, onBackExtend }: PageHeaderProps) => {
   const router = useRouter();
   // 추후에 safe-area-inset-top 적용 필요 (pt-8 대체)
   return (
@@ -16,7 +17,7 @@ export const PageHeader = ({ title = '제목', leftSection, rightSection }: Page
       {leftSection ? (
         <div className="absolute left-4">{leftSection}</div>
       ) : (
-        <button type="button" onClick={() => router.back()} className="text-white absolute left-4">
+        <button type="button" onClick={() => { onBackExtend?.(); router.back(); }} className="text-white absolute left-4">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M15 18L9 12L15 6"

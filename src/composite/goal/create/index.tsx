@@ -9,11 +9,14 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 export const CreateGoalForm = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const { trackButtonClick } = useGTMActions();
   const { mutate: createGoal } = useMutation(
     GoalMutation.createGoal({
       onSuccess: () => {
@@ -31,7 +34,16 @@ export const CreateGoalForm = () => {
       <CreateGoalFormElement.FormContainer onSubmit={data => createGoal(data)}>
         <PageHeader
           title="목표 추가"
-          rightSection={<Button type="submit" variant="tertiary" size="sm" text="완료" />}
+          rightSection={
+            <Button
+              type="submit"
+              variant="tertiary"
+              size="sm"
+              text="완료"
+              onClick={() => trackButtonClick({ eventName: GTM_EVENTS.GOAL_ADD, buttonName: GTM_BUTTON_NAME.GOAL_ADD_DONE })}
+            />
+          }
+          onBackExtend={() => trackButtonClick({ eventName: GTM_EVENTS.GOAL_ADD, buttonName: GTM_BUTTON_NAME.GOAL_ADD_BACK })}
         />
         <div className="flex flex-col gap-8 pt-10 px-5">
           <div className="flex flex-col gap-5">

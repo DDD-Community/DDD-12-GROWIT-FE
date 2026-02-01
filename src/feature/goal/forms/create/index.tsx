@@ -11,6 +11,8 @@ import { formatDateToYYYYMMDD } from '../shared/utils';
 import { CellButton } from '@/shared/components/input/CellButton';
 import { CheckCircleIcon, XCircleIcon } from '@/shared/constants/icons';
 import { ChevronRight } from 'lucide-react';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
 interface CreateGoalFormProviderProps {
   children: React.ReactNode;
@@ -56,6 +58,8 @@ const Name = () => {
     register,
     formState: { errors },
   } = useFormContext<GoalFormType>();
+  const { trackButtonClick } = useGTMActions();
+
   return (
     <InputUnderline
       label="최종 목표"
@@ -66,6 +70,7 @@ const Name = () => {
       {...register('name', {
         required: '목표 이름을 입력해주세요.',
       })}
+      onFocus={() => trackButtonClick({ eventName: GTM_EVENTS.GOAL_ADD, buttonName: GTM_BUTTON_NAME.GOAL_ADD_NAME })}
     />
   );
 };
@@ -73,6 +78,7 @@ const Name = () => {
 const SelectStartDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
   const { watch, setValue } = useFormContext<GoalFormType>();
+  const { trackButtonClick } = useGTMActions();
   const today = new Date();
   const startDateValue = watch('duration.startDate');
   const startDate = startDateValue ? new Date(startDateValue) : today;
@@ -82,6 +88,7 @@ const SelectStartDate = () => {
       <CellButton
         type="button"
         onClick={() => {
+          trackButtonClick({ eventName: GTM_EVENTS.GOAL_ADD, buttonName: GTM_BUTTON_NAME.GOAL_ADD_START_DATE });
           setOpenDatePanel(openDatePanel => !openDatePanel);
         }}
         renderLeftSide={() => (
@@ -117,6 +124,7 @@ const SelectStartDate = () => {
 const SelectEndDate = () => {
   const [openDatePanel, setOpenDatePanel] = useState(false);
   const { watch, setValue } = useFormContext<GoalFormType>();
+  const { trackButtonClick } = useGTMActions();
   const today = new Date();
   const startDateValue = watch('duration.startDate');
   const startDate = startDateValue ? new Date(startDateValue) : new Date(today.getTime() + 24 * 60 * 60 * 1000);
@@ -128,6 +136,7 @@ const SelectEndDate = () => {
       <CellButton
         type="button"
         onClick={() => {
+          trackButtonClick({ eventName: GTM_EVENTS.GOAL_ADD, buttonName: GTM_BUTTON_NAME.GOAL_ADD_END_DATE });
           setOpenDatePanel(openDatePanel => !openDatePanel);
         }}
         renderLeftSide={() => (

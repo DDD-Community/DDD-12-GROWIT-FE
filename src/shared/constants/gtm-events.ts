@@ -12,6 +12,7 @@ export enum GTM_EVENTS {
   SIGN_UP_CLICK = 'signup_click',
 
   // 목표 관련
+  GOAL_ADD = 'goal_add',
   GOAL_ADD_CLICK = 'goal_add_click',
   GOAL_START_CLICK = 'goal_start_click',
   GOAL_CLICK = 'goal_click',
@@ -41,6 +42,13 @@ export enum GTM_BUTTON_NAME {
   KAKAO_LOGIN = 'kakao_login',
   SIGN_UP_LINK = 'signup_link',
   SIGN_UP = 'sign_up',
+
+  // 목표 추가 페이지
+  GOAL_ADD_BACK = 'back',
+  GOAL_ADD_DONE = 'done',
+  GOAL_ADD_NAME = 'name',
+  GOAL_ADD_START_DATE = 'start_date',
+  GOAL_ADD_END_DATE = 'end_date',
 
   // 목표 페이지
   CATEGORY_STUDY = 'category_study',
