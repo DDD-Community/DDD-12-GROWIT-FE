@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import Image from 'next/image';
 import { HEADER_CONFIG } from './header.config';
 import { HeaderMode } from './Header.Desktop';
 

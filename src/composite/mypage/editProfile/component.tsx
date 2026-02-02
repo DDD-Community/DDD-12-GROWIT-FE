@@ -50,7 +50,7 @@ export const EditProfile = () => {
             alt={'my-avatar'}
             width={64}
             height={64}
-            className="border-[2px] w-[64px] h-[64px] border-line-normal rounded-[200px]"
+            className="border-2 w-16 h-16 border-line-normal rounded-[200px]"
           />
           <div className="flex flex-col gap-2">
             <h2 className="heading-2-bold">{profile.userName}</h2>
@@ -94,7 +94,7 @@ export const EditProfile = () => {
           title="프로필 수정"
           renderContent={() => (
             <>
-              <div className="flex flex-col gap-2 min-w-[297px]">
+              <div className="flex flex-col gap-2 min-w-74.25">
                 <label htmlFor="select-job" className="label-1-normal text-label-normal">
                   직무
                 </label>
@@ -106,7 +106,7 @@ export const EditProfile = () => {
                   placeholder={'직무를 선택해주세요'}
                 />
               </div>
-              <div className="flex flex-col w-full gap-2 min-w-[297px]">
+              <div className="flex flex-col w-full gap-2 min-w-74.25">
                 <label htmlFor="select-careerYear" className="label-1-normal text-label-normal">
                   연차
                 </label>
