@@ -98,10 +98,12 @@ export default function EndedGoalsContainer() {
   };
 
   return (
-    <main>
+    <div className="h-full flex flex-col">
       <PageHeader title="종료 목표 수집함" leftSection={renderLeftSection()} rightSection={renderRightSection()} />
-      <EndedGoalsList isEditMode={isEditMode} checkedGoals={checkedGoals} setCheckedGoals={setCheckedGoals} />
-    </main>
+      <main className="flex-1 overflow-y-auto">
+        <EndedGoalsList isEditMode={isEditMode} checkedGoals={checkedGoals} setCheckedGoals={setCheckedGoals} />
+      </main>
+    </div>
   );
 }
 
@@ -130,13 +132,29 @@ function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoal
         <p className="col-span-2 body-2-regular text-text-secondary text-center pt-5">아직 종료된 목표가 없어요</p>
       ) : (
         endedGoals.map(goal => (
-          <EndedGoalItem
-            key={goal.id}
-            goal={goal}
-            isEditMode={isEditMode}
-            checked={checkedGoals.has(goal.id)}
-            onCheck={() => handleCheck(goal.id)}
-          />
+          <>
+            <EndedGoalItem
+              key={goal.id}
+              goal={goal}
+              isEditMode={isEditMode}
+              checked={checkedGoals.has(goal.id)}
+              onCheck={() => handleCheck(goal.id)}
+            />
+            <EndedGoalItem
+              key={goal.id}
+              goal={goal}
+              isEditMode={isEditMode}
+              checked={checkedGoals.has(goal.id)}
+              onCheck={() => handleCheck(goal.id)}
+            />
+            <EndedGoalItem
+              key={goal.id}
+              goal={goal}
+              isEditMode={isEditMode}
+              checked={checkedGoals.has(goal.id)}
+              onCheck={() => handleCheck(goal.id)}
+            />
+          </>
         ))
       )}
     </ul>

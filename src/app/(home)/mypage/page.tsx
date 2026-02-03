@@ -4,6 +4,8 @@ import { Settings } from 'lucide-react';
 import { NavEditProfileButton } from '@/feature/mypage/NavEditProfileButton';
 import { BirthSection } from '@/feature/mypage/BirthSection';
 import Button from '@/shared/components/input/Button';
+import Link from 'next/link';
+import { paths } from '@/shared/lib/paths';
 
 const ASSETS = {
   avatar: '/avatar.png',
@@ -16,19 +18,16 @@ const MyPage = () => {
       <PageHeader
         leftSection={<h1 className="heading-2-bold text-text-strong">마이 페이지</h1>}
         rightSection={
-          <button className="text-text-strong">
+          <Link href={paths.mypage.settings} className="text-text-strong">
             <Settings />
-          </button>
+          </Link>
         }
       />
-
       <main className="pt-10 px-6 pb-6 flex flex-col gap-y-10">
         <EditProfileSection />
         <BirthSection />
       </main>
-
-      <div className="w-full bg-bg-elevated h-3.5"></div>
-
+      <div role="separator" className="w-full bg-bg-elevated h-3.5"></div>
       <NavStarbucksFormSection />
     </div>
   );

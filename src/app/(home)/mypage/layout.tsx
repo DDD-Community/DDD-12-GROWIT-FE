@@ -1,14 +1,13 @@
 type MyPageLayoutProps = {
   children: React.ReactNode;
-  panel: React.ReactNode;
+  stack: React.ReactNode;
 };
 
-export default function MyPageLayout({ children, panel }: MyPageLayoutProps) {
+export default function MyPageLayout({ children, stack }: MyPageLayoutProps) {
   return (
-    <div className="flex flex-1 overflow-y-auto mb-16">
+    <div className="flex flex-col h-full relative">
       {children}
-      {panel}
-      <div className="mb-20" />
+      {stack}
     </div>
   );
 }

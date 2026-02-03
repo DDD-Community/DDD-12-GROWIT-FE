@@ -10,17 +10,17 @@ export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const pathSegments = pathname.split('/').filter(segment => segment !== '');
-  const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
+  //const pathSegments = pathname.split('/').filter(segment => segment !== '');
+  //const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
 
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
     return pathname === path;
   };
 
-  if (!shouldShowNavigation) {
-    return null;
-  }
+  // if (!shouldShowNavigation) {
+  //   return null;
+  // }
 
   return (
     <nav

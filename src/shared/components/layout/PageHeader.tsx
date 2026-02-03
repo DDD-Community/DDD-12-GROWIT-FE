@@ -14,7 +14,7 @@ export const PageHeader = ({ title = '', leftSection, rightSection }: PageHeader
     <nav className="flex justify-between items-center px-6 pt-8 pb-4 w-full border-b border-line-normal">
       {leftSection ? leftSection : <PrevNavButton />}
       {title && <h1 className="heading-2-bold text-text-strong">{title}</h1>}
-      {rightSection ? rightSection : <div className="w-6 invisible" aria-hidden="true" />}
+      {rightSection ? <span>{rightSection}</span> : <div className="w-6 invisible" aria-hidden="true" />}
     </nav>
   );
 };
