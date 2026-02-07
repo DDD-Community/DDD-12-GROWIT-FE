@@ -5,8 +5,8 @@ import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { StackBackButton } from '@/shared/components/feedBack/StackNavButton';
 import { RightArrowIcon } from '@/shared/components/foundation/Icons';
 import { InputField } from '@/shared/components/input/InputField';
-import { useForm } from 'react-hook-form';
 import z from 'zod';
+import { useForm } from 'react-hook-form';
 import { useFetchUserName } from '@/shared/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/apiClient';
@@ -42,7 +42,6 @@ const EditProfileFormSchema = z.object({
 type EditProfileFormData = z.infer<typeof EditProfileFormSchema>;
 
 function EditProfileForm() {
-  const { showToast } = useToast();
   const { userName, email } = useFetchUserName();
 
   const { register, handleSubmit } = useForm<EditProfileFormData>({
@@ -57,7 +56,7 @@ function EditProfileForm() {
     resolver: zodResolver(EditProfileFormSchema),
   });
 
-  const { editProfile, isPending, isError } = useEditProfileForm();
+  const { editProfile } = useEditProfileForm();
 
   return (
     <form
@@ -75,6 +74,7 @@ function EditProfileForm() {
 }
 
 const useEditProfileForm = () => {
+  const { showToast } = useToast();
   const {
     mutate: editProfile,
     isPending,
@@ -82,6 +82,12 @@ const useEditProfileForm = () => {
   } = useMutation({
     mutationFn: async (data: EditProfileFormData) => {
       await apiClient.put<EditProfileFormData>('/users/myprofile', data);
+    },
+    onSuccess: () => {
+      showToast('프로필이 성공적으로 수정되었습니다.', 'success');
+    },
+    onError: () => {
+      showToast('프로필 수정에 실패했습니다. 다시 시도해주세요.', 'error');
     },
   });
 
