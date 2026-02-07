@@ -5,6 +5,7 @@ import { Settings } from 'lucide-react';
 import { BirthSection } from '@/feature/mypage/BirthSection';
 import { StackNavButton } from '@/shared/components/feedBack/StackNavButton';
 import { paths } from '@/shared/lib/paths';
+import { DisplayUserName } from '@/feature/mypage/DisplayUserName';
 
 const ASSETS = {
   avatar: '/avatar.png',
@@ -43,9 +44,12 @@ function EditProfileSection() {
         className="border-2 w-16 h-16 border-line-normal rounded-[200px]"
       />
       <div className="flex flex-col gap-y-2 items-center">
-        <h2 className="heading-2-bold text-text-strong">그로롱</h2>
-        <StackNavButton href={paths.mypage.editProfile} className="p-2">
-          수정하기
+        <DisplayUserName />
+        <StackNavButton
+          href={paths.mypage.editProfile}
+          className="p-2 border border-border-primary text-text-primary py-1 px-2.5 text-sm rounded-2xl"
+        >
+          프로필 수정
         </StackNavButton>
       </div>
     </section>
