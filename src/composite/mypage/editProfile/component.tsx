@@ -3,7 +3,6 @@
 import { useToast } from '@/shared/components/feedBack/toast';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { StackBackButton } from '@/shared/components/feedBack/StackNavButton';
-import { RightArrowIcon } from '@/shared/components/foundation/Icons';
 import { InputField } from '@/shared/components/input/InputField';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -11,18 +10,13 @@ import { useFetchUserName } from '@/shared/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/apiClient';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Button from '@/shared/components/input/Button';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 export const EditProfile = () => {
   return (
     <>
-      <PageHeader
-        title="프로필 수정"
-        leftSection={
-          <StackBackButton className="p-2">
-            <RightArrowIcon className="rotate-180" />
-          </StackBackButton>
-        }
-      />
+      <PageHeader title="프로필 수정" leftSection={<StackBackButton />} />
       <section className="h-[calc(100vh-100px)]">
         <EditProfileForm />
       </section>
@@ -44,7 +38,7 @@ type EditProfileFormData = z.infer<typeof EditProfileFormSchema>;
 function EditProfileForm() {
   const { userName, email } = useFetchUserName();
 
-  const { register, handleSubmit } = useForm<EditProfileFormData>({
+  const { register, handleSubmit, formState } = useForm<EditProfileFormData>({
     defaultValues: {
       email: email,
       password: '',
@@ -56,12 +50,12 @@ function EditProfileForm() {
     resolver: zodResolver(EditProfileFormSchema),
   });
 
-  const { editProfile } = useEditProfileForm();
+  const { editProfile, isPending } = useEditProfileForm();
 
   return (
     <form
       onSubmit={handleSubmit(data => editProfile(data))}
-      className="flex flex-col gap-y-6 h-full overflow-y-auto px-5 pt-5 pb-20"
+      className="flex flex-col gap-y-6 h-full overflow-y-auto px-5 pt-5 shrink-0"
     >
       <InputField label="이메일" {...register('email')} />
       <InputField label="비밀번호" type="password" {...register('password')} />
@@ -69,6 +63,15 @@ function EditProfileForm() {
       <InputField label="이름" {...register('firstName')} />
       <InputField label="생년월일" {...register('birthDate')} />
       <InputField label="태어난 시각" {...register('birthTime')} />
+
+      <footer className={`sticky bottom-0 w-full p-5 max-w-md mx-auto bg-normal-alternative ${Z_INDEX.SHEET}`}>
+        <Button
+          type="submit"
+          text="저장하기"
+          size="lg"
+          disabled={isPending || !formState.isDirty || formState.isSubmitting}
+        />
+      </footer>
     </form>
   );
 }

@@ -1,21 +1,25 @@
 'use client';
 
 import { EditGoalFormElement } from '@/feature/goal';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { GoalQuery } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
-import { Goal } from '@/shared/type/goal';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import Button from '@/shared/components/input/Button';
 import { GoalMutation } from '@/model/goal/queries';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter, notFound } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
+import type { Goal } from '@/shared/type/goal';
 
-export default function GoalEditFormController({ goalId }: { goalId: string }) {
-  const { data: currentGoal, isError } = useSuspenseQuery(GoalQuery.getGoalById(goalId));
+export default function GoalEditFormContent({ goalId }: { goalId: string }) {
+  const { data: currentGoal, isError } = useQuery(
+    GoalQuery.getGoalById(goalId, {
+      enabled: !!goalId,
+    })
+  );
 
-  if (isError || !currentGoal) {
+  if (!goalId || isError || !currentGoal) {
     notFound();
   }
 
@@ -37,7 +41,7 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.byId(currentGoal.id) });
         showToast('수정이 완료되었습니다.', 'success');
-        router.push(ROUTES.GOAL);
+        router.back();
       },
       onError: () => {
         showToast('수정에 실패했습니다.', 'error');

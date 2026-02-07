@@ -19,7 +19,7 @@ export const PageHeader = ({ title = '', leftSection, rightSection }: PageHeader
   );
 };
 
-export function PrevNavButton() {
+function PrevNavButton() {
   const router = useRouter();
   return (
     <button type="button" onClick={() => router.back()} className="text-white">
@@ -29,5 +29,3 @@ export function PrevNavButton() {
     </button>
   );
 }
-
-PageHeader.PrevNavButton = PrevNavButton;

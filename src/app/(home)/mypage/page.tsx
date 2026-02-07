@@ -4,7 +4,7 @@ import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { Settings } from 'lucide-react';
 import { BirthSection } from '@/feature/mypage/BirthSection';
 import { StackNavButton } from '@/shared/components/feedBack/StackNavButton';
-import { paths } from '@/shared/lib/paths';
+import { ROUTES } from '@/shared/constants/routes';
 import { DisplayUserName } from '@/feature/mypage/DisplayUserName';
 
 const ASSETS = {
@@ -18,7 +18,7 @@ const MyPage = () => {
       <PageHeader
         leftSection={<h1 className="heading-2-bold text-text-strong">마이 페이지</h1>}
         rightSection={
-          <StackNavButton href={paths.mypage.settings} className="text-text-strong">
+          <StackNavButton href={ROUTES.SETTINGS} className="text-text-strong">
             <Settings />
           </StackNavButton>
         }
@@ -46,7 +46,7 @@ function EditProfileSection() {
       <div className="flex flex-col gap-y-2 items-center">
         <DisplayUserName />
         <StackNavButton
-          href={paths.mypage.editProfile}
+          href={ROUTES.EDIT_PROFILE}
           className="p-2 border border-border-primary text-text-primary py-1 px-2.5 text-sm rounded-2xl"
         >
           프로필 수정
@@ -65,7 +65,7 @@ function NavStarbucksFormSection() {
         <p className="label-1-bold text-text-strong">커피 쿠폰 받기</p>
       </div>
       <Link
-        href="#"
+        href={ROUTES.SETTINGS}
         className="bg-fill-inverse text-center rounded-lg box-border label-1-bold py-2 px-3.5 text-text-inverse hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal"
       >
         작성하기

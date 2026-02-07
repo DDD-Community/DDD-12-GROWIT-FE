@@ -4,7 +4,7 @@ export type ButtonVariants = 'primary' | 'secondary' | 'tertiary' | 'accent' | '
 export type ButtonLayouts = 'normal' | 'icon-left' | 'icon-right' | 'icon-only';
 export type ButtonSize = 'sm' | 'ml' | 'lg' | 'xl';
 
-const ButtonSizeMap = {
+export const ButtonSizeMap = {
   sm: { textPad: 'py-[8px] px-[14px]', iconPad: 'p-2', font: 'label-1-bold' },
   ml: { textPad: 'py-[10px] px-[16px]', iconPad: 'p-[10px]', font: 'label-1-bold' },
   lg: { textPad: 'py-[10px] px-[18px]', iconPad: 'p-3', font: 'body-1-bold' },
@@ -18,7 +18,7 @@ const ButtonSizeMap = {
   }
 >;
 
-const ButtonVariantMap = {
+export const ButtonVariantMap = {
   primary: {
     enabled:
       'bg-fill-inverse box-border text-text-inverse hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal',
