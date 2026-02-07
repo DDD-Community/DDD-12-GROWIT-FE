@@ -1,12 +1,20 @@
-import { Screen } from '@/shared/components/foundation/Screen';
-import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { SettingsContent } from '@/composite/mypage/settings/component';
+import { StackBackButton } from '@/shared/components/feedBack/StackNavButton';
+import { RightArrowIcon } from '@/shared/components/foundation/Icons';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
 
-export default function SettingsPage() {
+export default function SettingsInterceptPage() {
   return (
-    <Screen className="absolute inset-0">
-      <PageHeader title="설정" />
+    <>
+      <PageHeader
+        title="설정"
+        leftSection={
+          <StackBackButton className="p-2">
+            <RightArrowIcon className="rotate-180" />
+          </StackBackButton>
+        }
+      />
       <SettingsContent />
-    </Screen>
+    </>
   );
 }

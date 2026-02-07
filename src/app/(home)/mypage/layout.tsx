@@ -1,3 +1,6 @@
+import { StackNavigateProvider } from '@/shared/components/layout/StackNavigateProvider';
+import { AnimatedStack } from '@/shared/components/layout/AnimatedStack';
+
 type MyPageLayoutProps = {
   children: React.ReactNode;
   stack: React.ReactNode;
@@ -5,9 +8,9 @@ type MyPageLayoutProps = {
 
 export default function MyPageLayout({ children, stack }: MyPageLayoutProps) {
   return (
-    <div className="flex flex-col h-full relative">
+    <StackNavigateProvider className="flex flex-col h-full relative overflow-hidden">
       {children}
-      {stack}
-    </div>
+      <AnimatedStack basePath="/mypage">{stack}</AnimatedStack>
+    </StackNavigateProvider>
   );
 }

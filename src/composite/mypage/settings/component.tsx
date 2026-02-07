@@ -2,6 +2,7 @@
 
 import { RightArrowIcon } from '@/shared/components/foundation/Icons';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { useFetchUserName } from '@/shared/hooks';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { tokenController } from '@/shared/lib/token';
 import { useRouter } from 'next/navigation';
@@ -12,6 +13,8 @@ const WithdrawModal = lazy(() => import('@/feature/mypage/WithdrawModal'));
 export function SettingsContent() {
   const router = useRouter();
   const { trackButtonClick } = useGTMActions();
+
+  const { email } = useFetchUserName();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -34,7 +37,7 @@ export function SettingsContent() {
 
   return (
     <ul className="py-4 px-6 space-y-3">
-      <SettingsItem leftContent="가입 정보" rightContent="1209lks@naver.com" />
+      <SettingsItem leftContent="가입 정보" rightContent={email} />
       <SettingsItem leftContent="문의하기" rightContent="starofleee@gmail.com" />
       <SettingsItem leftContent="로그아웃" onClick={handleLogout} rightContent={<RightArrowIcon />} />
       <SettingsItem leftContent="회원탈퇴" onClick={handleOpenWithdrawModal} rightContent={<RightArrowIcon />} />
