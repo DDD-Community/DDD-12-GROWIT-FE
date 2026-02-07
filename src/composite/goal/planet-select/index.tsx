@@ -1,32 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { CreateGoalButton } from '@/feature/goal/components/CreateGoalButton';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { GoalProvider, useGoalSelector } from '@/model/goal/context';
+import { useGoalSelector } from '@/model/goal/context';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { PlanetItem } from './components/PlanetItem';
-import { CreateNewGoalItem } from './components/CreateNewGoalItem';
-import { useMemo, Suspense } from 'react';
+import { PlanetItem } from '../../../feature/goal/components/PlanetItem';
+import { useMemo } from 'react';
 import { Goal } from '@/shared/type/goal';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import Button from '@/shared/components/input/Button';
 import { Swiper as SwiperType } from 'swiper/types';
 import { useShowEndedGoalsSheet } from './hooks';
-import GoalProgressSheet from '../progress';
-
-export default function PlanetSelectorSection() {
-  return (
-    <GoalProvider>
-      <PlanetSelector />
-      <section className="pb-16">
-        <GoalProgressSheet />
-      </section>
-    </GoalProvider>
-  );
-}
+import { StackNavButton } from '@/shared/components/feedBack/StackNavButton';
+import { ROUTES } from '@/shared/constants/routes';
+import { ButtonSizeMap, ButtonVariantMap } from '@/shared/components/input/Button/utils/button';
+import { cn } from '@/shared/lib/utils';
 
 export function PlanetSelector() {
   const { progressGoals, setCurrentGoal, isLoadingGoals } = useGoalSelector();
@@ -58,7 +48,7 @@ export function PlanetSelector() {
   }
 
   return (
-    <div className="px-5">
+    <>
       <div className="relative">
         <Swiper
           initialSlide={0}
@@ -115,6 +105,60 @@ export function PlanetSelector() {
           </section>
         </BottomSheet.Content>
       </BottomSheet>
+    </>
+  );
+}
+
+export function CreateNewGoalItem() {
+  return (
+    <div className="relative flex flex-col items-center justify-center px-5">
+      <div className="w-40 h-40">
+        <Image
+          src="/goal/goal-empty.svg"
+          alt="Goal Empty"
+          width={160}
+          height={160}
+          className="w-full h-full"
+          priority
+        />
+      </div>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <p className="text-label-neutral text-center">
+          진행중인 목표가 없습니다. <br /> 목표를 추가해주세요.
+        </p>
+        <div className="w-36">
+          <CreateGoalButton />
+        </div>
+      </div>
     </div>
+  );
+}
+
+function CreateGoalButton() {
+  return (
+    <StackNavButton
+      href={ROUTES.CREATE_GOAL}
+      className={cn(
+        'flex items-center gap-x-2 label-1-bold',
+        ButtonVariantMap['primary'].enabled,
+        ButtonSizeMap['ml'].textPad
+      )}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
+      </svg>
+      목표 추가하기
+    </StackNavButton>
   );
 }

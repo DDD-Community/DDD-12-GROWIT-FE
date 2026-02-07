@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import ProgressBar from '@/shared/components/display/ProgressBar';
 import {
   DropdownMenu,
@@ -18,6 +17,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GoalMutation } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { ROUTES } from '@/shared/constants/routes';
+import { useRouter } from 'next/navigation';
 
 export default function GoalProgressSheet() {
   const router = useRouter();
@@ -70,30 +71,8 @@ export default function GoalProgressSheet() {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="end" className="w-40 px-5 py-2">
-            <DropdownMenuItem onClick={() => currentGoal && router.push(`/goal/${currentGoal.id}`)}>
-              <div className="body-1-medium text-label-normal h-full flex items-center py-2 gap-x-2">
-                <svg
-                  className="shrink-0 font-medium"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clipPath="url(#clip0_3978_13286)">
-                    <path
-                      d="M13.8853 3.33333C13.8852 3.17338 13.854 3.01497 13.7928 2.86719C13.7316 2.7193 13.6417 2.58454 13.5285 2.47135C13.4154 2.35831 13.281 2.26892 13.1333 2.20768C12.9854 2.14642 12.8266 2.11458 12.6665 2.11458C12.5064 2.11458 12.3476 2.14642 12.1997 2.20768C12.052 2.26892 11.9176 2.35831 11.8045 2.47135L2.92954 11.3457L2.28306 13.7161L4.6535 13.0697L13.5285 4.19531C13.6416 4.08216 13.7316 3.94795 13.7928 3.80013C13.8541 3.65224 13.8853 3.49341 13.8853 3.33333ZM15.2186 3.33333C15.2186 3.6685 15.1529 4.00089 15.0246 4.31055C14.8963 4.62007 14.7081 4.9011 14.4712 5.13802L5.47121 14.138C5.38917 14.2201 5.28691 14.2794 5.17498 14.3099L1.50832 15.3099C1.27757 15.3727 1.03094 15.3071 0.861833 15.138C0.692762 14.9689 0.627063 14.7223 0.689958 14.4915L1.68996 10.8249L1.71795 10.7428C1.75133 10.6631 1.80029 10.5902 1.86183 10.5286L10.8618 1.52865C11.0988 1.29169 11.3803 1.10351 11.69 0.97526C11.9996 0.847058 12.3314 0.78125 12.6665 0.78125C13.0016 0.78125 13.3335 0.847058 13.6431 0.97526C13.9527 1.10351 14.2342 1.29169 14.4712 1.52865C14.7082 1.76564 14.8963 2.04712 15.0246 2.35677C15.1528 2.66637 15.2186 2.99823 15.2186 3.33333Z"
-                      fill="#C2C4C8"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_3978_13286">
-                      <rect width="16" height="16" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-                <span>수정</span>
-              </div>
+            <DropdownMenuItem onClick={() => router.push(ROUTES.EDIT_GOAL(currentGoal.id))}>
+              <EditGoalButton />
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setIsDeleteModalOpen(true)} variant="destructive">
               <span className="body-1-medium text-label-normal h-full flex items-center py-2 gap-x-2">
@@ -132,7 +111,7 @@ function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
       onClose={onClose}
       title=""
       renderContent={() => (
-        <div className="flex flex-col gap-5 min-w-[274px] items-center text-center">
+        <div className="flex flex-col gap-5 min-w-68.5 items-center text-center">
           <WarningIcon />
           <p className="headline-1-bold text-label-normal">
             목표 삭제 시, <br />
@@ -148,5 +127,33 @@ function DeleteGoalModal({ open, onClose, onDelete }: DeleteGoalModalProps) {
         </div>
       )}
     />
+  );
+}
+
+function EditGoalButton() {
+  return (
+    <button className="body-1-medium text-label-normal h-full flex items-center py-2 gap-x-2">
+      <svg
+        className="shrink-0 font-medium"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_3978_13286)">
+          <path
+            d="M13.8853 3.33333C13.8852 3.17338 13.854 3.01497 13.7928 2.86719C13.7316 2.7193 13.6417 2.58454 13.5285 2.47135C13.4154 2.35831 13.281 2.26892 13.1333 2.20768C12.9854 2.14642 12.8266 2.11458 12.6665 2.11458C12.5064 2.11458 12.3476 2.14642 12.1997 2.20768C12.052 2.26892 11.9176 2.35831 11.8045 2.47135L2.92954 11.3457L2.28306 13.7161L4.6535 13.0697L13.5285 4.19531C13.6416 4.08216 13.7316 3.94795 13.7928 3.80013C13.8541 3.65224 13.8853 3.49341 13.8853 3.33333ZM15.2186 3.33333C15.2186 3.6685 15.1529 4.00089 15.0246 4.31055C14.8963 4.62007 14.7081 4.9011 14.4712 5.13802L5.47121 14.138C5.38917 14.2201 5.28691 14.2794 5.17498 14.3099L1.50832 15.3099C1.27757 15.3727 1.03094 15.3071 0.861833 15.138C0.692762 14.9689 0.627063 14.7223 0.689958 14.4915L1.68996 10.8249L1.71795 10.7428C1.75133 10.6631 1.80029 10.5902 1.86183 10.5286L10.8618 1.52865C11.0988 1.29169 11.3803 1.10351 11.69 0.97526C11.9996 0.847058 12.3314 0.78125 12.6665 0.78125C13.0016 0.78125 13.3335 0.847058 13.6431 0.97526C13.9527 1.10351 14.2342 1.29169 14.4712 1.52865C14.7082 1.76564 14.8963 2.04712 15.0246 2.35677C15.1528 2.66637 15.2186 2.99823 15.2186 3.33333Z"
+            fill="#C2C4C8"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_3978_13286">
+            <rect width="16" height="16" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+      <span>수정</span>
+    </button>
   );
 }

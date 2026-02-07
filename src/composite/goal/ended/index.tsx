@@ -10,10 +10,9 @@ import { useMutation } from '@tanstack/react-query';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { Goal } from '@/shared/type/goal';
-import { useRouter } from 'next/navigation';
+import { StackBackButton } from '@/shared/components/feedBack/StackNavButton';
 
 export default function EndedGoalsContainer() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -61,17 +60,7 @@ export default function EndedGoalsContainer() {
         onClick={handleDelete}
       />
     ) : (
-      <button type="button" onClick={() => router.back()} className="text-white">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M15 18L9 12L15 6"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      <StackBackButton />
     );
   };
 
@@ -98,10 +87,12 @@ export default function EndedGoalsContainer() {
   };
 
   return (
-    <main>
+    <div className="h-full flex flex-col">
       <PageHeader title="종료 목표 수집함" leftSection={renderLeftSection()} rightSection={renderRightSection()} />
-      <EndedGoalsList isEditMode={isEditMode} checkedGoals={checkedGoals} setCheckedGoals={setCheckedGoals} />
-    </main>
+      <main className="flex-1 overflow-y-auto">
+        <EndedGoalsList isEditMode={isEditMode} checkedGoals={checkedGoals} setCheckedGoals={setCheckedGoals} />
+      </main>
+    </div>
   );
 }
 
@@ -112,7 +103,11 @@ type EndedGoalsListProps = {
 };
 
 function EndedGoalsList({ isEditMode, checkedGoals, setCheckedGoals }: EndedGoalsListProps) {
-  const { data: endedGoals = [] } = useQuery(GoalQuery.getEndedGoals());
+  const { data: endedGoals = [] } = useQuery(
+    GoalQuery.getEndedGoals({
+      retry: false,
+    })
+  );
 
   const handleCheck = (goalId: Goal['id']) => {
     const newCheckedGoals = new Set(checkedGoals);

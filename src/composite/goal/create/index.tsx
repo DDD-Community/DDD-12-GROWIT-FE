@@ -6,9 +6,9 @@ import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { GoalMutation } from '@/model/goal/queries';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/shared/constants/routes';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
+import { StackBackButton } from '@/shared/components/feedBack/StackNavButton';
 
 export const CreateGoalForm = () => {
   const router = useRouter();
@@ -18,7 +18,7 @@ export const CreateGoalForm = () => {
     GoalMutation.createGoal({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
-        router.push(ROUTES.GOAL);
+        router.back();
         showToast('목표 생성이 완료되었습니다.', 'success');
       },
       onError: () => {
@@ -31,6 +31,7 @@ export const CreateGoalForm = () => {
       <CreateGoalFormElement.FormContainer onSubmit={data => createGoal(data)}>
         <PageHeader
           title="목표 추가"
+          leftSection={<StackBackButton />}
           rightSection={<Button type="submit" variant="tertiary" size="sm" text="완료" />}
         />
         <div className="flex flex-col gap-8 pt-10 px-5">

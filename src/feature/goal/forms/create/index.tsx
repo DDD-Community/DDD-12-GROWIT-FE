@@ -103,6 +103,7 @@ const SelectStartDate = () => {
           focusedDate={startDate}
           onDateSelect={date => {
             setValue('duration.startDate', formatDateToYYYYMMDD(date));
+            setOpenDatePanel(false);
           }}
           onFocusedDateChange={date => {
             setValue('duration.startDate', formatDateToYYYYMMDD(date));
@@ -149,6 +150,7 @@ const SelectEndDate = () => {
           focusedDate={endDate ? endDate : today}
           onDateSelect={date => {
             setValue('duration.endDate', formatDateToYYYYMMDD(date));
+            setOpenDatePanel(false);
           }}
           onFocusedDateChange={date => {
             setValue('duration.endDate', formatDateToYYYYMMDD(date));
