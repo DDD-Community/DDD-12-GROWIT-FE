@@ -5,11 +5,12 @@ import Button from '@/shared/components/input/Button';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 export default function AdviceErrorPage() {
   const msUntilEndOfDay = useMemo(() => getMsUntilEndOfDay(), []);
+  const router = useRouter();
   const { refetch } = useQuery(
     AdviceQuery.getAdviceChat({
       staleTime: msUntilEndOfDay,
@@ -19,7 +20,7 @@ export default function AdviceErrorPage() {
 
   const handleRetry = () => {
     refetch();
-    redirect('/advice');
+    router.replace('/advice');
   };
 
   return (
