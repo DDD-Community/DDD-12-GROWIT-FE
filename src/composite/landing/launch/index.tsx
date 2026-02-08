@@ -24,12 +24,14 @@ export const LaunchSection = () => {
     <Section className="relative w-full overflow-hidden bg-bg-default">
       {/* 배경 & 오버레이 */}
       <div className="absolute inset-0 z-10 pointer-events-none landing-ten-bg" />
-      <div className={`relative z-20 flex flex-col gap-y-7 items-center justify-center ${LandingPageCommonStyle.innerContainer} ${LandingPageCommonStyle.padding}`}>
+      <div
+        className={`relative z-20 flex flex-col gap-y-7 items-center justify-center ${LandingPageCommonStyle.innerContainer} ${LandingPageCommonStyle.padding}`}
+      >
         <MotionWrapper
           {...LandingPageCommonStyle.fadeIn.default}
           className="flex flex-col gap-y-4 items-center text-center animate-fade-in"
         >
-          <Image src="/landing/logo.png" width={64} height={64} alt="app-logo" />
+          <Image src="/landing/logo.png" width={64} height={64} alt="app-logo" loading="lazy" />
           <h2 className="bg-linear-to-brand text-4xl font-extrabold leading-tight">2월 APP 런칭</h2>
         </MotionWrapper>
 

@@ -31,6 +31,8 @@ export const FundingDiscountSection = () => {
             height={400}
             sizes="(max-width: 768px) 300px 200px"
             alt="character-key-ring-image"
+            className="w-75 md:w-125 h-auto shrink-0"
+            loading="lazy"
           />
         </MotionWrapper>
       </div>
