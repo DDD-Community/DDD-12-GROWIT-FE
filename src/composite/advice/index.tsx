@@ -1,13 +1,12 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdviceMutation, AdviceQuery } from '@/model/advice/queries';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceHeader } from '@/feature/advice/components/AdviceHeader';
 import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
 import { AdviceChatHistory } from '@/feature/advice/components/AdviceChatHistory';
-import { HasNoProgressGoalPage } from '@/app/(home)/advice/HasNoProgressGoalPage';
 import { AdviceArrivalPopupWrapper } from '@/feature/advice/hooks/useSubscribeAdviceArrival';
 import { AdviceSubmitForm } from '@/feature/advice/components/AdviceSubmitFormElements';
 import { useToast } from '@/shared/components/feedBack/toast';
@@ -16,6 +15,7 @@ import { AdviceFormContext, AdviceStyleSelectContext } from '@/feature/advice/co
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import AdvicePageLoader from '@/app/(home)/advice/loading';
 import { GoalProvider, useGoalSelector } from '@/model/goal/context';
+import { AdviceChatMessage } from '@/feature/advice/components/AdviceChatMessage';
 
 export default function AdviceChatClient() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
@@ -101,3 +101,62 @@ function AdviceChatSection({ adviceChat }: { adviceChat: AdviceChat }) {
     </div>
   );
 }
+
+const HasNoProgressGoalPage = () => {
+  return (
+    <div className="bg-[url('/advice/advice-chat-bg.png')] bg-cover bg-center min-h-[calc(100vh-56px)]">
+      <header className="w-full flex justify-between items-center px-5 py-4 body-1-normal text-text-strong">
+        <button className="gap-x-2 flex items-center py-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+          </svg>
+          <span>목표 추가</span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+        <button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M12 7v5l4 2" />
+          </svg>
+        </button>
+      </header>
+      <main className="flex flex-col h-[calc(100vh-142px)] justify-between relative">
+        <AdviceChatMessage.NoGoal />
+      </main>
+    </div>
+  );
+};
