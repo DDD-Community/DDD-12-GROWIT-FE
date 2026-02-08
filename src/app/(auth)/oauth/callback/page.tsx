@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { KakaoSignupForm } from '@/composite/signup/signUpForm/KakaoSignupForm';
 import { tokenController } from '@/shared/lib/token';
 import { AuthMethod } from '@/shared/type/authToken';
 
 export default function OAuthCallbackPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [hasTokens, setHasTokens] = useState(false);
   const [, setLastLoginMethod] = useState<AuthMethod | null>(null);
@@ -22,16 +23,15 @@ export default function OAuthCallbackPage() {
 
         if (!accessToken || !refreshToken) {
           setIsLoading(false);
-          redirect('/login');
+          router.replace('/login');
+          return;
         }
         if (accessToken && refreshToken) {
           setHasTokens(true);
           tokenController.setTokens(accessToken, refreshToken);
           // Oauth 로그인 성공 시 마지막 로그인 수단 저장
           setLastLoginMethod('KAKAO');
-          setTimeout(() => {
-            redirect('/home');
-          }, 50);
+          router.replace('/home');
         } else {
           setHasTokens(false);
         }
@@ -43,11 +43,11 @@ export default function OAuthCallbackPage() {
       }
     };
     handleTokenProcessing();
-  }, []);
+  }, [router]);
 
   if (isLoading) {
     return (
-      <div className="w-full h-full bg-normal-alternative items-center justify-center">
+      <div className="w-full h-full flex flex-col bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">로그인 처리 중...</p>
@@ -59,7 +59,7 @@ export default function OAuthCallbackPage() {
   // 토큰이 있어서 로그인 성공한 경우
   if (hasTokens) {
     return (
-      <div className="w-full h-full bg-normal-alternative items-center justify-center">
+      <div className="w-full h-full flex flex-col bg-normal-alternative items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-gray-100 font-medium">
