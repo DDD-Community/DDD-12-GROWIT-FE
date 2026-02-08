@@ -31,6 +31,7 @@ export const ROUTES = {
   ONBOARDING: '/onboarding',
   GOAL: '/goal',
   LOGIN: '/login',
+  LOGIN_EMAIL: '/login/email',
   SIGNUP: '/signup',
 } as const;
 

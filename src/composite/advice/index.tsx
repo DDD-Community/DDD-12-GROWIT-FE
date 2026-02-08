@@ -1,10 +1,8 @@
 'use client';
 
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { AdviceMutation, AdviceQuery } from '@/model/advice/queries';
-import { GoalQuery } from '@/model/goal/queries';
 import { getMsUntilEndOfDay } from '@/shared/lib/utils';
-import { Goal } from '@/shared/type/goal';
 import { AdviceChat } from '@/model/advice/types';
 import { AdviceHeader } from '@/feature/advice/components/AdviceHeader';
 import { AdviceCountBadge } from '@/feature/advice/components/AdviceCountBadge';
@@ -16,6 +14,8 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { AdviceQueryKeys } from '@/model/advice/queryKeys';
 import { AdviceFormContext, AdviceStyleSelectContext } from '@/feature/advice/components/AdviceFormContext';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
+import AdvicePageLoader from '@/app/(home)/advice/loading';
+import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 
 export default function AdviceChatClient() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
@@ -23,13 +23,7 @@ export default function AdviceChatClient() {
   const { showToast } = useToast();
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
 
-  const { data: progressGoals = [] } = useSuspenseQuery(
-    GoalQuery.getProgressGoals({
-      staleTime: msUntilEndOfDay,
-      gcTime: msUntilEndOfDay,
-    })
-  );
-  const { data: adviceChat } = useSuspenseQuery(
+  const { data: adviceChat, isLoading: isLoadingChat } = useQuery(
     AdviceQuery.getAdviceChat({
       staleTime: msUntilEndOfDay,
       gcTime: msUntilEndOfDay,
@@ -47,42 +41,47 @@ export default function AdviceChatClient() {
     })
   );
 
-  if (!progressGoals || !progressGoals.length) return <HasNoProgressGoalPage />;
+  if (isLoadingChat) return <AdvicePageLoader />;
+  if (!adviceChat) throw new Error('Advice chat data is undefined');
 
   return (
-    <AdviceArrivalPopupWrapper adviceChat={adviceChat}>
-      {/** 조언 폼 제출에 필요한 상태 관리, 남은 횟수, isPending */}
-      <AdviceFormContext.Provider
-        value={{
-          remainingCount: adviceChat?.remainingCount || 0,
-          isSendingRequest: isSendingRequest,
-          requestAdvice: requestAdvice,
-        }}
-      >
-        {/** 조언 스타일 선택 시트 관련 상태 관리 */}
-        <AdviceStyleSelectContext.Provider
+    <GoalProvider>
+      <AdviceArrivalPopupWrapper adviceChat={adviceChat}>
+        {/** 조언 폼 제출에 필요한 상태 관리, 남은 횟수, isPending */}
+        <AdviceFormContext.Provider
           value={{
-            isSheetOpen: isOpen,
-            openSheet: showSheet,
-            closeSheet: closeSheet,
+            remainingCount: adviceChat.remainingCount || 0,
+            isSendingRequest: isSendingRequest,
+            requestAdvice: requestAdvice,
           }}
         >
-          <AdviceChatClientContent progressGoals={progressGoals} adviceChat={adviceChat} />
-        </AdviceStyleSelectContext.Provider>
-      </AdviceFormContext.Provider>
-    </AdviceArrivalPopupWrapper>
+          {/** 조언 스타일 선택 시트 관련 상태 관리 */}
+          <AdviceStyleSelectContext.Provider
+            value={{
+              isSheetOpen: isOpen,
+              openSheet: showSheet,
+              closeSheet: closeSheet,
+            }}
+          >
+            <AdviceChatSection adviceChat={adviceChat} />
+          </AdviceStyleSelectContext.Provider>
+        </AdviceFormContext.Provider>
+      </AdviceArrivalPopupWrapper>
+    </GoalProvider>
   );
 }
 
-type AdviceChatClientContentProps = {
-  progressGoals: Goal[];
-  adviceChat: AdviceChat;
-};
+function AdviceChatSection({ adviceChat }: { adviceChat: AdviceChat }) {
+  const { progressGoals = [] } = useGoalSelector();
 
-function AdviceChatClientContent({ progressGoals = [], adviceChat }: AdviceChatClientContentProps) {
+  if (!progressGoals || progressGoals.length === 0) {
+    return <HasNoProgressGoalPage />;
+  }
+
   return (
     <div className="flex flex-col flex-1 bg-[url('/advice/advice-chat-bg.png')] bg-cover bg-center">
       <AdviceHeader />
+      {/** 채팅 히스토리 내역 섹션 */}
       <main className="flex flex-1 flex-col relative text-sm tracking-wide">
         <AdviceChatHistory adviceChat={adviceChat} />
       </main>

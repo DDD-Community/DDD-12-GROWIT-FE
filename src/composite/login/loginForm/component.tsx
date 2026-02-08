@@ -10,6 +10,8 @@ import { tokenController } from '@/shared/lib/token';
 import Button from '@/shared/components/input/Button';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import type { AuthMethod } from '@/shared/type/authToken';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 
 interface LoginFormData {
   email: string;
@@ -22,6 +24,8 @@ export const LoginForm = () => {
   const { login, loading } = useFetchLogin();
   const [isSuccess, setIsSuccess] = useState(false);
   const { trackButtonClick } = useGTMActions();
+
+  const [_, setLastLoginMethod] = useLocalStorage<AuthMethod | null>('lastLoginMethod', null);
 
   // 이미 로그인된 사용자 체크
   useEffect(() => {
@@ -52,6 +56,8 @@ export const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data.email, data.password);
+      // 로그인 성공 시 토큰 저장 로직
+      setLastLoginMethod('EMAIL');
       showToast('로그인에 성공했습니다!', 'success');
       setIsSuccess(true);
       // 현재는 애니메이션이 잘 보이는지를 테스트하기 위해 약간의 지연을 주었는데 삭제하셔도 무방합니다
@@ -72,7 +78,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <div className="flex flex-col gap-[24px] pb-[40px]">
+      <div className="flex flex-col gap-6 pb-10">
         <InputField
           label="이메일"
           type="email"

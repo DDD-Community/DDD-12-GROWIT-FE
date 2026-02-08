@@ -7,3 +7,5 @@ export interface KakaoAuthToken {
   name: string;
   registrationToken: string;
 }
+
+export type AuthMethod = 'KAKAO' | 'EMAIL';
