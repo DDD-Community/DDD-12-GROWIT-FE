@@ -1,4 +1,4 @@
-import AdviceChatClient from '@/composite/advice';
+import { AdviceChatClient } from '@/composite/advice';
 
 export default function AdvicePage() {
   return <AdviceChatClient />;

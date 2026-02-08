@@ -13,11 +13,11 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { AdviceQueryKeys } from '@/model/advice/queryKeys';
 import { AdviceFormContext, AdviceStyleSelectContext } from '@/feature/advice/components/AdviceFormContext';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
-import AdvicePageLoader from '@/app/(home)/advice/loading';
+import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 import { GoalProvider, useGoalSelector } from '@/model/goal/context';
 import { AdviceChatMessage } from '@/feature/advice/components/AdviceChatMessage';
 
-export default function AdviceChatClient() {
+export function AdviceChatClient() {
   const msUntilEndOfDay = getMsUntilEndOfDay();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
@@ -41,7 +41,25 @@ export default function AdviceChatClient() {
     })
   );
 
-  if (isLoadingChat) return <AdvicePageLoader />;
+  if (isLoadingChat)
+    return (
+      <MotionWrapper
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            delay: 1.75,
+          },
+        }}
+        className="w-full h-screen flex items-center justify-center"
+      >
+        <div className="relative w-full h-full aspect-4/3">
+          <div className="w-full h-full bg-[url('/advice/advice-page-loading.jpg')] bg-cover bg-center absolute inset-0 z-999" />
+        </div>
+      </MotionWrapper>
+    );
   if (!adviceChat) throw new Error('Advice chat data is undefined');
 
   return (
@@ -160,3 +178,5 @@ const HasNoProgressGoalPage = () => {
     </div>
   );
 };
+
+export default AdviceChatClient;
