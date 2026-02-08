@@ -5,10 +5,12 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { KakaoSignupForm } from '@/composite/signup/signUpForm/KakaoSignupForm';
 import { tokenController } from '@/shared/lib/token';
+import { AuthMethod } from '@/shared/type/authToken';
 
 export default function OAuthCallbackPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasTokens, setHasTokens] = useState(false);
+  const [, setLastLoginMethod] = useState<AuthMethod | null>(null);
 
   useEffect(() => {
     const handleTokenProcessing = async () => {
@@ -25,6 +27,8 @@ export default function OAuthCallbackPage() {
         if (accessToken && refreshToken) {
           setHasTokens(true);
           tokenController.setTokens(accessToken, refreshToken);
+          // Oauth 로그인 성공 시 마지막 로그인 수단 저장
+          setLastLoginMethod('KAKAO');
           setTimeout(() => {
             redirect('/home');
           }, 50);
@@ -72,7 +76,7 @@ export default function OAuthCallbackPage() {
       {/* 왼쪽 회원가입 섹션 */}
       <div className="flex flex-col w-full">
         {/* 고정 헤더 */}
-        <div className="flex flex-col items-start gap-[40px] p-10 md:p-[20px] pb-0">
+        <div className="flex flex-col items-start gap-10 p-10 md:p-5 pb-0">
           <Link href="/login" className="text-white">
             <span className="inline-flex items-center">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,7 +94,7 @@ export default function OAuthCallbackPage() {
         </div>
 
         {/* 스크롤 가능한 폼 섹션 */}
-        <div className="flex-1 overflow-y-auto px-10 md:px-[20px] pt-8 md:pt-[20px]">
+        <div className="flex-1 overflow-y-auto px-10 md:px-5 pt-8 md:pt-5">
           <div className="flex flex-col justify-center max-w-md mx-auto w-full gap-5">
             <h2 className="text-2xl font-bold mb-2 text-white">
               간단한 회원가입으로 <br />
