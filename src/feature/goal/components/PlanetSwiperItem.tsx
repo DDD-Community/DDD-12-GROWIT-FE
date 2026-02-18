@@ -8,7 +8,7 @@ import { Goal } from '@/shared/type/goal';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 
-export const PlanetItem = ({ goal }: { goal: Goal }) => {
+export const PlanetSwiperItem = ({ goal }: { goal: Goal }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { trackButtonClick } = useGTMActions();
@@ -63,22 +63,19 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
   const status = getGoalStatus(goal);
 
   return (
-    <div className="gap-5 w-full h-full flex flex-col justify-center">
-      {/* Header */}
-      <div className="px-2.5 py-2.5 w-full space-y-3">
-        <div className="flex w-full justify-center">
-          <Badge
-            type="default"
-            size="md"
-            label={badgeProps.label}
-            color={badgeProps.color}
-            textColor={badgeProps.textColor}
-            className={status === '종료' ? 'px-3 py-1 rounded-2xl' : ''}
-          />
-        </div>
+    <div className="gap-2 w-full h-full flex flex-col justify-center">
+      <header className="px-2.5 py-2.5 w-full flex flex-col items-center gap-y-2">
+        <Badge
+          type="default"
+          size="md"
+          label={badgeProps.label}
+          color={badgeProps.color}
+          textColor={badgeProps.textColor}
+          className={status === '종료' ? 'px-3 py-1 rounded-2xl' : ''}
+        />
 
         <h2 className="heading-2-bold text-label-normal text-center">{goal.name}</h2>
-      </div>
+      </header>
 
       {/* Planet Image */}
       <button
@@ -108,13 +105,6 @@ export const PlanetItem = ({ goal }: { goal: Goal }) => {
       </button>
 
       <p className="caption-1-medium text-text-secondary text-center">{goal.planet.name}</p>
-
-      {/* duration date */}
-      <div className="flex w-full justify-center gap-2.5 px-4 py-2.5">
-        <span className="body-1-medium text-label-neutral">
-          {goal.duration.startDate}~{goal.duration.endDate}
-        </span>
-      </div>
     </div>
   );
 };

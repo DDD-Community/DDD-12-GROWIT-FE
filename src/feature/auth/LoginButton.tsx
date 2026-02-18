@@ -15,7 +15,7 @@ export const EmailLoginButton = () => {
     >
       이메일로 로그인
       {lastLoginMethod === 'EMAIL' && (
-        <ToolTip text="최근 로그인" position="bottom-center" tailPosition="bottom-center" />
+        <ToolTip text="최근 로그인" position="bottom-left" tailPosition="bottom-center" />
       )}
     </Link>
   );

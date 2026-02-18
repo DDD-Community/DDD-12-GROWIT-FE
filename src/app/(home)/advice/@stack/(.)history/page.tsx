@@ -1,6 +1,8 @@
 import { AdviceHistoryClient } from '@/composite/advice/history';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 
+export const dynamic = 'force-dynamic';
+
 export default function AdviceHistoryPage() {
   return (
     <div className="w-full h-[calc(100svh-64px)] flex flex-col bg-normal relative">

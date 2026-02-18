@@ -9,6 +9,8 @@ interface HomeLayoutProps {
   children?: React.ReactNode;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePageLayout({ children }: HomeLayoutProps) {
   useAutoLogout();
 

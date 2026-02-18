@@ -18,12 +18,6 @@ export default function LoginPage() {
       <div className="w-full flex flex-col items-center gap-4 text-center text-sm text-text-primary">
         <KakaoLoginButton />
         <EmailLoginButton />
-        {/* <Link
-          href={ROUTES.LOGIN_EMAIL}
-          className="w-full text-center py-2.5 px-4.5 text-inverse shadow-xs bg-fill-inverse rounded-lg text-base text-text-inverse font-bold hover:opacity-80"
-        >
-          이메일로 로그인
-        </Link> */}
         <div className="flex items-center justify-center gap-2 mt-1">
           <span>계정이 없으신가요? </span>
           <SignUpButton />

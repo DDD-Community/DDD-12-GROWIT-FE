@@ -19,6 +19,7 @@ import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/shared/components/foundation/Icons';
 
 export default function GoalProgressSheet() {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function GoalProgressSheet() {
   const daysUntilEndDate = currentGoal ? getDaysUntilEndDate(currentGoal.duration.endDate) : 0;
 
   return (
-    <div className="w-full max-h-40 h-full bg-elevated-normal rounded-t-lg border-t border-line-normal">
+    <div className="w-full bg-elevated-normal rounded-t-lg border-t border-line-normal">
       <div className="w-full flex justify-between text-text-strong pt-5 px-5 pb-4">
         <h2 className="body-1-normal">
           목표 종료까지 <span className="body-1-bold">{daysUntilEndDate}일</span> 남았어요
@@ -58,16 +59,7 @@ export default function GoalProgressSheet() {
               type="button"
               className="z-10 flex items-center justify-center cursor-pointer w-6 h-6 hover:bg-fill-normal rounded transition-colors"
             >
-              <svg width="3" height="17" viewBox="0 0 3 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M1.5 14.25C2.19036 14.25 2.75 14.8096 2.75 15.5C2.75 16.1904 2.19036 16.75 1.5 16.75C0.809644 16.75 0.25 16.1904 0.25 15.5C0.25 14.8096 0.809644 14.25 1.5 14.25ZM1.5 7.25C2.19036 7.25 2.75 7.80964 2.75 8.5C2.75 9.19036 2.19036 9.75 1.5 9.75C0.809644 9.75 0.25 9.19036 0.25 8.5C0.25 7.80964 0.809644 7.25 1.5 7.25ZM1.5 0.25C2.19036 0.25 2.75 0.809644 2.75 1.5C2.75 2.19036 2.19036 2.75 1.5 2.75C0.809644 2.75 0.25 2.19036 0.25 1.5C0.25 0.809644 0.809644 0.25 1.5 0.25Z"
-                  fill="white"
-                  stroke="white"
-                  strokeWidth="0.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Icon name="moreVertical" width={16} height={16} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="end" className="w-40 px-5 py-2">

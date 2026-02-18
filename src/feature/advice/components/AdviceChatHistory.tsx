@@ -1,12 +1,16 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
-import { AdviceChat } from '@/model/advice/types';
 import { AdviceChatMessage } from './AdviceChatMessage';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
-import { useAdviceFormContext } from '../hooks/useAdviceFormContext';
+import { useRequestAdvice } from './RequestAdviceContext';
+import { useFetchAdviceChat } from '../hooks/useFetchAdviceChat';
 
-export const AdviceChatHistory = ({ adviceChat = null }: { adviceChat: AdviceChat | null }) => {
-  const { isSendingRequest } = useAdviceFormContext();
+export const AdviceChatHistory = () => {
+  const { adviceChat } = useFetchAdviceChat();
+
+  const { isSendingRequest } = useRequestAdvice();
   const { displayMessages, backgroundType, shouldShowOnboarding } = useAdviceChatMessages(adviceChat, isSendingRequest);
 
   const scrollRef = useRef<HTMLElement>(null);

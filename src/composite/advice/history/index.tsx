@@ -1,23 +1,11 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { AdviceQuery } from '@/model/advice/queries';
 import type { AdviceChat, AdviceChatMessage } from '@/model/advice/types';
 import { useMemo } from 'react';
+import { useFetchAdviceChat } from '@/feature/advice/hooks/useFetchAdviceChat';
 
 export const AdviceHistoryClient = () => {
-  const { data: adviceChat, isLoading: isLoadingAdviceChat } = useQuery(AdviceQuery.getAdviceChat());
-
-  if (isLoadingAdviceChat) {
-    return (
-      <div className="w-full h-full flex flex-col bg-normal-alternative items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-gray-100 font-medium">히스토리를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
+  const { adviceChat } = useFetchAdviceChat();
 
   if (!adviceChat) {
     return (

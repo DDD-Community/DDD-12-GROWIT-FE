@@ -8,7 +8,7 @@ export default function SignupPage() {
       <PageHeader title="회원가입" />
 
       {/* 스크롤 가능한 폼 섹션 */}
-      <div className="flex-1 overflow-y-auto px-10 md:px-[20px] pb-10 md:pb-[20px]">
+      <div className="flex-1 overflow-y-auto px-5 pb-5">
         <div className="flex flex-col justify-center max-w-md mx-auto w-full min-h-full py-8">
           <SignUpForm />
         </div>

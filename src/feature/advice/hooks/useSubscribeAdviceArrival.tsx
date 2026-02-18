@@ -1,8 +1,10 @@
-import { AdviceChat, AdviceChatMessage } from '@/model/advice/types';
+import { AdviceChatMessage } from '@/model/advice/types';
 import { useEffect } from 'react';
 import { DAILY_ADVICE_ARRIVAL } from '../customEvents';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { AdviceArrivalSheet } from '../components/AdviceArrivalSheet';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { AdviceQuery } from '@/model/advice/queries';
 
 interface DailyAdviceCheckedStorage {
   isChecked: boolean;
@@ -12,13 +14,15 @@ interface DailyAdviceCheckedStorage {
 const IS_DAILY_ADVICE_CHECKED = 'isDailyAdviceChecked';
 
 /** 아침 조언 도착 팝업 제공자, 커스텀 이벤트 구독 및 바텀시트 팝업 담당 */
-export function AdviceArrivalPopupWrapper({
-  children,
-  adviceChat,
-}: {
-  children: React.ReactNode;
-  adviceChat: AdviceChat;
-}) {
+export function AdviceArrivalPopupWrapper({ children }: { children: React.ReactNode }) {
+  const { data: adviceChat } = useSuspenseQuery(
+    AdviceQuery.getAdviceChat({
+      staleTime: Infinity,
+      gcTime: Infinity,
+    })
+  );
+  if (!adviceChat) throw new Error('Advice chat data is undefined');
+
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
   subscribeDailyAdviceArrival(adviceChat.conversations || []);
 

@@ -1,18 +1,17 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { Settings } from 'lucide-react';
 import { BirthSection } from '@/feature/mypage/BirthSection';
 import { StackNavButton } from '@/shared/components/feedBack/StackNavButton';
 import { ROUTES } from '@/shared/constants/routes';
-import { DisplayUserName } from '@/feature/mypage/DisplayUserName';
+import { UserNameSection } from '@/feature/mypage/UserNameSection';
 
 const ASSETS = {
   avatar: '/avatar.png',
   starbucksDrink: '/my-page/starbucks-drink.png',
 };
 
-const MyPage = () => {
+function MyPage() {
   return (
     <div className="flex flex-col justify-start w-full h-full pt-8 pb-2">
       <PageHeader
@@ -31,7 +30,7 @@ const MyPage = () => {
       <NavStarbucksFormSection />
     </div>
   );
-};
+}
 
 function EditProfileSection() {
   return (
@@ -44,7 +43,7 @@ function EditProfileSection() {
         className="border-2 w-16 h-16 border-line-normal rounded-[200px]"
       />
       <div className="flex flex-col gap-y-2 items-center">
-        <DisplayUserName />
+        <UserNameSection />
         <StackNavButton
           href={ROUTES.EDIT_PROFILE}
           className="p-2 border border-border-primary text-text-primary py-1 px-2.5 text-sm rounded-2xl"
@@ -56,6 +55,9 @@ function EditProfileSection() {
   );
 }
 
+const growitFeedbackFormUrl =
+  'https://docs.google.com/forms/d/e/1FAIpQLSdXXy2AehKXkNR6keXGrZua5niatWgulmgIEWQdizDCBkqtNg/viewform';
+
 function NavStarbucksFormSection() {
   return (
     <nav className="py-7 px-5 grid grid-cols-[auto_2fr_1fr] items-center gap-x-4">
@@ -64,12 +66,14 @@ function NavStarbucksFormSection() {
         <p className="label-1-medium text-text-primary">피드백 작성하고</p>
         <p className="label-1-bold text-text-strong">커피 쿠폰 받기</p>
       </div>
-      <Link
-        href={ROUTES.SETTINGS}
+      <a
+        href={growitFeedbackFormUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         className="bg-fill-inverse text-center rounded-lg box-border label-1-bold py-2 px-3.5 text-text-inverse hover:bg-primary-strong focus:outline-4 focus:outline-solid focus:outline-line-normal"
       >
         작성하기
-      </Link>
+      </a>
     </nav>
   );
 }

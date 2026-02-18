@@ -2,6 +2,7 @@ import Button from '@/shared/components/input/Button';
 import Image from 'next/image';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/shared/components/foundation/Icons';
 
 type AdviceChatMessageType = 'onboarding' | 'loading' | 'text';
 
@@ -71,18 +72,8 @@ AdviceChatMessage.NoGoal = function NoGoalMessage() {
                 size="ml"
                 text="목표 추가하기"
                 layout="icon-left"
-                icon={
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M9.99935 4.16699V15.8337M4.16602 10.0003H15.8327"
-                      stroke="currentColor"
-                      strokeWidth="1.67"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                }
-                onClick={() => router.push(ROUTES.CREATE_GOAL)}
+                icon={<Icon name="plus" width={16} height={16} />}
+                onClick={() => router.push(ROUTES.CREATE_GOAL_ADVICE)}
                 className="mt-2"
               />
             </article>
@@ -124,6 +115,7 @@ AdviceChatMessage.Limit = function LimitMessage() {
             width={150}
             height={150}
             className="object-contain"
+            unoptimized
           />
         }
       />
@@ -159,10 +151,7 @@ AdviceChatMessage.Loading = function LoadingMessage() {
           />
         }
       />
-      <AdviceChatMessage
-        direction="left"
-        content={<span>열심히 고민중이야 좀만 기다려줘</span>}
-      />
+      <AdviceChatMessage direction="left" content={<span>열심히 고민중이야 좀만 기다려줘</span>} />
     </>
   );
 };

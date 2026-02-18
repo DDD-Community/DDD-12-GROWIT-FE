@@ -78,6 +78,7 @@ export const EarlyBirdModal = ({ open, onClose, onSuccessSubmit }: EarlyBirdModa
                 <InputField
                   label="휴대폰 번호"
                   errorMessage={errorMessage}
+                  placeholder='-없이 입력해주세요'
                   description={!hasError ? '✓ 올바른 휴대폰 번호입니다' : undefined}
                   {...field}
                 />

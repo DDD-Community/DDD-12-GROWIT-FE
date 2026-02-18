@@ -1,3 +1,5 @@
+import { pl } from 'date-fns/locale';
+
 export const RightArrowIcon = ({ ...props }: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -56,9 +58,78 @@ const CheckIcon = ({ ...props }: IconComponentProps) => {
   );
 };
 
+const CheckedNeon = ({ ...props }: IconComponentProps) => {
+  return (
+    <svg
+      width={props.width ?? '20'}
+      height={props.height ?? '20'}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M16.0774 4.41107C16.4028 4.08563 16.9304 4.08563 17.2558 4.41107C17.5812 4.73651 17.5812 5.26402 17.2558 5.58946L8.08913 14.7561C7.76369 15.0816 7.23618 15.0816 6.91074 14.7561L2.74408 10.5895C2.41864 10.264 2.41864 9.73651 2.74408 9.41107C3.06951 9.08563 3.59703 9.08563 3.92246 9.41107L7.49994 12.9885L16.0774 4.41107Z"
+        fill="#3AEE49"
+      />
+    </svg>
+  );
+};
+const PlusIcon = ({ ...props }: IconComponentProps) => {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M9.99935 4.16699V15.8337M4.16602 10.0003H15.8327"
+        stroke="currentColor"
+        strokeWidth="1.67"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+const ChevronLeftIcon = ({ ...props }: IconComponentProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+};
+
+const MoreVerticalIcon = ({ ...props }: IconComponentProps) => {
+  return (
+    <svg width="3" height="17" viewBox="0 0 3 17" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M1.5 14.25C2.19036 14.25 2.75 14.8096 2.75 15.5C2.75 16.1904 2.19036 16.75 1.5 16.75C0.809644 16.75 0.25 16.1904 0.25 15.5C0.25 14.8096 0.809644 14.25 1.5 14.25ZM1.5 7.25C2.19036 7.25 2.75 7.80964 2.75 8.5C2.75 9.19036 2.19036 9.75 1.5 9.75C0.809644 9.75 0.25 9.19036 0.25 8.5C0.25 7.80964 0.809644 7.25 1.5 7.25ZM1.5 0.25C2.19036 0.25 2.75 0.809644 2.75 1.5C2.75 2.19036 2.19036 2.75 1.5 2.75C0.809644 2.75 0.25 2.19036 0.25 1.5C0.25 0.809644 0.809644 0.25 1.5 0.25Z"
+        fill="white"
+        stroke="white"
+        strokeWidth="0.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 const iconMap = {
   clipboard: ClipboardIcon,
   check: CheckIcon,
+  checked: CheckedNeon,
+  plus: PlusIcon,
+  chevronLeft: ChevronLeftIcon,
+  moreVertical: MoreVerticalIcon,
 };
 
 export const Icon = ({ className = '', ...props }: IconComponentProps) => {
