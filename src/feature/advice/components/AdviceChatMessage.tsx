@@ -73,7 +73,7 @@ AdviceChatMessage.NoGoal = function NoGoalMessage() {
                 text="목표 추가하기"
                 layout="icon-left"
                 icon={<Icon name="plus" width={16} height={16} />}
-                onClick={() => router.push(ROUTES.CREATE_GOAL_ADVICE)}
+                onClick={() => router.push(ROUTES.CREATE_GOAL)}
                 className="mt-2"
               />
             </article>

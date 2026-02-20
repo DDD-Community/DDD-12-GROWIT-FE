@@ -20,8 +20,7 @@ export const ROUTES = {
   SETTINGS: '/mypage/settings',
   EDIT_PROFILE: '/mypage/edit-profile',
 
-  CREATE_GOAL: '/goal/create',
-  CREATE_GOAL_ADVICE: '/advice/create',
+  CREATE_GOAL: '/create-goal',
   CREATE_GOAL_ONBOARD: '/goal/create-onboard',
   ENDED_GOALS: '/goal/ended',
   EDIT_GOAL: (goalId: string) => `/goal/edit/${goalId}`,

@@ -6,7 +6,8 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 
 interface AnimatedStackProps {
   children: React.ReactNode;
-  basePath: string;
+  basePath?: string;
+  isActive?: boolean;
 }
 
 const getVariants = () => ({
@@ -15,12 +16,14 @@ const getVariants = () => ({
   exit: { x: '100%' },
 });
 
-export function AnimatedStack({ children, basePath }: AnimatedStackProps) {
+export function AnimatedStack({ children, basePath = '/', isActive }: AnimatedStackProps) {
   const pathname = usePathname();
   const variants = getVariants();
 
-  // basePath보다 깊은 경로일 때만 스택 표시
-  const isStackRoute = pathname !== basePath && pathname.startsWith(basePath);
+  // isActive가 명시적으로 전달되면 우선 사용, 없으면 basePath 기반으로 판단
+  const isStackRoute = isActive !== undefined
+    ? isActive
+    : pathname !== basePath && pathname.startsWith(basePath);
 
   return (
     <AnimatePresence mode="wait">
