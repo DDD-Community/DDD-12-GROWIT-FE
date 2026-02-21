@@ -639,10 +639,9 @@ flowchart TB
 #### 목표 폴더 구조
 
 ```
-src/shared/lib/app/
+src/shared/lib/appBridge/
 ├── index.ts              # Public API
-├── isInApp.ts            # 환경 감지 유틸
-├── appBridge.ts          # postMessage 통신
+├── appBridge.ts          # 환경 감지 + postMessage 통신
 └── types.ts              # 타입 정의
 
 src/shared/type/
@@ -670,7 +669,7 @@ interface Window {
 
 #### Task 2.2: 타입 정의
 
-**파일**: `src/shared/lib/app/types.ts`
+**파일**: `src/shared/lib/appBridge/types.ts`
 
 ```typescript
 /**
@@ -701,117 +700,107 @@ export interface AppTokenPayload {
 
 ---
 
-#### Task 2.3: isInApp 유틸리티
+#### Task 2.3: AppBridge 유틸리티
 
-**파일**: `src/shared/lib/app/isInApp.ts`
-
-```typescript
-/**
- * 앱(WebView) 환경 여부 확인
- */
-export const isInApp = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return window.ReactNativeWebView !== undefined;
-};
-```
-
----
-
-#### Task 2.4: AppBridge 유틸리티
-
-**파일**: `src/shared/lib/app/appBridge.ts`
+**파일**: `src/shared/lib/appBridge/appBridge.ts`
 
 ```typescript
 import type { AppMessage, AppMessageType, AppTokenPayload } from './types';
-import { isInApp } from './isInApp';
 
 /**
- * 앱으로 메시지 전송
+ * App Bridge - 앱과 웹 간 통신 유틸리티
  */
-export const sendToApp = <T = unknown>(
-  type: AppMessageType,
-  payload?: T
-): void => {
-  if (!isInApp()) return;
+export const appBridge = {
+  /**
+   * 앱(WebView) 환경 여부 확인
+   */
+  isInApp(): boolean {
+    if (typeof window === 'undefined') return false;
+    return window.ReactNativeWebView !== undefined;
+  },
 
-  const message: AppMessage<T> = { type, payload };
-  window.ReactNativeWebView!.postMessage(JSON.stringify(message));
+  /**
+   * 앱으로 메시지 전송
+   */
+  sendToApp<T = unknown>(type: AppMessageType, payload?: T): void {
+    if (!this.isInApp()) return;
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[AppBridge] Send:', type, payload);
-  }
-};
+    const message: AppMessage<T> = { type, payload };
+    window.ReactNativeWebView!.postMessage(JSON.stringify(message));
 
-/**
- * 앱에서 메시지 수신 리스너 등록
- * @returns 구독 해제 함수
- */
-export const onAppMessage = <T = unknown>(
-  callback: (message: AppMessage<T>) => void
-): (() => void) => {
-  const handler = (event: MessageEvent) => {
-    // 객체로 온 경우 (injectJavaScript)
-    if (typeof event.data === 'object' && event.data?.type) {
-      callback(event.data as AppMessage<T>);
-      return;
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[AppBridge] Send:', type, payload);
     }
+  },
 
-    // JSON 문자열로 온 경우
-    if (typeof event.data === 'string') {
-      try {
-        const parsed = JSON.parse(event.data);
-        if (parsed.type) {
-          callback(parsed as AppMessage<T>);
+  /**
+   * 앱에서 메시지 수신 리스너 등록
+   * @returns 구독 해제 함수
+   */
+  onAppMessage<T = unknown>(
+    callback: (message: AppMessage<T>) => void
+  ): () => void {
+    const handler = (event: MessageEvent) => {
+      // 객체로 온 경우 (injectJavaScript)
+      if (typeof event.data === 'object' && event.data?.type) {
+        callback(event.data as AppMessage<T>);
+        return;
+      }
+
+      // JSON 문자열로 온 경우
+      if (typeof event.data === 'string') {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.type) {
+            callback(parsed as AppMessage<T>);
+          }
+        } catch {
+          // JSON 아님 - 무시
         }
-      } catch {
-        // JSON 아님 - 무시
       }
-    }
-  };
+    };
 
-  window.addEventListener('message', handler);
+    window.addEventListener('message', handler);
 
-  return () => {
-    window.removeEventListener('message', handler);
-  };
-};
+    return () => {
+      window.removeEventListener('message', handler);
+    };
+  },
 
-/**
- * 앱에서 토큰 수신 대기 (Promise)
- * - READY 전송 → AUTH_TOKEN 대기
- */
-export const waitForAppToken = (
-  timeout: number = 5000
-): Promise<AppTokenPayload> => {
-  return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      cleanup();
-      reject(new Error(`토큰 수신 타임아웃 (${timeout}ms)`));
-    }, timeout);
-
-    const cleanup = onAppMessage<AppTokenPayload>((message) => {
-      if (message.type === 'AUTH_TOKEN' && message.payload) {
-        clearTimeout(timeoutId);
+  /**
+   * 앱에서 토큰 수신 대기 (Promise)
+   * - READY 전송 → AUTH_TOKEN 대기
+   */
+  waitForAppToken(timeout: number = 5000): Promise<AppTokenPayload> {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
         cleanup();
-        resolve(message.payload);
-      }
-    });
+        reject(new Error(`토큰 수신 타임아웃 (${timeout}ms)`));
+      }, timeout);
 
-    // 앱에 준비 완료 알림
-    sendToApp('READY');
-  });
-};
+      const cleanup = this.onAppMessage<AppTokenPayload>((message) => {
+        if (message.type === 'AUTH_TOKEN' && message.payload) {
+          clearTimeout(timeoutId);
+          cleanup();
+          resolve(message.payload);
+        }
+      });
+
+      // 앱에 준비 완료 알림
+      this.sendToApp('READY');
+    });
+  },
+}
 ```
 
 ---
 
-#### Task 2.5: Public API
+#### Task 2.4: Public API
 
-**파일**: `src/shared/lib/app/index.ts`
+**파일**: `src/shared/lib/appBridge/index.ts`
 
 ```typescript
-export { isInApp } from './isInApp';
-export { sendToApp, onAppMessage, waitForAppToken } from './appBridge';
+export { appBridge } from './appBridge';
 export type { AppMessage, AppMessageType, AppTokenPayload } from './types';
 ```
 
@@ -840,7 +829,7 @@ src/shared/components/providers/
 
 import { useEffect, createContext, useContext, ReactNode } from 'react';
 import { authService } from '@/shared/lib/auth';
-import { isInApp, sendToApp } from '@/shared/lib/app';
+import { appBridge } from '@/shared/lib/appBridge';
 
 // ============================================
 // Context
@@ -865,7 +854,7 @@ interface AppBridgeProviderProps {
 }
 
 export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
-  const isApp = isInApp();
+  const isApp = appBridge.isInApp();
 
   // Auth 이벤트 구독 → 앱에 알림
   useEffect(() => {
@@ -873,12 +862,12 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
 
     // 로그아웃 이벤트 → 앱에 LOGOUT 전송
     const unsubLogout = authService.onLogout(() => {
-      sendToApp('LOGOUT');
+      appBridge.sendToApp('LOGOUT');
     });
 
     // 토큰 갱신 이벤트 → 앱에 TOKEN_REFRESHED 전송
     const unsubRefresh = authService.onTokenRefresh((tokens) => {
-      sendToApp('TOKEN_REFRESHED', tokens);
+      appBridge.sendToApp('TOKEN_REFRESHED', tokens);
     });
 
     return () => {
@@ -897,7 +886,7 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
 
 **핵심**:
 - `authService.onLogout()`, `authService.onTokenRefresh()` 구독
-- 앱 환경일 때만 `sendToApp()` 호출
+- 앱 환경일 때만 `appBridge.sendToApp()` 호출
 - 기존 auth 코드는 수정 없음 (이벤트만 발행하면 됨)
 
 ---
@@ -913,7 +902,7 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
 
 import { useEffect, useState, ReactNode } from 'react';
 import { authService } from '@/shared/lib/auth';
-import { isInApp, waitForAppToken } from '@/shared/lib/app';
+import { appBridge } from '@/shared/lib/appBridge';
 
 // ============================================
 // Props
@@ -950,14 +939,14 @@ export function AppAuthProvider({
   useEffect(() => {
     const initialize = async () => {
       // 웹 환경: 즉시 초기화 완료
-      if (!isInApp()) {
+      if (!appBridge.isInApp()) {
         setState({ isInitialized: true, error: null });
         return;
       }
 
       // 앱 환경: 토큰 수신 대기
       try {
-        const tokens = await waitForAppToken(tokenTimeout);
+        const tokens = await appBridge.waitForAppToken(tokenTimeout);
 
         // authService.login() 호출 → LOGIN 이벤트 발행
         authService.login(tokens);
@@ -1008,7 +997,7 @@ export function AppAuthProvider({
 ```
 
 **핵심**:
-- 앱 환경에서만 `waitForAppToken()` 호출
+- 앱 환경에서만 `appBridge.waitForAppToken()` 호출
 - 토큰 수신 후 `authService.login()` 호출
 - 웹 환경에서는 즉시 children 렌더링
 
@@ -1226,10 +1215,9 @@ src/shared/
 │   │   ├── tokenStorage.ts           # localStorage (내부용)
 │   │   └── types.ts                  # 타입 정의
 │   │
-│   ├── app/                          # App Bridge 모듈 (Phase 2)
+│   ├── appBridge/                    # App Bridge 모듈 (Phase 2)
 │   │   ├── index.ts                  # Public API
-│   │   ├── isInApp.ts                # 환경 감지
-│   │   ├── appBridge.ts              # postMessage 통신
+│   │   ├── appBridge.ts              # 환경 감지 + postMessage 통신
 │   │   └── types.ts                  # 타입 정의
 │   │
 │   ├── apiClient.ts                  # 수정됨 (authService 사용)
@@ -1261,9 +1249,8 @@ flowchart TB
         authService --> eventEmitter
     end
 
-    subgraph AppModule["shared/lib/app/ (Phase 2)"]
-        isInApp["isInApp()"]
-        appBridge["sendToApp()<br/>waitForAppToken()"]
+    subgraph AppModule["shared/lib/appBridge/ (Phase 2)"]
+        appBridge["appBridge<br/>isInApp() / sendToApp() / waitForAppToken()"]
     end
 
     subgraph Providers["components/providers/ (Phase 3)"]
@@ -1274,7 +1261,6 @@ flowchart TB
         AppAuthProvider --> authService
         AppBridgeProvider --> eventEmitter
         AppBridgeProvider --> appBridge
-        AppBridgeProvider --> isInApp
     end
 
     subgraph Consumers["기존 코드 (마이그레이션)"]
@@ -1304,7 +1290,7 @@ flowchart LR
     subgraph Remove["제거할 것"]
         R1["AppAuthProvider"]
         R2["AppBridgeProvider"]
-        R3["shared/lib/app/"]
+        R3["shared/lib/appBridge/"]
         R4["useAutoLogout의 isApp 체크"]
     end
 
@@ -1319,7 +1305,7 @@ flowchart LR
 **제거 순서:**
 1. `layout.tsx`에서 `AppAuthProvider`, `AppBridgeProvider` 제거
 2. `useAutoLogout`에서 `isApp` 체크 제거
-3. `src/shared/lib/app/` 폴더 삭제
+3. `src/shared/lib/appBridge/` 폴더 삭제
 4. `src/shared/components/providers/App*.tsx` 삭제
 
 **AuthService는 그대로 유지** - 웹에서도 유용한 구조 (이벤트 기반)
@@ -1349,10 +1335,9 @@ flowchart LR
 | Task | 설명 | 파일 | 목적 |
 |------|------|------|------|
 | 2.1 | Window 타입 확장 | `type/global.d.ts` | `ReactNativeWebView` 타입을 TypeScript에서 인식하도록 선언 |
-| 2.2 | 타입 정의 | `lib/app/types.ts` | 앱-웹 통신 메시지 타입 정의 (`READY`, `AUTH_TOKEN`, `LOGOUT` 등) |
-| 2.3 | isInApp 유틸리티 | `lib/app/isInApp.ts` | WebView 환경인지 브라우저 환경인지 판별하는 헬퍼 함수 |
-| 2.4 | AppBridge 유틸리티 | `lib/app/appBridge.ts` | 앱에 메시지 전송(`sendToApp`), 앱에서 토큰 수신 대기(`waitForAppToken`) 기능 |
-| 2.5 | Public API | `lib/app/index.ts` | App 모듈의 공개 API 정의, 내부 구현 은닉 |
+| 2.2 | 타입 정의 | `lib/appBridge/types.ts` | 앱-웹 통신 메시지 타입 정의 (`READY`, `AUTH_TOKEN`, `LOGOUT` 등) |
+| 2.3 | AppBridge 유틸리티 | `lib/appBridge/appBridge.ts` | 환경 감지(`isInApp`), 앱에 메시지 전송(`sendToApp`), 앱에서 토큰 수신 대기(`waitForAppToken`) 기능 |
+| 2.4 | Public API | `lib/appBridge/index.ts` | App 모듈의 공개 API 정의, 내부 구현 은닉 |
 
 ### Phase 3: App Bridge Provider
 
