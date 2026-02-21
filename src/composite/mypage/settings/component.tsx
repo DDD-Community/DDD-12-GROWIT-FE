@@ -4,7 +4,7 @@ import { RightArrowIcon } from '@/shared/components/foundation/Icons';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { useFetchUserName } from '@/shared/hooks';
 import { useGTMActions } from '@/shared/hooks/useGTM';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState, Suspense, lazy } from 'react';
 
@@ -23,7 +23,7 @@ export function SettingsContent() {
       eventName: GTM_EVENTS.MYPAGE_CLICK,
       buttonName: GTM_BUTTON_NAME.LOGOUT,
     });
-    tokenController.clearTokens();
+    authService.logout();
     router.push('/login');
   }, [router, trackButtonClick]);
 

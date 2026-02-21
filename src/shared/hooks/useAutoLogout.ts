@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { useMockEnvironment } from './useMockEnvironment';
 
 export function useAutoLogout() {
@@ -16,10 +16,7 @@ export function useAutoLogout() {
       return;
     }
 
-    const accessToken = tokenController.getAccessToken();
-    const refreshToken = tokenController.getRefreshToken();
-
-    if (!accessToken || !refreshToken) {
+    if (!authService.isAuthenticated()) {
       router.push('/login');
       return;
     }
