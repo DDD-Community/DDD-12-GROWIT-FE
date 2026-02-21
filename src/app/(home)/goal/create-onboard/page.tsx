@@ -14,6 +14,8 @@ import { GoalMutation } from '@/model/goal/queries';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { userApi, UserQueryKeys } from '@/model/user';
 import { useToast } from '@/shared/components/feedBack/toast';
+import { useGTMActions } from '@/shared/hooks/useGTM';
+import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { CreateGoalFormElement } from '@/feature/goal';
 import type { GoalFormType } from '@/feature/goal';
 import type { CreateGoalResponseType } from '@/model/goal/dto';
@@ -38,6 +40,7 @@ function GoalOnboardContent() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const { fullUserName } = useFetchUserName();
+  const { trackButtonClick } = useGTMActions();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [createdGoalData, setCreatedGoalData] = useState<CreateGoalResponseType | null>(null);
@@ -89,8 +92,18 @@ function GoalOnboardContent() {
     }
   };
 
+  const stepButtonMap: Record<number, string> = {
+    1: GTM_BUTTON_NAME.GOAL_START_START,
+    2: GTM_BUTTON_NAME.GOAL_START_NAME_NEXT,
+    3: GTM_BUTTON_NAME.GOAL_START_DATE_NEXT,
+  };
+
   const handleNext = () => {
     if (!validateStep()) return;
+
+    if (stepButtonMap[currentStep]) {
+      trackButtonClick({ eventName: GTM_EVENTS.GOAL_START, buttonName: stepButtonMap[currentStep] });
+    }
 
     if (currentStep === 1) {
       // 온보딩 등록 API 호출
@@ -124,6 +137,7 @@ function GoalOnboardContent() {
   };
 
   const handleComplete = () => {
+    trackButtonClick({ eventName: GTM_EVENTS.GOAL_START, buttonName: GTM_BUTTON_NAME.GOAL_START_DONE });
     router.push(ROUTES.HOME);
     showToast('목표 생성이 완료되었습니다.', 'success');
   };

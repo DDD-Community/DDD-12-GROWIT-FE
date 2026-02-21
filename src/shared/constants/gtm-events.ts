@@ -14,6 +14,7 @@ export enum GTM_EVENTS {
   // 목표 관련
   GOAL_ADD = 'goal_add',
   GOAL_ADD_CLICK = 'goal_add_click',
+  GOAL_START = 'goal_start',
   GOAL_START_CLICK = 'goal_start_click',
   GOAL_CLICK = 'goal_click',
 
@@ -49,6 +50,15 @@ export enum GTM_BUTTON_NAME {
   GOAL_ADD_NAME = 'name',
   GOAL_ADD_START_DATE = 'start_date',
   GOAL_ADD_END_DATE = 'end_date',
+
+  // 목표 시작(온보딩) 페이지
+  GOAL_START_START = 'start',
+  GOAL_START_NAME = 'name',
+  GOAL_START_NAME_NEXT = 'name_next',
+  GOAL_START_START_DATE = 'start_date',
+  GOAL_START_END_DATE = 'end_date',
+  GOAL_START_DATE_NEXT = 'date_next',
+  GOAL_START_DONE = 'done',
 
   // 목표 페이지
   CATEGORY_STUDY = 'category_study',
