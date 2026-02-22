@@ -3,8 +3,8 @@
  */
 export type AppMessageType =
   | 'READY' // Web → App: 웹 준비 완료
-  | 'AUTH_TOKEN' // App → Web: 토큰 전달
-  | 'TOKEN_REFRESHED' // Web → App: 토큰 갱신됨
+  | 'SYNC_TOKEN_TO_WEB' // App → Web: 앱에서 웹으로 토큰 동기화
+  | 'SYNC_TOKEN_TO_APP' // Web → App: 웹에서 앱으로 토큰 동기화 (로그인/갱신)
   | 'LOGOUT'; // Web → App: 로그아웃
 
 /**
@@ -16,7 +16,7 @@ export interface AppMessage<T = unknown> {
 }
 
 /**
- * 토큰 페이로드 (AUTH_TOKEN, TOKEN_REFRESHED에서 사용)
+ * 토큰 페이로드 (SYNC_TOKEN_TO_WEB, SYNC_TOKEN_TO_APP에서 사용)
  */
 export interface AppTokenPayload {
   accessToken: string;

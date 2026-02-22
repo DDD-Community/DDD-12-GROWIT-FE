@@ -62,7 +62,7 @@ export const appBridge = {
 
   /**
    * 앱에서 토큰 수신 대기 (Promise)
-   * - READY 전송 → AUTH_TOKEN 대기
+   * - READY 전송 → SYNC_TOKEN_TO_WEB 대기
    */
   waitForAppToken(timeout: number = 5000): Promise<AppTokenPayload> {
     return new Promise((resolve, reject) => {
@@ -72,7 +72,7 @@ export const appBridge = {
       }, timeout);
 
       const cleanup = this.onAppMessage<AppTokenPayload>((message) => {
-        if (message.type === 'AUTH_TOKEN' && message.payload) {
+        if (message.type === 'SYNC_TOKEN_TO_WEB' && message.payload) {
           clearTimeout(timeoutId);
           cleanup();
           resolve(message.payload);

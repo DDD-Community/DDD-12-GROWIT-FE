@@ -26,17 +26,23 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
   useEffect(() => {
     if (!isApp) return;
 
+    // 로그인 이벤트 → 앱에 SYNC_TOKEN_TO_APP 전송 (웹뷰 내 로그인)
+    const unsubLogin = authService.onLogin((tokens) => {
+      appBridge.sendToApp('SYNC_TOKEN_TO_APP', tokens);
+    });
+
     // 로그아웃 이벤트 → 앱에 LOGOUT 전송
     const unsubLogout = authService.onLogout(() => {
       appBridge.sendToApp('LOGOUT');
     });
 
-    // 토큰 갱신 이벤트 → 앱에 TOKEN_REFRESHED 전송
+    // 토큰 갱신 이벤트 → 앱에 SYNC_TOKEN_TO_APP 전송
     const unsubRefresh = authService.onTokenRefresh((tokens) => {
-      appBridge.sendToApp('TOKEN_REFRESHED', tokens);
+      appBridge.sendToApp('SYNC_TOKEN_TO_APP', tokens);
     });
 
     return () => {
+      unsubLogin();
       unsubLogout();
       unsubRefresh();
     };

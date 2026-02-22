@@ -676,10 +676,10 @@ interface Window {
  * App ↔ Web 메시지 타입
  */
 export type AppMessageType =
-  | 'READY'           // Web → App: 웹 준비 완료
-  | 'AUTH_TOKEN'      // App → Web: 토큰 전달
-  | 'TOKEN_REFRESHED' // Web → App: 토큰 갱신됨
-  | 'LOGOUT';         // Web → App: 로그아웃
+  | 'READY'             // Web → App: 웹 준비 완료
+  | 'SYNC_TOKEN_TO_WEB' // App → Web: 앱에서 웹으로 토큰 동기화
+  | 'SYNC_TOKEN_TO_APP' // Web → App: 웹에서 앱으로 토큰 동기화 (로그인/갱신)
+  | 'LOGOUT';           // Web → App: 로그아웃
 
 /**
  * 메시지 구조
@@ -690,7 +690,7 @@ export interface AppMessage<T = unknown> {
 }
 
 /**
- * 토큰 페이로드 (AUTH_TOKEN, TOKEN_REFRESHED에서 사용)
+ * 토큰 페이로드 (SYNC_TOKEN_TO_WEB, SYNC_TOKEN_TO_APP에서 사용)
  */
 export interface AppTokenPayload {
   accessToken: string;
@@ -769,7 +769,7 @@ export const appBridge = {
 
   /**
    * 앱에서 토큰 수신 대기 (Promise)
-   * - READY 전송 → AUTH_TOKEN 대기
+   * - READY 전송 → SYNC_TOKEN_TO_WEB 대기
    */
   waitForAppToken(timeout: number = 5000): Promise<AppTokenPayload> {
     return new Promise((resolve, reject) => {
@@ -779,7 +779,7 @@ export const appBridge = {
       }, timeout);
 
       const cleanup = this.onAppMessage<AppTokenPayload>((message) => {
-        if (message.type === 'AUTH_TOKEN' && message.payload) {
+        if (message.type === 'SYNC_TOKEN_TO_WEB' && message.payload) {
           clearTimeout(timeoutId);
           cleanup();
           resolve(message.payload);
@@ -860,17 +860,23 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
   useEffect(() => {
     if (!isApp) return;
 
+    // 로그인 이벤트 → 앱에 SYNC_TOKEN_TO_APP 전송 (웹뷰 내 로그인)
+    const unsubLogin = authService.onLogin((tokens) => {
+      appBridge.sendToApp('SYNC_TOKEN_TO_APP', tokens);
+    });
+
     // 로그아웃 이벤트 → 앱에 LOGOUT 전송
     const unsubLogout = authService.onLogout(() => {
       appBridge.sendToApp('LOGOUT');
     });
 
-    // 토큰 갱신 이벤트 → 앱에 TOKEN_REFRESHED 전송
+    // 토큰 갱신 이벤트 → 앱에 SYNC_TOKEN_TO_APP 전송
     const unsubRefresh = authService.onTokenRefresh((tokens) => {
-      appBridge.sendToApp('TOKEN_REFRESHED', tokens);
+      appBridge.sendToApp('SYNC_TOKEN_TO_APP', tokens);
     });
 
     return () => {
+      unsubLogin();
       unsubLogout();
       unsubRefresh();
     };
@@ -885,8 +891,9 @@ export function AppBridgeProvider({ children }: AppBridgeProviderProps) {
 ```
 
 **핵심**:
-- `authService.onLogout()`, `authService.onTokenRefresh()` 구독
+- `authService.onLogin()`, `authService.onLogout()`, `authService.onTokenRefresh()` 구독
 - 앱 환경일 때만 `appBridge.sendToApp()` 호출
+- 웹뷰 내 로그인 성공 시에도 앱에 토큰 동기화 (`SYNC_TOKEN_TO_APP`)
 - 기존 auth 코드는 수정 없음 (이벤트만 발행하면 됨)
 
 ---
@@ -1015,33 +1022,42 @@ sequenceDiagram
 
     Note over Provider: 앱 환경 감지
 
-    %% 1. 토큰 대기
+    %% 1. 앱에서 웹으로 토큰 동기화
     rect rgb(200, 220, 255)
-        Note over Provider,App: Phase 1: 토큰 대기
+        Note over Provider,App: Phase 1: 앱 → 웹 토큰 동기화
         Provider->>App: sendToApp('READY')
-        App->>Provider: postMessage('AUTH_TOKEN', tokens)
+        App->>Provider: postMessage('SYNC_TOKEN_TO_WEB', tokens)
         Provider->>AuthService: authService.login(tokens)
         AuthService->>AuthService: tokenStorage.save()
         AuthService->>Bridge: emit('LOGIN', tokens)
         Note over Provider: 초기화 완료, children 렌더링
     end
 
-    %% 2. 로그아웃
+    %% 2. 웹뷰 내 로그인 → 앱에 토큰 동기화
+    rect rgb(200, 255, 200)
+        Note over Component,App: Phase 2: 웹 → 앱 토큰 동기화 (로그인)
+        Component->>AuthService: authService.login(tokens)
+        AuthService->>AuthService: tokenStorage.save()
+        AuthService->>Bridge: emit('LOGIN', tokens)
+        Bridge->>App: sendToApp('SYNC_TOKEN_TO_APP', tokens)
+    end
+
+    %% 3. 로그아웃
     rect rgb(255, 220, 220)
-        Note over Component,App: Phase 2: 로그아웃
+        Note over Component,App: Phase 3: 로그아웃
         Component->>AuthService: authService.logout()
         AuthService->>AuthService: tokenStorage.clear()
         AuthService->>Bridge: emit('LOGOUT')
         Bridge->>App: sendToApp('LOGOUT')
     end
 
-    %% 3. 토큰 갱신
+    %% 4. 토큰 갱신
     rect rgb(220, 255, 220)
-        Note over AuthService,App: Phase 3: 토큰 갱신 (apiClient)
+        Note over AuthService,App: Phase 4: 웹 → 앱 토큰 동기화 (갱신)
         AuthService->>AuthService: authService.refreshTokens()
         AuthService->>AuthService: tokenStorage.save()
         AuthService->>Bridge: emit('TOKEN_REFRESH')
-        Bridge->>App: sendToApp('TOKEN_REFRESHED')
+        Bridge->>App: sendToApp('SYNC_TOKEN_TO_APP', tokens)
     end
 ```
 
@@ -1335,7 +1351,7 @@ flowchart LR
 | Task | 설명 | 파일 | 목적 |
 |------|------|------|------|
 | 2.1 | Window 타입 확장 | `type/global.d.ts` | `ReactNativeWebView` 타입을 TypeScript에서 인식하도록 선언 |
-| 2.2 | 타입 정의 | `lib/appBridge/types.ts` | 앱-웹 통신 메시지 타입 정의 (`READY`, `AUTH_TOKEN`, `LOGOUT` 등) |
+| 2.2 | 타입 정의 | `lib/appBridge/types.ts` | 앱-웹 통신 메시지 타입 정의 (`READY`, `SYNC_TOKEN_TO_WEB`, `SYNC_TOKEN_TO_APP`, `LOGOUT`) |
 | 2.3 | AppBridge 유틸리티 | `lib/appBridge/appBridge.ts` | 환경 감지(`isInApp`), 앱에 메시지 전송(`sendToApp`), 앱에서 토큰 수신 대기(`waitForAppToken`) 기능 |
 | 2.4 | Public API | `lib/appBridge/index.ts` | App 모듈의 공개 API 정의, 내부 구현 은닉 |
 
@@ -1345,7 +1361,7 @@ flowchart LR
 
 | Task | 설명 | 파일 | 목적 |
 |------|------|------|------|
-| 3.1 | AppBridgeProvider | `providers/AppBridgeProvider.tsx` | `authService` 이벤트를 구독하여 앱에 자동 알림 (LOGOUT, TOKEN_REFRESHED) |
+| 3.1 | AppBridgeProvider | `providers/AppBridgeProvider.tsx` | `authService` 이벤트를 구독하여 앱에 자동 알림 (LOGIN, LOGOUT, TOKEN_REFRESH → `SYNC_TOKEN_TO_APP`) |
 | 3.2 | AppAuthProvider | `providers/AppAuthProvider.tsx` | 앱 환경 진입 시 토큰 수신까지 대기 + 로딩 UI 표시 (조기 리다이렉트 방지) |
 
 ### Phase 4: 통합
