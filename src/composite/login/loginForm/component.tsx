@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { InputField } from '@/shared/components/input/InputField';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useFetchLogin } from '@/composite/login/loginForm/hook';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import Button from '@/shared/components/input/Button';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
@@ -29,10 +29,7 @@ export const LoginForm = () => {
 
   // 이미 로그인된 사용자 체크
   useEffect(() => {
-    const accessToken = tokenController.getAccessToken();
-    const refreshToken = tokenController.getRefreshToken();
-
-    if (accessToken && refreshToken) {
+    if (authService.isAuthenticated()) {
       setIsSuccess(true);
       router.push('/home');
     }

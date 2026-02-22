@@ -1,11 +1,25 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { SignUpForm } from '@/composite/signup/signUpForm';
+import { appBridge } from '@/shared/lib/appBridge';
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (appBridge.isInApp()) {
+      appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN');
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto w-full">
       {/* 고정 헤더 */}
-      <PageHeader title="회원가입" />
+      <PageHeader title="회원가입" onBackClick={handleBack} />
 
       {/* 스크롤 가능한 폼 섹션 */}
       <div className="flex-1 overflow-y-auto px-5 pb-5">

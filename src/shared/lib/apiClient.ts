@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { AuthToken } from '@/shared/type/authToken';
 import { ROUTES } from '../constants/routes';
 
@@ -16,7 +16,7 @@ const axiosInstance: AxiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   config => {
-    const accessToken = tokenController.getAccessToken();
+    const accessToken = authService.getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
 
     // 403 errors (unauthorized access)
     if (error.response?.status === 403) {
-      tokenController.clearTokens();
+      authService.logout();
       if (typeof window !== 'undefined') {
         window.location.href = ROUTES.LOGIN;
       }
@@ -54,7 +54,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && originalRequest) {
       try {
         // Try to refresh the token
-        const refreshToken = tokenController.getRefreshToken();
+        const refreshToken = authService.getRefreshToken();
         if (!refreshToken) {
           throw new Error('No refresh token available');
         }
@@ -63,14 +63,14 @@ axiosInstance.interceptors.response.use(
         const { accessToken, refreshToken: newRefreshToken } = data.data;
 
         // Update tokens
-        tokenController.setTokens(accessToken, newRefreshToken);
+        authService.refreshTokens({ accessToken, refreshToken: newRefreshToken });
 
         // Retry the original request with new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         // If refresh fails, clear tokens and redirect to auth
-        tokenController.clearTokens();
+        authService.logout();
         // 서버 사이드에서는 window 객체가 없으므로 클라이언트에서만 리다이렉트
         if (typeof window !== 'undefined') {
           window.location.href = '/login';

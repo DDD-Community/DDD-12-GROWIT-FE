@@ -2,7 +2,7 @@ import { Modal } from '@/shared/components/feedBack/Modal';
 import { useToast } from '@/shared/components/feedBack/toast';
 import Button from '@/shared/components/input/Button';
 import { apiClient } from '@/shared/lib/apiClient';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +17,7 @@ export default function WithdrawModal({ isOpen, onClose }: WithdrawModalProps) {
   const deleteAccount = async () => {
     try {
       await apiClient.delete('/users/myprofile');
-      tokenController.clearTokens();
+      authService.logout();
       router.push('/login');
     } catch (error) {
       showToast('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');

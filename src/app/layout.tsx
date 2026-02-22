@@ -6,6 +6,8 @@ import { ToastProvider } from '@/shared/components/feedBack/toast';
 import { GoogleTagManager } from '@next/third-parties/google';
 import './globals.css';
 import TanstackQueryWrapper from './TanstackQueryWrapper';
+import { AppAuthProvider } from '@/shared/components/providers/AppAuthProvider';
+import { AppBridgeProvider } from '@/shared/components/providers/AppBridgeProvider';
 
 /** 루트 레이아웃 컴포넌트는 서버 컴포넌트이니 서버용 MSW 초기화 코드는 여기 맨위에서 실행하도록 했습니다 */
 import('../../mocks/server').then(async () => {
@@ -44,11 +46,27 @@ export default function RootLayout({
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
       <body className={`${pretendard.variable} flex h-svh font-pretendard pretendard bg-normal-alternative`}>
-        <MSWClientProvider>
-          <TanstackQueryWrapper>
-            <ToastProvider>{children}</ToastProvider>
-          </TanstackQueryWrapper>
-        </MSWClientProvider>
+        <AppAuthProvider
+          loadingFallback={
+            <div className="flex h-screen items-center justify-center bg-normal-alternative">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
+            </div>
+          }
+          errorFallback={
+            <div className="flex h-screen flex-col items-center justify-center bg-normal-alternative text-white">
+              <p>인증에 실패했습니다</p>
+              <p className="text-sm text-gray-400 mt-2">앱을 다시 시작해주세요</p>
+            </div>
+          }
+        >
+          <AppBridgeProvider>
+            <MSWClientProvider>
+              <TanstackQueryWrapper>
+                <ToastProvider>{children}</ToastProvider>
+              </TanstackQueryWrapper>
+            </MSWClientProvider>
+          </AppBridgeProvider>
+        </AppAuthProvider>
       </body>
     </html>
   );

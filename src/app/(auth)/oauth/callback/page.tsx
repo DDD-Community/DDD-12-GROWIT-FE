@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { KakaoSignupForm } from '@/composite/signup/signUpForm/KakaoSignupForm';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { AuthMethod } from '@/shared/type/authToken';
 
 export default function OAuthCallbackPage() {
@@ -28,14 +28,14 @@ export default function OAuthCallbackPage() {
         }
         if (accessToken && refreshToken) {
           setHasTokens(true);
-          tokenController.setTokens(accessToken, refreshToken);
+          authService.login({ accessToken, refreshToken });
           // Oauth 로그인 성공 시 마지막 로그인 수단 저장
           setLastLoginMethod('KAKAO');
           router.replace('/home');
         } else {
           setHasTokens(false);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('토큰 처리 중 오류:', error);
         setHasTokens(false);
       } finally {

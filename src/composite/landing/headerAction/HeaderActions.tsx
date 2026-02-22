@@ -3,7 +3,7 @@
 import Button from '@/shared/components/input/Button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 
 const HeaderActions = () => {
   const router = useRouter();
@@ -11,7 +11,7 @@ const HeaderActions = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = tokenController.getAccessToken();
+      const token = authService.getAccessToken();
       setIsLoggedIn(!!token);
     };
 

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { apiClient } from '@/shared/lib/apiClient';
 import { useRouter } from 'next/navigation';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 
@@ -18,7 +18,7 @@ export const WithdrawButton = () => {
   const deleteAccount = async () => {
     try {
       await apiClient.delete('/users/myprofile');
-      tokenController.clearTokens();
+      authService.logout();
       router.push('/login');
     } catch (error) {
       console.error(error);

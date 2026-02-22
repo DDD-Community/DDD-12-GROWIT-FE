@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { postLoginApi } from './api';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 
 export function useFetchLogin() {
   const [loading, setLoading] = useState(false);
@@ -12,10 +12,10 @@ export function useFetchLogin() {
     try {
       const { accessToken, refreshToken } = await postLoginApi(email, password);
       setLoading(false); // 로딩 end
-      tokenController.setTokens(accessToken, refreshToken); // 로컬스토리지 token 업데이트
+      authService.login({ accessToken, refreshToken }); // 로컬스토리지 token 업데이트
     } catch (err: any) {
       setLoading(false);
-      tokenController.clearTokens();
+      authService.logout();
 
       // 에러 메시지를 토스트로 표시하기 위해 에러를 다시 throw
       if (err.response?.status === 404) {
