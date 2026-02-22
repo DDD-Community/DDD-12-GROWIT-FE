@@ -1217,6 +1217,236 @@ export const tokenController = {
 
 ---
 
+### Phase 5: 네이티브 로그인 화면 이동
+
+#### 목표
+
+앱 환경에서 다음 상황에 네이티브 로그인 화면으로 이동:
+- 회원가입 성공 모달의 확인 버튼 클릭 시
+- 회원가입/로그인 페이지 상단 헤더의 뒤로가기 버튼 클릭 시
+
+---
+
+#### Task 5.1: 메시지 타입 추가
+
+**파일**: `src/shared/lib/appBridge/types.ts`
+
+```typescript
+/**
+ * App ↔ Web 메시지 타입
+ */
+export type AppMessageType =
+  | 'READY'                    // Web → App: 웹 준비 완료
+  | 'SYNC_TOKEN_TO_WEB'        // App → Web: 앱에서 웹으로 토큰 동기화
+  | 'SYNC_TOKEN_TO_APP'        // Web → App: 웹에서 앱으로 토큰 동기화 (로그인/갱신)
+  | 'LOGOUT'                   // Web → App: 로그아웃
+  | 'NAVIGATE_TO_NATIVE_LOGIN'; // Web → App: 네이티브 로그인 화면으로 이동
+```
+
+---
+
+#### Task 5.2: 회원가입 성공 모달 수정
+
+**파일**: `src/feature/auth/signupDialogButton/component.tsx`
+
+**Before**:
+
+```typescript
+const handleSuccessConfirm = () => {
+  setShowSuccessDialog(false);
+  router.push('/login');  // 웹 로그인 페이지로 이동
+};
+```
+
+**After**:
+
+```typescript
+import { appBridge } from '@/shared/lib/appBridge';
+
+const handleSuccessConfirm = () => {
+  setShowSuccessDialog(false);
+
+  if (appBridge.isInApp()) {
+    appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN');
+  } else {
+    router.push('/login');
+  }
+};
+```
+
+**변경 이유**:
+- 앱 환경: 네이티브 로그인 화면으로 이동
+- 웹 환경: 웹 로그인 페이지로 이동 (기존 동작 유지)
+
+---
+
+#### Task 5.3: 헤더 뒤로가기 수정
+
+**파일**: `src/shared/components/layout/PageHeader.tsx`
+
+**현재 구조**:
+```typescript
+type PageHeaderProps = {
+  title?: string;
+  leftSection?: React.ReactNode;
+  rightSection?: React.ReactNode;
+};
+
+export const PageHeader = ({ title = '', leftSection, rightSection }: PageHeaderProps) => {
+  return (
+    <nav className="...">
+      {leftSection ? <span>{leftSection}</span> : <PrevNavButton />}
+      {/* ... */}
+    </nav>
+  );
+};
+
+function PrevNavButton() {
+  const router = useRouter();
+  return (
+    <button type="button" onClick={() => router.back()} className="text-white">
+      {/* SVG icon */}
+    </button>
+  );
+}
+```
+
+**요구사항**:
+- **웹 환경**: `router.back()` (히스토리 기반 뒤로가기) - 기본 동작 유지
+- **앱 환경**: `appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN')` (네이티브 로그인 화면으로 이동)
+
+**해결 방안: onBackClick 콜백 prop 추가**
+
+`PageHeader`에 `onBackClick` 콜백 prop을 추가하여, 뒤로가기 동작을 커스터마이징할 수 있도록 합니다.
+
+**1. PageHeader 컴포넌트 수정**
+
+```typescript
+// src/shared/components/layout/PageHeader.tsx
+'use client';
+
+import { useRouter } from 'next/navigation';
+
+type PageHeaderProps = {
+  title?: string;
+  leftSection?: React.ReactNode;
+  rightSection?: React.ReactNode;
+  onBackClick?: () => void;  // 커스텀 뒤로가기 콜백
+};
+
+export const PageHeader = ({ title = '', leftSection, rightSection, onBackClick }: PageHeaderProps) => {
+  return (
+    <nav className="flex justify-between items-center px-6 pt-8 pb-4 w-full border-b border-line-normal">
+      {leftSection ? <span>{leftSection}</span> : <PrevNavButton onBackClick={onBackClick} />}
+      {title && <h1 className="heading-2-bold text-text-strong">{title}</h1>}
+      {rightSection ? <span>{rightSection}</span> : <div className="w-6 invisible" aria-hidden="true" />}
+    </nav>
+  );
+};
+
+function PrevNavButton({ onBackClick }: { onBackClick?: () => void }) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (onBackClick) {
+      onBackClick();
+    } else {
+      router.back();
+    }
+  };
+
+  return (
+    <button type="button" onClick={handleClick} className="text-white">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  );
+}
+```
+
+**2. 각 페이지에서 직접 구현**
+
+```typescript
+// src/app/(auth)/signup/page.tsx
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
+import { appBridge } from '@/shared/lib/appBridge';
+
+export default function SignupPage() {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (appBridge.isInApp()) {
+      appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN');
+    } else {
+      router.back();
+    }
+  };
+
+  return (
+    <>
+      <PageHeader title="회원가입" onBackClick={handleBack} />
+      {/* ... */}
+    </>
+  );
+}
+```
+
+**적용 대상 페이지**:
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `src/app/(auth)/login/email/page.tsx` | `onBackClick` 핸들러 추가 |
+| `src/app/(auth)/signup/page.tsx` | `onBackClick` 핸들러 추가 |
+| `src/app/(auth)/login/page.tsx` | (확인 필요) |
+
+**장점**:
+- 기본 동작(router.back())은 유지하면서 필요한 경우에만 커스터마이징
+- 버튼 스타일/아이콘은 `PrevNavButton`에서 일관되게 관리
+- 별도 훅 없이 각 페이지에서 명시적으로 처리
+
+---
+
+#### Task 5.4: 플로우 다이어그램
+
+```mermaid
+sequenceDiagram
+    participant User as 사용자
+    participant Web as WebView
+    participant Bridge as appBridge
+    participant App as React Native App
+
+    Note over User,App: 시나리오 1: 회원가입 성공 후
+
+    User->>Web: 회원가입 완료
+    Web->>Web: 성공 모달 표시
+    User->>Web: 확인 버튼 클릭
+    alt 앱 환경
+        Web->>Bridge: appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN')
+        Bridge->>App: postMessage
+        App->>App: 네이티브 로그인 화면으로 이동
+    else 웹 환경
+        Web->>Web: router.push('/login')
+    end
+
+    Note over User,App: 시나리오 2: 뒤로가기 버튼
+
+    User->>Web: 로그인/회원가입 페이지 진입
+    User->>Web: 헤더 뒤로가기 클릭
+    alt 앱 환경
+        Web->>Bridge: appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN')
+        Bridge->>App: postMessage
+        App->>App: 네이티브 로그인 화면으로 이동
+    else 웹 환경
+        Web->>Web: router.back()
+    end
+```
+
+---
+
 ## 최종 구조
 
 ### 폴더 구조
@@ -1373,6 +1603,16 @@ flowchart LR
 | 4.1 | layout.tsx 적용 | `app/layout.tsx` | `AppAuthProvider`, `AppBridgeProvider`를 앱 전체에 적용 |
 | 4.2 | useAutoLogout 수정 | `hooks/useAutoLogout.ts` | 앱 환경에서는 토큰 체크 스킵 (AppAuthProvider가 처리) |
 | 4.3 | 기존 token.ts 정리 | `lib/token.ts` | 삭제 또는 Deprecated 처리하여 단일 진입점(`authService`) 강제 |
+
+### Phase 5: 네이티브 로그인 화면 이동
+
+**Phase 목적**: 앱 환경에서 회원가입 완료/뒤로가기 시 네이티브 로그인 화면으로 이동
+
+| Task | 설명 | 파일 | 목적 |
+|------|------|------|------|
+| 5.1 | 메시지 타입 추가 | `lib/appBridge/types.ts` | `NAVIGATE_TO_NATIVE_LOGIN` 메시지 타입 추가 |
+| 5.2 | 회원가입 성공 모달 수정 | `signupDialogButton/component.tsx` | 확인 버튼 클릭 시: 앱은 네이티브 로그인, 웹은 `/login` |
+| 5.3 | 헤더 뒤로가기 수정 | `PageHeader` + 각 auth 페이지 | `onBackClick` 콜백 prop 추가, 웹은 `router.back()`, 앱은 네이티브 로그인 이동 |
 
 ---
 

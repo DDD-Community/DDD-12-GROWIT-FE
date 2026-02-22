@@ -5,7 +5,8 @@ export type AppMessageType =
   | 'READY' // Web → App: 웹 준비 완료
   | 'SYNC_TOKEN_TO_WEB' // App → Web: 앱에서 웹으로 토큰 동기화
   | 'SYNC_TOKEN_TO_APP' // Web → App: 웹에서 앱으로 토큰 동기화 (로그인/갱신)
-  | 'LOGOUT'; // Web → App: 로그아웃
+  | 'LOGOUT' // Web → App: 로그아웃
+  | 'NAVIGATE_TO_NATIVE_LOGIN'; // Web → App: 네이티브 로그인 화면으로 이동
 
 /**
  * 메시지 구조
