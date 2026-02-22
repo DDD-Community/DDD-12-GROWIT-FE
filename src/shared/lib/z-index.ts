@@ -17,6 +17,8 @@ export const Z_INDEX = {
   MODAL: 'z-[1000]',
   SHEET: 'z-[999]',
   ADVICE_LOADING: 'z-[995]',
+  GOAL_ONBOARD: 'z-[992]',
+  FUNNEL_NEXT_BUTTON: 'z-[993]',
   BOTTOM_NAVIGATION: 'z-[990]',
   FAB: 'z-[975]',
   DROPDOWN: 'z-[970]',

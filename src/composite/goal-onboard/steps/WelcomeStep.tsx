@@ -10,7 +10,7 @@ export const WelcomeStep = ({ userName = '' }: WelcomeStepProps) => {
   const displayName = userName || '친구';
 
   return (
-    <div className="relative flex-1 w-full h-full overflow-hidden">
+    <div className={`relative flex-1 w-full h-full overflow-hidden`}>
       <Image
         src="/goal-onboard/goal-onboard-1.png"
         alt="목표 온보딩"
