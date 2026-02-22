@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/shared/components/input/Button';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'accent' | 'brand';
 
@@ -20,7 +21,9 @@ export const FunnelNextButton = ({
   variant = 'primary',
 }: FunnelNextButtonProps) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 max-w-md mx-auto">
+    <div
+      className={`fixed bottom-0 left-0 right-0 p-[20px] border-gray-800 max-w-md mx-auto ${Z_INDEX.FUNNEL_NEXT_BUTTON}`}
+    >
       <Button
         size="lg"
         type={type}

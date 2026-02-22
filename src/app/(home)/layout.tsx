@@ -39,9 +39,11 @@ export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
           {/* <NavigationBar /> */}
           <GoalOnboardRedirect />
           <div className="flex flex-1 flex-col overflow-hidden relative">
-            <div className="flex-1 overflow-y-auto">{children}</div>
+            <div className="flex-1 overflow-y-auto">
+              {children}
+              <BottomNavigation />
+            </div>
             <AnimatedStack isActive={!!stackSegment}>{stack}</AnimatedStack>
-            <BottomNavigation />
           </div>
         </div>
       </AppBridgeProvider>

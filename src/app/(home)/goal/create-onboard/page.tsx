@@ -17,6 +17,7 @@ import { useToast } from '@/shared/components/feedBack/toast';
 import { CreateGoalFormElement } from '@/feature/goal';
 import type { GoalFormType } from '@/feature/goal';
 import type { CreateGoalResponseType } from '@/model/goal/dto';
+import { Z_INDEX } from '@/shared/lib/z-index';
 
 const TOTAL_STEPS = 4;
 
@@ -173,7 +174,7 @@ function GoalOnboardContent() {
 
   return (
     <FunnelHeaderProvider>
-      <main className="flex flex-1 flex-col h-screen overflow-hidden bg-normal-alternative">
+      <main className={`flex flex-1 flex-col h-screen overflow-hidden bg-normal-alternative ${Z_INDEX.GOAL_ONBOARD}`}>
         {currentStep > 1 && currentStep < 4 && (
           <FunnelHeader
             currentStep={currentStep - 1}
@@ -184,7 +185,7 @@ function GoalOnboardContent() {
           />
         )}
 
-        <div className="flex flex-1 flex-col overflow-hidden">{renderStep()}</div>
+        <div className={`flex flex-1 flex-col overflow-hidden`}>{renderStep()}</div>
 
         {currentStep === 4 ? (
           <div className="fixed bottom-0 left-0 right-0 p-5 max-w-md mx-auto">
