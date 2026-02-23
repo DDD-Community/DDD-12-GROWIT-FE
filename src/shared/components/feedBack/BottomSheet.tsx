@@ -12,8 +12,8 @@ export type BottomSheetHeight = 'auto' | `${number}px` | `${number}%`;
 // 바텀시트 높이 상수
 const HEADER_HEIGHT_VH = 10;
 const SHEET_MAX_HEIGHT_VH = 90;
-const SHEET_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH}vh`;
-const CONTENT_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH - HEADER_HEIGHT_VH}vh`;
+const SHEET_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH}dvh`;
+const CONTENT_MAX_HEIGHT = `${SHEET_MAX_HEIGHT_VH - HEADER_HEIGHT_VH}dvh`;
 
 // Context 타입 정의
 interface BottomSheetContextType {
@@ -156,7 +156,9 @@ const AutoHeightContent = ({ children }: { children: React.ReactNode }) => {
     return () => observer.disconnect();
   }, [isAutoHeight, isOpen, setContentHeight]);
 
-  return <div ref={ref}>{children}</div>;
+  // auto 모드: 콘텐츠 높이를 측정해야 하므로 높이 제한 없음
+  // 고정 높이 모드: 시트 높이를 꽉 채워야 SheetContent가 flex-1로 남은 공간을 가져갈 수 있음
+  return <div ref={ref} className={!isAutoHeight ? 'flex flex-col h-full' : undefined}>{children}</div>;
 };
 
 // Provider 컴포넌트
@@ -248,9 +250,9 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
             style={{
               height: resolvedHeight,
               maxHeight: SHEET_MAX_HEIGHT,
-              touchAction: 'none',
               willChange: 'height',
               overflow: 'hidden',
+              paddingBottom: 'env(safe-area-inset-bottom)',
             }}
             initial={{ height: 0 }}
             animate={{ height: isAutoHeight ? (isMeasured ? contentHeight : 'auto') : snapPoints.half }}
@@ -326,6 +328,7 @@ const SheetTitle = ({ children }: { children: React.ReactNode }) => {
         height.set(newHeight);
       }}
       onPanEnd={(_, info) => handleDragEnd(info)}
+      style={{ touchAction: 'none' }}
       className="bg-transparent pt-3 flex flex-col items-center gap-4 cursor-grab active:cursor-grabbing"
     >
       <SheetHandle />
@@ -338,11 +341,13 @@ const SheetTitle = ({ children }: { children: React.ReactNode }) => {
 // Content 컴포넌트
 const SheetContent = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
-    <section 
+    <section
       // 동적 높이 적용 시, tailwind 는 적용되지 않아 inline 으로 적용
-      style={{ maxHeight: CONTENT_MAX_HEIGHT }}
-      className={cn('bg-transparent p-4 overflow-y-auto', className)}
-      >
+      // 고정 높이 모드에서는 flex-1 min-h-0으로 남은 공간을 점유해 overflow-y: auto가 발동
+      // auto 모드에서는 maxHeight가 안전 상한선 역할
+      style={{ maxHeight: CONTENT_MAX_HEIGHT, touchAction: 'pan-y' }}
+      className={cn('bg-transparent p-4 overflow-y-auto overscroll-contain flex-1 min-h-0', className)}
+    >
       {children}
     </section>
   );
