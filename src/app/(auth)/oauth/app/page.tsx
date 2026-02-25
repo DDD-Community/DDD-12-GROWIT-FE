@@ -5,12 +5,21 @@ import { useRouter } from 'next/navigation';
 import { appBridge } from '@/shared/lib/appBridge';
 import type { OAuthSignupPayload } from '@/shared/lib/appBridge';
 import { AppSocialSignupForm } from '@/composite/signup/signUpForm';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
 
 export default function OAuthAppSignupPage() {
   const router = useRouter();
   const [signupData, setSignupData] = useState<OAuthSignupPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const dataReceivedRef = useRef(false);
+
+  const handleBack = () => {
+    if (appBridge.isInApp()) {
+      appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN');
+    } else {
+      router.back();
+    }
+  };
 
   useEffect(() => {
     // 1. 앱 환경이 아니면 일반 웹 회원가입으로 리다이렉트
@@ -69,9 +78,11 @@ export default function OAuthAppSignupPage() {
 
   // 회원가입 폼 렌더링
   return (
-    <div className="flex flex-col h-screen bg-normal-alternative">
+    <div className="max-w-md mx-auto w-full">
+      {/* 고정 헤더 */}
+      <PageHeader title="소셜 회원가입" onBackClick={handleBack} />
+
       <div className="flex-1 overflow-y-auto px-5 py-6">
-        <h1 className="text-xl font-bold text-white mb-6">회원가입</h1>
         <AppSocialSignupForm socialType={signupData.socialLoginType} registrationToken={signupData.registrationToken} />
       </div>
     </div>

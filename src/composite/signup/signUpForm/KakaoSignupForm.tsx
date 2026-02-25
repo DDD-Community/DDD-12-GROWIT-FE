@@ -1,19 +1,14 @@
 'use client';
 import { useForm, Controller } from 'react-hook-form';
-import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
 import { SignupDialogButton } from '@/feature/auth';
-import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
 import { KakaoSignupFormData } from './type';
 import { useFetchKakaoSignUp } from './hook';
 import Checkbox from '@/shared/components/input/Checkbox';
-import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
 export const KakaoSignupForm = () => {
   const { isSubmitting, isSignupSuccess, fetchKakaoSignUp } = useFetchKakaoSignUp();
   const {
-    watch,
-    setValue,
     register,
     control,
     handleSubmit,
@@ -22,13 +17,10 @@ export const KakaoSignupForm = () => {
     mode: 'onChange',
     defaultValues: {
       name: '',
-      jobRoleId: '',
-      careerYear: '',
       privacyPolicy: false,
       termsOfService: false,
     },
   });
-  const jobRoleId = watch('jobRoleId');
 
   return (
     <form className="space-y-6 w-full">
@@ -46,37 +38,6 @@ export const KakaoSignupForm = () => {
         isError={!!errors.name}
         errorMessage={errors.name?.message as string}
       />
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-300">직무</label>
-        <SelectJobResponsive
-          selectedJobId={jobRoleId}
-          onJobSelect={jobId => setValue('jobRoleId', jobId, { shouldValidate: true })}
-        />
-        {errors.jobRoleId && <p className="text-xs text-red-500">{errors.jobRoleId.message as string}</p>}
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-300">연차</label>
-        <Select
-          options={CAREER_YEAR_OPTIONS}
-          selected={(() => {
-            const value = watch('careerYear');
-            const label = Object.entries(CAREER_YEAR_VALUES).find(([key, val]) => val === value)?.[0];
-            return label || '선택';
-          })()}
-          onChange={value =>
-            setValue('careerYear', value === '선택' ? '' : CAREER_YEAR_VALUES[value], { shouldValidate: true })
-          }
-          placeholder="연차를 선택해주세요"
-          isError={!!errors.careerYear}
-          {...(() => {
-            const { onChange, ...rest } = register('careerYear', { required: '연차를 선택해주세요.' });
-            return rest;
-          })()}
-        />
-        {errors.careerYear && <p className="text-xs text-red-500">{errors.careerYear.message as string}</p>}
-      </div>
 
       <div className="space-y-2">
         <label className="flex items-center space-x-2">
