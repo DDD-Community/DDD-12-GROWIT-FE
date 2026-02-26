@@ -6,7 +6,7 @@ const MAINTENANCE_START = new Date('2025-12-29T00:00:00+09:00');
 const MAINTENANCE_END = new Date('2026-01-04T23:59:59+09:00');
 
 const ALLOWED_EXTENSIONS = ['.svg', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.woff', '.woff2'];
-const ALLOWED_PATH_PREFIXES = ['/maintenance', '/api', '/_next', '/fonts', '/images'];
+const ALLOWED_PATH_PREFIXES = ['/maintenance', '/account-deletion', '/api', '/_next', '/fonts', '/images'];
 const ALLOWED_EXACT_PATHS = ['/'];
 
 export function middleware(request: NextRequest) {
