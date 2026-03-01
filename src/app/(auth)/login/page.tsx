@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { KakaoLoginButton } from './KakaoLoginButton';
 import { SignUpButton } from '@/feature/auth';
-import Link from 'next/link';
+import { EmailLoginButton } from '@/feature/auth/LoginButton';
 
 export default function LoginPage() {
   return (
@@ -17,12 +17,7 @@ export default function LoginPage() {
 
       <div className="w-full flex flex-col items-center gap-4 text-center text-sm text-text-primary">
         <KakaoLoginButton />
-        <Link
-          href="/login/email"
-          className="w-full text-center py-2.5 px-[18px] text-inverse shadow-xs bg-fill-inverse rounded-lg text-base text-text-inverse font-bold hover:opacity-80"
-        >
-          이메일로 로그인
-        </Link>
+        <EmailLoginButton />
         <div className="flex items-center justify-center gap-2 mt-1">
           <span>계정이 없으신가요? </span>
           <SignUpButton />

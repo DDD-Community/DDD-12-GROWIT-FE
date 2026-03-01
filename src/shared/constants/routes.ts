@@ -15,9 +15,15 @@ export const ROUTES = {
   ADVICE: '/advice',
   RETROSPECT: '/retrospect',
   PROMOTION: '/promotion',
+
   MYPAGE: '/mypage',
-  CREATE_GOAL: '/goal/create',
+  SETTINGS: '/mypage/settings',
+  EDIT_PROFILE: '/mypage/edit-profile',
+
+  CREATE_GOAL: '/create-goal',
   CREATE_GOAL_ONBOARD: '/goal/create-onboard',
+  ENDED_GOALS: '/goal/ended',
+  EDIT_GOAL: (goalId: string) => `/goal/edit/${goalId}`,
   /**
    * @disabled [임시] 기존 온보딩페이지 deprecated 에 따라서 임시 비활성화
    * @see GoalOnboardRedirect
@@ -25,6 +31,7 @@ export const ROUTES = {
   ONBOARDING: '/onboarding',
   GOAL: '/goal',
   LOGIN: '/login',
+  LOGIN_EMAIL: '/login/email',
   SIGNUP: '/signup',
 } as const;
 

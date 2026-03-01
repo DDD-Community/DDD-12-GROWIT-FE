@@ -10,6 +10,7 @@ import { GoalAdviceFeatureSection } from '@/composite/landing/goalAdvice';
 import { CollectPlanetFeatureSection } from '@/composite/landing/collectPlanet';
 import { FundingDiscountSection } from '@/composite/landing/fundingDiscount';
 import { LaunchSection } from '@/composite/landing/launch';
+import DonationSection from '@/composite/landing/DonationSection';
 
 export default function LandingPage() {
   return (
@@ -24,6 +25,7 @@ export default function LandingPage() {
       <GoalAdviceFeatureSection />
       <CollectPlanetFeatureSection />
       <FundingDiscountSection />
+      <DonationSection />
       <LaunchSection />
     </div>
   );

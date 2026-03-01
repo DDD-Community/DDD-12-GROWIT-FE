@@ -22,6 +22,7 @@ export const StoryVideo = () => {
         preload="metadata"
         playsInline
         muted
+        poster="/landing/landing-story-thumbnail.webp"
         className="aspect-video lg:block rounded-lg"
       />
       <PlayPauseButton videoRef={videoRef} isHovered={isHovered} />

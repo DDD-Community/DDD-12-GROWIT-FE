@@ -9,7 +9,7 @@ const LandingPageCommonStyle = {
       transition: { duration: 0.8, ease: 'easeOut' },
     },
     left: {
-      initial: { opcity: 0, x: -40 },
+      initial: { opacity: 0, x: -40 },
       whileInView: { opacity: 1, x: 0 },
       viewport: { once: true, amount: 0.3 },
       transition: { duration: 0.8, ease: 'easeOut' },

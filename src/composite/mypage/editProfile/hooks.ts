@@ -1,128 +1,64 @@
-import { useState, useEffect } from 'react';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useToast } from '@/shared/components/feedBack/toast';
+import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/apiClient';
-import type { UserProfileData, JobRolesData } from './types';
+import { useUser } from '@/shared/hooks/useUser';
 
-const careerMap = {
-  '신입(1년차 미만)': 'NEWBIE',
-  '주니어(1년~3년)': 'JUNIOR',
-  '미드레벨(3년~6년)': 'MID',
-  '시니어(6년~10년)': 'SENIOR',
-  '리드/매니저(10년 이상)': 'LEAD',
-} as const;
-
-const careerMapDisplay: Record<string, string> = {
-  NEWBIE: '신입(1년차 미만)',
-  JUNIOR: '주니어(1년~3년)',
-  MID: '미드레벨(3년~6년)',
-  SENIOR: '시니어(6년~10년)',
-  LEAD: '리드/매니저(10년 이상)',
-} as const;
-
-type CareerLevel = keyof typeof careerMap;
+const EditProfileFormSchema = z.object({
+  email: z.string().min(1, '이메일을 입력해주세요.'),
+  password: z.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다.'),
+  lastName: z.string().min(1, '성을 입력해주세요.'),
+  name: z.string().min(1, '이름을 입력해주세요.'),
+  saju: z.object({
+    gender: z.enum(['MALE', 'FEMALE'], { errorMap: () => ({ message: '성별을 선택해주세요.' }) }),
+    birth: z
+      .string()
+      .min(1, '생년월일을 입력해주세요.')
+      .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일은 YYYY-MM-DD 형식이어야 합니다.'),
+    birthHour: z.string().min(1, '태어난 시각을 입력해주세요.'),
+  }),
+});
+type EditProfileFormData = z.infer<typeof EditProfileFormSchema>;
 
 export const useEditProfile = () => {
-  const [userName, setUserName] = useState('');
-  const [jobRole, setJobRole] = useState('');
-  const [email, setEmail] = useState('');
-  const [careerYear, setCareerYear] = useState('');
-  const [jobRoleIds, setJobRoleIds] = useState<Map<string, string>>(new Map());
+  const { userInfo } = useUser();
+  const { showToast } = useToast();
 
-  const fetchUserProfile = async () => {
-    try {
-      const res = await apiClient.get<UserProfileData>('/users/myprofile');
-      const data = res.data.data;
-      setUserName(data.name);
-      setJobRole(data.jobRole.name);
-      setEmail(data.email);
-      setCareerYear(data.careerYear);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const sajuInfo = userInfo?.saju || null;
+  const formMethods = useForm<EditProfileFormData>({
+    defaultValues: {
+      email: userInfo?.email || '',
+      password: '',
+      name: userInfo?.name || '',
+      lastName: userInfo?.lastName || '',
+      saju: sajuInfo
+        ? {
+            gender: sajuInfo.gender,
+            birth: sajuInfo.birth,
+            birthHour: sajuInfo.birthHour,
+          }
+        : undefined,
+    },
+    resolver: zodResolver(EditProfileFormSchema),
+  });
 
-  const fetchJobList = async () => {
-    try {
-      const res = await apiClient.get<JobRolesData>('/resource/jobroles');
-      const data = res.data.data;
-      const jobMap = new Map<string, string>();
-      data.jobRoles.forEach(job => jobMap.set(job.name, job.id));
-      setJobRoleIds(jobMap);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const {
+    mutate: editProfile,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: async (data: EditProfileFormData) => {
+      await apiClient.put<EditProfileFormData>('/users/myprofile', data);
+    },
+    onSuccess: () => {
+      showToast('프로필이 성공적으로 수정되었습니다.', 'success');
+    },
+    onError: () => {
+      showToast('프로필 수정에 실패했습니다. 다시 시도해주세요.', 'error');
+    },
+  });
 
-  useEffect(() => {
-    Promise.all([fetchUserProfile(), fetchJobList()]);
-  }, []);
-
-  const putUserProfile = async (userName: string, jobRole: string, selectedCareerYear: string) => {
-    try {
-      const res = await apiClient.put('/users/myprofile', {
-        name: userName,
-        jobRoleId: jobRoleIds.get(jobRole),
-        careerYear: careerMap[selectedCareerYear as CareerLevel],
-      });
-      await fetchUserProfile();
-      return res.data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const jobList = Array.from(jobRoleIds.keys());
-  const careerLevels = Object.keys(careerMap);
-
-  const profile = {
-    userName,
-    jobRole,
-    email,
-    careerYear,
-    jobList,
-    careerLevels,
-    careerMapDisplay,
-  };
-
-  return {
-    profile,
-    putUserProfile,
-  };
-};
-
-export const useModalState = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  return {
-    isModalOpen,
-    handleOpenModal,
-    handleCloseModal,
-  };
-};
-
-export const useEditProfileForm = (jobRole: string, careerYear: string, isModalOpen: boolean) => {
-  const [selectedJobRole, setSelectedJobRole] = useState('');
-  const [selectedCareerYear, setSelectedCareerYear] = useState('');
-
-  // Modal이 열릴 때 기존 프로필 정보로 초기화
-  useEffect(() => {
-    if (isModalOpen) {
-      setSelectedJobRole(jobRole);
-      setSelectedCareerYear(careerMapDisplay[careerYear] || '');
-    }
-  }, [isModalOpen, jobRole, careerYear]);
-
-  return {
-    selectedJobRole,
-    selectedCareerYear,
-    setSelectedJobRole,
-    setSelectedCareerYear,
-  };
+  return { formMethods, editProfile, isPending, isError };
 };

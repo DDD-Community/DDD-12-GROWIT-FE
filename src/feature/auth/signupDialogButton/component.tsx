@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import Button from '@/shared/components/input/Button';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
+import { appBridge } from '@/shared/lib/appBridge';
 
 interface SignupButtonProps {
   isValid: boolean;
@@ -32,7 +33,12 @@ export const SignupDialogButton = ({ isValid, onClick, isSignupSuccess, isSubmit
 
   const handleSuccessConfirm = () => {
     setShowSuccessDialog(false);
-    router.push('/login');
+
+    if (appBridge.isInApp()) {
+      appBridge.sendToApp('NAVIGATE_TO_NATIVE_LOGIN');
+    } else {
+      router.push('/login');
+    }
   };
 
   return (

@@ -35,6 +35,7 @@ export const ManageTodoFeatureSection = () => {
             sizes="(max-width: 768px) 200px, 350px"
             className="w-50 md:w-87.5 h-auto shrink-0"
             alt="sixth-section-image"
+            loading="lazy"
           />
         </MotionWrapper>
       </div>

@@ -1,11 +1,16 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
-import { AdviceChat } from '@/model/advice/types';
+import { MotionWrapper } from '@/shared/components/layout/MotionWrapper';
 import { AdviceChatMessage } from './AdviceChatMessage';
 import { useAdviceChatMessages } from '../hooks/useAdviceChatMessages';
-import { useAdviceFormContext } from '../hooks/useAdviceFormContext';
+import { useRequestAdvice } from './RequestAdviceContext';
+import { useFetchAdviceChat } from '../hooks/useFetchAdviceChat';
 
-export const AdviceChatHistory = ({ adviceChat = null }: { adviceChat: AdviceChat | null }) => {
-  const { isSendingRequest } = useAdviceFormContext();
+export const AdviceChatHistory = () => {
+  const { adviceChat } = useFetchAdviceChat();
+
+  const { isSendingRequest } = useRequestAdvice();
   const { displayMessages, backgroundType, shouldShowOnboarding } = useAdviceChatMessages(adviceChat, isSendingRequest);
 
   const scrollRef = useRef<HTMLElement>(null);
@@ -33,31 +38,52 @@ export const AdviceChatHistory = ({ adviceChat = null }: { adviceChat: AdviceCha
         {displayMessages.map((message, index) => {
           // 오늘 대화 횟수 소진 안내메시지
           if (message.isSystemMessage) {
-            return <AdviceChatMessage.Limit key={`system-${index}`} />;
+            return (
+              <EnterNewMessageMotionWrapper key={`system-${index}`}>
+                <AdviceChatMessage.Limit />
+              </EnterNewMessageMotionWrapper>
+            );
           }
 
           if (message.userMessage === '아침 조언 요청') {
             return (
-              <div className="flex flex-col gap-y-4" key={`daily-advice-${index}`}>
+              <EnterNewMessageMotionWrapper key={`daily-advice-${index}`} className="flex flex-col gap-y-4">
                 <AdviceChatMessage.DailyAdvice content={message.grorongResponse} timestamp={message.timestamp || ''} />
-              </div>
+              </EnterNewMessageMotionWrapper>
             );
           }
 
           // 로딩 메시지
           if (message.isLoading !== undefined && message.isLoading) {
-            return <AdviceChatMessage.Loading key={`loading-${index}`} />;
+            return (
+              <EnterNewMessageMotionWrapper key={`loading-${index}`}>
+                <AdviceChatMessage.Loading />
+              </EnterNewMessageMotionWrapper>
+            );
           }
 
           // 일반 대화 메시지
           return (
-            <div key={message.timestamp || `msg-${index}`} className="flex flex-col gap-y-4">
+            <EnterNewMessageMotionWrapper key={message.timestamp || `msg-${index}`} className="flex flex-col gap-y-4">
               {message.userMessage && <AdviceChatMessage direction="right" content={message.userMessage} />}
               {message.grorongResponse && <AdviceChatMessage direction="left" content={message.grorongResponse} />}
-            </div>
+            </EnterNewMessageMotionWrapper>
           );
         })}
       </section>
     </>
   );
 };
+
+function EnterNewMessageMotionWrapper({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <MotionWrapper
+      initial={{ scale: 0, y: 10 }}
+      animate={{ scale: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={className}
+    >
+      {children}
+    </MotionWrapper>
+  );
+}

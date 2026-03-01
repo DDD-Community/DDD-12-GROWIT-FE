@@ -1,17 +1,28 @@
 'use client';
 
-import { PageHeader } from '@/shared/components/layout/PageHeader';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { AdviceQuery } from '@/model/advice/queries';
-import { AdviceChatMessage } from '@/model/advice/types';
+import type { AdviceChat, AdviceChatMessage } from '@/model/advice/types';
 import { useMemo } from 'react';
+import { useFetchAdviceChat } from '@/feature/advice/hooks/useFetchAdviceChat';
 
 export const AdviceHistoryClient = () => {
-  const { data: adviceChat } = useSuspenseQuery(AdviceQuery.getAdviceChat());
+  const { adviceChat } = useFetchAdviceChat();
 
+  if (!adviceChat) {
+    return (
+      <div className="w-full h-full flex flex-col bg-normal-alternative items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-100 font-medium">히스토리가 없습니다.</p>
+        </div>
+      </div>
+    );
+  }
+  return <AdviceHistoryContent adviceChat={adviceChat} />;
+};
+
+export const AdviceHistoryContent = ({ adviceChat }: { adviceChat: AdviceChat }) => {
   // 주차별로 그룹핑
   const groupedByWeek = useMemo(() => {
-    if (!adviceChat?.conversations || adviceChat.conversations.length === 0) {
+    if (adviceChat.conversations.length === 0) {
       return [];
     }
 
@@ -33,30 +44,27 @@ export const AdviceHistoryClient = () => {
         messages: messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
       }))
       .sort((a, b) => b.weekKey.localeCompare(a.weekKey));
-  }, [adviceChat?.conversations]);
+  }, [adviceChat.conversations]);
 
   return (
-    <>
-      <PageHeader title="히스토리" />
-      <main className="flex flex-col h-full p-5 gap-y-5 max-w-md w-full mx-auto">
-        {groupedByWeek.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="body-1-normal text-text-tertiary">히스토리가 없습니다.</p>
+    <div className="flex flex-col min-h-0 flex-1 p-5 gap-y-5 max-w-md w-full mx-auto overflow-y-auto">
+      {groupedByWeek.length === 0 ? (
+        <div className="flex items-center justify-center h-full">
+          <p className="body-1-normal text-text-tertiary">히스토리가 없습니다.</p>
+        </div>
+      ) : (
+        groupedByWeek.map(group => (
+          <div key={group.weekKey} className="flex flex-col gap-y-2">
+            <p className="label-1-medium text-text-primary">{group.weekLabel}</p>
+            <ul className="flex flex-col gap-y-2 label-1-normal text-text-primary">
+              {group.messages.map((message, index) => (
+                <AdviceHistoryItem key={`${message.timestamp}-${index}`} message={message} />
+              ))}
+            </ul>
           </div>
-        ) : (
-          groupedByWeek.map(group => (
-            <div key={group.weekKey} className="flex flex-col gap-y-2">
-              <p className="label-1-medium text-text-primary">{group.weekLabel}</p>
-              <ul className="flex flex-col gap-y-2 label-1-normal text-text-primary">
-                {group.messages.map((message, index) => (
-                  <AdviceHistoryItem key={`${message.timestamp}-${index}`} message={message} />
-                ))}
-              </ul>
-            </div>
-          ))
-        )}
-      </main>
-    </>
+        ))
+      )}
+    </div>
   );
 };
 

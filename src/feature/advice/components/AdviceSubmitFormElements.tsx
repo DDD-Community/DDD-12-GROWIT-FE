@@ -5,9 +5,11 @@ import React, { ButtonHTMLAttributes } from 'react';
 import { AdviceFormSchema } from '../AdviceSubmitFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ADVICE_STYLE_SELECT_ITEMS } from '@/composite/advice/constants';
-import { useAdviceFormContext, useAdviceStyleSelectContext } from '../hooks/useAdviceFormContext';
-import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
+import { useRequestAdvice } from './RequestAdviceContext';
+import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import type { AdviceChatRequest, AdviceStyle } from '@/model/advice/types';
+import { Icon } from '@/shared/components/foundation/Icons';
+import { useFetchAdviceChat } from '../hooks/useFetchAdviceChat';
 /**
  * 조언(일기) 제출 폼
  * 현재는 목표별로 조언을 제출하지 않기 때문에 폼 제출에 사용할 목표는 진행중인 목표 중 첫 번째 목표로 고정합니다.
@@ -18,7 +20,7 @@ type AdviceFormRootProps = {
   children: React.ReactNode;
 };
 export const AdviceFormRoot = ({ goalId, children }: AdviceFormRootProps) => {
-  const { requestAdvice } = useAdviceFormContext();
+  const { requestAdvice } = useRequestAdvice();
   const formMethods = useForm<AdviceChatRequest>({
     defaultValues: {
       week: 1,
@@ -88,17 +90,17 @@ const AdviceSubmitButton = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement
   );
 };
 
-const AdviceStyleSelectTrigger = ({ children }: { children: React.ReactNode }) => {
-  const { openSheet } = useAdviceStyleSelectContext();
+const AdviceStyleSelectTrigger = () => {
+  const { isOpen, showSheet, closeSheet } = useBottomSheet();
   const { watch } = useFormContext<AdviceChatRequest>();
 
   return (
-    <nav className="w-full flex justify-between items-center pt-5">
+    <>
       <button
         type="button"
         onClick={e => {
           e.stopPropagation();
-          openSheet();
+          showSheet();
         }}
         className="flex items-center gap-x-2 body-1-normal text-text-strong"
       >
@@ -117,13 +119,17 @@ const AdviceStyleSelectTrigger = ({ children }: { children: React.ReactNode }) =
           <path d="m6 9 6 6 6-6" />
         </svg>
       </button>
-      {children}
-    </nav>
+      <AdviceStyleSelectSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet} />
+    </>
   );
 };
 
-const AdviceStyleSelectSheet = () => {
-  const { isSheetOpen, openSheet, closeSheet } = useAdviceStyleSelectContext();
+type AdviceStyleSelectSheetProps = {
+  isOpen: boolean;
+  showSheet: () => void;
+  closeSheet: () => void;
+};
+const AdviceStyleSelectSheet = ({ isOpen, showSheet, closeSheet }: AdviceStyleSelectSheetProps) => {
   const adviceStyleValues = Object.values(ADVICE_STYLE_SELECT_ITEMS);
   const adviceStyleKeys = Object.keys(ADVICE_STYLE_SELECT_ITEMS) as AdviceStyle[];
 
@@ -131,23 +137,11 @@ const AdviceStyleSelectSheet = () => {
   const selectedAdviceStyle = watch('adviceStyle');
 
   return (
-    <BottomSheet isOpen={isSheetOpen} showSheet={openSheet} closeSheet={closeSheet}>
+    <BottomSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet}>
       <BottomSheet.Title>
         <div className="w-full justify-start items-center p-5">
           <button type="button" onClick={closeSheet} className="text-text-strong">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
+            <Icon name="chevronLeft" />
           </button>
         </div>
       </BottomSheet.Title>
@@ -200,10 +194,32 @@ function AdviceStyleSelectItem({ title, description, isSelected, onSelect }: Adv
   );
 }
 
+const maxAdviceCount = 3;
+const AdviceCountBadge = () => {
+  const { adviceChat } = useFetchAdviceChat();
+
+  const countTextColor =
+    adviceChat.remainingCount > 0 && adviceChat.remainingCount <= maxAdviceCount
+      ? 'text-brand-neon'
+      : 'text-status-negative';
+  return (
+    <span
+      role="status"
+      className="caption-1-regular px-2 py-1 rounded-full flex items-center gap-x-1 bg-fill-normal text-text-primary"
+    >
+      남은 대화{' '}
+      <span className={`${countTextColor}`}>
+        {adviceChat.remainingCount}/{maxAdviceCount}
+      </span>{' '}
+    </span>
+  );
+};
+
 export const AdviceSubmitForm = {
   Root: AdviceFormRoot,
   Input: AdviceSubmitInput,
   Button: AdviceSubmitButton,
   StyleSelectTrigger: AdviceStyleSelectTrigger,
   StyleSelectSheet: AdviceStyleSelectSheet,
+  CountBadge: AdviceCountBadge,
 };

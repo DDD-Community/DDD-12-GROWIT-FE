@@ -2,26 +2,31 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import { useMockEnvironment } from './useMockEnvironment';
+import { useAppBridge } from '@/shared/components/providers/AppBridgeProvider';
 
 export function useAutoLogout() {
   const router = useRouter();
   const isMockEnvironment = useMockEnvironment();
+  const { isApp } = useAppBridge();
 
   useEffect(() => {
-    // Mock 환경에서는 자동 로그아웃을 비활성화
+    // Mock 환경: 비활성화
     if (isMockEnvironment) {
-      console.log('Mock 환경이 감지되어 자동 로그아웃이 비활성화되었습니다.');
+      console.log('[useAutoLogout] Mock 환경 - 비활성화');
       return;
     }
 
-    const accessToken = tokenController.getAccessToken();
-    const refreshToken = tokenController.getRefreshToken();
+    // 앱 환경: AppAuthProvider가 토큰 관리하므로 스킵
+    if (isApp) {
+      console.log('[useAutoLogout] 앱 환경 - 비활성화');
+      return;
+    }
 
-    if (!accessToken || !refreshToken) {
+    // 웹 환경: 토큰 없으면 로그인 페이지로
+    if (!authService.isAuthenticated()) {
       router.push('/login');
-      return;
     }
-  }, [router, isMockEnvironment]);
+  }, [router, isMockEnvironment, isApp]);
 }

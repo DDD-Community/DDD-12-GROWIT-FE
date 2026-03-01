@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { tokenController } from '@/shared/lib/token';
+import { authService } from '@/shared/lib/auth';
 import Button from '@/shared/components/input/Button';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
@@ -10,7 +10,7 @@ export const LogoutButton = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    tokenController.clearTokens();
+    authService.logout();
     router.push('/login');
   };
 
@@ -26,7 +26,7 @@ export const LogoutDarkButton = () => {
       eventName: GTM_EVENTS.MYPAGE_CLICK,
       buttonName: GTM_BUTTON_NAME.LOGOUT,
     });
-    tokenController.clearTokens();
+    authService.logout();
     router.push('/login');
   };
 

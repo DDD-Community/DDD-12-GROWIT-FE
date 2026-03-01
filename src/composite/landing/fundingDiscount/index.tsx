@@ -31,6 +31,8 @@ export const FundingDiscountSection = () => {
             height={400}
             sizes="(max-width: 768px) 300px 200px"
             alt="character-key-ring-image"
+            className="w-75 md:w-125 h-auto shrink-0"
+            loading="lazy"
           />
         </MotionWrapper>
       </div>
@@ -44,7 +46,7 @@ function FundingNavButton() {
       href="#"
       className="bg-fill-brand-neon body-1-bold py-2.5 px-4.5 rounded-lg bg-brand-neon hover:bg-brand-neon/90 text-text-inverse flex items-center gap-x-2"
     >
-      1월 중순 오픈 예정
+      와디즈 펀딩 바로가기
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path
           d="M1 6.83333H12.6667M12.6667 6.83333L6.83333 1M12.6667 6.83333L6.83333 12.6667"
