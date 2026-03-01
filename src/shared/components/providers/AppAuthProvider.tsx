@@ -62,7 +62,7 @@ export function AppAuthProvider({
     return (
       <>
         {loadingFallback ?? (
-          <div className="flex h-screen items-center justify-center">
+          <div className="flex h-screen w-full items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
           </div>
         )}
@@ -75,7 +75,7 @@ export function AppAuthProvider({
     return (
       <>
         {errorFallback ?? (
-          <div className="flex h-screen flex-col items-center justify-center">
+          <div className="flex h-screen w-full flex-col items-center justify-center">
             <p className="text-lg mb-4">인증 초기화 실패</p>
             <p className="text-sm text-gray-500">{state.error.message}</p>
           </div>
