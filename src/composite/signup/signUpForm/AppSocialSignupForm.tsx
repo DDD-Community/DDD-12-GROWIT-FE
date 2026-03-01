@@ -1,14 +1,12 @@
 'use client';
 
 import { useForm, Controller } from 'react-hook-form';
-import { Select } from '@/shared/components/input/Select';
 import { InputField } from '@/shared/components/input/InputField';
 import Checkbox from '@/shared/components/input/Checkbox';
 import Badge from '@/shared/components/display/Badge';
-import { SelectJobResponsive } from '@/feature/auth/selectJobResponsive';
+import { SignupDialogButton } from '@/feature/auth';
 import { useFetchAppSocialSignup } from './hook';
 import { KakaoSignupFormData, SocialLoginType } from './type';
-import { CAREER_YEAR_OPTIONS, CAREER_YEAR_VALUES } from './const';
 
 interface AppSocialSignupFormProps {
   registrationToken: string;
@@ -16,14 +14,12 @@ interface AppSocialSignupFormProps {
 }
 
 export const AppSocialSignupForm = ({ registrationToken, socialType }: AppSocialSignupFormProps) => {
-  const { isSubmitting, fetchAppSocialSignup } = useFetchAppSocialSignup({
+  const { isSubmitting, isSignupSuccess, fetchAppSocialSignup } = useFetchAppSocialSignup({
     registrationToken,
     socialType,
   });
 
   const {
-    watch,
-    setValue,
     register,
     control,
     handleSubmit,
@@ -32,14 +28,10 @@ export const AppSocialSignupForm = ({ registrationToken, socialType }: AppSocial
     mode: 'onChange',
     defaultValues: {
       name: '',
-      jobRoleId: '',
-      careerYear: '',
       privacyPolicy: false,
       termsOfService: false,
     },
   });
-
-  const jobRoleId = watch('jobRoleId');
 
   return (
     <form className="space-y-6 w-full">
@@ -58,39 +50,6 @@ export const AppSocialSignupForm = ({ registrationToken, socialType }: AppSocial
         isError={!!errors.name}
         errorMessage={errors.name?.message as string}
       />
-
-      {/* 직무 */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-300">직무</label>
-        <SelectJobResponsive
-          selectedJobId={jobRoleId}
-          onJobSelect={jobId => setValue('jobRoleId', jobId, { shouldValidate: true })}
-        />
-        {errors.jobRoleId && <p className="text-xs text-red-500">{errors.jobRoleId.message as string}</p>}
-      </div>
-
-      {/* 연차 */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-300">연차</label>
-        <Select
-          options={CAREER_YEAR_OPTIONS}
-          selected={(() => {
-            const value = watch('careerYear');
-            const label = Object.entries(CAREER_YEAR_VALUES).find(([, val]) => val === value)?.[0];
-            return label || '선택';
-          })()}
-          onChange={value =>
-            setValue('careerYear', value === '선택' ? '' : CAREER_YEAR_VALUES[value], { shouldValidate: true })
-          }
-          placeholder="연차를 선택해주세요"
-          isError={!!errors.careerYear}
-          {...(() => {
-            const { onChange, ...rest } = register('careerYear', { required: '연차를 선택해주세요.' });
-            return rest;
-          })()}
-        />
-        {errors.careerYear && <p className="text-xs text-red-500">{errors.careerYear.message as string}</p>}
-      </div>
 
       {/* 약관 동의 */}
       <div className="space-y-2">
@@ -132,16 +91,14 @@ export const AppSocialSignupForm = ({ registrationToken, socialType }: AppSocial
       </div>
 
       {/* 제출 버튼 */}
-      <button
-        type="button"
-        disabled={!isValid || isSubmitting}
-        onClick={handleSubmit(fetchAppSocialSignup)}
-        className={`w-full py-3 rounded-lg font-medium ${
-          isValid && !isSubmitting ? 'bg-primary text-white' : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-        }`}
-      >
-        {isSubmitting ? '가입 중...' : '가입하기'}
-      </button>
+      <div className="fixed bottom-0 left-0 right-0 pb-10 px-5 max-w-md mx-auto bg-normal-alternative">
+        <SignupDialogButton
+          isValid={isValid}
+          isSubmitting={isSubmitting}
+          isSignupSuccess={isSignupSuccess}
+          onClick={handleSubmit(fetchAppSocialSignup)}
+        />
+      </div>
     </form>
   );
 };
