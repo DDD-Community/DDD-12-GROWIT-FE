@@ -10,7 +10,9 @@ export default function AdvicePageLayout({ children, stack }: AdvicePageLayoutPr
   return (
     <div className="w-full h-[calc(100svh-64px)] flex flex-col bg-normal relative">
       {children}
-      <AnimatedStack basePath={ROUTES.ADVICE}>{stack}</AnimatedStack>
+      <AnimatedStack basePath={ROUTES.ADVICE} excludePaths={[`${ROUTES.ADVICE}/signup`]}>
+        {stack}
+      </AnimatedStack>
     </div>
   );
 }

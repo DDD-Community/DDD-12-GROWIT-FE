@@ -8,6 +8,7 @@ interface AnimatedStackProps {
   children: React.ReactNode;
   basePath?: string;
   isActive?: boolean;
+  excludePaths?: string[];
 }
 
 const getVariants = () => ({
@@ -16,14 +17,18 @@ const getVariants = () => ({
   exit: { x: '100%' },
 });
 
-export function AnimatedStack({ children, basePath = '/', isActive }: AnimatedStackProps) {
+export function AnimatedStack({ children, basePath = '/', isActive, excludePaths = [] }: AnimatedStackProps) {
   const pathname = usePathname();
   const variants = getVariants();
 
+  const isExcluded = excludePaths.some(path => pathname.startsWith(path));
+
   // isActive가 명시적으로 전달되면 우선 사용, 없으면 basePath 기반으로 판단
-  const isStackRoute = isActive !== undefined
-    ? isActive
-    : pathname !== basePath && pathname.startsWith(basePath);
+  const isStackRoute = isExcluded
+    ? false
+    : isActive !== undefined
+      ? isActive
+      : pathname !== basePath && pathname.startsWith(basePath);
 
   return (
     <AnimatePresence mode="wait">
