@@ -9,8 +9,22 @@ import { AdviceChatMessage } from '@/feature/advice/components/AdviceChatMessage
 import { Suspense } from 'react';
 import AdviceChatLoader from '@/app/(home)/advice/loading';
 import { RequestAdviceProvider } from '@/feature/advice/components/RequestAdviceContext';
+import { useUser } from '@/shared/hooks/useUser';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export function AdviceChatClient() {
+  const { userInfo } = useUser(); // 사용자 입력 정보 상태에 따라 사주 정보 기입 폼으로 이동 여부 결정
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userInfo && !userInfo.saju) {
+      router.replace('/advice/signup');
+    }
+  }, [userInfo, router]);
+
+  if (!userInfo || !userInfo.saju) return null;
+
   return (
     <Suspense fallback={<AdviceChatLoader />}>
       <GoalProvider>

@@ -6,21 +6,29 @@ import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/shared/lib/apiClient';
 import { useUser } from '@/shared/hooks/useUser';
 
-const EditProfileFormSchema = z.object({
+const BaseProfileSchema = z.object({
   email: z.string().min(1, '이메일을 입력해주세요.'),
-  password: z.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다.'),
   lastName: z.string().min(1, '성을 입력해주세요.'),
   name: z.string().min(1, '이름을 입력해주세요.'),
-  saju: z.object({
-    gender: z.enum(['MALE', 'FEMALE'], { errorMap: () => ({ message: '성별을 선택해주세요.' }) }),
-    birth: z
-      .string()
-      .min(1, '생년월일을 입력해주세요.')
-      .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일은 YYYY-MM-DD 형식이어야 합니다.'),
-    birthHour: z.string().min(1, '태어난 시각을 입력해주세요.'),
-  }),
 });
-type EditProfileFormData = z.infer<typeof EditProfileFormSchema>;
+
+export type BaseProfileData = z.infer<typeof BaseProfileSchema>;
+
+const EditProfileFormSchema = z.intersection(
+  BaseProfileSchema,
+  z.object({
+    saju: z.object({
+      gender: z.enum(['MALE', 'FEMALE'], { errorMap: () => ({ message: '성별을 선택해주세요.' }) }),
+      birth: z
+        .string()
+        .min(1, '생년월일을 입력해주세요.')
+        .regex(/^\d{4}-\d{2}-\d{2}$/, '생년월일은 YYYY-MM-DD 형식이어야 합니다.'),
+      birthHour: z.string().min(1, '태어난 시각을 입력해주세요.'),
+    }),
+  })
+);
+
+export type EditProfileFormData = z.infer<typeof EditProfileFormSchema>;
 
 export const useEditProfile = () => {
   const { userInfo } = useUser();
@@ -30,7 +38,6 @@ export const useEditProfile = () => {
   const formMethods = useForm<EditProfileFormData>({
     defaultValues: {
       email: userInfo?.email || '',
-      password: '',
       name: userInfo?.name || '',
       lastName: userInfo?.lastName || '',
       saju: sajuInfo

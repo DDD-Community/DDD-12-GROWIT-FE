@@ -70,7 +70,6 @@ function EditProfileForm() {
     >
       <section className="flex flex-col gap-y-6">
         <InputField label="이메일" {...register('email')} placeholder="이메일을 입력해주세요" />
-        <InputField label="비밀번호" type="password" {...register('password')} placeholder="비밀번호를 입력해주세요" />
         <InputField label="성" {...register('lastName')} placeholder="성을 입력해주세요" />
         <InputField label="이름" {...register('name')} placeholder="이름을 입력해주세요" />
 
@@ -182,7 +181,7 @@ type SelectBirthTimeSheetProps = {
   closeSheet: () => void;
   onSelect: (key: EarthlyBranchHourType) => void;
 };
-const SelectBirthTimeSheet = ({ isOpen, showSheet, closeSheet, onSelect }: SelectBirthTimeSheetProps) => {
+export const SelectBirthTimeSheet = ({ isOpen, showSheet, closeSheet, onSelect }: SelectBirthTimeSheetProps) => {
   const [selectedKey, setSelectedKey] = useState<EarthlyBranchHourType | null>(null);
 
   return (
