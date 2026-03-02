@@ -3,7 +3,7 @@
 import { useEffect, useState, ReactNode } from 'react';
 import { authService } from '@/shared/lib/auth';
 import { appBridge } from '@/shared/lib/appBridge';
-
+import { debugError } from '@/shared/lib/debug';
 
 interface AppAuthProviderProps {
   children: ReactNode;
@@ -46,7 +46,7 @@ export function AppAuthProvider({
 
         setState({ isInitialized: true, error: null });
       } catch (error) {
-        console.error('[AppAuthProvider] Token wait failed:', error);
+        debugError('[AppAuthProvider] Token wait failed:', error);
         setState({
           isInitialized: true,
           error: error instanceof Error ? error : new Error('Unknown error'),

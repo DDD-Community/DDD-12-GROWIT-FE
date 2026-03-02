@@ -23,12 +23,12 @@ export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
   return (
     <AppAuthProvider
       loadingFallback={
-        <div className="flex h-screen items-center justify-center bg-normal-alternative">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
+        <div className="flex h-screen w-full items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
         </div>
       }
       errorFallback={
-        <div className="flex h-screen flex-col items-center justify-center bg-normal-alternative text-white">
+        <div className="flex h-screen w-full items-center justify-center text-white">
           <p>인증에 실패했습니다</p>
           <p className="text-sm text-gray-400 mt-2">앱을 다시 시작해주세요</p>
         </div>
@@ -36,7 +36,6 @@ export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
     >
       <AppBridgeProvider>
         <div className="flex flex-1 max-sm:flex-col max-w-md w-full mx-auto h-full">
-          {/* <NavigationBar /> */}
           <GoalOnboardRedirect />
           <div className="flex flex-1 flex-col overflow-hidden relative">
             <div className="flex-1 overflow-y-auto">
