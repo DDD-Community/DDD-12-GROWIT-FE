@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function AdviceSignupPage() {
   return (
-    <div className="p-5 h-full space-y-10">
+    <div className="p-5 h-full flex flex-col overflow-y-auto gap-y-10">
       <header className="space-y-6 text-balance text-white">
         <Image src="/advice/letter.png" alt="편지 이미지" width={70} height={70} />
         <p className="heading-1-bold text-text-strong">
