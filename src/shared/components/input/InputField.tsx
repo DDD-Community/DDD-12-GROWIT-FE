@@ -58,7 +58,7 @@ export function InputField({
   const inputClassName = getInputClassName(version, isError, errorMessage);
 
   return (
-    <div>
+    <div className="px-0.5">
       <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
       <div className="relative mb-1">
         <input maxLength={props.maxLength} {...props} onInput={handleInput} className={inputClassName} />
