@@ -78,7 +78,10 @@ export const AdviceSignupForm = () => {
           onSelect={selectBirthTime}
         />
       </section>
-      <footer className="sticky bottom-2 left-0 bg-[#1C1C1E]">
+      <footer
+        className="sticky left-0 bg-[#1C1C1E]"
+        style={{ bottom: 'calc(56px + env(safe-area-inset-bottom))' }}
+      >
         <Button type="submit" text="조언 시작하기" size="lg" disabled={isPending} />
       </footer>
     </form>
