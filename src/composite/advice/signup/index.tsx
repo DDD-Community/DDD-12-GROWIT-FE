@@ -13,7 +13,14 @@ export const AdviceSignupForm = () => {
   const { isOpen, showSheet, closeSheet } = useBottomSheet();
 
   const { formMethods, submitSaju, isPending, onChangeBirthDate } = useSajuSignup();
-  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = formMethods;
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = formMethods;
 
   const selectBirthTime = useCallback(
     (key: EarthlyBranchHourType) => {
@@ -24,13 +31,12 @@ export const AdviceSignupForm = () => {
   );
 
   const birthHourKey = watch('saju.birthHour');
-  const selectedBirthTime = birthHourKey in EarthlyBranchHour
-    ? EarthlyBranchHour[birthHourKey as EarthlyBranchHourType].time
-    : '';
+  const selectedBirthTime =
+    birthHourKey in EarthlyBranchHour ? EarthlyBranchHour[birthHourKey as EarthlyBranchHourType].time : '';
 
   return (
-    <form className="space-y-10" onSubmit={handleSubmit(data => submitSaju(data))}>
-      <section className="space-y-8">
+    <form className="flex flex-col flex-1" onSubmit={handleSubmit(data => submitSaju(data))}>
+      <section className="flex-1 flex flex-col gap-y-8 pb-8">
         <Controller
           name="saju.birth"
           control={control}
@@ -48,15 +54,13 @@ export const AdviceSignupForm = () => {
           )}
         />
 
-        <div>
+        <div className="px-0.5">
           <span className="label-1-medium text-text-primary mb-2 block">성별</span>
           <div className="flex gap-3">
             <GenderInput label="여자" value="FEMALE" {...register('saju.gender')} />
             <GenderInput label="남자" value="MALE" {...register('saju.gender')} />
           </div>
-          {errors.saju?.gender && (
-            <p className="text-xs text-red-500 mt-1">{errors.saju.gender.message}</p>
-          )}
+          {errors.saju?.gender && <p className="text-xs text-red-500 mt-1">{errors.saju.gender.message}</p>}
         </div>
 
         <InputField
@@ -74,7 +78,12 @@ export const AdviceSignupForm = () => {
           onSelect={selectBirthTime}
         />
       </section>
-      <Button type="submit" text="조언 시작하기" size="lg" disabled={isPending} />
+      <footer
+        className="sticky left-0 bg-[#1C1C1E]"
+        style={{ bottom: 'calc(56px + env(safe-area-inset-bottom))' }}
+      >
+        <Button type="submit" text="조언 시작하기" size="lg" disabled={isPending} />
+      </footer>
     </form>
   );
 };
