@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - test
+  workflow_call:
+    inputs:
+      branch:
+        description: '배포할 브랜치'
+        required: false
+        type: string
+        default: 'main'
 env:
   DOCKER_IMAGE: wonchang0314/growit-fe
   CONTAINER_NAME: growit-next
