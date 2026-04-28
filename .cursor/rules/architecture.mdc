@@ -1,0 +1,238 @@
+---
+description: FSD (Feature-Sliced Design) 아키텍처 규칙
+alwaysApply: true
+---
+# FSD (Feature-Sliced Design) 아키텍처 규칙
+
+## 개요
+
+GROWIT FE는 Feature-Sliced Design을 기반으로 계층화된 아키텍처를 사용한다.
+각 계층은 하위 계층만 참조할 수 있으며, 상위/동일 계층 참조는 금지된다.
+
+---
+
+## 계층 구조
+
+```
+src/
+├── app/           ← 페이지 & 라우팅 (최상위 계층)
+├── composite/     ← 페이지별 조합 컴포넌트
+├── feature/       ← 도메인별 기능 모듈
+├── model/         ← 상태 관리 & 데이터 계층
+└── shared/        ← 공유 리소스 (최하위 계층)
+```
+
+### 참조 규칙 (엄격)
+
+```
+app → composite → feature → model → shared
+                     ↓         ↓       ↓
+                  feature    model   shared
+                     ↓         ↓
+                   model    shared
+                     ↓
+                  shared
+```
+
+| 계층 | 참조 가능 | 참조 금지 |
+|------|----------|----------|
+| `app/` | composite, feature, model, shared | - |
+| `composite/` | feature, model, shared | app, 다른 composite |
+| `feature/` | model, shared | app, composite, 다른 feature |
+| `model/` | shared | app, composite, feature |
+| `shared/` | (없음) | app, composite, feature, model |
+
+**동일 계층 참조 금지**: `feature/goal/`에서 `feature/todo/`를 import 할 수 없다.
+
+---
+
+## 계층별 책임
+
+### `app/` — 페이지 & 라우팅
+
+Next.js App Router 기반 페이지와 레이아웃을 정의한다.
+
+```
+src/app/
+├── (auth)/          ← 인증 관련 라우트 그룹
+│   ├── login/
+│   ├── signup/
+│   └── oauth/
+├── (home)/          ← 홈 관련 라우트 그룹
+│   ├── home/
+│   ├── goal/
+│   └── advice/
+├── api/             ← API Route Handlers
+├── layout.tsx       ← Root Layout
+├── page.tsx         ← Landing Page
+├── globals.css      ← 글로벌 스타일
+├── typography.css   ← 타이포그래피 토큰
+├── colors.css       ← 컬러 테마 변수
+└── customTokens.css ← 커스텀 CSS 토큰
+```
+
+- `page.tsx`에서 `composite/` 컴포넌트를 조합
+- 글로벌 Provider (Auth, QueryClient, AppBridge) 설정
+- 라우트별 metadata 정의
+
+### `composite/` — 페이지별 조합 컴포넌트
+
+페이지 단위의 UI를 조합한다. `feature/`와 `shared/` 컴포넌트를 결합.
+
+```
+src/composite/
+├── home/
+│   ├── goalBanner/
+│   ├── todoList/
+│   └── dailySummary/
+├── goal/
+│   ├── progress/
+│   ├── create/
+│   └── edit/
+└── login/
+    └── loginForm/
+```
+
+- 페이지와 1:1 매핑
+- 비즈니스 로직을 포함하지 않음
+- `feature/`에서 가져온 컴포넌트를 배치/조합
+
+### `feature/` — 도메인별 기능 모듈
+
+재사용 가능한 도메인 기능을 캡슐화한다.
+
+```
+src/feature/
+├── todo/
+│   ├── components/     ← 도메인 UI 컴포넌트
+│   ├── hooks/          ← 도메인 커스텀 훅
+│   ├── forms/          ← 도메인 폼
+│   └── index.ts        ← Public API (배럴 export)
+├── goal/
+├── advice/
+├── auth/
+├── retrospects/
+├── home/
+├── mypage/
+├── onboard/
+└── customerEvent/
+```
+
+- 다른 `feature/` 모듈을 import 할 수 없음
+- `model/`과 `shared/`만 참조
+- `index.ts`로 Public API를 노출
+
+### `model/` — 상태 관리 & 데이터 계층
+
+TanStack React Query와 React Context를 사용한 데이터 관리.
+
+```
+src/model/
+├── todo/
+│   ├── api.ts           ← API 호출 함수
+│   ├── queries.ts       ← queryOptions & mutationOptions
+│   ├── queryKeys.ts     ← 쿼리 키 팩토리
+│   ├── types.ts         ← 타입 정의
+│   ├── selectedDay/     ← Context: 선택된 날짜
+│   ├── todayTodoList/   ← Context: 오늘의 투두 리스트
+│   └── todoList/        ← Context: 투두 리스트
+├── goal/
+├── advice/
+├── aiMentor/
+└── user/
+```
+
+**TanStack Query 패턴:**
+```typescript
+// queryKeys.ts
+export const TodoQueryKeys = {
+  all: ['todo'] as const,
+  list: (params: Params) => [...TodoQueryKeys.all, 'list', params] as const,
+};
+
+// queries.ts
+export const TodoQuery = {
+  getList: (params: Params) => queryOptions({
+    queryKey: TodoQueryKeys.list(params),
+    queryFn: () => TodoApi.getList(params),
+  }),
+};
+
+export const TodoMutation = {
+  create: () => mutationOptions({
+    mutationFn: TodoApi.create,
+  }),
+};
+```
+
+**React Context 패턴:**
+```typescript
+// Split state/actions 패턴
+interface State { /* 상태 */ }
+interface Actions { /* 액션 */ }
+const StateContext = createContext<State>(null);
+const ActionsContext = createContext<Actions>(null);
+export const useXxxState = () => useContext(StateContext);
+export const useXxxActions = () => useContext(ActionsContext);
+```
+
+### `shared/` — 공유 리소스
+
+모든 계층에서 사용할 수 있는 공통 리소스.
+
+```
+src/shared/
+├── components/
+│   ├── ui/            ← Radix UI 프리미티브 (sheet, dialog, dropdown-menu)
+│   ├── foundation/    ← 기초 컴포넌트 (FlexBox, Icons, Screen)
+│   ├── input/         ← 입력 컴포넌트 (Button, InputField, DatePicker, ...)
+│   ├── layout/        ← 레이아웃 (Header, Navigation, Accordion, ...)
+│   ├── display/       ← 표시 컴포넌트 (Badge, ProgressBar, ToolTip, ...)
+│   ├── feedBack/      ← 피드백 (Modal, BottomSheet, Toast)
+│   ├── analytics/     ← 분석 컴포넌트
+│   └── providers/     ← 컨텍스트 프로바이더
+├── lib/               ← 유틸리티
+│   ├── apiClient.ts   ← Axios 인스턴스
+│   ├── auth/          ← 인증 서비스
+│   ├── utils.ts       ← 헬퍼 함수 (cn, clsx + tailwind-merge)
+│   └── dateUtils.ts   ← 날짜 유틸
+├── type/              ← 공통 타입 정의
+├── constants/         ← 상수
+└── hooks/             ← 공통 커스텀 훅
+```
+
+---
+
+## 도메인 목록
+
+| Domain | 설명 | Feature | Model |
+|--------|------|---------|-------|
+| todo | 할 일 관리 | `feature/todo/` | `model/todo/` |
+| goal | 목표 관리 | `feature/goal/` | `model/goal/` |
+| advice | AI 조언 | `feature/advice/` | `model/advice/` |
+| auth | 인증/로그인 | `feature/auth/` | `model/user/` |
+| retrospect | 회고 | `feature/retrospects/` | - |
+| home | 홈 화면 | `feature/home/` | - |
+| mypage | 마이페이지 | `feature/mypage/` | - |
+| onboard | 온보딩 | `feature/onboard/` | - |
+
+---
+
+## 새 도메인 추가 시 체크리스트
+
+1. `feature/{domain}/` 생성 — components, hooks, forms, index.ts
+2. `model/{domain}/` 생성 — api.ts, queries.ts, queryKeys.ts, types.ts
+3. `composite/{domain}/` 생성 — 페이지별 조합 컴포넌트
+4. `app/(home)/{domain}/` 생성 — 라우트 페이지
+5. `shared/type/{Domain}.ts` 생성 — 공통 타입 (필요 시)
+
+---
+
+## 금지 사항
+
+- `feature/` 간 상호 참조
+- `composite/` 간 상호 참조
+- `shared/`에서 상위 계층 참조
+- 서버 컴포넌트(`'use server'`)에서 클라이언트 상태 직접 접근
+- `model/` 바깥에서 직접 API 호출 (`apiClient` 직접 사용 금지)
+- 디자인 시스템 외 독자적 UI 프리미티브 생성
