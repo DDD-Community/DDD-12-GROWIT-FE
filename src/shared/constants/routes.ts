@@ -3,7 +3,6 @@ import {
   ProfileIcon,
   HomeIconInActive,
   AdviceIcon,
-  AdviceIconInactive,
   ProfileIconInactive,
   GoalIcon,
   GoalIconInactive,
@@ -12,7 +11,6 @@ import { ComponentType } from 'react';
 
 export const ROUTES = {
   HOME: '/home',
-  ADVICE: '/advice',
   RETROSPECT: '/retrospect',
   PROMOTION: '/promotion',
 
@@ -87,7 +85,6 @@ export const NAVIGATION_ROUTES_MOBILE: NavigationRouteMobile[] = [
     alt: 'Home',
     title: '홈',
   },
-  { path: ROUTES.ADVICE, activeIcon: AdviceIcon, inActiveIcon: AdviceIconInactive, alt: 'Advice', title: '조언' },
   {
     path: ROUTES.GOAL,
     activeIcon: GoalIcon,

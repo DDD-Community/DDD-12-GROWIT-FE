@@ -27,6 +27,21 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// Token refresh queue mechanism to prevent race conditions
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: unknown) => void }> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else if (token) {
+      resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Response interceptor
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -52,6 +67,18 @@ axiosInstance.interceptors.response.use(
 
     // 401 errors (token expired)
     if (error.response?.status === 401 && originalRequest) {
+      // If a refresh is already in progress, queue this request
+      if (isRefreshing) {
+        return new Promise<string>((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return axiosInstance(originalRequest);
+        });
+      }
+
+      isRefreshing = true;
+
       try {
         // Try to refresh the token
         const refreshToken = authService.getRefreshToken();
@@ -65,10 +92,16 @@ axiosInstance.interceptors.response.use(
         // Update tokens
         authService.refreshTokens({ accessToken, refreshToken: newRefreshToken });
 
+        // Process queued requests with new token
+        processQueue(null, accessToken);
+
         // Retry the original request with new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
+        // Process queued requests with error
+        processQueue(refreshError, null);
+
         // If refresh fails, clear tokens and redirect to auth
         authService.logout();
         // 서버 사이드에서는 window 객체가 없으므로 클라이언트에서만 리다이렉트
@@ -76,6 +109,8 @@ axiosInstance.interceptors.response.use(
           window.location.href = '/login';
         }
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 
