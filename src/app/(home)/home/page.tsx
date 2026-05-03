@@ -5,7 +5,6 @@ import { GoalProvider } from '@/model/goal/context';
 import { PlanProvider } from '@/model/todo/planSelector';
 import { TodoListProvider } from '@/model/todo/todoList';
 import { SelectedDayProvider } from '@/model/todo/selectedDay';
-import { AIMentorProvider } from '@/model/aiMentor/context';
 
 export default function MainPage() {
   return (
@@ -13,9 +12,7 @@ export default function MainPage() {
       <PlanProvider>
         <TodoListProvider>
           <SelectedDayProvider>
-            <AIMentorProvider>
-              <TodoListContainer />
-            </AIMentorProvider>
+            <TodoListContainer />
           </SelectedDayProvider>
         </TodoListProvider>
       </PlanProvider>
