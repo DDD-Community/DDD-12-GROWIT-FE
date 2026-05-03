@@ -38,7 +38,7 @@ export interface PutTodoRequest {
   goalId: string | null; // 목표 ID (기타일 경우 null)
   date: string; // 'YYYY-MM-DD'
   content: string;
-  isImportant: boolean;
+  category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
   routineUpdateType?: RoutineUpdateType; // 반복 투두 수정 타입 (SINGLE, FROM_DATE, ALL)
 }
@@ -47,7 +47,7 @@ export interface PostAddTodoRequest {
   goalId: string | null; // 옵셔널 - 기타 일땐 null로 넣어주세요
   date: string; // 'YYYY-MM-DD'
   content: string;
-  isImportant: boolean;
+  category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
 }
 

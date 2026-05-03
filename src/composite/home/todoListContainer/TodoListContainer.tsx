@@ -48,7 +48,7 @@ export const TodoListContainer = () => {
                       onDateSelect={setSelectedDate}
                       onViewChange={setCalendarView}
                     />
-                    <TodoList selectedDate={selectedDate} onEdit={handleEdit} />
+                    <TodoList selectedDate={selectedDate} onEdit={handleEdit} onAdd={addSheet.showSheet} />
                     <AddGoalButton selectedDate={selectedDate} />
                   </div>
                 </div>

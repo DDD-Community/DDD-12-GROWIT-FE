@@ -33,7 +33,7 @@ export interface TodoFormData {
   content: string;
   goalId: string | null;
   repeatType: FormRepeatType;
-  isImportant: boolean;
+  category: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
   /** 투두 날짜 (YYYY-MM-DD 형식) */
   date: string;
   /** 루틴 기간 설정 (반복이 none이 아닐 때만 사용) */
@@ -44,7 +44,7 @@ export const TODO_DEFAULT_VALUES: TodoFormData = {
   content: '',
   goalId: null,
   repeatType: 'none',
-  isImportant: false,
+  category: 'NOW',
   date: '',
   routineDuration: undefined,
 };

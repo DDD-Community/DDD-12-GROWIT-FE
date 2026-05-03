@@ -132,7 +132,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
               goalId: data.goalId ?? null,
               date: data.date,
               content: data.content,
-              isImportant: data.isImportant,
+              category: data.category,
               routine:
                 data.repeatType !== 'none' && data.routineDuration
                   ? {
@@ -151,7 +151,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
               goalId: data.goalId ?? null,
               date: data.date,
               content: data.content,
-              isImportant: data.isImportant,
+              category: data.category,
               routine:
                 data.repeatType !== 'none' && data.routineDuration
                   ? {
@@ -214,7 +214,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             goalId: data.goalId ?? null,
             date: data.date,
             content: data.content,
-            isImportant: data.isImportant,
+            category: data.category,
             routine:
               data.repeatType !== 'none' && data.routineDuration
                 ? {
@@ -250,7 +250,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             goalId: data.goalId ?? null,
             date: data.date,
             content: data.content,
-            isImportant: data.isImportant,
+            category: data.category,
             routine:
               data.repeatType !== 'none' && data.routineDuration
                 ? {
