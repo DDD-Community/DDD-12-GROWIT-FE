@@ -8,7 +8,7 @@ interface MatrixViewProps {
   groups: CategoryGroups;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
   onEdit?: (todo: GoalTodo) => void;
-  onAdd?: () => void;
+  onAdd?: (category?: string) => void;
 }
 
 const CATEGORY_CONFIG = {
@@ -33,7 +33,7 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
             todos={groups.NOW}
             onToggle={onToggle}
             onEdit={onEdit}
-            onAdd={onAdd}
+            onAdd={() => onAdd?.('NOW')}
           />
           <CategoryCard
             title={CATEGORY_CONFIG.STEADY.title}
@@ -41,7 +41,7 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
             todos={groups.STEADY}
             onToggle={onToggle}
             onEdit={onEdit}
-            onAdd={onAdd}
+            onAdd={() => onAdd?.('STEADY')}
           />
         </div>
       </div>
@@ -58,7 +58,7 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
             todos={groups.SKIP}
             onToggle={onToggle}
             onEdit={onEdit}
-            onAdd={onAdd}
+            onAdd={() => onAdd?.('SKIP')}
           />
           <CategoryCard
             title={CATEGORY_CONFIG.DELETE.title}
@@ -66,7 +66,7 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
             todos={groups.DELETE}
             onToggle={onToggle}
             onEdit={onEdit}
-            onAdd={onAdd}
+            onAdd={() => onAdd?.('DELETE')}
           />
         </div>
       </div>

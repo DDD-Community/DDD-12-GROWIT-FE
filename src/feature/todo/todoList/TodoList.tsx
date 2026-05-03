@@ -16,8 +16,8 @@ interface TodoListProps {
   selectedDate: Date;
   /** Todo 편집 클릭 핸들러 */
   onEdit?: (todo: GoalTodo) => void;
-  /** Todo 추가 클릭 핸들러 */
-  onAdd?: () => void;
+  /** Todo 추가 클릭 핸들러 (카테고리 프리셋) */
+  onAdd?: (category?: string) => void;
 }
 
 export const TodoList = ({ selectedDate, onEdit, onAdd }: TodoListProps) => {

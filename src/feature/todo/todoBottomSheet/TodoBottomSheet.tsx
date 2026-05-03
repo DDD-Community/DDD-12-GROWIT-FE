@@ -63,6 +63,8 @@ interface TodoBottomSheetProps {
   onOpen: () => void;
   /** 바텀시트 닫기 함수 */
   onClose: () => void;
+  /** 기본 카테고리 (add 모드에서 카드 + 버튼 클릭 시) */
+  defaultCategory?: TodoFormData['category'];
 }
 
 export const TodoBottomSheet = ({
@@ -73,6 +75,7 @@ export const TodoBottomSheet = ({
   isOpen,
   onOpen,
   onClose,
+  defaultCategory,
 }: TodoBottomSheetProps) => {
   const editSheet = useBottomSheet();
   const deleteSheet = useBottomSheet();
@@ -131,6 +134,7 @@ export const TodoBottomSheet = ({
       todoId={todoId}
       values={values}
       selectedDate={selectedDate}
+      defaultCategory={defaultCategory}
       onClose={() => {
         onClose();
         reset();
