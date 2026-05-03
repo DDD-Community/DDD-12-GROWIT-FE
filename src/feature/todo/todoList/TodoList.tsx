@@ -1,64 +1,88 @@
 'use client';
 
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import { TodoCard } from './components/TodoCard';
 import { TodoListEmpty } from './components/TodoListEmpty';
 import { TodoListLoading, TodoListError } from './components';
+import { MatrixView } from './components/MatrixView';
+import { ListView } from './components/ListView';
+import { CategoryDetailView } from './components/CategoryDetailView';
 import { useTodosByDate, usePatchTodoStatus } from '@/model/todo/todoList/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
-import { transformTodosData, groupAndSortTodos } from './helper';
+import { transformTodosData, groupTodosByCategory } from './helper';
+
+type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 interface TodoListProps {
-  /** 선택된 날짜 */
   selectedDate: Date;
-  /** Todo 편집 클릭 핸들러 */
+  viewMode?: 'matrix' | 'list';
   onEdit?: (todo: GoalTodo) => void;
+  onAdd?: (category?: string) => void;
 }
 
-export const TodoList = ({ selectedDate, onEdit }: TodoListProps) => {
+export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: TodoListProps) => {
   const queryClient = useQueryClient();
   const patchTodoStatusMutation = usePatchTodoStatus();
+  const [detailCategory, setDetailCategory] = useState<CategoryType | null>(null);
 
   const dateString = format(selectedDate, 'yyyy-MM-dd');
   const { data: todosData, isLoading, error } = useTodosByDate({ date: dateString });
 
   const todos = useMemo(() => transformTodosData(todosData), [todosData]);
-  const groupedTodos = useMemo(() => groupAndSortTodos(todos), [todos]);
+  const categoryGroups = useMemo(() => groupTodosByCategory(todos), [todos]);
+
+  const hasAnyTodos = todos.length > 0;
+
+  const invalidateQueries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
+    queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
+  }, [queryClient, dateString]);
 
   const handleToggle = useCallback(
     async (todoId: string, isCompleted: boolean) => {
       try {
         await patchTodoStatusMutation.mutateAsync({ todoId, isCompleted });
-        queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
-        queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
+        invalidateQueries();
       } catch (error) {
         console.error('Todo 상태 변경 실패:', error);
       }
     },
-    [patchTodoStatusMutation, queryClient, dateString]
+    [patchTodoStatusMutation, invalidateQueries]
   );
 
   if (isLoading) return <TodoListLoading />;
   if (error) return <TodoListError />;
-  if (groupedTodos.length === 0) return <TodoListEmpty />;
+  if (!hasAnyTodos) return <TodoListEmpty />;
+
+  if (viewMode === 'list') {
+    return <ListView todos={todos} onToggle={handleToggle} onEdit={onEdit} />;
+  }
 
   return (
-    <div className="flex flex-col gap-[28px] mt-[20px] mb-[20px]">
-      {groupedTodos.map(group => (
-        <div key={group.goalId} className="flex flex-col gap-[8px]">
-          {/* Goal 그룹 헤더 */}
-          <p className="text-[14px] font-medium leading-[1.429] tracking-[0.203px] text-[#c2c4c8]">{group.goalName}</p>
-          {/* Todo 카드 리스트 */}
-          <div className="flex flex-col gap-[8px]">
-            {group.todos.map(todo => (
-              <TodoCard key={todo.id} todo={todo} onToggle={handleToggle} onEdit={onEdit} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+    <>
+      <MatrixView
+        groups={categoryGroups}
+        onToggle={handleToggle}
+        onEdit={onEdit}
+        onAdd={onAdd}
+        onCardClick={setDetailCategory}
+      />
+      {detailCategory && (
+        <CategoryDetailView
+          category={detailCategory}
+          todos={categoryGroups[detailCategory]}
+          isOpen={!!detailCategory}
+          onClose={() => setDetailCategory(null)}
+          onToggle={handleToggle}
+          onEdit={onEdit}
+          onAdd={() => {
+            setDetailCategory(null);
+            onAdd?.(detailCategory);
+          }}
+        />
+      )}
+    </>
   );
 };

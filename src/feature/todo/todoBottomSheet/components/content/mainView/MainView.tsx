@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, Controller } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { DeleteButton } from '../../shared/deleteButton';
@@ -11,6 +11,14 @@ import { TodoInput } from './TodoInput';
 import type { Goal, TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { getProgressGoals } from '@/model/goal/api';
+import { cn } from '@/shared/lib/utils';
+
+const CATEGORY_OPTIONS = [
+  { value: 'NOW' as const, label: '빨리 끝내기', color: '#FF6467' },
+  { value: 'STEADY' as const, label: '천천히 끝내기', color: '#FF8904' },
+  { value: 'SKIP' as const, label: '넘겨도', color: '#51A2FF' },
+  { value: 'DELETE' as const, label: '지워도', color: '#ABAB9C' },
+];
 
 interface MainViewProps {
   /** 선택된 날짜 */
@@ -76,6 +84,7 @@ export const MainView = ({
 
   const {
     watch,
+    control,
     formState: { errors },
   } = useFormContext<TodoFormData>();
 
@@ -106,6 +115,35 @@ export const MainView = ({
       <BottomSheet.Content className="overflow-y-hidden">
         <div className="flex flex-col gap-5">
           <TodoInput autoFocus={autoFocus} />
+
+          {/* 카테고리 선택 */}
+          <Controller
+            name="category"
+            control={control}
+            render={({ field }) => (
+              <div className="flex flex-wrap gap-2">
+                {CATEGORY_OPTIONS.map(opt => {
+                  const isSelected = field.value === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => field.onChange(opt.value)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-full text-xs font-medium transition-colors border',
+                        isSelected
+                          ? 'border-transparent text-black'
+                          : 'border-[#27272A] text-[#70737C] bg-transparent'
+                      )}
+                      style={isSelected ? { backgroundColor: opt.color } : undefined}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          />
 
           <div className="flex flex-col gap-3">
             <SelectCell

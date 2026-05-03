@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
@@ -10,11 +11,12 @@ import { Calendar } from '@/feature/todo/calendar';
 import { AddGoalButton } from './components/addGoalButton';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
-import { HomeBanner } from '../homeBanner';
+import type { TodoFormData } from '@/feature/todo/todoBottomSheet/types';
 
 export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
+  const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('NOW');
 
   return (
     <TodoListContainerFormProvider>
@@ -31,31 +33,42 @@ export const TodoListContainer = () => {
           setEditingTodo(getEditingTodoDefault());
         };
 
+        const handleAdd = (category?: string) => {
+          if (category === 'NOW' || category === 'STEADY' || category === 'SKIP' || category === 'DELETE') {
+            setAddDefaultCategory(category);
+          } else {
+            setAddDefaultCategory('NOW');
+          }
+          addSheet.showSheet();
+        };
+
         return (
           <div className="relative w-full">
-            <HomeBanner />
             <div
-              className={`absolute left-0 right-0 mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
-                isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'
-              }`}
+              className={`bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
-              <div className={`flex flex-col ${isMonthlyView ? 'h-screen' : 'h-[calc(100vh-100px)]'}`}>
+              <div className="flex flex-col h-screen">
                 <div className="flex flex-col flex-1 gap-6">
-                  <div className="px-4 pt-[24px]">
+                  <div className="px-5 pt-3">
                     <Calendar
                       view={calendarView}
                       selectedDate={selectedDate}
                       onDateSelect={setSelectedDate}
                       onViewChange={setCalendarView}
                     />
-                    <TodoList selectedDate={selectedDate} onEdit={handleEdit} />
+                    <TodoList
+                      selectedDate={selectedDate}
+                      viewMode={isMonthlyView ? 'list' : 'matrix'}
+                      onEdit={handleEdit}
+                      onAdd={handleAdd}
+                    />
                     <AddGoalButton selectedDate={selectedDate} />
                   </div>
                 </div>
               </div>
             </div>
 
-            <FloatingButton onClick={addSheet.showSheet} aria-label="투두 추가" />
+            <FloatingButton onClick={() => handleAdd()} aria-label="투두 추가" />
 
             {/* 추가용 TodoBottomSheet */}
             <TodoBottomSheet
@@ -64,6 +77,7 @@ export const TodoListContainer = () => {
               onOpen={addSheet.showSheet}
               onClose={addSheet.closeSheet}
               selectedDate={selectedDate}
+              defaultCategory={addDefaultCategory}
             />
 
             {/* 편집용 TodoBottomSheet */}

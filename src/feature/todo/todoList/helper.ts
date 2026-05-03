@@ -1,5 +1,14 @@
 import { GoalTodo } from '@/shared/type/GoalTodo';
 
+export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+
+export interface CategoryGroups {
+  NOW: GoalTodo[];
+  STEADY: GoalTodo[];
+  SKIP: GoalTodo[];
+  DELETE: GoalTodo[];
+}
+
 export interface GoalGroup {
   goalId: string;
   goalName: string;
@@ -10,6 +19,25 @@ interface TodoDataItem {
   todo: GoalTodo;
   goal?: { id?: string; name?: string } | null;
 }
+
+/**
+ * Todo를 category별로 그룹화
+ */
+export const groupTodosByCategory = (todos: GoalTodo[]): CategoryGroups => {
+  const groups: CategoryGroups = { NOW: [], STEADY: [], SKIP: [], DELETE: [] };
+
+  todos.forEach(todo => {
+    const cat = todo.category;
+    if (cat && cat in groups) {
+      groups[cat].push(todo);
+    } else {
+      // category가 없는 경우 NOW로 분류
+      groups.NOW.push(todo);
+    }
+  });
+
+  return groups;
+};
 
 /**
  * API 응답을 GoalTodo[] 형식으로 변환
