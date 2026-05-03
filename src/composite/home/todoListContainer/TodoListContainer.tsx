@@ -11,7 +11,6 @@ import { Calendar } from '@/feature/todo/calendar';
 import { AddGoalButton } from './components/addGoalButton';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
-import { HomeBanner } from '../homeBanner';
 import type { TodoFormData } from '@/feature/todo/todoBottomSheet/types';
 
 export const TodoListContainer = () => {
@@ -45,22 +44,24 @@ export const TodoListContainer = () => {
 
         return (
           <div className="relative w-full">
-            <HomeBanner />
             <div
-              className={`absolute left-0 right-0 mx-auto bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT} ${
-                isMonthlyView ? 'top-0 rounded-none' : 'top-[140px] rounded-t-3xl'
-              }`}
+              className={`bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
-              <div className={`flex flex-col ${isMonthlyView ? 'h-screen' : 'h-[calc(100vh-100px)]'}`}>
+              <div className="flex flex-col h-screen">
                 <div className="flex flex-col flex-1 gap-6">
-                  <div className="px-4 pt-[24px]">
+                  <div className="px-5 pt-3">
                     <Calendar
                       view={calendarView}
                       selectedDate={selectedDate}
                       onDateSelect={setSelectedDate}
                       onViewChange={setCalendarView}
                     />
-                    <TodoList selectedDate={selectedDate} onEdit={handleEdit} onAdd={handleAdd} />
+                    <TodoList
+                      selectedDate={selectedDate}
+                      viewMode={isMonthlyView ? 'list' : 'matrix'}
+                      onEdit={handleEdit}
+                      onAdd={handleAdd}
+                    />
                     <AddGoalButton selectedDate={selectedDate} />
                   </div>
                 </div>

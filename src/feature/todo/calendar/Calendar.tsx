@@ -70,12 +70,16 @@ export const Calendar: React.FC<CalendarProps> = ({
 
   const handleWeekChange = useCallback(
     (direction: 'prev' | 'next') => {
+      let dateToSelect: Date | null = null;
       setInternalCurrentDate(prev => {
         const nextDate = direction === 'prev' ? getPreviousWeek(prev) : getNextWeek(prev);
         const nextWeekDates = getWeekDates(nextDate);
-        const sundayOfWeek = nextWeekDates[0];
-        onDateSelect(sundayOfWeek);
+        dateToSelect = nextWeekDates[0];
         return nextDate;
+      });
+      // 부모 상태 업데이트를 다음 마이크로태스크로 지연
+      queueMicrotask(() => {
+        if (dateToSelect) onDateSelect(dateToSelect);
       });
     },
     [onDateSelect]

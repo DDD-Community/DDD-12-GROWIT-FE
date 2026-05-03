@@ -9,16 +9,17 @@ interface MatrixViewProps {
   onToggle?: (todoId: string, isCompleted: boolean) => void;
   onEdit?: (todo: GoalTodo) => void;
   onAdd?: (category?: string) => void;
+  onCardClick?: (category: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE') => void;
 }
 
 const CATEGORY_CONFIG = {
-  NOW: { title: '빨리 끝내기', accentColor: '#FF6467' },
-  STEADY: { title: '천천히 끝내기', accentColor: '#FF8904' },
-  SKIP: { title: '넘겨도', accentColor: '#51A2FF' },
-  DELETE: { title: '지워도', accentColor: '#ABAB9C' },
+  NOW: { title: '빨리 끝내기', accentColor: '#FF6467', bgStyle: 'bg-gradient-to-b from-[#2A1A2E] to-[#1C1917]' },
+  STEADY: { title: '천천히 끝내기', accentColor: '#FF8904', bgStyle: 'bg-[#1C1917]' },
+  SKIP: { title: '넘겨도', accentColor: '#51A2FF', bgStyle: 'bg-gradient-to-b from-[#1A1E2E] to-[#1C1917]' },
+  DELETE: { title: '지워도', accentColor: '#ABAB9C', bgStyle: 'bg-[#1C1917]' },
 } as const;
 
-export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps) => {
+export const MatrixView = ({ groups, onToggle, onEdit, onAdd, onCardClick }: MatrixViewProps) => {
   return (
     <div className="flex flex-col gap-4 mt-5 mb-5">
       {/* 중요 section */}
@@ -30,18 +31,22 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
           <CategoryCard
             title={CATEGORY_CONFIG.NOW.title}
             accentColor={CATEGORY_CONFIG.NOW.accentColor}
+            bgStyle={CATEGORY_CONFIG.NOW.bgStyle}
             todos={groups.NOW}
             onToggle={onToggle}
             onEdit={onEdit}
             onAdd={() => onAdd?.('NOW')}
+            onCardClick={() => onCardClick?.('NOW')}
           />
           <CategoryCard
             title={CATEGORY_CONFIG.STEADY.title}
             accentColor={CATEGORY_CONFIG.STEADY.accentColor}
+            bgStyle={CATEGORY_CONFIG.STEADY.bgStyle}
             todos={groups.STEADY}
             onToggle={onToggle}
             onEdit={onEdit}
             onAdd={() => onAdd?.('STEADY')}
+            onCardClick={() => onCardClick?.('STEADY')}
           />
         </div>
       </div>
@@ -55,18 +60,22 @@ export const MatrixView = ({ groups, onToggle, onEdit, onAdd }: MatrixViewProps)
           <CategoryCard
             title={CATEGORY_CONFIG.SKIP.title}
             accentColor={CATEGORY_CONFIG.SKIP.accentColor}
+            bgStyle={CATEGORY_CONFIG.SKIP.bgStyle}
             todos={groups.SKIP}
             onToggle={onToggle}
             onEdit={onEdit}
             onAdd={() => onAdd?.('SKIP')}
+            onCardClick={() => onCardClick?.('SKIP')}
           />
           <CategoryCard
             title={CATEGORY_CONFIG.DELETE.title}
             accentColor={CATEGORY_CONFIG.DELETE.accentColor}
+            bgStyle={CATEGORY_CONFIG.DELETE.bgStyle}
             todos={groups.DELETE}
             onToggle={onToggle}
             onEdit={onEdit}
             onAdd={() => onAdd?.('DELETE')}
+            onCardClick={() => onCardClick?.('DELETE')}
           />
         </div>
       </div>

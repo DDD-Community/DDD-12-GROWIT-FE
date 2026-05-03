@@ -1,51 +1,55 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import Button from '../../input/Button';
-import { NAVIGATION_ROUTES_MOBILE, ROUTES, shouldHiddenNavigation, titleStyle } from '@/shared/constants/routes';
-import FlexBox from '../../foundation/FlexBox';
+import { ROUTES } from '@/shared/constants/routes';
 import { Z_INDEX } from '@/shared/lib/z-index';
+import { cn } from '@/shared/lib/utils';
+import { NavHomeFilledIcon, NavGoalIcon, NavProfileIcon } from './NavIcons';
+
+const NAV_ITEMS = [
+  { path: ROUTES.HOME, icon: NavHomeFilledIcon, title: '홈' },
+  { path: ROUTES.GOAL, icon: NavGoalIcon, title: '목표' },
+  { path: ROUTES.MYPAGE, icon: NavProfileIcon, title: '마이' },
+] as const;
 
 export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
-
-  //const pathSegments = pathname.split('/').filter(segment => segment !== '');
-  //const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
 
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
     return pathname === path;
   };
 
-  // if (!shouldShowNavigation) {
-  //   return null;
-  // }
-
   return (
     <nav
-      className={`fixed bottom-0 max-w-md mx-auto w-full p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47] ${Z_INDEX.BOTTOM_NAVIGATION}`}
+      className={`fixed bottom-0 max-w-md mx-auto w-full px-[25px] pb-[25px] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
-      {NAVIGATION_ROUTES_MOBILE.map(item => {
-        const active = isActive(item.path);
-        const IconComponent = active ? item.activeIcon : item.inActiveIcon;
-        return (
-          <Button
-            key={item.path}
-            size={'sm'}
-            variant="tertiary"
-            layout="icon-only"
-            className={active ? 'bg-surface-assistive' : ''}
-            icon={
-              <FlexBox direction="col">
-                {<IconComponent />}
-                <span className={active ? titleStyle.active : titleStyle.inActive}>{item.title}</span>
-              </FlexBox>
-            }
-            onClick={() => router.push(item.path)}
-          />
-        );
-      })}
+      {/* Tab bar container */}
+      <div className="flex items-center gap-4 bg-[#27272A] rounded-3xl p-2 shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]">
+        {NAV_ITEMS.map(item => {
+          const active = isActive(item.path);
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.path}
+              type="button"
+              onClick={() => router.push(item.path)}
+              className={cn(
+                'flex items-center gap-2 rounded-3xl transition-colors',
+                active
+                  ? 'bg-[#E1E1E2] px-4 py-2 text-black'
+                  : 'p-2.5 text-[#71717B]'
+              )}
+            >
+              <Icon className="w-[22px] h-[22px]" />
+              {active && (
+                <span className="text-sm font-medium text-[#18181B]">{item.title}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 };

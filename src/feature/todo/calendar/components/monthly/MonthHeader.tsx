@@ -35,7 +35,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
         </button>
 
         {/* 월 표시 */}
-        <span className="text-[20px] font-bold leading-[28px] tracking-[-0.012em] text-white">{monthLabel}</span>
+        <span className="text-[24px] font-bold leading-[133%] tracking-[-0.01em] text-white">{monthLabel}</span>
 
         {/* 다음 달 버튼 */}
         <button onClick={onNext} className="w-5 h-5 flex items-center justify-center" aria-label="다음 달">

@@ -20,7 +20,7 @@ export const Z_INDEX = {
   GOAL_ONBOARD: 'z-[992]',
   FUNNEL_NEXT_BUTTON: 'z-[993]',
   BOTTOM_NAVIGATION: 'z-[990]',
-  FAB: 'z-[975]',
+  FAB: 'z-[991]',
   DROPDOWN: 'z-[970]',
   POPOVER: 'z-[975]',
   HEADER: 'z-[960]',
