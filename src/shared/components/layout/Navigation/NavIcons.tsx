@@ -1,12 +1,19 @@
+import Image from 'next/image';
+
 interface IconProps {
   className?: string;
 }
 
-/** 홈 아이콘 (filled, active 상태) */
+/** 홈 아이콘 (filled, active 상태) — Figma 3D 화살표 PNG (raster 자산) */
 export const NavHomeFilledIcon = ({ className }: IconProps) => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
-    <path d="M14.5 4L22 12L14.5 20V14H3V10H14.5V4Z" fill="currentColor"/>
-  </svg>
+  <Image
+    src="/icon/navigation-home-active.png"
+    alt=""
+    width={24}
+    height={24}
+    className={className}
+    priority
+  />
 );
 
 /** 목표 아이콘 (행성/나뭇잎) */
