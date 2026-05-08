@@ -27,13 +27,29 @@ export const DateCell: React.FC<DateCellProps> = ({
     }
   };
 
-  // 스타일 결정
-  const textColor = isCurrentMonth ? '#C2C4C8' : 'rgba(157, 158, 173, 0.3)';
-  const fontWeight = isSelected ? 500 : 400;
+  // 일반 셀 텍스트 색 (Figma color/zinc/50 / current month) vs muted
+  const textColor = isCurrentMonth ? '#FAFAFA' : 'rgba(157, 158, 173, 0.3)';
+  const fontWeight = isSelected || isToday ? 500 : 400;
+
+  // 선택일 > 오늘 우선순위. (Figma 196:1554: 선택 lime-300 채움 / 오늘 zinc-800 border)
+  const cellState =
+    isSelected ? 'selected'
+    : isToday ? 'today'
+    : 'default';
+
+  const cellClass =
+    cellState === 'selected'
+      ? 'w-9 h-9 bg-[#BBF451]'
+      : cellState === 'today'
+      ? 'w-9 h-9 border border-[#27272A]'
+      : '';
+
+  const numberColor =
+    cellState === 'selected' ? '#000000' : textColor;
 
   return (
     <div
-      className={`flex flex-col items-center justify-end w-10 h-10 pb-[3px] cursor-pointer ${className}`}
+      className={`flex flex-col items-center justify-end w-[50px] h-[50px] pb-[3px] cursor-pointer ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
@@ -42,22 +58,18 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
-      <div className="h-[6px] mb-1 flex items-center justify-center">
-        {indicatorColors && <Indicator colors={indicatorColors} />}
-      </div>
-      {/* 날짜 숫자 - 선택된 경우 원형 배경 */}
       <div
-        className={`flex justify-center items-center rounded-full ${isSelected ? 'w-[30px] h-[30px] bg-[#3AEE49]' : 'w-[30px] h-[30px]'}`}
+        className={`flex justify-center items-center rounded-full ${cellClass}`}
       >
         <span
-          className="text-[14px] leading-[20px] tracking-[0.0145em] text-center"
-          style={{
-            color: isSelected ? '#0F0F10' : textColor,
-            fontWeight: fontWeight,
-          }}
+          className="text-[14px] leading-[1.42] text-center"
+          style={{ color: numberColor, fontWeight }}
         >
           {displayNumber}
         </span>
+      </div>
+      <div className="h-[4px] mt-[3px] flex items-center justify-center">
+        {indicatorColors && <Indicator colors={indicatorColors} />}
       </div>
     </div>
   );
