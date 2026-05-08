@@ -13,11 +13,13 @@ interface MatrixViewProps {
   onCardClick?: (category: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE') => void;
 }
 
-const CARD_BG = 'bg-[#0A0A0A]';
+// Figma 196:1617 — color/lime/900 (#35530E) × opacity 16%
+const CARD_BG = 'bg-[rgba(53,83,14,0.16)]';
 
+// Accent colors per Figma 196:1623, 196:1646, etc. (Pretendard SemiBold 12px)
 const CATEGORY_CONFIG = {
-  NOW: { title: '긴급', emoji: '🎃', accentColor: '#FF8904', bgStyle: CARD_BG },
-  STEADY: { title: '꾸준히', emoji: '🐻', accentColor: '#FFB900', bgStyle: CARD_BG },
+  NOW: { title: '긴급', emoji: '🎃', accentColor: '#FF6467', bgStyle: CARD_BG },
+  STEADY: { title: '꾸준히', emoji: '🐻', accentColor: '#FF8904', bgStyle: CARD_BG },
   SKIP: { title: '넘겨도', emoji: '➡️', accentColor: '#51A2FF', bgStyle: CARD_BG },
   DELETE: { title: '지워도', emoji: '🗑️', accentColor: '#A1A1A1', bgStyle: CARD_BG },
 } as const;

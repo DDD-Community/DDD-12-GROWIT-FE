@@ -46,16 +46,25 @@ const TodoItem = ({
       onComplete={handleCheck}
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <div className="flex items-center gap-2 bg-transparent" onClick={e => e.stopPropagation()}>
-        <Checkbox checked={checked} onClick={handleCheck} />
-        <span
-          className={`text-sm leading-snug tracking-tight flex-1 cursor-pointer truncate ${
-            checked ? 'line-through text-[#70737C]' : 'text-white'
-          }`}
+      <div className="flex items-start gap-1 bg-transparent" onClick={e => e.stopPropagation()}>
+        <div className="pt-1 shrink-0">
+          <Checkbox checked={checked} onClick={handleCheck} />
+        </div>
+        <div
+          className="flex flex-col flex-1 min-w-0 cursor-pointer"
           onClick={() => onEdit?.(todo)}
         >
-          {todo.content}
-        </span>
+          <p
+            className={`text-[14px] leading-[1.42] truncate ${
+              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
+            }`}
+          >
+            {todo.content}
+          </p>
+          <p className="text-[10px] leading-[1.33] text-[#737373] min-h-[13px]">
+            {/* 시간 표시는 BE datetime 필드 추가 후 활성 (DEVS-12 PR-C 트랙) */}
+          </p>
+        </div>
       </div>
     </SwipeableRow>
   );
@@ -78,19 +87,25 @@ export const CategoryCard = ({
 
   return (
     <div
-      className={`flex-1 rounded-3xl p-4 flex flex-col gap-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer ${bgStyle || 'bg-[#0A0A0A]'}`}
+      className={`relative flex-1 rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer overflow-hidden ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
       onClick={onCardClick}
     >
-      {/* Header: emoji + label + count + add */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-base leading-none shrink-0" aria-hidden="true">
-            {emoji}
-          </span>
-          <span className="text-xs font-semibold truncate" style={{ color: accentColor }}>
+      {/* Header: char icon + label + count + add (Figma 196:1618) */}
+      <div className="flex items-center gap-1 relative z-10">
+        <span
+          className="text-[20px] leading-none shrink-0 w-6 h-6 flex items-center justify-center"
+          aria-hidden="true"
+        >
+          {emoji}
+        </span>
+        <div className="flex items-center gap-1.5 flex-1 min-w-0 text-[12px] leading-[1.33]">
+          <span
+            className="font-semibold truncate"
+            style={{ color: accentColor }}
+          >
             {title}
           </span>
-          <span className="text-xs font-medium text-[#70737C] shrink-0">
+          <span className="font-normal text-[#737373] shrink-0">
             {completed}/{total}
           </span>
         </div>
@@ -99,7 +114,7 @@ export const CategoryCard = ({
             e.stopPropagation();
             onAdd?.();
           }}
-          className="w-6 h-6 flex items-center justify-center text-[#A1A1A1] hover:text-white transition-colors shrink-0"
+          className="flex items-center justify-center w-8 h-8 p-2 rounded-2xl text-[#A1A1A1] hover:text-white transition-colors shrink-0"
           aria-label={`${title} 투두 추가`}
         >
           <svg
@@ -110,15 +125,20 @@ export const CategoryCard = ({
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <path
+              d="M8 3.33V12.67M3.33 8H12.67"
+              stroke="currentColor"
+              strokeWidth="1.33"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
       </div>
 
       {/* Todo items */}
-      {todos.length > 0 ? (
-        <div className="flex flex-col gap-2">
-          {todos.map(todo => (
+      <div className="flex flex-col gap-2 relative z-10">
+        {todos.length > 0 ? (
+          todos.map(todo => (
             <TodoItem
               key={todo.id}
               todo={todo}
@@ -126,11 +146,11 @@ export const CategoryCard = ({
               onDelete={onDelete}
               onEdit={onEdit}
             />
-          ))}
-        </div>
-      ) : (
-        <p className="text-xs text-[#70737C]">등록된 투두가 없어요</p>
-      )}
+          ))
+        ) : (
+          <p className="text-[14px] leading-[1.42] text-[#737373]">등록된 투두가 없어요</p>
+        )}
+      </div>
     </div>
   );
 };
