@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import Checkbox from '@/shared/components/input/Checkbox';
+import { SwipeableRow } from './SwipeableRow';
 
 const QUADRANT_DOTS = [
   { category: 'NOW', color: '#FF6467' },
@@ -16,6 +17,7 @@ const INACTIVE_COLOR = '#404040';
 interface ListViewProps {
   todos: GoalTodo[];
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }
 
@@ -49,10 +51,12 @@ const GoalTag = ({ name }: { name: string }) => (
 const ListTodoItem = ({
   todo,
   onToggle,
+  onDelete,
   onEdit,
 }: {
   todo: GoalTodo;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }) => {
   const [checked, setChecked] = useState(todo.isCompleted);
@@ -68,33 +72,44 @@ const ListTodoItem = ({
   };
 
   return (
-    <div
-      className="flex items-center gap-2 bg-[#171717] rounded-[20px]"
-      style={{ padding: '14px 16px' }}
+    <SwipeableRow
+      onComplete={handleCheck}
+      onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <Checkbox checked={checked} onClick={handleCheck} />
-      <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
-        <p
-          className={`text-sm leading-[142%] ${
-            checked ? 'line-through text-[#70737C]' : 'text-white'
-          }`}
-        >
-          {todo.content}
-        </p>
+      <div
+        className="flex items-center gap-2 bg-[#171717] rounded-[20px]"
+        style={{ padding: '14px 16px' }}
+      >
+        <Checkbox checked={checked} onClick={handleCheck} />
+        <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
+          <p
+            className={`text-sm leading-[142%] ${
+              checked ? 'line-through text-[#70737C]' : 'text-white'
+            }`}
+          >
+            {todo.content}
+          </p>
+        </div>
+        {todo.goal?.name && todo.goal.name !== '미분류' && (
+          <GoalTag name={todo.goal.name} />
+        )}
+        <CategoryQuadrant activeCategory={todo.category || 'NOW'} />
       </div>
-      {todo.goal?.name && todo.goal.name !== '미분류' && (
-        <GoalTag name={todo.goal.name} />
-      )}
-      <CategoryQuadrant activeCategory={todo.category || 'NOW'} />
-    </div>
+    </SwipeableRow>
   );
 };
 
-export const ListView = ({ todos, onToggle, onEdit }: ListViewProps) => {
+export const ListView = ({ todos, onToggle, onDelete, onEdit }: ListViewProps) => {
   return (
     <div className="flex flex-col gap-2 mt-4 mb-5">
       {todos.map(todo => (
-        <ListTodoItem key={todo.id} todo={todo} onToggle={onToggle} onEdit={onEdit} />
+        <ListTodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={onToggle}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       ))}
     </div>
   );

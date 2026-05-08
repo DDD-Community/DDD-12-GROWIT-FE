@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import Checkbox from '@/shared/components/input/Checkbox';
 import { motion, AnimatePresence } from 'motion/react';
+import { SwipeableRow } from './SwipeableRow';
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
@@ -116,6 +117,7 @@ interface CategoryDetailViewProps {
   isOpen: boolean;
   onClose: () => void;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
   onAdd?: () => void;
 }
@@ -123,10 +125,12 @@ interface CategoryDetailViewProps {
 const DetailTodoItem = ({
   todo,
   onToggle,
+  onDelete,
   onEdit,
 }: {
   todo: GoalTodo;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }) => {
   const [checked, setChecked] = useState(todo.isCompleted);
@@ -144,32 +148,34 @@ const DetailTodoItem = ({
   const hasTags = todo.routine || (todo.goal?.name && todo.goal.name !== '미분류');
 
   return (
-    <div className="flex items-start gap-2 py-1.5">
-      <div className="pt-0.5">
-        <Checkbox checked={checked} onClick={handleCheck} />
+    <SwipeableRow
+      onComplete={handleCheck}
+      onDelete={onDelete ? () => onDelete(todo.id) : undefined}
+    >
+      <div className="flex items-start gap-2 py-1.5">
+        <div className="pt-0.5">
+          <Checkbox checked={checked} onClick={handleCheck} />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          <span
+            className={`text-sm leading-[142%] font-medium cursor-pointer ${
+              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
+            }`}
+            onClick={() => onEdit?.(todo)}
+          >
+            {todo.content}
+          </span>
+          {hasTags && (
+            <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
+              {todo.routine && <RoutineTag routine={todo.routine} />}
+              {todo.goal?.name && todo.goal.name !== '미분류' && (
+                <GoalTag name={todo.goal.name} />
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="flex-1 min-w-0 flex flex-col gap-1">
-        <span
-          className={`text-sm leading-[142%] font-medium cursor-pointer ${
-            checked ? 'line-through text-[#A1A1A1]' : 'text-white'
-          }`}
-          onClick={() => onEdit?.(todo)}
-        >
-          {todo.content}
-        </span>
-        {hasTags && (
-          <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
-            {todo.routine && <RoutineTag routine={todo.routine} />}
-            {todo.goal?.name && todo.goal.name !== '미분류' && (
-              <GoalTag name={todo.goal.name} />
-            )}
-          </div>
-        )}
-      </div>
-      <span className="text-xs leading-[133%] text-[#737373] shrink-0 pt-1">
-        AM 10:45
-      </span>
-    </div>
+    </SwipeableRow>
   );
 };
 
@@ -179,6 +185,7 @@ export const CategoryDetailView = ({
   isOpen,
   onClose,
   onToggle,
+  onDelete,
   onEdit,
   onAdd,
 }: CategoryDetailViewProps) => {
@@ -272,6 +279,7 @@ export const CategoryDetailView = ({
                         key={todo.id}
                         todo={todo}
                         onToggle={onToggle}
+                        onDelete={onDelete}
                         onEdit={onEdit}
                       />
                     ))
