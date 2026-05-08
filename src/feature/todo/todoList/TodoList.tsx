@@ -67,9 +67,9 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
 
   if (isLoading) return <TodoListLoading />;
   if (error) return <TodoListError />;
-  if (!hasAnyTodos) return <TodoListEmpty />;
 
   if (viewMode === 'list') {
+    if (!hasAnyTodos) return <TodoListEmpty />;
     return <ListView todos={todos} onToggle={handleToggle} onDelete={handleDelete} onEdit={onEdit} />;
   }
 
