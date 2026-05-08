@@ -13,10 +13,10 @@ interface MatrixViewProps {
 }
 
 const CATEGORY_CONFIG = {
-  NOW: { title: '빨리 끝내기', accentColor: '#FF6467', bgStyle: 'bg-gradient-to-b from-[#2A1A2E] to-[#1C1917]' },
+  NOW: { title: '빨리 끝내기', accentColor: '#FF6467', bgStyle: 'bg-[#1D161E]' },
   STEADY: { title: '천천히 끝내기', accentColor: '#FF8904', bgStyle: 'bg-[#1C1917]' },
-  SKIP: { title: '넘겨도', accentColor: '#51A2FF', bgStyle: 'bg-gradient-to-b from-[#1A1E2E] to-[#1C1917]' },
-  DELETE: { title: '지워도', accentColor: '#ABAB9C', bgStyle: 'bg-[#1C1917]' },
+  SKIP: { title: '넘겨도', accentColor: '#51A2FF', bgStyle: 'bg-[#101828]' },
+  DELETE: { title: '지워도', accentColor: '#ABAB9C', bgStyle: 'bg-[#18181B]' },
 } as const;
 
 export const MatrixView = ({ groups, onToggle, onEdit, onAdd, onCardClick }: MatrixViewProps) => {

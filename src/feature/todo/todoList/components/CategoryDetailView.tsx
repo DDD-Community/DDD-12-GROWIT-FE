@@ -166,9 +166,6 @@ const DetailTodoItem = ({
           </div>
         )}
       </div>
-      <span className="text-xs leading-[133%] text-[#737373] shrink-0 pt-1">
-        AM 10:45
-      </span>
     </div>
   );
 };

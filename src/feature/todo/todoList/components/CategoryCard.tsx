@@ -54,7 +54,7 @@ const TodoItem = ({
 export const CategoryCard = ({ title, accentColor, bgStyle, todos, onToggle, onEdit, onAdd, onCardClick }: CategoryCardProps) => {
   return (
     <div
-      className={`flex-1 rounded-xl p-4 flex flex-col gap-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer ${bgStyle || 'bg-[#1C1917]'}`}
+      className={`flex-1 rounded-3xl p-4 flex flex-col gap-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06),0_0_1px_rgba(0,0,0,0.06)] ${bgStyle || 'bg-[#1C1917]'}`}
       onClick={onCardClick}
     >
       {/* Header */}
@@ -64,10 +64,12 @@ export const CategoryCard = ({ title, accentColor, bgStyle, todos, onToggle, onE
         </span>
         <button
           onClick={(e) => { e.stopPropagation(); onAdd?.(); }}
-          className="w-5 h-5 flex items-center justify-center text-[#A1A1A1] hover:text-white transition-colors"
+          className="w-6 h-6 flex items-center justify-center text-[#A1A1A1] hover:text-white transition-colors"
           aria-label={`${title} 투두 추가`}
         >
-          <span className="text-base leading-none">+</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
         </button>
       </div>
 
