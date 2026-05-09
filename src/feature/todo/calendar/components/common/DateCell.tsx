@@ -52,7 +52,7 @@ export const DateCell: React.FC<DateCellProps> = ({
 
   return (
     <div
-      className={`relative w-[50px] h-[50px] cursor-pointer ${className}`}
+      className={`relative flex flex-1 items-start justify-center min-w-0 cursor-pointer ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
@@ -61,9 +61,9 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
-      {/* Figma 196:1604: 50x50 size-full circle that wraps the number + indicators */}
+      {/* Figma 196:1584 calendar-day: 50x50 size-fixed container */}
       <div
-        className={`absolute inset-0 flex items-center justify-center ${circleClass}`}
+        className={`flex flex-col items-center justify-center py-[2px] size-[50px] shrink-0 ${circleClass}`}
       >
         <span
           className="text-[14px] leading-[1.42] text-center"
@@ -72,7 +72,7 @@ export const DateCell: React.FC<DateCellProps> = ({
           {displayNumber}
         </span>
       </div>
-      {/* Figma 196:1605 Indicators frame (cell-local 20,38 / 10x4) */}
+      {/* Figma 196:1605 Indicators — Calendar Cell 기준 absolute bottom-8 */}
       {indicatorColors && (
         <div className="absolute left-1/2 -translate-x-1/2 bottom-[8px] h-[4px] flex items-center justify-center pointer-events-none">
           <Indicator colors={indicatorColors} />

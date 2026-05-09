@@ -80,8 +80,9 @@ export const WeekView: React.FC<WeekViewProps> = ({
         {/* 요일 헤더 */}
         <WeekdayHeader />
 
-        {/* 날짜 셀들 (Figma 196:1581/1582 — py-1) */}
-        <div className="flex items-center justify-center w-full py-1">
+        {/* 날짜 셀들 (Figma 196:1581 outer py-1, 196:1582 inner items-center) */}
+        <div className="flex flex-col items-start py-1 w-full">
+          <div className="flex items-center justify-center w-full">
           {weekDates.map(date => {
             const dateKey = toDateKey(date);
             const indicatorColors = mergedIndicators?.[dateKey];
@@ -101,6 +102,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
               />
             );
           })}
+          </div>
         </div>
       </div>
     </div>
