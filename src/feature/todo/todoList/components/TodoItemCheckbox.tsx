@@ -7,9 +7,15 @@ interface TodoItemCheckboxProps {
 }
 
 /**
- * 디자인 시스템 Checkbox (growit-ds 2487:7315) 사양 + 196:1554 변경:
- * - fill 삭제, stroke 추가 → unchecked 시 배경 없음, border-#525252 1px
- * - checked: bg-#BBF451 (lime-300) + 검은 체크 아이콘
+ * Figma 196:1631 _CheckboxControl (DS 2487:7315 + 변경: fill 삭제, stroke 추가)
+ *
+ * - 16x16, rounded-md (6px)
+ * - unchecked: border 1px #525252 (color/neutral/600), 배경 없음
+ * - checked: bg #BBF451 (lime-300), 검은 체크 아이콘 6x6
+ *
+ * Figma의 inner check union은 8x8 viewBox 안에서 inset
+ * [23.44% 16.23% 25.19% 15.94%] 비율로 그려진다 — 동일한 형상의
+ * stroke path로 표현.
  */
 export const TodoItemCheckbox = ({ checked, onClick, className = '' }: TodoItemCheckboxProps) => (
   <button
@@ -21,25 +27,23 @@ export const TodoItemCheckbox = ({ checked, onClick, className = '' }: TodoItemC
       onClick?.();
     }}
     className={`relative w-4 h-4 rounded-md transition-colors ${
-      checked
-        ? 'bg-[#BBF451] shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)]'
-        : 'border border-[#525252]'
+      checked ? 'bg-[#BBF451]' : 'border border-[#525252]'
     } ${className}`}
   >
     {checked && (
       <svg
-        width="10"
-        height="10"
-        viewBox="0 0 10 10"
+        width="8"
+        height="8"
+        viewBox="0 0 8 8"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         aria-hidden="true"
       >
         <path
-          d="M1.5 5.25L3.75 7.5L8.5 2.5"
+          d="M1.3 4.2L3.1 6L6.7 2"
           stroke="#000000"
-          strokeWidth="1.5"
+          strokeWidth="1.4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
