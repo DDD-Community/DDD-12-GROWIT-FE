@@ -26,9 +26,10 @@ export const TodoItemCheckbox = ({ checked, onClick, className = '' }: TodoItemC
       e.stopPropagation();
       onClick?.();
     }}
-    className={`relative w-4 h-4 rounded-md transition-colors ${
+    className={`relative w-4 h-4 transition-colors ${
       checked ? 'bg-[#BBF451]' : 'border border-[#525252]'
     } ${className}`}
+    style={{ borderRadius: '6px', appearance: 'none', WebkitAppearance: 'none' }}
   >
     {checked && (
       <svg

@@ -29,7 +29,13 @@ const Checkbox: React.FC<InputHTMLAttributes<HTMLInputElement>> = props => {
         disabled={props.disabled}
         checked={isControlled ? props.checked : internalChecked}
         onChange={handleChange}
-        className="peer appearance-none w-4 h-4 rounded-[6px] border border-[#525252] checked:bg-[#BBF451] checked:border-[#BBF451] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="peer w-4 h-4 border border-[#525252] checked:bg-[#BBF451] checked:border-[#BBF451] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        style={{
+          borderRadius: '6px',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+        }}
         {...props}
       />
       <svg
