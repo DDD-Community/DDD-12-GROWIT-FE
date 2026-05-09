@@ -3,7 +3,10 @@ import { DateCellProps } from '../../types';
 import { Indicator } from './Indicator';
 
 /**
- * 날짜 셀 컴포넌트
+ * 날짜 셀 컴포넌트 (Figma 196:1604/1610)
+ *
+ * selected/today는 50x50 cell 전체를 둘러싸는 원이며,
+ * indicator는 cell 하단(bottom 8px)에 절대 배치되어 원 안에 포함된다.
  */
 export const DateCell: React.FC<DateCellProps> = ({
   date,
@@ -27,22 +30,20 @@ export const DateCell: React.FC<DateCellProps> = ({
     }
   };
 
-  // 일반 셀 텍스트 색 (Figma color/zinc/50 / current month) vs muted
   const textColor = isCurrentMonth ? '#FAFAFA' : 'rgba(157, 158, 173, 0.3)';
   const fontWeight = isSelected || isToday ? 500 : 400;
 
-  // 선택일 > 오늘 우선순위. (Figma 196:1554: 선택 lime-300 채움 / 오늘 zinc-800 border)
+  // 선택일 > 오늘 우선순위 (Figma 196:1604 selected white / 196:1610 today stroke)
   const cellState =
     isSelected ? 'selected'
     : isToday ? 'today'
     : 'default';
 
-  // Figma 196:1610 DS 변경: selected → white, today → 원 stroke
-  const cellClass =
+  const circleClass =
     cellState === 'selected'
-      ? 'w-9 h-9 bg-[#FFFFFF]'
+      ? 'bg-[#FFFFFF]'
       : cellState === 'today'
-      ? 'w-9 h-9 border border-[#27272A]'
+      ? 'border border-[#27272A]'
       : '';
 
   const numberColor =
@@ -50,7 +51,7 @@ export const DateCell: React.FC<DateCellProps> = ({
 
   return (
     <div
-      className={`flex flex-col items-center justify-end w-[50px] h-[50px] pb-[3px] cursor-pointer ${className}`}
+      className={`relative w-[50px] h-[50px] cursor-pointer ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
@@ -59,8 +60,9 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
+      {/* Figma 196:1604: 50x50 size-full circle that wraps the number + indicators */}
       <div
-        className={`flex justify-center items-center rounded-full ${cellClass}`}
+        className={`absolute inset-0 rounded-full flex items-center justify-center ${circleClass}`}
       >
         <span
           className="text-[14px] leading-[1.42] text-center"
@@ -69,9 +71,12 @@ export const DateCell: React.FC<DateCellProps> = ({
           {displayNumber}
         </span>
       </div>
-      <div className="h-[4px] mt-[3px] flex items-center justify-center">
-        {indicatorColors && <Indicator colors={indicatorColors} />}
-      </div>
+      {/* Figma 196:1605 Indicators frame (cell-local 20,38 / 10x4) */}
+      {indicatorColors && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[8px] h-[4px] flex items-center justify-center pointer-events-none">
+          <Indicator colors={indicatorColors} />
+        </div>
+      )}
     </div>
   );
 };
