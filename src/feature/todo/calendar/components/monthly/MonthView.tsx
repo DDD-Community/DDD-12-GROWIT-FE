@@ -68,6 +68,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
       {showNavigation && (
         <MonthHeader
           currentMonth={currentDate}
+          selectedDate={selectedDate}
           onPrevious={handlePrevious}
           onNext={handleNext}
           selectedView={selectedView}

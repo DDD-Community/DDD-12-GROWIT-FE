@@ -123,6 +123,8 @@ export interface DateHeaderProps {
  */
 export interface MonthHeaderProps {
   currentMonth: Date;
+  /** 현재 선택된 날짜 — 오늘이면 TodayButton 숨김 */
+  selectedDate?: Date;
   onPrevious: () => void;
   onNext: () => void;
   selectedView: CalendarView;
