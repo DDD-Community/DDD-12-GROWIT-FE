@@ -53,21 +53,19 @@ export const TodoListContainer = () => {
                   className="w-full shrink-0"
                   style={{ height: 'max(34px, env(safe-area-inset-top, 0px))' }}
                 />
-                <div className="flex flex-col flex-1 gap-6">
-                  <div className="px-5 pt-3">
-                    <Calendar
-                      view={calendarView}
-                      selectedDate={selectedDate}
-                      onDateSelect={setSelectedDate}
-                      onViewChange={setCalendarView}
-                    />
-                    <TodoList
-                      selectedDate={selectedDate}
-                      viewMode={isMonthlyView ? 'list' : 'matrix'}
-                      onEdit={handleEdit}
-                      onAdd={handleAdd}
-                    />
-                  </div>
+                <div className="flex flex-col flex-1 px-5 pt-3 min-h-0">
+                  <Calendar
+                    view={calendarView}
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    onViewChange={setCalendarView}
+                  />
+                  <TodoList
+                    selectedDate={selectedDate}
+                    viewMode={isMonthlyView ? 'list' : 'matrix'}
+                    onEdit={handleEdit}
+                    onAdd={handleAdd}
+                  />
                 </div>
               </div>
             </div>

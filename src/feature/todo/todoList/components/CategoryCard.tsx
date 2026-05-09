@@ -79,7 +79,7 @@ export const CategoryCard = ({
 
   return (
     <div
-      className={`relative flex-1 rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)] drop-shadow-[0px_1px_1px_rgba(10,13,18,0.05)] ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
+      className={`relative flex-1 h-full rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] cursor-pointer overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)] drop-shadow-[0px_1px_1px_rgba(10,13,18,0.05)] ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
       onClick={onCardClick}
     >
       {/* Header: char icon + label + count + add (Figma 196:1618) */}
@@ -142,7 +142,9 @@ export const CategoryCard = ({
             />
           ))
         ) : (
-          <p className="text-[14px] leading-[1.42] text-[#737373]">등록된 투두가 없어요</p>
+          <p className="text-[14px] leading-[1.42] text-[#525252] w-full text-center">
+            등록된 투두가 없어요
+          </p>
         )}
       </div>
     </div>
