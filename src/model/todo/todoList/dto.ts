@@ -37,6 +37,8 @@ export interface PutTodoRequest {
   todoId: string; // URL 파라미터용
   goalId: string | null; // 목표 ID (기타일 경우 null)
   date: string; // 'YYYY-MM-DD'
+  /** 투두 시간 (HH:mm, optional) */
+  time?: string | null;
   content: string;
   category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
@@ -46,6 +48,8 @@ export interface PutTodoRequest {
 export interface PostAddTodoRequest {
   goalId: string | null; // 옵셔널 - 기타 일땐 null로 넣어주세요
   date: string; // 'YYYY-MM-DD'
+  /** 투두 시간 (HH:mm, optional) */
+  time?: string | null;
   content: string;
   category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)

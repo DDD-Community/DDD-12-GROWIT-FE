@@ -6,6 +6,17 @@ import { GoalTodo } from '@/shared/type/GoalTodo';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 
+/** "HH:mm" → "오전/오후 h:mm" */
+const formatTimeLabel = (time: string): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return time;
+  const hour24 = Number(m[1]);
+  const minute = m[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
+
 interface CategoryCardProps {
   title: string;
   iconSrc: string;
@@ -47,16 +58,30 @@ const TodoItem = ({
       onComplete={handleCheck}
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <div className="flex items-center gap-1 bg-transparent" onClick={e => e.stopPropagation()}>
-        <TodoItemCheckbox checked={checked} onClick={handleCheck} />
-        <p
-          className={`text-[14px] leading-[1.42] truncate flex-1 min-w-0 cursor-pointer ${
-            checked ? 'line-through text-[#A1A1A1]' : 'text-white'
-          }`}
+      <div
+        className={`flex gap-1 bg-transparent ${todo.time ? 'items-start' : 'items-center'}`}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className={todo.time ? 'pt-0.5 shrink-0' : 'shrink-0'}>
+          <TodoItemCheckbox checked={checked} onClick={handleCheck} />
+        </div>
+        <div
+          className="flex flex-col flex-1 min-w-0 cursor-pointer"
           onClick={() => onEdit?.(todo)}
         >
-          {todo.content}
-        </p>
+          <p
+            className={`text-[14px] leading-[1.42] truncate ${
+              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
+            }`}
+          >
+            {todo.content}
+          </p>
+          {todo.time && (
+            <p className="text-[10px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time)}
+            </p>
+          )}
+        </div>
       </div>
     </SwipeableRow>
   );
