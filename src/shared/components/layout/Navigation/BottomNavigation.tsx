@@ -39,7 +39,7 @@ export const BottomNavigation = () => {
                 'flex items-center gap-2 rounded-3xl transition-colors',
                 active
                   ? 'bg-[#E1E1E2] px-4 py-2 text-black'
-                  : 'p-2.5 text-[#71717B]'
+                  : 'p-2.5 text-[#71717A]'
               )}
             >
               <Icon className="w-[22px] h-[22px]" />

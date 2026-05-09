@@ -45,7 +45,7 @@ export const TodoListContainer = () => {
         return (
           <div className="relative w-full">
             <div
-              className={`bg-[#0F0F10] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
+              className={`bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
               <div className="flex flex-col h-screen">
                 <div className="flex flex-col flex-1 gap-6">
