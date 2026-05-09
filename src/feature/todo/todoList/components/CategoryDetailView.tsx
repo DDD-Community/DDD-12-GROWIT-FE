@@ -20,21 +20,11 @@ const formatTimeLabel = (time: string): string => {
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
-const QUADRANT_COLORS: Record<CategoryType, string> = {
-  NOW: '#FF6467',
-  STEADY: '#FFB900',
-  SKIP: '#51A2FF',
-  DELETE: '#ABAB9C',
-};
-
-const QUADRANT_ORDER: CategoryType[] = ['NOW', 'STEADY', 'SKIP', 'DELETE'];
-
 const CATEGORY_META: Record<CategoryType, {
   title: string;
   badges: { label: string; color: string; bg: string }[];
   subtitle: string;
   emoji: string;
-  gradient: string;
 }> = {
   NOW: {
     title: '빨리 끝내기',
@@ -44,7 +34,6 @@ const CATEGORY_META: Record<CategoryType, {
     ],
     subtitle: '컨디션이 가장 좋은 아침에 끝내세요.',
     emoji: '☀️',
-    gradient: 'linear-gradient(180deg, rgba(24,63,105,0.9) 0%, rgba(34,104,115,0) 100%)',
   },
   STEADY: {
     title: '천천히 끝내기',
@@ -53,7 +42,6 @@ const CATEGORY_META: Record<CategoryType, {
     ],
     subtitle: '여유를 갖고 차근차근 진행하세요.',
     emoji: '🌙',
-    gradient: 'linear-gradient(180deg, rgba(80,50,20,0.9) 0%, rgba(40,30,15,0) 100%)',
   },
   SKIP: {
     title: '넘겨도',
@@ -62,7 +50,6 @@ const CATEGORY_META: Record<CategoryType, {
     ],
     subtitle: '오늘 못해도 괜찮아요.',
     emoji: '💨',
-    gradient: 'linear-gradient(180deg, rgba(20,40,80,0.9) 0%, rgba(15,20,40,0) 100%)',
   },
   DELETE: {
     title: '지워도',
@@ -71,26 +58,8 @@ const CATEGORY_META: Record<CategoryType, {
     ],
     subtitle: '필요 없다면 과감히 지워도 돼요.',
     emoji: '🗑️',
-    gradient: 'linear-gradient(180deg, rgba(50,50,45,0.9) 0%, rgba(30,30,25,0) 100%)',
   },
 };
-
-/** 상단 카테고리 사분면 아이콘 (Figma 33:1062 참조) */
-const CategoryQuadrantIcon = ({ active }: { active: CategoryType }) => (
-  <div className="grid grid-cols-2 gap-[2px]" style={{ width: 26, height: 26 }}>
-    {QUADRANT_ORDER.map(cat => (
-      <span
-        key={cat}
-        className="rounded-[3px]"
-        style={{
-          width: 12,
-          height: 12,
-          backgroundColor: cat === active ? QUADRANT_COLORS[cat] : 'rgba(159,159,169,0.12)',
-        }}
-      />
-    ))}
-  </div>
-);
 
 /** 루틴 반복 태그 */
 const RoutineTag = ({ routine }: { routine: GoalTodo['routine'] }) => {
@@ -225,11 +194,13 @@ export const CategoryDetailView = ({
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
         >
-          {/* Background */}
-          <div className="absolute inset-0 bg-[#070707]" />
+          {/* Background — Figma 107:1218 fixed dark gradient + character */}
           <div
-            className="absolute inset-x-0 top-0 h-[400px]"
-            style={{ background: meta.gradient }}
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
+            }}
           />
           {/* Character image at bottom */}
           <div
@@ -243,25 +214,38 @@ export const CategoryDetailView = ({
 
           {/* Content */}
           <div className="relative flex flex-col flex-1 pt-[50px] overflow-y-auto">
-            {/* Top bar: back + quadrant + add */}
+            {/* Figma 107:1230 — back / IcMatrixRed / add (각 40x40 rounded-3xl) */}
             <div className="flex items-center justify-between px-5 mb-6">
               <button
                 onClick={onClose}
-                className="w-12 h-12 rounded-full bg-[#EBEBEC] flex items-center justify-center"
+                aria-label="뒤로 가기"
+                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 19l-7-7 7-7" stroke="#27272A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M10 12.667L5.333 8 10 3.333"
+                    stroke="#27272A"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
 
-              <CategoryQuadrantIcon active={category} />
+              <CategoryMatrixIcon category={category} size={40} />
 
               <button
                 onClick={onAdd}
-                className="w-12 h-12 rounded-full bg-[#EBEBEC] flex items-center justify-center"
+                aria-label="투두 추가"
+                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5v14M5 12h14" stroke="#27272A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M8 3.33V12.67M3.33 8H12.67"
+                    stroke="#27272A"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             </div>
