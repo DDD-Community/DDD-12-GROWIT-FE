@@ -3,48 +3,46 @@ import { TodoCategory, TodoCountByDateItem } from '@/model/todo/todoList/dto';
 type Indicators = Record<string, (string | null | undefined)[] | undefined>;
 
 /**
- * Figma 196:1554 기준 카테고리별 인디케이터 색 (Pretendard accent colors).
- * NOW > STEADY > SKIP > DELETE 순으로 정렬 표시.
+ * Figma 196:1610 calendar-day DS 주석:
+ *   - 인디케이터 2개만 노출: 긴급(NOW), 꾸준히(STEADY)
+ *   - 모두 완료 시 opacity 100%, 미완료 항목 있으면 opacity 40%
+ *   - SKIP/DELETE는 인디케이터 없음
  */
-const CATEGORY_COLORS: Record<TodoCategory, string> = {
+const INDICATOR_CATEGORIES: TodoCategory[] = ['NOW', 'STEADY'];
+
+const CATEGORY_BASE_COLOR: Record<TodoCategory, string> = {
   NOW: '#FF6467',
   STEADY: '#FF8904',
   SKIP: '#51A2FF',
   DELETE: '#A1A1A1',
 };
 
-const CATEGORY_ORDER: TodoCategory[] = ['NOW', 'STEADY', 'SKIP', 'DELETE'];
+// 8자리 hex alpha — 40% ≈ 0x66, 100% = ff
+const ALPHA_INCOMPLETE = '66';
+const ALPHA_COMPLETE = 'ff';
 
-/**
- * 투두 개수 데이터를 카테고리별 indicator 색 배열로 변환.
- * `categories` 배열이 BE 응답에 포함되면 그 카테고리 색 사용,
- * 누락(과거 응답 호환)된 경우 `goals` 합산 → 단일 회색 점.
- */
-export const convertTodoCountToIndicators = (todoCountData: TodoCountByDateItem[]): Indicators => {
+const buildColor = (base: string, allCompleted: boolean): string =>
+  `${base}${allCompleted ? ALPHA_COMPLETE : ALPHA_INCOMPLETE}`;
+
+export const convertTodoCountToIndicators = (
+  todoCountData: TodoCountByDateItem[]
+): Indicators => {
   const result: Indicators = {};
 
-  if (!todoCountData || todoCountData.length === 0) {
-    return result;
-  }
+  if (!todoCountData || todoCountData.length === 0) return result;
 
   todoCountData.forEach(item => {
-    if (item.categories && item.categories.length > 0) {
-      const colors = CATEGORY_ORDER
-        .filter(cat =>
-          item.categories.some(c => c.category === cat && c.todoCount > 0)
-        )
-        .map(cat => CATEGORY_COLORS[cat]);
+    const colors: string[] = [];
 
-      if (colors.length > 0) {
-        result[item.date] = colors;
-      }
-      return;
-    }
+    INDICATOR_CATEGORIES.forEach(cat => {
+      const entry = item.categories?.find(c => c.category === cat);
+      if (!entry || entry.todoCount <= 0) return;
+      const allCompleted = entry.completedCount >= entry.todoCount;
+      colors.push(buildColor(CATEGORY_BASE_COLOR[cat], allCompleted));
+    });
 
-    // BE 응답이 categories 미포함인 경우 fallback
-    const totalCount = item.goals?.reduce((sum, goal) => sum + (goal.todoCount || 0), 0) || 0;
-    if (totalCount > 0) {
-      result[item.date] = [CATEGORY_COLORS.DELETE];
+    if (colors.length > 0) {
+      result[item.date] = colors;
     }
   });
 
@@ -54,7 +52,10 @@ export const convertTodoCountToIndicators = (todoCountData: TodoCountByDateItem[
 /**
  * 기존 indicators와 투두 indicators를 병합
  */
-export const mergeIndicators = (existingIndicators: Indicators, todoIndicators: Indicators): Indicators => {
+export const mergeIndicators = (
+  existingIndicators: Indicators,
+  todoIndicators: Indicators
+): Indicators => {
   const result = { ...existingIndicators };
 
   Object.entries(todoIndicators).forEach(([date, colors]) => {

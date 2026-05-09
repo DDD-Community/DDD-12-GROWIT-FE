@@ -68,6 +68,7 @@ export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 export interface TodoCountByCategory {
   category: TodoCategory;
   todoCount: number;
+  completedCount: number;
 }
 
 export interface TodoCountByDateItem {

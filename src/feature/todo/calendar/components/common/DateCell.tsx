@@ -37,9 +37,10 @@ export const DateCell: React.FC<DateCellProps> = ({
     : isToday ? 'today'
     : 'default';
 
+  // Figma 196:1610 DS 변경: selected → white, today → 원 stroke
   const cellClass =
     cellState === 'selected'
-      ? 'w-9 h-9 bg-[#BBF451]'
+      ? 'w-9 h-9 bg-[#FFFFFF]'
       : cellState === 'today'
       ? 'w-9 h-9 border border-[#27272A]'
       : '';
