@@ -6,6 +6,7 @@ import { GoalSelectView } from './goalSelectView';
 import { RepeatSelectView } from './repeatSelectView';
 import { DateSelectView } from './dateSelectView';
 import { DateEditView } from './dateEditView';
+import { TimeSelectView } from './timeSelectView';
 import type { TodoBottomSheetView, DateSelectTab } from '../../types';
 
 interface TodoBottomSheetContentProps {
@@ -25,6 +26,8 @@ interface TodoBottomSheetContentProps {
   onEndDateSelect: () => void;
   /** 날짜 수정 클릭 핸들러 */
   onDateEdit: () => void;
+  /** 시간 선택 클릭 핸들러 */
+  onTimeSelect: () => void;
   /** 날짜 선택 초기 탭 */
   dateSelectInitialTab: DateSelectTab;
   /** 뒤로가기 핸들러 (이전 뷰로) */
@@ -46,6 +49,7 @@ export const TodoBottomSheetContent = ({
   onStartDateSelect,
   onEndDateSelect,
   onDateEdit,
+  onTimeSelect,
   dateSelectInitialTab,
   goBack,
   goToMain,
@@ -77,6 +81,8 @@ export const TodoBottomSheetContent = ({
           onEndDateSelect={onEndDateSelect}
         />
       );
+    case 'timeSelect':
+      return <TimeSelectView onBack={goBack} onComplete={goToMain} />;
     case 'main':
     default:
       return (
@@ -93,6 +99,7 @@ export const TodoBottomSheetContent = ({
           onStartDateSelect={onStartDateSelect}
           onEndDateSelect={onEndDateSelect}
           onDateEdit={onDateEdit}
+          onTimeSelect={onTimeSelect}
           onEditSelect={onEditSelect}
         />
       );

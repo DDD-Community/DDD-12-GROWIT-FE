@@ -45,6 +45,8 @@ interface MainViewProps {
   onEndDateSelect: () => void;
   /** 날짜 수정 클릭 핸들러 */
   onDateEdit?: () => void;
+  /** 시간 선택 클릭 핸들러 */
+  onTimeSelect?: () => void;
   /** 반복 타입 라벨 */
   repeatLabels?: typeof REPEAT_TYPE_LABELS;
   /** 수정 선택 화면으로 이동 핸들러 (반복 투두일 경우) */
@@ -87,6 +89,7 @@ export const MainView = ({
   onStartDateSelect,
   onEndDateSelect,
   onDateEdit,
+  onTimeSelect,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
   onEditSelect,
 }: MainViewProps) => {
@@ -98,7 +101,6 @@ export const MainView = ({
   const {
     watch,
     control,
-    setValue,
     formState: { errors },
   } = useFormContext<TodoFormData>();
 
@@ -171,24 +173,14 @@ export const MainView = ({
               onClick={onDateEdit}
             />
 
-            {/* 시간 — native time picker (시/분 휠)를 SelectCell 위에 invisible 오버레이 */}
-            <label className="relative block cursor-pointer">
-              <SelectCell
-                icon={<TimeIcon />}
-                label="시간"
-                value={formatTimeDisplay(todoTime)}
-                placeholder="선택"
-              />
-              <input
-                type="time"
-                value={todoTime || ''}
-                onChange={e =>
-                  setValue('time', e.target.value || undefined, { shouldDirty: true })
-                }
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                aria-label="시간 선택"
-              />
-            </label>
+            {/* 시간 — 클릭 시 timeSelect sub-view로 이동 (시/분 picker) */}
+            <SelectCell
+              icon={<TimeIcon />}
+              label="시간"
+              value={formatTimeDisplay(todoTime)}
+              placeholder="선택"
+              onClick={onTimeSelect}
+            />
 
             {/* 태그 (목표) */}
             <SelectCell
