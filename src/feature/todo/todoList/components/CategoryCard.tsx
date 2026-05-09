@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 
 interface CategoryCardProps {
   title: string;
-  emoji: string;
+  iconSrc: string;
   accentColor: string;
   bgStyle?: string;
   todos: GoalTodo[];
@@ -72,7 +73,7 @@ const TodoItem = ({
 
 export const CategoryCard = ({
   title,
-  emoji,
+  iconSrc,
   accentColor,
   bgStyle,
   todos,
@@ -92,12 +93,14 @@ export const CategoryCard = ({
     >
       {/* Header: char icon + label + count + add (Figma 196:1618) */}
       <div className="flex items-center gap-1 relative z-10">
-        <span
-          className="text-[20px] leading-none shrink-0 w-6 h-6 flex items-center justify-center"
-          aria-hidden="true"
-        >
-          {emoji}
-        </span>
+        <Image
+          src={iconSrc}
+          alt=""
+          width={24}
+          height={24}
+          className="shrink-0 select-none"
+          priority
+        />
         <div className="flex items-center gap-1.5 flex-1 min-w-0 text-[12px] leading-[1.33]">
           <span
             className="font-semibold truncate"

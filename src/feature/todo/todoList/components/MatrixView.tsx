@@ -17,11 +17,12 @@ interface MatrixViewProps {
 const CARD_BG = 'bg-[rgba(53,83,14,0.16)]';
 
 // Accent colors per Figma 196:1623, 196:1646, etc. (Pretendard SemiBold 12px)
+// Icon assets exported from Figma 196:1554 (IcChar03/04 등 디자인 시스템)
 const CATEGORY_CONFIG = {
-  NOW: { title: '긴급', emoji: '🎃', accentColor: '#FF6467', bgStyle: CARD_BG },
-  STEADY: { title: '꾸준히', emoji: '🐻', accentColor: '#FF8904', bgStyle: CARD_BG },
-  SKIP: { title: '넘겨도', emoji: '➡️', accentColor: '#51A2FF', bgStyle: CARD_BG },
-  DELETE: { title: '지워도', emoji: '🗑️', accentColor: '#A1A1A1', bgStyle: CARD_BG },
+  NOW: { title: '긴급', iconSrc: '/icon/category-now.png', accentColor: '#FF6467', bgStyle: CARD_BG },
+  STEADY: { title: '꾸준히', iconSrc: '/icon/category-steady.png', accentColor: '#FF8904', bgStyle: CARD_BG },
+  SKIP: { title: '넘겨도', iconSrc: '/icon/category-skip.png', accentColor: '#51A2FF', bgStyle: CARD_BG },
+  DELETE: { title: '지워도', iconSrc: '/icon/category-delete.png', accentColor: '#A1A1A1', bgStyle: CARD_BG },
 } as const;
 
 export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardClick }: MatrixViewProps) => {
@@ -32,7 +33,7 @@ export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardCl
         <div className="flex flex-row flex-wrap gap-2">
           <CategoryCard
             title={CATEGORY_CONFIG.NOW.title}
-            emoji={CATEGORY_CONFIG.NOW.emoji}
+            iconSrc={CATEGORY_CONFIG.NOW.iconSrc}
             accentColor={CATEGORY_CONFIG.NOW.accentColor}
             bgStyle={CATEGORY_CONFIG.NOW.bgStyle}
             todos={groups.NOW}
@@ -44,7 +45,7 @@ export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardCl
           />
           <CategoryCard
             title={CATEGORY_CONFIG.STEADY.title}
-            emoji={CATEGORY_CONFIG.STEADY.emoji}
+            iconSrc={CATEGORY_CONFIG.STEADY.iconSrc}
             accentColor={CATEGORY_CONFIG.STEADY.accentColor}
             bgStyle={CATEGORY_CONFIG.STEADY.bgStyle}
             todos={groups.STEADY}
@@ -62,7 +63,7 @@ export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardCl
         <div className="flex flex-row flex-wrap gap-2">
           <CategoryCard
             title={CATEGORY_CONFIG.SKIP.title}
-            emoji={CATEGORY_CONFIG.SKIP.emoji}
+            iconSrc={CATEGORY_CONFIG.SKIP.iconSrc}
             accentColor={CATEGORY_CONFIG.SKIP.accentColor}
             bgStyle={CATEGORY_CONFIG.SKIP.bgStyle}
             todos={groups.SKIP}
@@ -74,7 +75,7 @@ export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardCl
           />
           <CategoryCard
             title={CATEGORY_CONFIG.DELETE.title}
-            emoji={CATEGORY_CONFIG.DELETE.emoji}
+            iconSrc={CATEGORY_CONFIG.DELETE.iconSrc}
             accentColor={CATEGORY_CONFIG.DELETE.accentColor}
             bgStyle={CATEGORY_CONFIG.DELETE.bgStyle}
             todos={groups.DELETE}
