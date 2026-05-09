@@ -12,9 +12,9 @@ export const TodayButton: React.FC<TodayButtonProps> = ({ onClick, className = '
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-center justify-center min-h-8 max-h-8 px-3 py-1.5 border border-[#DEDEE0] rounded-2xl shrink-0 ${className}`}
+      className={`flex items-center justify-center gap-[5px] min-h-8 max-h-8 px-3 py-1.5 border border-[#28282C] rounded-2xl shrink-0 overflow-hidden ${className}`}
     >
-      <span className="text-sm font-medium leading-5 text-[#F4F4F5]">
+      <span className="text-[14px] font-medium leading-[20px] text-[#FCFCFC] whitespace-nowrap">
         오늘
       </span>
     </button>
