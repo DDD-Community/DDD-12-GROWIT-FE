@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { isSameDay } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
@@ -16,11 +17,30 @@ export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
   const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('NOW');
+  // Figma 169:1559 — 선택된 날짜 재클릭 시 "중요 태스크 현황" 뷰로 토글
+  const [showStatus, setShowStatus] = useState(false);
 
   return (
     <TodoListContainerFormProvider>
       {({ selectedDate, calendarView, editingTodo, setSelectedDate, setCalendarView, setEditingTodo }) => {
         const isMonthlyView = calendarView === 'monthly';
+
+        const handleDateSelect = (date: Date) => {
+          if (isSameDay(date, selectedDate)) {
+            setShowStatus(prev => !prev);
+            return;
+          }
+          setSelectedDate(date);
+          setShowStatus(false);
+        };
+
+        const handleViewChange = (view: 'weekly' | 'monthly') => {
+          setShowStatus(false);
+          setCalendarView(view);
+        };
+
+        const viewMode: 'matrix' | 'list' | 'status' =
+          showStatus && !isMonthlyView ? 'status' : isMonthlyView ? 'list' : 'matrix';
 
         const handleEdit = (todo: GoalTodo) => {
           editSheet.showSheet();
@@ -57,12 +77,12 @@ export const TodoListContainer = () => {
                   <Calendar
                     view={calendarView}
                     selectedDate={selectedDate}
-                    onDateSelect={setSelectedDate}
-                    onViewChange={setCalendarView}
+                    onDateSelect={handleDateSelect}
+                    onViewChange={handleViewChange}
                   />
                   <TodoList
                     selectedDate={selectedDate}
-                    viewMode={isMonthlyView ? 'list' : 'matrix'}
+                    viewMode={viewMode}
                     onEdit={handleEdit}
                     onAdd={handleAdd}
                   />
