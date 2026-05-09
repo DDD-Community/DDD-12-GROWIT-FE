@@ -196,7 +196,6 @@ const DetailTodoItem = ({
         <div className={isMultiLine ? 'pt-0.5' : ''}>
           <CategoryMatrixIcon
             category={(todo.category as MatrixCategory) || 'NOW'}
-            size={16}
           />
         </div>
       </div>

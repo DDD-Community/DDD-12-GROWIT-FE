@@ -86,7 +86,6 @@ const ListTodoItem = ({
         )}
         <CategoryMatrixIcon
           category={(todo.category as MatrixCategory) || 'NOW'}
-          size={16}
         />
       </div>
     </SwipeableRow>
