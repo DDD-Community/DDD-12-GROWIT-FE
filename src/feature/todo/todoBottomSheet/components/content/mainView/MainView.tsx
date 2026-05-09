@@ -4,7 +4,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { DeleteButton } from '../../shared/deleteButton';
-import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon, DateIcon, TimeIcon } from '../../shared/icons';
+import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon, TimeIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
 import { MainViewHeader } from './MainViewHeader';
 import { TodoInput } from './TodoInput';
@@ -107,7 +107,6 @@ export const MainView = ({
   const goalId = watch('goalId');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
-  const todoDate = watch('date');
   const todoTime = watch('time');
 
   const hasRoutineDurationError = !!errors.routineDuration;
@@ -164,15 +163,6 @@ export const MainView = ({
           />
 
           <div className="flex flex-col gap-3">
-            {/* 날짜 */}
-            <SelectCell
-              icon={<DateIcon />}
-              label="날짜"
-              value={formatDateDisplay(todoDate)}
-              placeholder="선택"
-              onClick={onDateEdit}
-            />
-
             {/* 시간 — 클릭 시 timeSelect sub-view로 이동 (시/분 picker) */}
             <SelectCell
               icon={<TimeIcon />}
