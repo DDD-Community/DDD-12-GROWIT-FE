@@ -10,9 +10,10 @@ type Indicators = Record<string, (string | null | undefined)[] | undefined>;
  */
 const INDICATOR_CATEGORIES: TodoCategory[] = ['NOW', 'STEADY'];
 
+// Figma 196:1605 calendar Indicators — color/red/500, color/amber/500
 const CATEGORY_BASE_COLOR: Record<TodoCategory, string> = {
-  NOW: '#FF6467',
-  STEADY: '#FF8904',
+  NOW: '#FB2C36',
+  STEADY: '#FE9A00',
   SKIP: '#51A2FF',
   DELETE: '#A1A1A1',
 };
