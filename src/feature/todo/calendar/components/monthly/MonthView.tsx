@@ -4,7 +4,7 @@ import { MonthViewProps } from '../../types';
 import { MonthHeader } from './MonthHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { WeekRow } from './WeekRow';
-import { getMonthDates, getMonthRange, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
+import { getMonthDates, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
 import { useTodoCountByDate } from '@/model/todo/todoList/queries';
 
 /**
@@ -22,15 +22,15 @@ export const MonthView: React.FC<MonthViewProps> = ({
   onViewChange,
   onTodayClick,
 }) => {
-  // 월간 날짜 배열 계산 (42개)
+  // 월간 날짜 배열 계산 (42개) — 전/다음 달 overflow 포함
   const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
 
-  // 월의 시작일과 종료일 계산
-  const [monthStart, monthEnd] = useMemo(() => getMonthRange(currentDate), [currentDate]);
-
-  // 월간 날짜 범위의 투두 개수 조회
-  const fromDateString = useMemo(() => format(monthStart, 'yyyy-MM-dd'), [monthStart]);
-  const toDateString = useMemo(() => format(monthEnd, 'yyyy-MM-dd'), [monthEnd]);
+  // 인디케이터는 화면에 보이는 42셀 전부에 대해 조회해야 주뷰와 동일하게 표시됨
+  const fromDateString = useMemo(() => format(monthDates[0], 'yyyy-MM-dd'), [monthDates]);
+  const toDateString = useMemo(
+    () => format(monthDates[monthDates.length - 1], 'yyyy-MM-dd'),
+    [monthDates]
+  );
   const { data: todoCountData = [] } = useTodoCountByDate({
     from: fromDateString,
     to: toDateString,
