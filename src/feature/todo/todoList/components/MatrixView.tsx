@@ -27,7 +27,7 @@ const CATEGORY_CONFIG = {
 
 export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardClick }: MatrixViewProps) => {
   return (
-    <div className="flex flex-col gap-4 mt-5 mb-5 flex-1 min-h-0">
+    <div className="flex flex-col gap-4 mb-5 flex-1 min-h-0">
       <div className="flex flex-col gap-2 flex-1 min-h-0">
         <p className="text-[13px] font-medium text-[#F4F4F5]">중요</p>
         <div className="flex flex-row gap-2 flex-1 min-h-0">
