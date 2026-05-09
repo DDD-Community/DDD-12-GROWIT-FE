@@ -18,6 +18,7 @@ export const DateCell: React.FC<DateCellProps> = ({
   holidayLabel,
   onClick,
   className = '',
+  compact = false,
 }) => {
   const handleClick = () => {
     onClick(date);
@@ -61,9 +62,11 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
-      {/* Figma 196:1584 calendar-day: 50x50 size-fixed container */}
+      {/* Figma 196:1584 calendar-day (50px) / 197:3529 compact (36px) */}
       <div
-        className={`flex flex-col items-center justify-center py-[2px] size-[50px] shrink-0 ${circleClass}`}
+        className={`flex flex-col items-center justify-center py-[2px] shrink-0 ${
+          compact ? 'size-[36px]' : 'size-[50px]'
+        } ${circleClass}`}
       >
         <span
           className="text-[14px] leading-[1.42] text-center"
@@ -72,9 +75,13 @@ export const DateCell: React.FC<DateCellProps> = ({
           {displayNumber}
         </span>
       </div>
-      {/* Figma 196:1605 Indicators — Calendar Cell 기준 absolute bottom-8 */}
+      {/* Figma 196:1605 / 197:3563 Indicators — bottom 8px / 6px (compact) */}
       {indicatorColors && (
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-[8px] h-[4px] flex items-center justify-center pointer-events-none">
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 h-[4px] flex items-center justify-center pointer-events-none ${
+            compact ? 'bottom-[6px]' : 'bottom-[8px]'
+          }`}
+        >
           <Indicator colors={indicatorColors} />
         </div>
       )}

@@ -1,11 +1,15 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { format } from 'date-fns';
+import { motion, useMotionValue } from 'motion/react';
 import { MonthViewProps } from '../../types';
 import { MonthHeader } from './MonthHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { WeekRow } from './WeekRow';
 import { getMonthDates, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
 import { useTodoCountByDate } from '@/model/todo/todoList/queries';
+
+/** Figma 197:3529 — 캘린더 collapse 트리거 임계치 (px) */
+const COLLAPSE_THRESHOLD = 40;
 
 /**
  * 월간 뷰 컴포넌트
@@ -62,6 +66,10 @@ export const MonthView: React.FC<MonthViewProps> = ({
     onMonthChange?.('next');
   }, [onMonthChange]);
 
+  // Figma 197:3529 — 위로 스와이프 시 collapse, 아래로 스와이프 시 expand
+  const [isCompact, setIsCompact] = useState(false);
+  const dragY = useMotionValue(0);
+
   return (
     <div className={`flex flex-col gap-5`}>
       {/* 월 헤더 */}
@@ -77,8 +85,23 @@ export const MonthView: React.FC<MonthViewProps> = ({
         />
       )}
 
-      {/* 캘린더 */}
-      <div className="flex flex-col gap-2 pb-5">
+      {/* 캘린더 — drag-y로 collapse / expand 토글 */}
+      <motion.div
+        className="flex flex-col gap-2 pb-5"
+        style={{ y: dragY, touchAction: 'pan-y' }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.15}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          if (info.offset.y <= -COLLAPSE_THRESHOLD) {
+            setIsCompact(true);
+          } else if (info.offset.y >= COLLAPSE_THRESHOLD) {
+            setIsCompact(false);
+          }
+          dragY.set(0);
+        }}
+      >
         {/* 요일 헤더 */}
         <WeekdayHeader />
 
@@ -93,10 +116,11 @@ export const MonthView: React.FC<MonthViewProps> = ({
               indicators={mergedIndicators}
               holidays={holidays}
               onDateSelect={onDateSelect}
+              compact={isCompact}
             />
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
