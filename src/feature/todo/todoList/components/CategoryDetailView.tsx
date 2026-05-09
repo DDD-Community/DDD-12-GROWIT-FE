@@ -259,12 +259,12 @@ export const CategoryDetailView = ({
             <div className="flex items-center justify-between px-5 mb-6">
               <button
                 onClick={onClose}
-                aria-label="뒤로 가기"
+                aria-label="아래로 내리기"
                 className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path
-                    d="M10 12.667L5.333 8 10 3.333"
+                    d="M3.333 6L8 10.667 12.667 6"
                     stroke="#27272A"
                     strokeWidth="1.5"
                     strokeLinecap="round"
