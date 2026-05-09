@@ -63,9 +63,18 @@ export interface TodoCountByGoal {
   todoCount: number;
 }
 
+export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+
+export interface TodoCountByCategory {
+  category: TodoCategory;
+  todoCount: number;
+}
+
 export interface TodoCountByDateItem {
   date: string; // YYYY-MM-DD 형식
   goals: TodoCountByGoal[];
+  /** 카테고리별 todo 개수 (캘린더 카테고리 인디케이터용) */
+  categories: TodoCountByCategory[];
 }
 
 export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}
