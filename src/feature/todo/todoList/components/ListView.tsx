@@ -63,8 +63,7 @@ const ListTodoItem = ({
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
       <div
-        className="flex items-center gap-2 bg-[#171717] rounded-[20px]"
-        style={{ padding: '14px 16px' }}
+        className="flex items-center gap-2 bg-[#171717] rounded-[20px] h-[50px] max-h-[50px] pl-3 pr-4 py-1.5"
       >
         <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
