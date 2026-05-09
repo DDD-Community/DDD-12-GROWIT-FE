@@ -101,7 +101,7 @@ const ListTodoItem = ({
 
 export const ListView = ({ todos, onToggle, onDelete, onEdit }: ListViewProps) => {
   return (
-    <div className="flex flex-col gap-2 mt-4 mb-5">
+    <div className="flex flex-col gap-2 mb-5">
       {todos.map(todo => (
         <ListTodoItem
           key={todo.id}
