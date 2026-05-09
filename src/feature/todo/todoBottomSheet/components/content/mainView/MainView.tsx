@@ -4,20 +4,20 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { DeleteButton } from '../../shared/deleteButton';
-import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
+import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon, DateIcon, TimeIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
 import { MainViewHeader } from './MainViewHeader';
 import { TodoInput } from './TodoInput';
-import type { Goal, TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
+import type { TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { getProgressGoals } from '@/model/goal/api';
 import { cn } from '@/shared/lib/utils';
 
 const CATEGORY_OPTIONS = [
-  { value: 'NOW' as const, label: '빨리 끝내기', color: '#FF6467' },
-  { value: 'STEADY' as const, label: '천천히 끝내기', color: '#FF8904' },
+  { value: 'NOW' as const, label: '긴급', color: '#FF6467' },
+  { value: 'STEADY' as const, label: '꾸준히', color: '#FF8904' },
   { value: 'SKIP' as const, label: '넘겨도', color: '#51A2FF' },
-  { value: 'DELETE' as const, label: '지워도', color: '#ABAB9C' },
+  { value: 'DELETE' as const, label: '지워도', color: '#A1A1A1' },
 ];
 
 interface MainViewProps {
@@ -62,7 +62,8 @@ const formatDateDisplay = (dateString?: string): string => {
 };
 
 export const MainView = ({
-  selectedDate,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  selectedDate: _selectedDate,
   onSubmit,
   submitLabel,
   onDeleteSelect,
@@ -85,12 +86,15 @@ export const MainView = ({
   const {
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useFormContext<TodoFormData>();
 
   const goalId = watch('goalId');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
+  const todoDate = watch('date');
+  const todoTime = watch('time');
 
   const hasRoutineDurationError = !!errors.routineDuration;
   const selectedGoalName = goals.find(g => g.id === goalId)?.name;
@@ -146,9 +150,38 @@ export const MainView = ({
           />
 
           <div className="flex flex-col gap-3">
+            {/* 날짜 */}
+            <SelectCell
+              icon={<DateIcon />}
+              label="날짜"
+              value={formatDateDisplay(todoDate)}
+              placeholder="선택"
+              onClick={onDateEdit}
+            />
+
+            {/* 시간 — native time input을 SelectCell value 영역에 inline */}
+            <label className="block">
+              <SelectCell
+                icon={<TimeIcon />}
+                label="시간"
+                value={todoTime || undefined}
+                placeholder="선택"
+              />
+              <input
+                type="time"
+                value={todoTime || ''}
+                onChange={e =>
+                  setValue('time', e.target.value || undefined, { shouldDirty: true })
+                }
+                className="sr-only"
+                aria-label="시간 선택"
+              />
+            </label>
+
+            {/* 태그 (목표) */}
             <SelectCell
               icon={<GoalIcon />}
-              label="목표"
+              label="태그"
               value={selectedGoalName}
               placeholder="선택"
               onClick={onGoalSelect}

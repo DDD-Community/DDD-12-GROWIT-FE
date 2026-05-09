@@ -40,6 +40,15 @@ export const todoFormSchema = z
     /** 투두 날짜 (YYYY-MM-DD 형식) */
     date: z.string().min(1, '날짜를 선택해주세요'),
 
+    /**
+     * 투두 시간 (HH:mm) — 선택. BE datetime 미지원이라 일단 폼 상태에만.
+     */
+    time: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/, '올바른 시간 형식이 아닙니다 (HH:mm)')
+      .optional()
+      .or(z.literal('')),
+
     /** 루틴 기간 설정 (반복이 none이 아닐 때만 사용) */
     routineDuration: routineDurationSchema.optional(),
   })
