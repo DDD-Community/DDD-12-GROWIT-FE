@@ -22,7 +22,9 @@ export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps
   <button
     type="button"
     onClick={onClick}
-    className="relative flex items-center justify-center gap-3 px-5 py-3 shrink-0 text-[#FCFCFC]"
+    className={`relative flex items-center justify-center gap-3 px-5 py-3 shrink-0 transition-colors ${
+      active ? 'text-[#FCFCFC]' : 'text-[#A1A1A1]'
+    }`}
     aria-pressed={active}
   >
     {active && (
