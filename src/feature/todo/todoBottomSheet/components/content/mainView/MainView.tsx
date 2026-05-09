@@ -61,6 +61,18 @@ const formatDateDisplay = (dateString?: string): string => {
   return `${year}.${month}.${day}`;
 };
 
+/** 시간을 "오전/오후 h:mm" 형식으로 포맷 */
+const formatTimeDisplay = (time?: string): string | undefined => {
+  if (!time) return undefined;
+  const match = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!match) return time;
+  const hour24 = Number(match[1]);
+  const minute = match[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
+
 export const MainView = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   selectedDate: _selectedDate,
@@ -159,12 +171,12 @@ export const MainView = ({
               onClick={onDateEdit}
             />
 
-            {/* 시간 — native time input을 SelectCell value 영역에 inline */}
-            <label className="block">
+            {/* 시간 — native time picker (시/분 휠)를 SelectCell 위에 invisible 오버레이 */}
+            <label className="relative block cursor-pointer">
               <SelectCell
                 icon={<TimeIcon />}
                 label="시간"
-                value={todoTime || undefined}
+                value={formatTimeDisplay(todoTime)}
                 placeholder="선택"
               />
               <input
@@ -173,7 +185,7 @@ export const MainView = ({
                 onChange={e =>
                   setValue('time', e.target.value || undefined, { shouldDirty: true })
                 }
-                className="sr-only"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 aria-label="시간 선택"
               />
             </label>
