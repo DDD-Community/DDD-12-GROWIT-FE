@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import Checkbox from '@/shared/components/input/Checkbox';
 import { SwipeableRow } from './SwipeableRow';
+import { TodoItemCheckbox } from './TodoItemCheckbox';
 
 const QUADRANT_DOTS = [
   { category: 'NOW', color: '#FF6467' },
@@ -80,7 +80,7 @@ const ListTodoItem = ({
         className="flex items-center gap-2 bg-[#171717] rounded-[20px]"
         style={{ padding: '14px 16px' }}
       >
-        <Checkbox checked={checked} onClick={handleCheck} />
+        <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
           <p
             className={`text-sm leading-[142%] ${

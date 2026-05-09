@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import Checkbox from '@/shared/components/input/Checkbox';
 import { motion, AnimatePresence } from 'motion/react';
 import { SwipeableRow } from './SwipeableRow';
+import { TodoItemCheckbox } from './TodoItemCheckbox';
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
@@ -154,7 +154,7 @@ const DetailTodoItem = ({
     >
       <div className="flex items-start gap-2 py-1.5">
         <div className="pt-0.5">
-          <Checkbox checked={checked} onClick={handleCheck} />
+          <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-1">
           <span

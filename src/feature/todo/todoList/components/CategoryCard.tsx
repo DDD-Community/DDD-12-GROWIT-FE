@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import Checkbox from '@/shared/components/input/Checkbox';
 import { SwipeableRow } from './SwipeableRow';
+import { TodoItemCheckbox } from './TodoItemCheckbox';
 
 interface CategoryCardProps {
   title: string;
@@ -48,7 +48,7 @@ const TodoItem = ({
     >
       <div className="flex items-start gap-1 bg-transparent" onClick={e => e.stopPropagation()}>
         <div className="pt-1 shrink-0">
-          <Checkbox checked={checked} onClick={handleCheck} />
+          <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         </div>
         <div
           className="flex flex-col flex-1 min-w-0 cursor-pointer"
@@ -87,7 +87,7 @@ export const CategoryCard = ({
 
   return (
     <div
-      className={`relative flex-1 rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer overflow-hidden ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
+      className={`relative flex-1 rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] min-h-[200px] cursor-pointer overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)] drop-shadow-[0px_1px_1px_rgba(10,13,18,0.05)] ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
       onClick={onCardClick}
     >
       {/* Header: char icon + label + count + add (Figma 196:1618) */}
