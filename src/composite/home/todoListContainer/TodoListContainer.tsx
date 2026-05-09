@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { isSameDay } from 'date-fns';
+import { isSameDay, addDays, subDays } from 'date-fns';
+import { motion, useMotionValue } from 'motion/react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
@@ -13,12 +14,17 @@ import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
 import type { TodoFormData } from '@/feature/todo/todoBottomSheet/types';
 
+/** Figma 196:1611 — 매트릭스 영역 좌우 swipe 시 ±1일 이동 */
+const DAY_SWIPE_THRESHOLD = 60;
+
 export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
   const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('NOW');
   // Figma 169:1559 — 선택된 날짜 재클릭 시 "중요 태스크 현황" 뷰로 토글
   const [showStatus, setShowStatus] = useState(false);
+  // Figma 196:1611 — 매트릭스 영역 swipe 트래킹용 motion value
+  const swipeX = useMotionValue(0);
 
   return (
     <TodoListContainerFormProvider>
@@ -80,12 +86,33 @@ export const TodoListContainer = () => {
                     onDateSelect={handleDateSelect}
                     onViewChange={handleViewChange}
                   />
-                  <TodoList
-                    selectedDate={selectedDate}
-                    viewMode={viewMode}
-                    onEdit={handleEdit}
-                    onAdd={handleAdd}
-                  />
+                  {/* Figma 196:1611 — 주뷰에서 매트릭스 영역 좌우 swipe → ±1일 이동 */}
+                  <motion.div
+                    className="flex flex-1 min-h-0 flex-col"
+                    style={{ x: swipeX, touchAction: 'pan-y' }}
+                    drag={!isMonthlyView ? 'x' : false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.15}
+                    dragMomentum={false}
+                    onDragEnd={(_, info) => {
+                      if (isMonthlyView) return;
+                      if (info.offset.x <= -DAY_SWIPE_THRESHOLD) {
+                        setSelectedDate(addDays(selectedDate, 1));
+                        setShowStatus(false);
+                      } else if (info.offset.x >= DAY_SWIPE_THRESHOLD) {
+                        setSelectedDate(subDays(selectedDate, 1));
+                        setShowStatus(false);
+                      }
+                      swipeX.set(0);
+                    }}
+                  >
+                    <TodoList
+                      selectedDate={selectedDate}
+                      viewMode={viewMode}
+                      onEdit={handleEdit}
+                      onAdd={handleAdd}
+                    />
+                  </motion.div>
                 </div>
               </div>
             </div>
