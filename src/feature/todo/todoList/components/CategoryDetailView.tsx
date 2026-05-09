@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { motion, AnimatePresence } from 'motion/react';
 import { SwipeableRow } from './SwipeableRow';
@@ -20,44 +21,76 @@ const formatTimeLabel = (time: string): string => {
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
-const CATEGORY_META: Record<CategoryType, {
-  title: string;
-  badges: { label: string; color: string; bg: string }[];
-  subtitle: string;
-  emoji: string;
-}> = {
+interface BgLayer {
+  src: string;
+  /** bg-position 앵커 — 캔버스 어디에 이미지를 붙일지 */
+  anchor: 'top' | 'bottom' | 'center';
+}
+
+/**
+ * Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 배경 레이어.
+ * 위에서부터 아래 순으로 stacking 되며, 마지막은 dark gradient overlay 별도.
+ */
+const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
+  NOW: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+  ],
+  STEADY: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
+  ],
+  SKIP: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-skip-1.jpg', anchor: 'bottom' },
+  ],
+  DELETE: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-delete-1.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-delete-2.jpg', anchor: 'bottom' },
+  ],
+};
+
+const CATEGORY_META: Record<
+  CategoryType,
+  {
+    title: string;
+    badge: { text: string; color: string };
+    subtitle: string;
+    iconSrc: string;
+  }
+> = {
   NOW: {
     title: '빨리 끝내기',
-    badges: [
-      { label: '신속', color: '#FF383C', bg: 'rgba(255,56,60,0.15)' },
-      { label: '중요', color: '#FF383C', bg: 'rgba(255,56,60,0.15)' },
-    ],
+    badge: { text: '중요 · 긴급', color: '#FF383C' },
     subtitle: '컨디션이 가장 좋은 아침에 끝내세요.',
-    emoji: '☀️',
+    iconSrc: '/icon/category-now.png',
   },
   STEADY: {
     title: '천천히 끝내기',
-    badges: [
-      { label: '꾸준', color: '#FF8904', bg: 'rgba(255,137,4,0.15)' },
-    ],
+    badge: { text: '중요 · 천천히', color: '#FF8904' },
     subtitle: '여유를 갖고 차근차근 진행하세요.',
-    emoji: '🌙',
+    iconSrc: '/icon/category-steady.png',
   },
   SKIP: {
     title: '넘겨도',
-    badges: [
-      { label: '유연', color: '#51A2FF', bg: 'rgba(81,162,255,0.15)' },
-    ],
+    badge: { text: '여유 · 긴급', color: '#51A2FF' },
     subtitle: '오늘 못해도 괜찮아요.',
-    emoji: '💨',
+    iconSrc: '/icon/category-skip.png',
   },
   DELETE: {
     title: '지워도',
-    badges: [
-      { label: '정리', color: '#ABAB9C', bg: 'rgba(171,171,156,0.15)' },
-    ],
+    badge: { text: '여유 · 천천히', color: '#ABAB9C' },
     subtitle: '필요 없다면 과감히 지워도 돼요.',
-    emoji: '🗑️',
+    iconSrc: '/icon/category-delete.png',
   },
 };
 
@@ -194,30 +227,23 @@ export const CategoryDetailView = ({
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
         >
-          {/* Figma 107:1219 — 3-layer 워크스페이스 배경 + dark gradient overlay */}
+          {/* Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 워크스페이스 레이어 + dark gradient overlay */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* base: 전체 데스크 와이드샷 (Figma 107:1220) */}
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url(/images/detail-bg-base.jpg)' }}
-            />
-            {/* mid: 작업 공간 (Figma 107:1221) — 화면 하단 정렬, 16px 아래로 살짝 빠짐 */}
-            <div
-              className="absolute inset-x-0 -bottom-4 bg-contain bg-bottom bg-no-repeat"
-              style={{
-                backgroundImage: 'url(/images/detail-bg-mid.jpg)',
-                aspectRatio: '390/860',
-              }}
-            />
-            {/* front: 커피 머그 + 캐릭터 (Figma 107:1222) — 가운데 정렬, 폭 113% */}
-            <div
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-contain bg-bottom bg-no-repeat w-[113%]"
-              style={{
-                backgroundImage: 'url(/images/detail-bg-front.jpg)',
-                aspectRatio: '442/895',
-              }}
-            />
-            {/* dark gradient overlay (Figma 107:1223) */}
+            {CATEGORY_BG_LAYERS[category].map((layer, i) => (
+              <div
+                key={`${category}-${i}`}
+                className="absolute inset-0 bg-cover bg-no-repeat"
+                style={{
+                  backgroundImage: `url(${layer.src})`,
+                  backgroundPosition:
+                    layer.anchor === 'top'
+                      ? 'center top'
+                      : layer.anchor === 'bottom'
+                      ? 'center bottom'
+                      : 'center',
+                }}
+              />
+            ))}
             <div
               className="absolute inset-0"
               style={{
@@ -268,30 +294,30 @@ export const CategoryDetailView = ({
             {/* Card - hug content, not flex-1 */}
             <div className="mx-5 rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]">
               <div className="px-6 pt-6 pb-8 flex flex-col gap-8">
-                {/* Header */}
+                {/* Figma 107:1249 — char icon + 타이틀 + 단일 배지 */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-[20px] font-bold leading-[130%] text-white">
+                    <Image
+                      src={meta.iconSrc}
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="shrink-0 select-none"
+                      priority
+                    />
+                    <h2 className="text-[20px] font-bold leading-[130%] text-white truncate">
                       {meta.title}
                     </h2>
-                    <div className="flex items-center gap-1">
-                      {meta.badges.map(badge => (
-                        <span
-                          key={badge.label}
-                          className="px-2 py-1.5 rounded-3xl text-xs font-medium leading-[134%]"
-                          style={{ backgroundColor: badge.bg, color: badge.color }}
-                        >
-                          {badge.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-base">{meta.emoji}</span>
-                    <span className="text-xs leading-[133%] text-[#A1A1A1]">
-                      {meta.subtitle}
+                    <span
+                      className="shrink-0 px-2 py-1.5 rounded-3xl text-xs font-medium leading-[134%] whitespace-nowrap"
+                      style={{ color: meta.badge.color }}
+                    >
+                      {meta.badge.text}
                     </span>
                   </div>
+                  <p className="text-xs leading-[133%] text-[#A1A1A1] truncate">
+                    {meta.subtitle}
+                  </p>
                 </div>
 
                 {/* Todo list */}
