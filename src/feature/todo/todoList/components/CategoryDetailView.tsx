@@ -152,8 +152,8 @@ const DetailTodoItem = ({
       onComplete={handleCheck}
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <div className="flex items-start gap-2 py-1.5">
-        <div className="pt-0.5">
+      <div className={`flex gap-2 py-1.5 ${hasTags ? 'items-start' : 'items-center'}`}>
+        <div className={hasTags ? 'pt-0.5' : ''}>
           <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-1">

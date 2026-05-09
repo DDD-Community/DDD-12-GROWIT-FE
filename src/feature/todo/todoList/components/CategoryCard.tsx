@@ -47,25 +47,16 @@ const TodoItem = ({
       onComplete={handleCheck}
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <div className="flex items-start gap-1 bg-transparent" onClick={e => e.stopPropagation()}>
-        <div className="pt-1 shrink-0">
-          <TodoItemCheckbox checked={checked} onClick={handleCheck} />
-        </div>
-        <div
-          className="flex flex-col flex-1 min-w-0 cursor-pointer"
+      <div className="flex items-center gap-1 bg-transparent" onClick={e => e.stopPropagation()}>
+        <TodoItemCheckbox checked={checked} onClick={handleCheck} />
+        <p
+          className={`text-[14px] leading-[1.42] truncate flex-1 min-w-0 cursor-pointer ${
+            checked ? 'line-through text-[#A1A1A1]' : 'text-white'
+          }`}
           onClick={() => onEdit?.(todo)}
         >
-          <p
-            className={`text-[14px] leading-[1.42] truncate ${
-              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
-            }`}
-          >
-            {todo.content}
-          </p>
-          <p className="text-[10px] leading-[1.33] text-[#737373] min-h-[13px]">
-            {/* 시간 표시는 BE datetime 필드 추가 후 활성 (DEVS-12 PR-C 트랙) */}
-          </p>
-        </div>
+          {todo.content}
+        </p>
       </div>
     </SwipeableRow>
   );
