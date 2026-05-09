@@ -6,6 +6,17 @@ import { motion, AnimatePresence } from 'motion/react';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 
+/** "HH:mm" → "오전/오후 h:mm" */
+const formatTimeLabel = (time: string): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return time;
+  const hour24 = Number(m[1]);
+  const minute = m[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
+
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 const QUADRANT_COLORS: Record<CategoryType, string> = {
@@ -145,15 +156,17 @@ const DetailTodoItem = ({
     onToggle?.(todo.id, newChecked);
   };
 
+  const hasTime = !!todo.time;
   const hasTags = todo.routine || (todo.goal?.name && todo.goal.name !== '미분류');
+  const isMultiLine = hasTime || hasTags;
 
   return (
     <SwipeableRow
       onComplete={handleCheck}
       onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <div className={`flex gap-2 py-1.5 ${hasTags ? 'items-start' : 'items-center'}`}>
-        <div className={hasTags ? 'pt-0.5' : ''}>
+      <div className={`flex gap-2 py-1.5 ${isMultiLine ? 'items-start' : 'items-center'}`}>
+        <div className={isMultiLine ? 'pt-0.5' : ''}>
           <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         </div>
         <div className="flex-1 min-w-0 flex flex-col gap-1">
@@ -165,6 +178,11 @@ const DetailTodoItem = ({
           >
             {todo.content}
           </span>
+          {hasTime && (
+            <p className="text-[12px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time as string)}
+            </p>
+          )}
           {hasTags && (
             <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
               {todo.routine && <RoutineTag routine={todo.routine} />}

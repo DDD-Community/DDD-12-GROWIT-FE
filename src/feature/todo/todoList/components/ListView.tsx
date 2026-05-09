@@ -83,12 +83,17 @@ const ListTodoItem = ({
         <TodoItemCheckbox checked={checked} onClick={handleCheck} />
         <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
           <p
-            className={`text-sm leading-[142%] ${
+            className={`text-sm leading-[142%] truncate ${
               checked ? 'line-through text-[#70737C]' : 'text-white'
             }`}
           >
             {todo.content}
           </p>
+          {todo.time && (
+            <p className="text-[12px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time)}
+            </p>
+          )}
         </div>
         {todo.goal?.name && todo.goal.name !== '미분류' && (
           <GoalTag name={todo.goal.name} />
