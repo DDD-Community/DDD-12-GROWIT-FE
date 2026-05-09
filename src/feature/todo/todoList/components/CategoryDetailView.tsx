@@ -5,6 +5,7 @@ import { GoalTodo } from '@/shared/type/GoalTodo';
 import { motion, AnimatePresence } from 'motion/react';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
+import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
 
 /** "HH:mm" → "오전/오후 h:mm" */
 const formatTimeLabel = (time: string): string => {
@@ -191,6 +192,12 @@ const DetailTodoItem = ({
               )}
             </div>
           )}
+        </div>
+        <div className={isMultiLine ? 'pt-0.5' : ''}>
+          <CategoryMatrixIcon
+            category={(todo.category as MatrixCategory) || 'NOW'}
+            size={16}
+          />
         </div>
       </div>
     </SwipeableRow>

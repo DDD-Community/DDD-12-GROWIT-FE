@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
+import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
 
 /** "HH:mm" → "오전/오후 h:mm" */
 const formatTimeLabel = (time: string): string => {
@@ -16,38 +17,12 @@ const formatTimeLabel = (time: string): string => {
   return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
 };
 
-const QUADRANT_DOTS = [
-  { category: 'NOW', color: '#FF6467' },
-  { category: 'STEADY', color: '#FFB900' },
-  { category: 'SKIP', color: '#51A2FF' },
-  { category: 'DELETE', color: '#ABAB9C' },
-] as const;
-
-const INACTIVE_COLOR = '#404040';
-
 interface ListViewProps {
   todos: GoalTodo[];
   onToggle?: (todoId: string, isCompleted: boolean) => void;
   onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }
-
-/** 2x2 카테고리 도트 (12x12, 각 5x5, gap 2px) */
-const CategoryQuadrant = ({ activeCategory }: { activeCategory: string }) => (
-  <div className="grid grid-cols-2 gap-[2px] shrink-0" style={{ width: 12, height: 12 }}>
-    {QUADRANT_DOTS.map(dot => (
-      <span
-        key={dot.category}
-        className="rounded-full"
-        style={{
-          width: 5,
-          height: 5,
-          backgroundColor: activeCategory === dot.category ? dot.color : INACTIVE_COLOR,
-        }}
-      />
-    ))}
-  </div>
-);
 
 /** 목표 Tag (circle-dashed 아이콘 + label) */
 const GoalTag = ({ name }: { name: string }) => (
@@ -109,7 +84,10 @@ const ListTodoItem = ({
         {todo.goal?.name && todo.goal.name !== '미분류' && (
           <GoalTag name={todo.goal.name} />
         )}
-        <CategoryQuadrant activeCategory={todo.category || 'NOW'} />
+        <CategoryMatrixIcon
+          category={(todo.category as MatrixCategory) || 'NOW'}
+          size={16}
+        />
       </div>
     </SwipeableRow>
   );
