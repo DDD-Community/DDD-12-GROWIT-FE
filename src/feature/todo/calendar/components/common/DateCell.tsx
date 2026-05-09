@@ -39,12 +39,13 @@ export const DateCell: React.FC<DateCellProps> = ({
     : isToday ? 'today'
     : 'default';
 
+  // Figma 196:1584/1604/1610 — default rounded-3xl(24px), selected/today rounded-full
   const circleClass =
     cellState === 'selected'
-      ? 'bg-[#FFFFFF]'
+      ? 'bg-[#FFFFFF] rounded-full'
       : cellState === 'today'
-      ? 'border border-[#27272A]'
-      : '';
+      ? 'border border-[#27272A] rounded-full'
+      : 'rounded-[24px]';
 
   const numberColor =
     cellState === 'selected' ? '#000000' : textColor;
@@ -62,7 +63,7 @@ export const DateCell: React.FC<DateCellProps> = ({
     >
       {/* Figma 196:1604: 50x50 size-full circle that wraps the number + indicators */}
       <div
-        className={`absolute inset-0 rounded-full flex items-center justify-center ${circleClass}`}
+        className={`absolute inset-0 flex items-center justify-center ${circleClass}`}
       >
         <span
           className="text-[14px] leading-[1.42] text-center"
