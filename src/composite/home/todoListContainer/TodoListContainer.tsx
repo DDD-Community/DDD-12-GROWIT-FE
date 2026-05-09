@@ -47,6 +47,12 @@ export const TodoListContainer = () => {
               className={`bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
               <div className="flex flex-col h-screen">
+                {/* Figma 196:1556 — iOS Safe Area (status bar) */}
+                <div
+                  aria-hidden="true"
+                  className="w-full shrink-0"
+                  style={{ height: 'max(34px, env(safe-area-inset-top, 0px))' }}
+                />
                 <div className="flex flex-col flex-1 gap-6">
                   <div className="px-5 pt-3">
                     <Calendar
