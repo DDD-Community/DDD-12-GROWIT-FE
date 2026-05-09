@@ -5,6 +5,17 @@ import { GoalTodo } from '@/shared/type/GoalTodo';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 
+/** "HH:mm" → "오전/오후 h:mm" */
+const formatTimeLabel = (time: string): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return time;
+  const hour24 = Number(m[1]);
+  const minute = m[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
+
 const QUADRANT_DOTS = [
   { category: 'NOW', color: '#FF6467' },
   { category: 'STEADY', color: '#FFB900' },
