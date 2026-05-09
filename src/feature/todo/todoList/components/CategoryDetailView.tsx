@@ -194,23 +194,38 @@ export const CategoryDetailView = ({
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
         >
-          {/* Background — Figma 107:1218 fixed dark gradient + character */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
-            }}
-          />
-          {/* Character image at bottom */}
-          <div
-            className="absolute inset-x-0 bottom-0 h-[320px] bg-cover bg-center"
-            style={{
-              backgroundImage: 'url(/images/category-bg-character.png)',
-              maskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
-            }}
-          />
+          {/* Figma 107:1219 — 3-layer 워크스페이스 배경 + dark gradient overlay */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* base: 전체 데스크 와이드샷 (Figma 107:1220) */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: 'url(/images/detail-bg-base.jpg)' }}
+            />
+            {/* mid: 작업 공간 (Figma 107:1221) — 화면 하단 정렬, 16px 아래로 살짝 빠짐 */}
+            <div
+              className="absolute inset-x-0 -bottom-4 bg-contain bg-bottom bg-no-repeat"
+              style={{
+                backgroundImage: 'url(/images/detail-bg-mid.jpg)',
+                aspectRatio: '390/860',
+              }}
+            />
+            {/* front: 커피 머그 + 캐릭터 (Figma 107:1222) — 가운데 정렬, 폭 113% */}
+            <div
+              className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-contain bg-bottom bg-no-repeat w-[113%]"
+              style={{
+                backgroundImage: 'url(/images/detail-bg-front.jpg)',
+                aspectRatio: '442/895',
+              }}
+            />
+            {/* dark gradient overlay (Figma 107:1223) */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
+              }}
+            />
+          </div>
 
           {/* Content */}
           <div className="relative flex flex-col flex-1 pt-[50px] overflow-y-auto">
