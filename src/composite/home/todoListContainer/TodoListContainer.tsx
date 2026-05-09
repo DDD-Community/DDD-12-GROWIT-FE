@@ -8,7 +8,6 @@ import { Z_INDEX } from '@/shared/lib/z-index';
 import { TodoList } from '@/feature/todo/todoList';
 import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
 import { Calendar } from '@/feature/todo/calendar';
-import { AddGoalButton } from './components/addGoalButton';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
 import type { TodoFormData } from '@/feature/todo/todoBottomSheet/types';
@@ -62,7 +61,6 @@ export const TodoListContainer = () => {
                       onEdit={handleEdit}
                       onAdd={handleAdd}
                     />
-                    <AddGoalButton selectedDate={selectedDate} />
                   </div>
                 </div>
               </div>
