@@ -115,6 +115,11 @@ export const TodoBottomSheet = ({
     navigateTo('dateEdit');
   };
 
+  // 시간 선택 클릭 핸들러
+  const handleTimeSelect = () => {
+    navigateTo('timeSelect');
+  };
+
   // 삭제 BottomSheet 열기 핸들러
   const handleDeleteSelect = () => {
     deleteSheet.showSheet();
@@ -152,6 +157,7 @@ export const TodoBottomSheet = ({
             onStartDateSelect={handleStartDateSelect}
             onEndDateSelect={handleEndDateSelect}
             onDateEdit={handleDateEdit}
+            onTimeSelect={handleTimeSelect}
             dateSelectInitialTab={dateSelectInitialTab}
             goBack={goBack}
             goToMain={goToMain}

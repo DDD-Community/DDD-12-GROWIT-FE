@@ -49,7 +49,7 @@ const FloatingButton = ({
       className={cn(
         'fixed bottom-[25px] right-[max(1.5rem,calc(50vw-200px))]',
         Z_INDEX.FAB,
-        'rounded-full bg-brand-neon text-static-black',
+        'rounded-full bg-[#BBF451] text-black',
         'flex items-center justify-center',
         'shadow-lg hover:shadow-xl',
         'transition-shadow duration-200',

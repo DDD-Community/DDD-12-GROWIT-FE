@@ -8,7 +8,8 @@ import { TodoListLoading, TodoListError } from './components';
 import { MatrixView } from './components/MatrixView';
 import { ListView } from './components/ListView';
 import { CategoryDetailView } from './components/CategoryDetailView';
-import { useTodosByDate, usePatchTodoStatus } from '@/model/todo/todoList/queries';
+import { WeeklyImportantStatusView } from './components/WeeklyImportantStatusView';
+import { useTodosByDate, usePatchTodoStatus, useDeleteTodo } from '@/model/todo/todoList/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
 import { transformTodosData, groupTodosByCategory } from './helper';
@@ -17,7 +18,7 @@ type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 interface TodoListProps {
   selectedDate: Date;
-  viewMode?: 'matrix' | 'list';
+  viewMode?: 'matrix' | 'list' | 'status';
   onEdit?: (todo: GoalTodo) => void;
   onAdd?: (category?: string) => void;
 }
@@ -25,6 +26,7 @@ interface TodoListProps {
 export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: TodoListProps) => {
   const queryClient = useQueryClient();
   const patchTodoStatusMutation = usePatchTodoStatus();
+  const deleteTodoMutation = useDeleteTodo();
   const [detailCategory, setDetailCategory] = useState<CategoryType | null>(null);
 
   const dateString = format(selectedDate, 'yyyy-MM-dd');
@@ -52,12 +54,36 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
     [patchTodoStatusMutation, invalidateQueries]
   );
 
+  const handleDelete = useCallback(
+    async (todoId: string) => {
+      try {
+        await deleteTodoMutation.mutateAsync({ todoId, routineDeleteType: 'SINGLE' });
+        invalidateQueries();
+      } catch (error) {
+        console.error('Todo 삭제 실패:', error);
+      }
+    },
+    [deleteTodoMutation, invalidateQueries]
+  );
+
   if (isLoading) return <TodoListLoading />;
   if (error) return <TodoListError />;
-  if (!hasAnyTodos) return <TodoListEmpty />;
 
   if (viewMode === 'list') {
-    return <ListView todos={todos} onToggle={handleToggle} onEdit={onEdit} />;
+    if (!hasAnyTodos) return <TodoListEmpty />;
+    return <ListView todos={todos} onToggle={handleToggle} onDelete={handleDelete} onEdit={onEdit} />;
+  }
+
+  if (viewMode === 'status') {
+    return (
+      <WeeklyImportantStatusView
+        todos={todos}
+        onToggle={handleToggle}
+        onDelete={handleDelete}
+        onEdit={onEdit}
+        onAdd={onAdd}
+      />
+    );
   }
 
   return (
@@ -65,6 +91,7 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
       <MatrixView
         groups={categoryGroups}
         onToggle={handleToggle}
+        onDelete={handleDelete}
         onEdit={onEdit}
         onAdd={onAdd}
         onCardClick={setDetailCategory}
@@ -76,6 +103,7 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
           isOpen={!!detailCategory}
           onClose={() => setDetailCategory(null)}
           onToggle={handleToggle}
+          onDelete={handleDelete}
           onEdit={onEdit}
           onAdd={() => {
             setDetailCategory(null);

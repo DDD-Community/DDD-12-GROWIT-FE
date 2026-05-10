@@ -4,20 +4,20 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { DeleteButton } from '../../shared/deleteButton';
-import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon } from '../../shared/icons';
+import { GoalIcon, RepeatIcon, StartDateIcon, EndDateIcon, TimeIcon } from '../../shared/icons';
 import { SelectCell } from '../../shared/selectCell';
 import { MainViewHeader } from './MainViewHeader';
 import { TodoInput } from './TodoInput';
-import type { Goal, TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
+import type { TodoFormData, REPEAT_TYPE_LABELS } from '../../../types';
 import { GoalQueryKeys } from '@/model/goal/queryKeys';
 import { getProgressGoals } from '@/model/goal/api';
 import { cn } from '@/shared/lib/utils';
 
 const CATEGORY_OPTIONS = [
-  { value: 'NOW' as const, label: '빨리 끝내기', color: '#FF6467' },
-  { value: 'STEADY' as const, label: '천천히 끝내기', color: '#FF8904' },
+  { value: 'NOW' as const, label: '긴급', color: '#FF6467' },
+  { value: 'STEADY' as const, label: '꾸준히', color: '#FF8904' },
   { value: 'SKIP' as const, label: '넘겨도', color: '#51A2FF' },
-  { value: 'DELETE' as const, label: '지워도', color: '#ABAB9C' },
+  { value: 'DELETE' as const, label: '지워도', color: '#A1A1A1' },
 ];
 
 interface MainViewProps {
@@ -45,6 +45,8 @@ interface MainViewProps {
   onEndDateSelect: () => void;
   /** 날짜 수정 클릭 핸들러 */
   onDateEdit?: () => void;
+  /** 시간 선택 클릭 핸들러 */
+  onTimeSelect?: () => void;
   /** 반복 타입 라벨 */
   repeatLabels?: typeof REPEAT_TYPE_LABELS;
   /** 수정 선택 화면으로 이동 핸들러 (반복 투두일 경우) */
@@ -61,8 +63,21 @@ const formatDateDisplay = (dateString?: string): string => {
   return `${year}.${month}.${day}`;
 };
 
+/** 시간을 "오전/오후 h:mm" 형식으로 포맷 */
+const formatTimeDisplay = (time?: string): string | undefined => {
+  if (!time) return undefined;
+  const match = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!match) return time;
+  const hour24 = Number(match[1]);
+  const minute = match[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
+
 export const MainView = ({
-  selectedDate,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  selectedDate: _selectedDate,
   onSubmit,
   submitLabel,
   onDeleteSelect,
@@ -74,6 +89,7 @@ export const MainView = ({
   onStartDateSelect,
   onEndDateSelect,
   onDateEdit,
+  onTimeSelect,
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
   onEditSelect,
 }: MainViewProps) => {
@@ -91,6 +107,7 @@ export const MainView = ({
   const goalId = watch('goalId');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
+  const todoTime = watch('time');
 
   const hasRoutineDurationError = !!errors.routineDuration;
   const selectedGoalName = goals.find(g => g.id === goalId)?.name;
@@ -146,9 +163,19 @@ export const MainView = ({
           />
 
           <div className="flex flex-col gap-3">
+            {/* 시간 — 클릭 시 timeSelect sub-view로 이동 (시/분 picker) */}
+            <SelectCell
+              icon={<TimeIcon />}
+              label="시간"
+              value={formatTimeDisplay(todoTime)}
+              placeholder="선택"
+              onClick={onTimeSelect}
+            />
+
+            {/* 태그 (목표) */}
             <SelectCell
               icon={<GoalIcon />}
-              label="목표"
+              label="태그"
               value={selectedGoalName}
               placeholder="선택"
               onClick={onGoalSelect}
