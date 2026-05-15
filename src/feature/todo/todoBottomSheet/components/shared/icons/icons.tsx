@@ -36,6 +36,21 @@ export const ChevronLeftIcon = () => (
   </svg>
 );
 
+export const DateIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="4.5" width="14" height="12" rx="2" stroke="white" strokeWidth="1.4" />
+    <path d="M3 8.5h14" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M7 3v3M13 3v3" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
+  </svg>
+);
+
+export const TimeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="7" stroke="white" strokeWidth="1.4" />
+    <path d="M10 6v4l2.5 2.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 export const GoalIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path

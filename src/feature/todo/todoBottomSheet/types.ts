@@ -1,7 +1,13 @@
 export type TodoBottomSheetMode = 'add' | 'edit';
 
 /** 바텀시트 내부 뷰 상태 */
-export type TodoBottomSheetView = 'main' | 'goalSelect' | 'repeatSelect' | 'dateSelect' | 'dateEdit';
+export type TodoBottomSheetView =
+  | 'main'
+  | 'goalSelect'
+  | 'repeatSelect'
+  | 'dateSelect'
+  | 'dateEdit'
+  | 'timeSelect';
 
 /** 날짜 선택 탭 타입 */
 export type DateSelectTab = 'startDate' | 'endDate';
@@ -36,6 +42,11 @@ export interface TodoFormData {
   category: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
   /** 투두 날짜 (YYYY-MM-DD 형식) */
   date: string;
+  /**
+   * 투두 시간 (HH:mm 형식, 선택)
+   * BE에 datetime 필드가 추가되기 전까지는 클라이언트 측에만 보관.
+   */
+  time?: string;
   /** 루틴 기간 설정 (반복이 none이 아닐 때만 사용) */
   routineDuration?: RoutineDuration;
 }
@@ -46,6 +57,7 @@ export const TODO_DEFAULT_VALUES: TodoFormData = {
   repeatType: 'none',
   category: 'NOW',
   date: '',
+  time: undefined,
   routineDuration: undefined,
 };
 

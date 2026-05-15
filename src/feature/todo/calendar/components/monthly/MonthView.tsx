@@ -1,11 +1,15 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { format } from 'date-fns';
+import { motion, useMotionValue } from 'motion/react';
 import { MonthViewProps } from '../../types';
 import { MonthHeader } from './MonthHeader';
 import { WeekdayHeader } from '../common/WeekdayHeader';
 import { WeekRow } from './WeekRow';
-import { getMonthDates, getMonthRange, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
+import { getMonthDates, CALENDAR, convertTodoCountToIndicators, mergeIndicators } from '../../utils';
 import { useTodoCountByDate } from '@/model/todo/todoList/queries';
+
+/** Figma 197:3529 — 캘린더 collapse 트리거 임계치 (px) */
+const COLLAPSE_THRESHOLD = 40;
 
 /**
  * 월간 뷰 컴포넌트
@@ -22,15 +26,15 @@ export const MonthView: React.FC<MonthViewProps> = ({
   onViewChange,
   onTodayClick,
 }) => {
-  // 월간 날짜 배열 계산 (42개)
+  // 월간 날짜 배열 계산 (42개) — 전/다음 달 overflow 포함
   const monthDates = useMemo(() => getMonthDates(currentDate), [currentDate]);
 
-  // 월의 시작일과 종료일 계산
-  const [monthStart, monthEnd] = useMemo(() => getMonthRange(currentDate), [currentDate]);
-
-  // 월간 날짜 범위의 투두 개수 조회
-  const fromDateString = useMemo(() => format(monthStart, 'yyyy-MM-dd'), [monthStart]);
-  const toDateString = useMemo(() => format(monthEnd, 'yyyy-MM-dd'), [monthEnd]);
+  // 인디케이터는 화면에 보이는 42셀 전부에 대해 조회해야 주뷰와 동일하게 표시됨
+  const fromDateString = useMemo(() => format(monthDates[0], 'yyyy-MM-dd'), [monthDates]);
+  const toDateString = useMemo(
+    () => format(monthDates[monthDates.length - 1], 'yyyy-MM-dd'),
+    [monthDates]
+  );
   const { data: todoCountData = [] } = useTodoCountByDate({
     from: fromDateString,
     to: toDateString,
@@ -62,12 +66,17 @@ export const MonthView: React.FC<MonthViewProps> = ({
     onMonthChange?.('next');
   }, [onMonthChange]);
 
+  // Figma 197:3529 — 위로 스와이프 시 collapse, 아래로 스와이프 시 expand
+  const [isCompact, setIsCompact] = useState(false);
+  const dragY = useMotionValue(0);
+
   return (
     <div className={`flex flex-col gap-5`}>
       {/* 월 헤더 */}
       {showNavigation && (
         <MonthHeader
           currentMonth={currentDate}
+          selectedDate={selectedDate}
           onPrevious={handlePrevious}
           onNext={handleNext}
           selectedView={selectedView}
@@ -76,8 +85,23 @@ export const MonthView: React.FC<MonthViewProps> = ({
         />
       )}
 
-      {/* 캘린더 */}
-      <div className="flex flex-col gap-2 pb-5">
+      {/* 캘린더 — drag-y로 collapse / expand 토글 */}
+      <motion.div
+        className="flex flex-col gap-2 pb-5"
+        style={{ y: dragY, touchAction: 'pan-y' }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.15}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          if (info.offset.y <= -COLLAPSE_THRESHOLD) {
+            setIsCompact(true);
+          } else if (info.offset.y >= COLLAPSE_THRESHOLD) {
+            setIsCompact(false);
+          }
+          dragY.set(0);
+        }}
+      >
         {/* 요일 헤더 */}
         <WeekdayHeader />
 
@@ -92,10 +116,11 @@ export const MonthView: React.FC<MonthViewProps> = ({
               indicators={mergedIndicators}
               holidays={holidays}
               onDateSelect={onDateSelect}
+              compact={isCompact}
             />
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

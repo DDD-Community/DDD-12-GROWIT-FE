@@ -17,7 +17,7 @@ export const Indicator: React.FC<IndicatorProps> = ({ colors, maxDisplay = 3, cl
       {displayColors.map((color, index) => (
         <div
           key={index}
-          className="w-1 h-1 rounded-full"
+          className="w-1 h-1 rounded-[1px]"
           style={{ backgroundColor: color && color.trim() ? color : DEFAULT_COLOR }}
           aria-hidden="true"
         />

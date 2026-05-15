@@ -134,6 +134,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             await postAddTodoMutation.mutateAsync({
               goalId: data.goalId ?? null,
               date: data.date,
+              time: data.time || null,
               content: data.content,
               category: data.category,
               routine:
@@ -153,6 +154,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
               todoId,
               goalId: data.goalId ?? null,
               date: data.date,
+              time: data.time || null,
               content: data.content,
               category: data.category,
               routine:

@@ -37,6 +37,8 @@ export interface PutTodoRequest {
   todoId: string; // URL 파라미터용
   goalId: string | null; // 목표 ID (기타일 경우 null)
   date: string; // 'YYYY-MM-DD'
+  /** 투두 시간 (HH:mm, optional) */
+  time?: string | null;
   content: string;
   category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
@@ -46,6 +48,8 @@ export interface PutTodoRequest {
 export interface PostAddTodoRequest {
   goalId: string | null; // 옵셔널 - 기타 일땐 null로 넣어주세요
   date: string; // 'YYYY-MM-DD'
+  /** 투두 시간 (HH:mm, optional) */
+  time?: string | null;
   content: string;
   category: string;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
@@ -63,9 +67,19 @@ export interface TodoCountByGoal {
   todoCount: number;
 }
 
+export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+
+export interface TodoCountByCategory {
+  category: TodoCategory;
+  todoCount: number;
+  completedCount: number;
+}
+
 export interface TodoCountByDateItem {
   date: string; // YYYY-MM-DD 형식
   goals: TodoCountByGoal[];
+  /** 카테고리별 todo 개수 (캘린더 카테고리 인디케이터용) */
+  categories: TodoCountByCategory[];
 }
 
 export interface TodoCountByDateResponse extends CommonResponse<TodoCountByDateItem[]> {}

@@ -2,39 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import Checkbox from '@/shared/components/input/Checkbox';
+import { SwipeableRow } from './SwipeableRow';
+import { TodoItemCheckbox } from './TodoItemCheckbox';
+import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
 
-const QUADRANT_DOTS = [
-  { category: 'NOW', color: '#FF6467' },
-  { category: 'STEADY', color: '#FFB900' },
-  { category: 'SKIP', color: '#51A2FF' },
-  { category: 'DELETE', color: '#ABAB9C' },
-] as const;
-
-const INACTIVE_COLOR = '#404040';
+/** "HH:mm" → "오전/오후 h:mm" */
+const formatTimeLabel = (time: string): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return time;
+  const hour24 = Number(m[1]);
+  const minute = m[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
 
 interface ListViewProps {
   todos: GoalTodo[];
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }
-
-/** 2x2 카테고리 도트 (12x12, 각 5x5, gap 2px) */
-const CategoryQuadrant = ({ activeCategory }: { activeCategory: string }) => (
-  <div className="grid grid-cols-2 gap-[2px] shrink-0" style={{ width: 12, height: 12 }}>
-    {QUADRANT_DOTS.map(dot => (
-      <span
-        key={dot.category}
-        className="rounded-full"
-        style={{
-          width: 5,
-          height: 5,
-          backgroundColor: activeCategory === dot.category ? dot.color : INACTIVE_COLOR,
-        }}
-      />
-    ))}
-  </div>
-);
 
 /** 목표 Tag (circle-dashed 아이콘 + label) */
 const GoalTag = ({ name }: { name: string }) => (
@@ -49,10 +37,12 @@ const GoalTag = ({ name }: { name: string }) => (
 const ListTodoItem = ({
   todo,
   onToggle,
+  onDelete,
   onEdit,
 }: {
   todo: GoalTodo;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }) => {
   const [checked, setChecked] = useState(todo.isCompleted);
@@ -68,33 +58,50 @@ const ListTodoItem = ({
   };
 
   return (
-    <div
-      className="flex items-center gap-2 bg-[#171717] rounded-[20px]"
-      style={{ padding: '14px 16px' }}
+    <SwipeableRow
+      onComplete={handleCheck}
+      onDelete={onDelete ? () => onDelete(todo.id) : undefined}
     >
-      <Checkbox checked={checked} onClick={handleCheck} />
-      <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
-        <p
-          className={`text-sm leading-[142%] ${
-            checked ? 'line-through text-[#70737C]' : 'text-white'
-          }`}
-        >
-          {todo.content}
-        </p>
+      <div
+        className="flex items-center gap-2 bg-[#171717] rounded-[20px] h-[50px] max-h-[50px] pl-3 pr-4 py-1.5"
+      >
+        <TodoItemCheckbox checked={checked} onClick={handleCheck} />
+        <div className="flex flex-col gap-[2px] flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
+          <p
+            className={`text-sm leading-[142%] truncate ${
+              checked ? 'line-through text-[#70737C]' : 'text-white'
+            }`}
+          >
+            {todo.content}
+          </p>
+          {todo.time && (
+            <p className="text-[12px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time)}
+            </p>
+          )}
+        </div>
+        {todo.goal?.name && todo.goal.name !== '미분류' && (
+          <GoalTag name={todo.goal.name} />
+        )}
+        <CategoryMatrixIcon
+          category={(todo.category as MatrixCategory) || 'NOW'}
+        />
       </div>
-      {todo.goal?.name && todo.goal.name !== '미분류' && (
-        <GoalTag name={todo.goal.name} />
-      )}
-      <CategoryQuadrant activeCategory={todo.category || 'NOW'} />
-    </div>
+    </SwipeableRow>
   );
 };
 
-export const ListView = ({ todos, onToggle, onEdit }: ListViewProps) => {
+export const ListView = ({ todos, onToggle, onDelete, onEdit }: ListViewProps) => {
   return (
-    <div className="flex flex-col gap-2 mt-4 mb-5">
+    <div className="flex flex-col gap-2 mb-5">
       {todos.map(todo => (
-        <ListTodoItem key={todo.id} todo={todo} onToggle={onToggle} onEdit={onEdit} />
+        <ListTodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={onToggle}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       ))}
     </div>
   );

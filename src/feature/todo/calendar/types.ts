@@ -79,6 +79,9 @@ export interface DateCellProps {
 
   // 스타일
   className?: string;
+
+  /** Figma 197:3529 — 월뷰 collapsed 모드 (40px row, 36px circle) */
+  compact?: boolean;
 }
 
 /**
@@ -123,6 +126,8 @@ export interface DateHeaderProps {
  */
 export interface MonthHeaderProps {
   currentMonth: Date;
+  /** 현재 선택된 날짜 — 오늘이면 TodayButton 숨김 */
+  selectedDate?: Date;
   onPrevious: () => void;
   onNext: () => void;
   selectedView: CalendarView;
@@ -141,4 +146,6 @@ export interface WeekRowProps {
   indicators?: Record<string, (string | null | undefined)[] | undefined>;
   holidays?: Record<string, string>;
   onDateSelect: (date: Date) => void;
+  /** Figma 197:3529 collapsed 모드 (40px row, 36px circle) */
+  compact?: boolean;
 }

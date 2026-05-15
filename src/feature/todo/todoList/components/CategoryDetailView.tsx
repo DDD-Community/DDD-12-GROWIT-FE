@@ -1,83 +1,98 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import Checkbox from '@/shared/components/input/Checkbox';
 import { motion, AnimatePresence } from 'motion/react';
+import { SwipeableRow } from './SwipeableRow';
+import { TodoItemCheckbox } from './TodoItemCheckbox';
+import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
+
+/** "HH:mm" → "오전/오후 h:mm" */
+const formatTimeLabel = (time: string): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return time;
+  const hour24 = Number(m[1]);
+  const minute = m[2];
+  const isAM = hour24 < 12;
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
+};
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
-const QUADRANT_COLORS: Record<CategoryType, string> = {
-  NOW: '#FF6467',
-  STEADY: '#FFB900',
-  SKIP: '#51A2FF',
-  DELETE: '#ABAB9C',
+interface BgLayer {
+  src: string;
+  /** bg-position 앵커 — 캔버스 어디에 이미지를 붙일지 */
+  anchor: 'top' | 'bottom' | 'center';
+}
+
+/**
+ * Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 배경 레이어.
+ * 위에서부터 아래 순으로 stacking 되며, 마지막은 dark gradient overlay 별도.
+ */
+const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
+  NOW: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+  ],
+  STEADY: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
+  ],
+  SKIP: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-skip-1.jpg', anchor: 'bottom' },
+  ],
+  DELETE: [
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-delete-1.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-delete-2.jpg', anchor: 'bottom' },
+  ],
 };
 
-const QUADRANT_ORDER: CategoryType[] = ['NOW', 'STEADY', 'SKIP', 'DELETE'];
-
-const CATEGORY_META: Record<CategoryType, {
-  title: string;
-  badges: { label: string; color: string; bg: string }[];
-  subtitle: string;
-  emoji: string;
-  gradient: string;
-}> = {
+const CATEGORY_META: Record<
+  CategoryType,
+  {
+    title: string;
+    badge: { text: string; color: string };
+    subtitle: string;
+    iconSrc: string;
+  }
+> = {
   NOW: {
     title: '빨리 끝내기',
-    badges: [
-      { label: '신속', color: '#FF383C', bg: 'rgba(255,56,60,0.15)' },
-      { label: '중요', color: '#FF383C', bg: 'rgba(255,56,60,0.15)' },
-    ],
+    badge: { text: '중요 · 긴급', color: '#FF383C' },
     subtitle: '컨디션이 가장 좋은 아침에 끝내세요.',
-    emoji: '☀️',
-    gradient: 'linear-gradient(180deg, rgba(24,63,105,0.9) 0%, rgba(34,104,115,0) 100%)',
+    iconSrc: '/icon/category-now.png',
   },
   STEADY: {
     title: '천천히 끝내기',
-    badges: [
-      { label: '꾸준', color: '#FF8904', bg: 'rgba(255,137,4,0.15)' },
-    ],
+    badge: { text: '중요 · 천천히', color: '#FF8904' },
     subtitle: '여유를 갖고 차근차근 진행하세요.',
-    emoji: '🌙',
-    gradient: 'linear-gradient(180deg, rgba(80,50,20,0.9) 0%, rgba(40,30,15,0) 100%)',
+    iconSrc: '/icon/category-steady.png',
   },
   SKIP: {
     title: '넘겨도',
-    badges: [
-      { label: '유연', color: '#51A2FF', bg: 'rgba(81,162,255,0.15)' },
-    ],
+    badge: { text: '여유 · 긴급', color: '#51A2FF' },
     subtitle: '오늘 못해도 괜찮아요.',
-    emoji: '💨',
-    gradient: 'linear-gradient(180deg, rgba(20,40,80,0.9) 0%, rgba(15,20,40,0) 100%)',
+    iconSrc: '/icon/category-skip.png',
   },
   DELETE: {
     title: '지워도',
-    badges: [
-      { label: '정리', color: '#ABAB9C', bg: 'rgba(171,171,156,0.15)' },
-    ],
+    badge: { text: '여유 · 천천히', color: '#ABAB9C' },
     subtitle: '필요 없다면 과감히 지워도 돼요.',
-    emoji: '🗑️',
-    gradient: 'linear-gradient(180deg, rgba(50,50,45,0.9) 0%, rgba(30,30,25,0) 100%)',
+    iconSrc: '/icon/category-delete.png',
   },
 };
-
-/** 상단 카테고리 사분면 아이콘 (Figma 33:1062 참조) */
-const CategoryQuadrantIcon = ({ active }: { active: CategoryType }) => (
-  <div className="grid grid-cols-2 gap-[2px]" style={{ width: 26, height: 26 }}>
-    {QUADRANT_ORDER.map(cat => (
-      <span
-        key={cat}
-        className="rounded-[3px]"
-        style={{
-          width: 12,
-          height: 12,
-          backgroundColor: cat === active ? QUADRANT_COLORS[cat] : 'rgba(159,159,169,0.12)',
-        }}
-      />
-    ))}
-  </div>
-);
 
 /** 루틴 반복 태그 */
 const RoutineTag = ({ routine }: { routine: GoalTodo['routine'] }) => {
@@ -116,6 +131,7 @@ interface CategoryDetailViewProps {
   isOpen: boolean;
   onClose: () => void;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
   onAdd?: () => void;
 }
@@ -123,10 +139,12 @@ interface CategoryDetailViewProps {
 const DetailTodoItem = ({
   todo,
   onToggle,
+  onDelete,
   onEdit,
 }: {
   todo: GoalTodo;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
 }) => {
   const [checked, setChecked] = useState(todo.isCompleted);
@@ -141,35 +159,49 @@ const DetailTodoItem = ({
     onToggle?.(todo.id, newChecked);
   };
 
+  const hasTime = !!todo.time;
   const hasTags = todo.routine || (todo.goal?.name && todo.goal.name !== '미분류');
+  const isMultiLine = hasTime || hasTags;
 
   return (
-    <div className="flex items-start gap-2 py-1.5">
-      <div className="pt-0.5">
-        <Checkbox checked={checked} onClick={handleCheck} />
+    <SwipeableRow
+      onComplete={handleCheck}
+      onDelete={onDelete ? () => onDelete(todo.id) : undefined}
+    >
+      <div className={`flex gap-2 py-1.5 ${isMultiLine ? 'items-start' : 'items-center'}`}>
+        <div className={isMultiLine ? 'pt-0.5' : ''}>
+          <TodoItemCheckbox checked={checked} onClick={handleCheck} />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          <span
+            className={`text-sm leading-[142%] font-medium cursor-pointer ${
+              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
+            }`}
+            onClick={() => onEdit?.(todo)}
+          >
+            {todo.content}
+          </span>
+          {hasTime && (
+            <p className="text-[12px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time as string)}
+            </p>
+          )}
+          {hasTags && (
+            <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
+              {todo.routine && <RoutineTag routine={todo.routine} />}
+              {todo.goal?.name && todo.goal.name !== '미분류' && (
+                <GoalTag name={todo.goal.name} />
+              )}
+            </div>
+          )}
+        </div>
+        <div className={isMultiLine ? 'pt-0.5' : ''}>
+          <CategoryMatrixIcon
+            category={(todo.category as MatrixCategory) || 'NOW'}
+          />
+        </div>
       </div>
-      <div className="flex-1 min-w-0 flex flex-col gap-1">
-        <span
-          className={`text-sm leading-[142%] font-medium cursor-pointer ${
-            checked ? 'line-through text-[#A1A1A1]' : 'text-white'
-          }`}
-          onClick={() => onEdit?.(todo)}
-        >
-          {todo.content}
-        </span>
-        {hasTags && (
-          <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
-            {todo.routine && <RoutineTag routine={todo.routine} />}
-            {todo.goal?.name && todo.goal.name !== '미분류' && (
-              <GoalTag name={todo.goal.name} />
-            )}
-          </div>
-        )}
-      </div>
-      <span className="text-xs leading-[133%] text-[#737373] shrink-0 pt-1">
-        AM 10:45
-      </span>
-    </div>
+    </SwipeableRow>
   );
 };
 
@@ -179,6 +211,7 @@ export const CategoryDetailView = ({
   isOpen,
   onClose,
   onToggle,
+  onDelete,
   onEdit,
   onAdd,
 }: CategoryDetailViewProps) => {
@@ -194,43 +227,66 @@ export const CategoryDetailView = ({
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
         >
-          {/* Background */}
-          <div className="absolute inset-0 bg-[#070707]" />
-          <div
-            className="absolute inset-x-0 top-0 h-[400px]"
-            style={{ background: meta.gradient }}
-          />
-          {/* Character image at bottom */}
-          <div
-            className="absolute inset-x-0 bottom-0 h-[320px] bg-cover bg-center"
-            style={{
-              backgroundImage: 'url(/images/category-bg-character.png)',
-              maskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
-            }}
-          />
+          {/* Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 워크스페이스 레이어 + dark gradient overlay */}
+          <div className="absolute inset-0 overflow-hidden">
+            {CATEGORY_BG_LAYERS[category].map((layer, i) => (
+              <div
+                key={`${category}-${i}`}
+                className="absolute inset-0 bg-cover bg-no-repeat"
+                style={{
+                  backgroundImage: `url(${layer.src})`,
+                  backgroundPosition:
+                    layer.anchor === 'top'
+                      ? 'center top'
+                      : layer.anchor === 'bottom'
+                      ? 'center bottom'
+                      : 'center',
+                }}
+              />
+            ))}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
+              }}
+            />
+          </div>
 
           {/* Content */}
           <div className="relative flex flex-col flex-1 pt-[50px] overflow-y-auto">
-            {/* Top bar: back + quadrant + add */}
+            {/* Figma 107:1230 — back / IcMatrixRed / add (각 40x40 rounded-3xl) */}
             <div className="flex items-center justify-between px-5 mb-6">
               <button
                 onClick={onClose}
-                className="w-12 h-12 rounded-full bg-[#EBEBEC] flex items-center justify-center"
+                aria-label="아래로 내리기"
+                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 19l-7-7 7-7" stroke="#27272A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M3.333 6L8 10.667 12.667 6"
+                    stroke="#27272A"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
 
-              <CategoryQuadrantIcon active={category} />
+              <CategoryMatrixIcon category={category} size={40} />
 
               <button
                 onClick={onAdd}
-                className="w-12 h-12 rounded-full bg-[#EBEBEC] flex items-center justify-center"
+                aria-label="투두 추가"
+                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5v14M5 12h14" stroke="#27272A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M8 3.33V12.67M3.33 8H12.67"
+                    stroke="#27272A"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             </div>
@@ -238,30 +294,30 @@ export const CategoryDetailView = ({
             {/* Card - hug content, not flex-1 */}
             <div className="mx-5 rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]">
               <div className="px-6 pt-6 pb-8 flex flex-col gap-8">
-                {/* Header */}
+                {/* Figma 107:1249 — char icon + 타이틀 + 단일 배지 */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-[20px] font-bold leading-[130%] text-white">
+                    <Image
+                      src={meta.iconSrc}
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="shrink-0 select-none"
+                      priority
+                    />
+                    <h2 className="text-[20px] font-bold leading-[130%] text-white truncate">
                       {meta.title}
                     </h2>
-                    <div className="flex items-center gap-1">
-                      {meta.badges.map(badge => (
-                        <span
-                          key={badge.label}
-                          className="px-2 py-1.5 rounded-3xl text-xs font-medium leading-[134%]"
-                          style={{ backgroundColor: badge.bg, color: badge.color }}
-                        >
-                          {badge.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-base">{meta.emoji}</span>
-                    <span className="text-xs leading-[133%] text-[#A1A1A1]">
-                      {meta.subtitle}
+                    <span
+                      className="shrink-0 px-2 py-1.5 rounded-3xl text-xs font-medium leading-[134%] whitespace-nowrap"
+                      style={{ color: meta.badge.color }}
+                    >
+                      {meta.badge.text}
                     </span>
                   </div>
+                  <p className="text-xs leading-[133%] text-[#A1A1A1] truncate">
+                    {meta.subtitle}
+                  </p>
                 </div>
 
                 {/* Todo list */}
@@ -272,6 +328,7 @@ export const CategoryDetailView = ({
                         key={todo.id}
                         todo={todo}
                         onToggle={onToggle}
+                        onDelete={onDelete}
                         onEdit={onEdit}
                       />
                     ))

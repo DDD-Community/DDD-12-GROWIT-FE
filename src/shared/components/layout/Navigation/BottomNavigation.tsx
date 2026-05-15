@@ -3,8 +3,8 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { ROUTES } from '@/shared/constants/routes';
 import { Z_INDEX } from '@/shared/lib/z-index';
-import { cn } from '@/shared/lib/utils';
 import { NavHomeFilledIcon, NavGoalIcon, NavProfileIcon } from './NavIcons';
+import { NavTabButton } from './NavTabButton';
 
 const NAV_ITEMS = [
   { path: ROUTES.HOME, icon: NavHomeFilledIcon, title: '홈' },
@@ -12,6 +12,11 @@ const NAV_ITEMS = [
   { path: ROUTES.MYPAGE, icon: NavProfileIcon, title: '마이' },
 ] as const;
 
+/**
+ * Figma 196:1709 Tabs container
+ * - bg #171717 (color/neutral/900), rounded-[28px]
+ * - gap-[2px], px-2 py-1
+ */
 export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -25,30 +30,16 @@ export const BottomNavigation = () => {
     <nav
       className={`fixed bottom-0 max-w-md mx-auto w-full px-[25px] pb-[25px] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
-      {/* Tab bar container */}
-      <div className="flex items-center gap-4 bg-[#27272A] rounded-3xl p-2 shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]">
-        {NAV_ITEMS.map(item => {
-          const active = isActive(item.path);
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.path}
-              type="button"
-              onClick={() => router.push(item.path)}
-              className={cn(
-                'flex items-center gap-2 rounded-3xl transition-colors',
-                active
-                  ? 'bg-[#E1E1E2] px-4 py-2 text-black'
-                  : 'p-2.5 text-[#71717B]'
-              )}
-            >
-              <Icon className="w-[22px] h-[22px]" />
-              {active && (
-                <span className="text-sm font-medium text-[#18181B]">{item.title}</span>
-              )}
-            </button>
-          );
-        })}
+      <div className="flex items-center gap-[2px] bg-[#171717] rounded-[28px] px-2 py-1 backdrop-blur-[0px]">
+        {NAV_ITEMS.map(item => (
+          <NavTabButton
+            key={item.path}
+            Icon={item.icon}
+            label={item.title}
+            active={isActive(item.path)}
+            onClick={() => router.push(item.path)}
+          />
+        ))}
       </div>
     </nav>
   );
