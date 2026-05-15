@@ -1,0 +1,47 @@
+research:
+  description: "요구사항 분석 & FE 변경 영향도 파악"
+  claude:
+    allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+    context: fork
+
+plan:
+  description: "FE 구현 계획 수립 (FSD 아키텍처, 컴포넌트, API 연동)"
+  claude:
+    allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+    context: fork
+
+implement:
+  description: "FE 코드 구현 실행 (FSD 아키텍처 준수)"
+  claude:
+    allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+    context: fork
+
+review:
+  description: "FE 코드 리뷰 & 품질 게이트 검수"
+  claude:
+    allowed-tools: Read, Grep, Glob, Bash
+    context: fork
+
+pr:
+  description: "PR 생성 & GitHub 푸시"
+  claude:
+    allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+    context: fork
+
+deploy-local:
+  description: "로컬 개발 서버 기동 (Next.js dev + Turbopack)"
+  claude:
+    allowed-tools: Read, Bash
+    context: fork
+
+deploy-dev:
+  description: "DEV 환경 배포 (develop 브랜치 머지)"
+  claude:
+    allowed-tools: Read, Bash
+    context: fork
+
+deploy-prod:
+  description: "PROD 환경 배포 (main 브랜치 머지)"
+  claude:
+    allowed-tools: Read, Bash
+    context: fork
