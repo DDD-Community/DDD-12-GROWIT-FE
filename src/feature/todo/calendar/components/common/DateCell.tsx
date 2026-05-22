@@ -3,7 +3,10 @@ import { DateCellProps } from '../../types';
 import { Indicator } from './Indicator';
 
 /**
- * 날짜 셀 컴포넌트
+ * 날짜 셀 컴포넌트 (Figma 196:1604/1610)
+ *
+ * selected/today는 50x50 cell 전체를 둘러싸는 원이며,
+ * indicator는 cell 하단(bottom 8px)에 절대 배치되어 원 안에 포함된다.
  */
 export const DateCell: React.FC<DateCellProps> = ({
   date,
@@ -15,6 +18,7 @@ export const DateCell: React.FC<DateCellProps> = ({
   holidayLabel,
   onClick,
   className = '',
+  compact = false,
 }) => {
   const handleClick = () => {
     onClick(date);
@@ -27,13 +31,29 @@ export const DateCell: React.FC<DateCellProps> = ({
     }
   };
 
-  // 스타일 결정
-  const textColor = isCurrentMonth ? '#C2C4C8' : 'rgba(157, 158, 173, 0.3)';
-  const fontWeight = isSelected ? 500 : 400;
+  const textColor = isCurrentMonth ? '#FAFAFA' : 'rgba(157, 158, 173, 0.3)';
+  const fontWeight = isSelected || isToday ? 500 : 400;
+
+  // 선택일 > 오늘 우선순위 (Figma 196:1604 selected white / 196:1610 today stroke)
+  const cellState =
+    isSelected ? 'selected'
+    : isToday ? 'today'
+    : 'default';
+
+  // Figma 196:1584/1604/1610 — default rounded-3xl(24px), selected/today rounded-full
+  const circleClass =
+    cellState === 'selected'
+      ? 'bg-[#FFFFFF] rounded-full'
+      : cellState === 'today'
+      ? 'border border-[#27272A] rounded-full'
+      : 'rounded-[24px]';
+
+  const numberColor =
+    cellState === 'selected' ? '#000000' : textColor;
 
   return (
     <div
-      className={`flex flex-col items-center justify-end w-10 h-10 pb-[3px] cursor-pointer ${className}`}
+      className={`relative flex flex-1 items-start justify-center min-w-0 cursor-pointer ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"
@@ -42,23 +62,29 @@ export const DateCell: React.FC<DateCellProps> = ({
       aria-selected={isSelected}
       aria-current={isToday ? 'date' : undefined}
     >
-      <div className="h-[6px] mb-1 flex items-center justify-center">
-        {indicatorColors && <Indicator colors={indicatorColors} />}
-      </div>
-      {/* 날짜 숫자 - 선택된 경우 원형 배경 */}
+      {/* Figma 196:1584 calendar-day (50px) / 197:3529 compact (36px) */}
       <div
-        className={`flex justify-center items-center rounded-full ${isSelected ? 'w-[30px] h-[30px] bg-[#3AEE49]' : 'w-[30px] h-[30px]'}`}
+        className={`flex flex-col items-center justify-center py-[2px] shrink-0 ${
+          compact ? 'size-[36px]' : 'size-[50px]'
+        } ${circleClass}`}
       >
         <span
-          className="text-[14px] leading-[20px] tracking-[0.0145em] text-center"
-          style={{
-            color: isSelected ? '#0F0F10' : textColor,
-            fontWeight: fontWeight,
-          }}
+          className="text-[14px] leading-[1.42] text-center"
+          style={{ color: numberColor, fontWeight }}
         >
           {displayNumber}
         </span>
       </div>
+      {/* Figma 196:1605 / 197:3563 Indicators — bottom 8px / 6px (compact) */}
+      {indicatorColors && (
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 h-[4px] flex items-center justify-center pointer-events-none ${
+            compact ? 'bottom-[6px]' : 'bottom-[8px]'
+          }`}
+        >
+          <Indicator colors={indicatorColors} />
+        </div>
+      )}
     </div>
   );
 };

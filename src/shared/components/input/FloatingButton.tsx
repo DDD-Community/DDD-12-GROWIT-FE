@@ -12,8 +12,8 @@ interface FloatingButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
 }
 
 const sizeClasses: Record<FloatingButtonSize, string> = {
-  sm: 'w-12 h-12',
-  md: 'w-[60px] h-[60px]',
+  sm: 'w-10 h-10',
+  md: 'w-12 h-12',
   lg: 'w-16 h-16',
 };
 
@@ -47,9 +47,9 @@ const FloatingButton = ({
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className={cn(
-        'fixed bottom-24 right-[max(1.5rem,calc(50vw-200px))]',
+        'fixed bottom-[25px] right-[max(1.5rem,calc(50vw-200px))]',
         Z_INDEX.FAB,
-        'rounded-full bg-brand-neon text-static-black',
+        'rounded-full bg-[#BBF451] text-black',
         'flex items-center justify-center',
         'shadow-lg hover:shadow-xl',
         'transition-shadow duration-200',

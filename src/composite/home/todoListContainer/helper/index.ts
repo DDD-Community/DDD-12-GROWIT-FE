@@ -9,6 +9,7 @@ export const getEditingTodoDefault = (): GoalTodo => ({
   date: format(new Date(), 'yyyy-MM-dd'),
   content: '',
   isCompleted: false,
+  category: 'NOW',
 });
 
 /** GoalTodo를 TodoFormData로 변환 */
@@ -16,8 +17,9 @@ export const convertToFormData = (todo: GoalTodo): TodoFormData => ({
   content: todo.content,
   goalId: todo.goal.id ?? null,
   repeatType: (todo.routine?.repeatType as FormRepeatType) ?? 'none',
-  isImportant: todo.isImportant ?? false,
+  category: todo.category ?? 'NOW',
   date: todo.date,
+  time: todo.time ?? undefined,
   routineDuration: todo.routine?.duration,
 });
 
@@ -31,7 +33,7 @@ export const createNewTodo = (data: TodoFormData, selectedDate: Date, goals: Goa
     date: selectedDate.toISOString().split('T')[0],
     content: data.content,
     isCompleted: false,
-    isImportant: data.isImportant,
+    category: data.category,
     routine:
       data.repeatType !== 'none' && data.routineDuration
         ? { repeatType: data.repeatType, duration: data.routineDuration }

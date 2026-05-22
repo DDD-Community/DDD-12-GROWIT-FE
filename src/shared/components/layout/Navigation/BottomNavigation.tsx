@@ -1,51 +1,46 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import Button from '../../input/Button';
-import { NAVIGATION_ROUTES_MOBILE, ROUTES, shouldHiddenNavigation, titleStyle } from '@/shared/constants/routes';
-import FlexBox from '../../foundation/FlexBox';
+import { ROUTES } from '@/shared/constants/routes';
 import { Z_INDEX } from '@/shared/lib/z-index';
+import { NavHomeFilledIcon, NavGoalIcon, NavProfileIcon } from './NavIcons';
+import { NavTabButton } from './NavTabButton';
 
+const NAV_ITEMS = [
+  { path: ROUTES.HOME, icon: NavHomeFilledIcon, title: '홈' },
+  { path: ROUTES.GOAL, icon: NavGoalIcon, title: '목표' },
+  { path: ROUTES.MYPAGE, icon: NavProfileIcon, title: '마이' },
+] as const;
+
+/**
+ * Figma 196:1709 Tabs container
+ * - bg #171717 (color/neutral/900), rounded-[28px]
+ * - gap-[2px], px-2 py-1
+ */
 export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
-
-  //const pathSegments = pathname.split('/').filter(segment => segment !== '');
-  //const shouldShowNavigation = pathSegments.length <= 1 || shouldHiddenNavigation(pathname);
 
   const isActive = (path: string) => {
     if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
     return pathname === path;
   };
 
-  // if (!shouldShowNavigation) {
-  //   return null;
-  // }
-
   return (
     <nav
-      className={`fixed bottom-0 max-w-md mx-auto w-full p-2 flex items-center justify-around bg-normal border-t-[1px] border-t-[#70737C47] ${Z_INDEX.BOTTOM_NAVIGATION}`}
+      className={`fixed bottom-0 max-w-md mx-auto w-full px-[25px] pb-[25px] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
-      {NAVIGATION_ROUTES_MOBILE.map(item => {
-        const active = isActive(item.path);
-        const IconComponent = active ? item.activeIcon : item.inActiveIcon;
-        return (
-          <Button
+      <div className="flex items-center gap-[2px] bg-[#171717] rounded-[28px] px-2 py-1 backdrop-blur-[0px]">
+        {NAV_ITEMS.map(item => (
+          <NavTabButton
             key={item.path}
-            size={'sm'}
-            variant="tertiary"
-            layout="icon-only"
-            className={active ? 'bg-surface-assistive' : ''}
-            icon={
-              <FlexBox direction="col">
-                {<IconComponent />}
-                <span className={active ? titleStyle.active : titleStyle.inActive}>{item.title}</span>
-              </FlexBox>
-            }
+            Icon={item.icon}
+            label={item.title}
+            active={isActive(item.path)}
             onClick={() => router.push(item.path)}
           />
-        );
-      })}
+        ))}
+      </div>
     </nav>
   );
 };

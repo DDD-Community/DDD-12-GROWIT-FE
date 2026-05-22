@@ -4,7 +4,6 @@ import { useFormContext } from 'react-hook-form';
 import { cn } from '@/shared/lib/utils';
 import { parseDateString, formatMonthDayWeekday } from '@/shared/lib/dateUtils';
 import { useDebounceCallback } from '@/shared/hooks';
-import { FlagIcon } from '../../shared/icons';
 import type { TodoFormData } from '../../../types';
 
 interface MainViewHeaderProps {
@@ -18,13 +17,12 @@ interface MainViewHeaderProps {
 
 /** MainView 헤더 컴포넌트 */
 export const MainViewHeader = ({ onDateEdit, onSubmit, submitLabel }: MainViewHeaderProps) => {
-  const { watch, setValue } = useFormContext<TodoFormData>();
+  const { watch } = useFormContext<TodoFormData>();
 
   // 필요한 데이터 가져오기
   const content = watch('content');
   const repeatType = watch('repeatType');
   const routineDuration = watch('routineDuration');
-  const isImportant = watch('isImportant');
   const todoDate = watch('date');
 
   // 폼의 date 필드를 Date 객체로 변환
@@ -39,26 +37,13 @@ export const MainViewHeader = ({ onDateEdit, onSubmit, submitLabel }: MainViewHe
       new Date(routineDuration.startDate) <= new Date(routineDuration.endDate));
   const isSubmitDisabled = !isContentValid || !isRoutineDurationValid;
 
-  // 중요 표시 토글 핸들러
-  const handleToggleImportant = () => {
-    setValue('isImportant', !isImportant);
-  };
-
   // 제출 버튼 디바운스 (연속 클릭 시 마지막 클릭 후 300ms 뒤 실행)
   const handleDebouncedSubmit = useDebounceCallback(onSubmit, 300);
+
   return (
     <div className="w-full flex items-center px-5 pt-2 pb-4">
-      {/* 중요 표시 버튼 - 왼쪽 영역 */}
-      <div className="flex-1 flex justify-start">
-        <button
-          type="button"
-          onClick={handleToggleImportant}
-          className="w-6 h-6 flex items-center justify-center"
-          aria-label={isImportant ? '중요 표시 해제' : '중요 표시'}
-        >
-          <FlagIcon filled={isImportant} />
-        </button>
-      </div>
+      {/* 왼쪽 빈 영역 (레이아웃 균형용) */}
+      <div className="flex-1" />
 
       {/* 날짜 제목 - 중앙 (클릭 시 날짜 수정 화면으로 이동) */}
       <button type="button" onClick={onDateEdit} className="body-1-bold text-white underline">

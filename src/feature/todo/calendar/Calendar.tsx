@@ -14,7 +14,7 @@ import {
   getNextMonth,
   getKoreanHolidaysInRange,
 } from './utils';
-import { startOfWeek, startOfMonth } from 'date-fns';
+import { startOfWeek, startOfMonth, isWithinInterval } from 'date-fns';
 import { WEEKDAY } from './utils/constants';
 
 /**
@@ -70,12 +70,16 @@ export const Calendar: React.FC<CalendarProps> = ({
 
   const handleWeekChange = useCallback(
     (direction: 'prev' | 'next') => {
+      let dateToSelect: Date | null = null;
       setInternalCurrentDate(prev => {
         const nextDate = direction === 'prev' ? getPreviousWeek(prev) : getNextWeek(prev);
         const nextWeekDates = getWeekDates(nextDate);
-        const sundayOfWeek = nextWeekDates[0];
-        onDateSelect(sundayOfWeek);
+        dateToSelect = nextWeekDates[0];
         return nextDate;
+      });
+      // 부모 상태 업데이트를 다음 마이크로태스크로 지연
+      queueMicrotask(() => {
+        if (dateToSelect) onDateSelect(dateToSelect);
       });
     },
     [onDateSelect]
@@ -101,6 +105,23 @@ export const Calendar: React.FC<CalendarProps> = ({
       onDateSelect(today);
     }
   }, [activeView, onDateSelect]);
+
+  // selectedDate가 외부(매트릭스 swipe 등)에서 변경되어 현재 표시 중인
+  // 주/월 범위 밖으로 벗어나면 internalCurrentDate도 그 주/월로 따라 이동.
+  // 함수형 업데이트로 prev와 selectedDate만 비교하므로 월 화살표/주 swipe로
+  // currentDate를 직접 바꾸는 흐름과는 충돌하지 않는다.
+  useEffect(() => {
+    setInternalCurrentDate(prev => {
+      if (activeView === 'weekly') {
+        const [start, end] = getWeekRange(prev);
+        if (isWithinInterval(selectedDate, { start, end })) return prev;
+        return startOfWeek(selectedDate, { weekStartsOn: WEEKDAY.SUNDAY });
+      }
+      const [start, end] = getMonthRange(prev);
+      if (isWithinInterval(selectedDate, { start, end })) return prev;
+      return startOfMonth(selectedDate);
+    });
+  }, [selectedDate, activeView]);
 
   // 날짜 범위 변경 시 콜백 호출
   useEffect(() => {

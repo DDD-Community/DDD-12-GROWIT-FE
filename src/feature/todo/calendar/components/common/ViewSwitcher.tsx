@@ -2,44 +2,42 @@ import React from 'react';
 import { ViewSwitcherProps, CalendarView } from '../../types';
 
 /**
- * 뷰 전환 버튼 (Segmented Control)
+ * Figma 196:1931 — Tabs (DS 변경: selected color = lime-300 underline)
+ *
+ * 컨테이너: border-b 1px #28282C
+ * 활성 탭: border-b 2px #BBF451 + text #FCFCFC
+ * 비활성 탭: text #A1A1AA (foreground/muted)
+ * 각 탭: pb-[6px] pt-[4px] px-[12px], 14px Medium / 1.43 leading
  */
-export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ selectedView, onViewChange, className = '' }) => {
+export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
+  selectedView,
+  onViewChange,
+  className = '',
+}) => {
   const handleViewChange = (view: CalendarView) => {
     onViewChange(view);
   };
 
   return (
-    <div className={`flex items-center ${className}`}>
-      <div className="inline-flex items-center bg-[#292A2D] rounded-2xl">
-        {/* 주간 버튼 */}
-        <button
-          onClick={() => handleViewChange('weekly')}
-          className={`
-            px-[10px] py-[2px] h-[26px] rounded-2xl
-            text-[13px] font-medium leading-[18px] tracking-[0.0194em] text-center
-            transition-colors
-            ${selectedView === 'weekly' ? 'bg-white text-[#0F0F10]' : 'bg-transparent text-[#878A93]'}
-          `}
-          aria-pressed={selectedView === 'weekly'}
-        >
-          주
-        </button>
-
-        {/* 월간 버튼 */}
-        <button
-          onClick={() => handleViewChange('monthly')}
-          className={`
-            px-[10px] py-[2px] h-[26px] rounded-2xl
-            text-[13px] font-medium leading-[18px] tracking-[0.0194em] text-center
-            transition-colors
-            ${selectedView === 'monthly' ? 'bg-white text-[#0F0F10]' : 'bg-transparent text-[#878A93]'}
-          `}
-          aria-pressed={selectedView === 'monthly'}
-        >
-          월
-        </button>
-      </div>
+    <div className={`inline-flex items-center border-b border-[#28282C] ${className}`}>
+      {(['weekly', 'monthly'] as const).map(view => {
+        const active = selectedView === view;
+        return (
+          <button
+            key={view}
+            type="button"
+            onClick={() => handleViewChange(view)}
+            className={`flex items-center justify-center gap-[6px] pt-[4px] pb-[6px] px-[12px] text-[14px] font-medium leading-[1.43] transition-colors ${
+              active
+                ? 'border-b-2 border-[#BBF451] text-[#FCFCFC]'
+                : 'text-[#A1A1AA]'
+            }`}
+            aria-pressed={active}
+          >
+            {view === 'weekly' ? '주' : '월'}
+          </button>
+        );
+      })}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { isToday as dateFnsIsToday } from 'date-fns';
 import { MonthHeaderProps } from '../../types';
 import { formatMonthYear } from '../../utils';
 import { ViewSwitcher } from '../common/ViewSwitcher';
@@ -6,9 +7,12 @@ import { TodayButton } from '../common/TodayButton';
 
 /**
  * 월 헤더 컴포넌트 ("◀ 1월 ▶")
+ *
+ * Figma 196:2488 dev annotation: "오늘이 아닌 날짜에 있을때만 활성화"
  */
 export const MonthHeader: React.FC<MonthHeaderProps> = ({
   currentMonth,
+  selectedDate,
   onPrevious,
   onNext,
   selectedView,
@@ -17,6 +21,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
   className = '',
 }) => {
   const monthLabel = formatMonthYear(currentMonth);
+  const showTodayButton = !(selectedDate && dateFnsIsToday(selectedDate));
 
   return (
     <div className={`flex items-center justify-between ${className}`}>
@@ -35,7 +40,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
         </button>
 
         {/* 월 표시 */}
-        <span className="text-[20px] font-bold leading-[28px] tracking-[-0.012em] text-white">{monthLabel}</span>
+        <span className="text-[24px] font-bold leading-[133%] tracking-[-0.01em] text-white">{monthLabel}</span>
 
         {/* 다음 달 버튼 */}
         <button onClick={onNext} className="w-5 h-5 flex items-center justify-center" aria-label="다음 달">
@@ -52,7 +57,7 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-3">
-        <TodayButton onClick={onTodayClick} />
+        {showTodayButton && <TodayButton onClick={onTodayClick} />}
         <ViewSwitcher selectedView={selectedView} onViewChange={onViewChange} />
       </div>
     </div>

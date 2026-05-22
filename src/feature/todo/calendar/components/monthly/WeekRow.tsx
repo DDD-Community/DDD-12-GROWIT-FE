@@ -13,9 +13,10 @@ export const WeekRow: React.FC<WeekRowProps> = ({
   indicators = {},
   holidays = {},
   onDateSelect,
+  compact = false,
 }) => {
   return (
-    <div className="flex justify-between">
+    <div className={`flex justify-between ${compact ? 'h-[40px]' : ''}`}>
       {dates.map(date => {
         const dateKey = toDateKey(date);
         const indicatorColors = indicators?.[dateKey];
@@ -33,6 +34,7 @@ export const WeekRow: React.FC<WeekRowProps> = ({
             indicatorColors={indicatorColors}
             holidayLabel={holidayLabel}
             onClick={onDateSelect}
+            compact={compact}
           />
         );
       })}

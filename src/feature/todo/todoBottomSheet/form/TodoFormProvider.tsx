@@ -48,11 +48,13 @@ interface TodoFormProviderProps {
   todoId?: string;
   /** 바텀시트 닫기 콜백 */
   onClose: () => void;
+  /** 기본 카테고리 (add 모드에서 카드 + 버튼 클릭 시) */
+  defaultCategory?: TodoFormData['category'];
   /** 자식 컴포넌트 */
   children: React.ReactNode;
 }
 
-export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, children }: TodoFormProviderProps) => {
+export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, defaultCategory, children }: TodoFormProviderProps) => {
   // 선택된 날짜를 YYYY-MM-DD 형식으로 변환
   const initialDateString = format(selectedDate, 'yyyy-MM-dd');
 
@@ -61,8 +63,9 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     () => ({
       ...TODO_DEFAULT_VALUES,
       date: initialDateString,
+      category: defaultCategory || 'NOW',
     }),
-    [initialDateString]
+    [initialDateString, defaultCategory]
   );
 
   // form의 values 옵션: add 모드일 때도 selectedDate 변경을 반영
@@ -131,8 +134,9 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             await postAddTodoMutation.mutateAsync({
               goalId: data.goalId ?? null,
               date: data.date,
+              time: data.time || null,
               content: data.content,
-              isImportant: data.isImportant,
+              category: data.category,
               routine:
                 data.repeatType !== 'none' && data.routineDuration
                   ? {
@@ -150,8 +154,9 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
               todoId,
               goalId: data.goalId ?? null,
               date: data.date,
+              time: data.time || null,
               content: data.content,
-              isImportant: data.isImportant,
+              category: data.category,
               routine:
                 data.repeatType !== 'none' && data.routineDuration
                   ? {
@@ -214,7 +219,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             goalId: data.goalId ?? null,
             date: data.date,
             content: data.content,
-            isImportant: data.isImportant,
+            category: data.category,
             routine:
               data.repeatType !== 'none' && data.routineDuration
                 ? {
@@ -250,7 +255,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
             goalId: data.goalId ?? null,
             date: data.date,
             content: data.content,
-            isImportant: data.isImportant,
+            category: data.category,
             routine:
               data.repeatType !== 'none' && data.routineDuration
                 ? {

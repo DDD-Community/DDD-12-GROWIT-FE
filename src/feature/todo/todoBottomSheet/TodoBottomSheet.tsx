@@ -63,6 +63,8 @@ interface TodoBottomSheetProps {
   onOpen: () => void;
   /** 바텀시트 닫기 함수 */
   onClose: () => void;
+  /** 기본 카테고리 (add 모드에서 카드 + 버튼 클릭 시) */
+  defaultCategory?: TodoFormData['category'];
 }
 
 export const TodoBottomSheet = ({
@@ -73,6 +75,7 @@ export const TodoBottomSheet = ({
   isOpen,
   onOpen,
   onClose,
+  defaultCategory,
 }: TodoBottomSheetProps) => {
   const editSheet = useBottomSheet();
   const deleteSheet = useBottomSheet();
@@ -112,6 +115,11 @@ export const TodoBottomSheet = ({
     navigateTo('dateEdit');
   };
 
+  // 시간 선택 클릭 핸들러
+  const handleTimeSelect = () => {
+    navigateTo('timeSelect');
+  };
+
   // 삭제 BottomSheet 열기 핸들러
   const handleDeleteSelect = () => {
     deleteSheet.showSheet();
@@ -131,6 +139,7 @@ export const TodoBottomSheet = ({
       todoId={todoId}
       values={values}
       selectedDate={selectedDate}
+      defaultCategory={defaultCategory}
       onClose={() => {
         onClose();
         reset();
@@ -148,6 +157,7 @@ export const TodoBottomSheet = ({
             onStartDateSelect={handleStartDateSelect}
             onEndDateSelect={handleEndDateSelect}
             onDateEdit={handleDateEdit}
+            onTimeSelect={handleTimeSelect}
             dateSelectInitialTab={dateSelectInitialTab}
             goBack={goBack}
             goToMain={goToMain}

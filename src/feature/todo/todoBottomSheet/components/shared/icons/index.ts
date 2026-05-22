@@ -10,4 +10,6 @@ export {
   EndDateIcon,
   CheckIcon,
   PlusIcon,
+  DateIcon,
+  TimeIcon,
 } from './icons';
