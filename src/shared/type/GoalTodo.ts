@@ -22,5 +22,5 @@ export interface GoalTodo {
   content: string;
   routine?: GoalTodoRoutine;
   isCompleted: boolean;
-  category?: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+  category?: 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
 }

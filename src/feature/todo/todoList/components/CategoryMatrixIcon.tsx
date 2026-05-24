@@ -1,17 +1,17 @@
 import { CSSProperties } from 'react';
 
-export type MatrixCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+export type MatrixCategory = 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
 
 const CATEGORY_COLOR: Record<MatrixCategory, string> = {
-  NOW: '#FF6467',
-  STEADY: '#FFB900',
-  SKIP: '#51A2FF',
-  DELETE: '#ABAB9C',
+  URGENT: '#FF6467',
+  CONSISTENT: '#FFB900',
+  DEFERABLE: '#51A2FF',
+  DELETABLE: '#ABAB9C',
 };
 
 const INACTIVE_COLOR = '#404040';
 
-const QUADRANT_ORDER: MatrixCategory[] = ['NOW', 'STEADY', 'SKIP', 'DELETE'];
+const QUADRANT_ORDER: MatrixCategory[] = ['URGENT', 'CONSISTENT', 'DEFERABLE', 'DELETABLE'];
 
 interface CategoryMatrixIconProps {
   /** 활성 카테고리 — 해당 사분면만 카테고리 색상 */
@@ -26,7 +26,7 @@ interface CategoryMatrixIconProps {
  *
  * 외곽 프레임 size×size 의 가운데 50% 영역(inset-1/4)에 2×2 사분면을 그린다.
  * 활성 카테고리 셀만 카테고리 색상, 나머지는 #404040.
- * 사분면 순서: 좌상 NOW → 우상 STEADY → 좌하 SKIP → 우하 DELETE.
+ * 사분면 순서: 좌상 URGENT → 우상 CONSISTENT → 좌하 DEFERABLE → 우하 DELETABLE.
  */
 export const CategoryMatrixIcon = ({
   category,

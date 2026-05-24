@@ -35,7 +35,7 @@ export const todoFormSchema = z
     repeatType: repeatTypeSchema,
 
     /** 카테고리 */
-    category: z.enum(['NOW', 'STEADY', 'SKIP', 'DELETE']),
+    category: z.enum(['URGENT', 'CONSISTENT', 'DEFERABLE', 'DELETABLE']),
 
     /** 투두 날짜 (YYYY-MM-DD 형식) */
     date: z.string().min(1, '날짜를 선택해주세요'),

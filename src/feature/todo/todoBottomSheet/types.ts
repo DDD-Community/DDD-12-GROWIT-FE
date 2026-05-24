@@ -39,7 +39,7 @@ export interface TodoFormData {
   content: string;
   goalId: string | null;
   repeatType: FormRepeatType;
-  category: 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+  category: 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
   /** 투두 날짜 (YYYY-MM-DD 형식) */
   date: string;
   /**
@@ -55,7 +55,7 @@ export const TODO_DEFAULT_VALUES: TodoFormData = {
   content: '',
   goalId: null,
   repeatType: 'none',
-  category: 'NOW',
+  category: 'URGENT',
   date: '',
   time: undefined,
   routineDuration: undefined,
