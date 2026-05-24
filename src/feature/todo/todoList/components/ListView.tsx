@@ -84,7 +84,7 @@ const ListTodoItem = ({
           <GoalTag name={todo.goal.name} />
         )}
         <CategoryMatrixIcon
-          category={(todo.category as MatrixCategory) || 'NOW'}
+          category={(todo.category as MatrixCategory) || 'URGENT'}
         />
       </div>
     </SwipeableRow>
