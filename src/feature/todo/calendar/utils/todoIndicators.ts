@@ -4,18 +4,18 @@ type Indicators = Record<string, (string | null | undefined)[] | undefined>;
 
 /**
  * Figma 196:1610 calendar-day DS 주석:
- *   - 인디케이터 2개만 노출: 긴급(URGENT), 꾸준히(CONSISTENT)
+ *   - 인디케이터 2개만 노출: 긴급(NOW), 꾸준히(STEADY)
  *   - 모두 완료 시 opacity 100%, 미완료 항목 있으면 opacity 40%
- *   - DEFERABLE/DELETABLE은 인디케이터 없음
+ *   - SKIP/DELETE는 인디케이터 없음
  */
-const INDICATOR_CATEGORIES: TodoCategory[] = ['URGENT', 'CONSISTENT'];
+const INDICATOR_CATEGORIES: TodoCategory[] = ['NOW', 'STEADY'];
 
 // Figma 196:1605 calendar Indicators — color/red/500, color/amber/500
 const CATEGORY_BASE_COLOR: Record<TodoCategory, string> = {
-  URGENT: '#FB2C36',
-  CONSISTENT: '#FE9A00',
-  DEFERABLE: '#51A2FF',
-  DELETABLE: '#A1A1A1',
+  NOW: '#FB2C36',
+  STEADY: '#FE9A00',
+  SKIP: '#51A2FF',
+  DELETE: '#A1A1A1',
 };
 
 // 8자리 hex alpha — 40% ≈ 0x66, 100% = ff

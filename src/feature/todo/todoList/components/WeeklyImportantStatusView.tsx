@@ -17,18 +17,18 @@ const formatTimeLabel = (time: string): string => {
   return `${isAM ? 'AM' : 'PM'} ${hour12}:${minute}`;
 };
 
-type StatusCategory = 'URGENT' | 'CONSISTENT';
+type StatusCategory = 'NOW' | 'STEADY';
 
 const STATUS_META: Record<
   StatusCategory,
   { label: string; labelColor: string; iconSrc: string }
 > = {
-  URGENT: {
+  NOW: {
     label: '긴급',
     labelColor: '#FF6467',
     iconSrc: '/icon/category-now.png',
   },
-  CONSISTENT: {
+  STEADY: {
     label: '꾸준히',
     labelColor: '#FF8904',
     iconSrc: '/icon/category-steady.png',
@@ -199,7 +199,7 @@ const StatusCard = ({
 /**
  * Figma 169:1559 — 시안1_다크_주_현황 (중요 태스크 현황).
  *
- * 선택된 날짜의 중요(URGENT)/꾸준히(CONSISTENT) 카테고리 투두를 카드 두 개로 보여주고,
+ * 선택된 날짜의 중요(NOW)/꾸준히(STEADY) 카테고리 투두를 카드 두 개로 보여주고,
  * 각 카드는 완료 비율만큼 lime-400/0.32 게이지가 차오른다.
  */
 export const WeeklyImportantStatusView = ({
@@ -209,8 +209,8 @@ export const WeeklyImportantStatusView = ({
   onEdit,
   onAdd,
 }: WeeklyImportantStatusViewProps) => {
-  const nowTodos = todos.filter(t => t.category === 'URGENT');
-  const steadyTodos = todos.filter(t => t.category === 'CONSISTENT');
+  const nowTodos = todos.filter(t => t.category === 'NOW');
+  const steadyTodos = todos.filter(t => t.category === 'STEADY');
   const importantTodos = [...nowTodos, ...steadyTodos];
   const completed = importantTodos.filter(t => t.isCompleted).length;
   const total = importantTodos.length;
@@ -231,7 +231,7 @@ export const WeeklyImportantStatusView = ({
       {/* Two cards */}
       <div className="flex gap-2 flex-1 min-h-0 items-stretch">
         <StatusCard
-          category="URGENT"
+          category="NOW"
           todos={nowTodos}
           onToggle={onToggle}
           onDelete={onDelete}
@@ -239,7 +239,7 @@ export const WeeklyImportantStatusView = ({
           onAdd={onAdd}
         />
         <StatusCard
-          category="CONSISTENT"
+          category="STEADY"
           todos={steadyTodos}
           onToggle={onToggle}
           onDelete={onDelete}
