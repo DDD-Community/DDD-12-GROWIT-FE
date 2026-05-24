@@ -14,7 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
 import { transformTodosData, groupTodosByCategory } from './helper';
 
-type CategoryType = 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
+type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 interface TodoListProps {
   selectedDate: Date;
