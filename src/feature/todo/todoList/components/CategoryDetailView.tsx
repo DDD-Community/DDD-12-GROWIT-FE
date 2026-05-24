@@ -19,7 +19,7 @@ const formatTimeLabel = (time: string): string => {
   return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
 };
 
-type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+type CategoryType = 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
 
 interface BgLayer {
   src: string;
@@ -32,19 +32,19 @@ interface BgLayer {
  * 위에서부터 아래 순으로 stacking 되며, 마지막은 dark gradient overlay 별도.
  */
 const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
-  NOW: [
+  URGENT: [
     { src: '/images/detail-bg-base.jpg', anchor: 'top' },
     { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
   ],
-  STEADY: [
+  CONSISTENT: [
     { src: '/images/detail-bg-base.jpg', anchor: 'top' },
     { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
     { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
   ],
-  SKIP: [
+  DEFERABLE: [
     { src: '/images/detail-bg-base.jpg', anchor: 'top' },
     { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
@@ -52,7 +52,7 @@ const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
     { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-skip-1.jpg', anchor: 'bottom' },
   ],
-  DELETE: [
+  DELETABLE: [
     { src: '/images/detail-bg-base.jpg', anchor: 'top' },
     { src: '/images/detail-bg-delete-1.jpg', anchor: 'bottom' },
     { src: '/images/detail-bg-delete-2.jpg', anchor: 'bottom' },
@@ -68,25 +68,25 @@ const CATEGORY_META: Record<
     iconSrc: string;
   }
 > = {
-  NOW: {
+  URGENT: {
     title: '빨리 끝내기',
     badge: { text: '중요 · 긴급', color: '#FF383C' },
     subtitle: '컨디션이 가장 좋은 아침에 끝내세요.',
     iconSrc: '/icon/category-now.png',
   },
-  STEADY: {
+  CONSISTENT: {
     title: '천천히 끝내기',
     badge: { text: '중요 · 천천히', color: '#FF8904' },
     subtitle: '여유를 갖고 차근차근 진행하세요.',
     iconSrc: '/icon/category-steady.png',
   },
-  SKIP: {
+  DEFERABLE: {
     title: '넘겨도',
     badge: { text: '여유 · 긴급', color: '#51A2FF' },
     subtitle: '오늘 못해도 괜찮아요.',
     iconSrc: '/icon/category-skip.png',
   },
-  DELETE: {
+  DELETABLE: {
     title: '지워도',
     badge: { text: '여유 · 천천히', color: '#ABAB9C' },
     subtitle: '필요 없다면 과감히 지워도 돼요.',
@@ -197,7 +197,7 @@ const DetailTodoItem = ({
         </div>
         <div className={isMultiLine ? 'pt-0.5' : ''}>
           <CategoryMatrixIcon
-            category={(todo.category as MatrixCategory) || 'NOW'}
+            category={(todo.category as MatrixCategory) || 'URGENT'}
           />
         </div>
       </div>

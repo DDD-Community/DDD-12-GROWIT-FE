@@ -20,7 +20,7 @@ const DAY_SWIPE_THRESHOLD = 60;
 export const TodoListContainer = () => {
   const addSheet = useBottomSheet();
   const editSheet = useBottomSheet();
-  const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('NOW');
+  const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('URGENT');
   // Figma 169:1559 — 선택된 날짜 재클릭 시 "중요 태스크 현황" 뷰로 토글
   const [showStatus, setShowStatus] = useState(false);
   // Figma 196:1611 — 매트릭스 영역 swipe 트래킹용 motion value
@@ -59,10 +59,10 @@ export const TodoListContainer = () => {
         };
 
         const handleAdd = (category?: string) => {
-          if (category === 'NOW' || category === 'STEADY' || category === 'SKIP' || category === 'DELETE') {
+          if (category === 'URGENT' || category === 'CONSISTENT' || category === 'DEFERABLE' || category === 'DELETABLE') {
             setAddDefaultCategory(category);
           } else {
-            setAddDefaultCategory('NOW');
+            setAddDefaultCategory('URGENT');
           }
           addSheet.showSheet();
         };

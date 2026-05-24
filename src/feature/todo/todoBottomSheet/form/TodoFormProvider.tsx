@@ -63,7 +63,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     () => ({
       ...TODO_DEFAULT_VALUES,
       date: initialDateString,
-      category: defaultCategory || 'NOW',
+      category: defaultCategory || 'URGENT',
     }),
     [initialDateString, defaultCategory]
   );
