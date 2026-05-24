@@ -14,10 +14,10 @@ import { getProgressGoals } from '@/model/goal/api';
 import { cn } from '@/shared/lib/utils';
 
 const CATEGORY_OPTIONS = [
-  { value: 'URGENT' as const, label: '긴급', color: '#FF6467' },
-  { value: 'CONSISTENT' as const, label: '꾸준히', color: '#FF8904' },
-  { value: 'DEFERABLE' as const, label: '넘겨도', color: '#51A2FF' },
-  { value: 'DELETABLE' as const, label: '지워도', color: '#A1A1A1' },
+  { value: 'NOW' as const, label: '긴급', color: '#FF6467' },
+  { value: 'STEADY' as const, label: '꾸준히', color: '#FF8904' },
+  { value: 'SKIP' as const, label: '넘겨도', color: '#51A2FF' },
+  { value: 'DELETE' as const, label: '지워도', color: '#A1A1A1' },
 ];
 
 interface MainViewProps {

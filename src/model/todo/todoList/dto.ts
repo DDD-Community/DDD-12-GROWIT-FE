@@ -67,7 +67,7 @@ export interface TodoCountByGoal {
   todoCount: number;
 }
 
-export type TodoCategory = 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
+export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 export interface TodoCountByCategory {
   category: TodoCategory;

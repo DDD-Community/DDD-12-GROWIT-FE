@@ -1,12 +1,12 @@
 import { GoalTodo } from '@/shared/type/GoalTodo';
 
-export type TodoCategory = 'URGENT' | 'CONSISTENT' | 'DEFERABLE' | 'DELETABLE';
+export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
 export interface CategoryGroups {
-  URGENT: GoalTodo[];
-  CONSISTENT: GoalTodo[];
-  DEFERABLE: GoalTodo[];
-  DELETABLE: GoalTodo[];
+  NOW: GoalTodo[];
+  STEADY: GoalTodo[];
+  SKIP: GoalTodo[];
+  DELETE: GoalTodo[];
 }
 
 export interface GoalGroup {
@@ -24,15 +24,15 @@ interface TodoDataItem {
  * Todo를 category별로 그룹화
  */
 export const groupTodosByCategory = (todos: GoalTodo[]): CategoryGroups => {
-  const groups: CategoryGroups = { URGENT: [], CONSISTENT: [], DEFERABLE: [], DELETABLE: [] };
+  const groups: CategoryGroups = { NOW: [], STEADY: [], SKIP: [], DELETE: [] };
 
   todos.forEach(todo => {
     const cat = todo.category;
     if (cat && cat in groups) {
       groups[cat].push(todo);
     } else {
-      // category가 없는 경우 URGENT로 분류
-      groups.URGENT.push(todo);
+      // category가 없는 경우 NOW로 분류
+      groups.NOW.push(todo);
     }
   });
 
