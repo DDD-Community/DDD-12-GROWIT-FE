@@ -35,13 +35,11 @@ export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
       }
     >
       <AppBridgeProvider>
-        <div className="flex flex-1 max-sm:flex-col max-w-md w-full mx-auto h-full">
+        <div className="mx-auto flex h-full w-full max-w-md flex-1 bg-bg-default max-sm:flex-col">
           <GoalOnboardRedirect />
           <div className="flex flex-1 flex-col overflow-hidden relative">
-            <div className="flex-1 overflow-y-auto pb-[calc(93px+env(safe-area-inset-bottom,0px))]">
-              {children}
-              <BottomNavigation />
-            </div>
+            <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+            <BottomNavigation />
             <AnimatedStack isActive={!!stackSegment}>{stack}</AnimatedStack>
           </div>
         </div>

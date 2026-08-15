@@ -68,11 +68,11 @@ export const TodoListContainer = () => {
         };
 
         return (
-          <div className="relative w-full">
+          <div className="relative min-h-full w-full">
             <div
-              className={`bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
+              className={`min-h-full bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
-              <div className="flex min-h-svh flex-col pb-[60px]">
+              <div className="flex min-h-full flex-col">
                 {/* Figma 196:1556 — iOS Safe Area (status bar) */}
                 <div
                   aria-hidden="true"
@@ -120,7 +120,7 @@ export const TodoListContainer = () => {
             <FloatingButton
               onClick={() => handleAdd()}
               aria-label="투두 추가"
-              className="bottom-[calc(105px+env(safe-area-inset-bottom,0px))]"
+              className="bottom-[calc(25px+env(safe-area-inset-bottom,0px))]"
             />
 
             {/* 추가용 TodoBottomSheet */}
