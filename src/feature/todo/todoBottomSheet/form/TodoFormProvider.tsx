@@ -11,7 +11,6 @@ import { usePutTodo, useDeleteTodo, usePostAddTodo } from '@/model/todo/todoList
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
 import type { RoutineUpdateType, TodoDetail, TodoRoutine } from '@/model/todo/todoList/dto';
 import { useToast } from '@/shared/components/feedBack/toast';
-import axios from 'axios';
 
 interface TodoFormContextType {
   /** form methods */
@@ -43,8 +42,14 @@ interface TodoFormContextType {
 const TodoFormContext = createContext<TodoFormContextType | null>(null);
 
 const getMutationErrorMessage = (error: unknown, fallback: string) => {
-  if (axios.isAxiosError<{ message?: string }>(error)) {
-    return error.response?.data?.message ?? fallback;
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const response = error.response;
+    if (typeof response === 'object' && response !== null && 'data' in response) {
+      const data = response.data;
+      if (typeof data === 'object' && data !== null && 'message' in data && typeof data.message === 'string') {
+        return data.message;
+      }
+    }
   }
   return fallback;
 };

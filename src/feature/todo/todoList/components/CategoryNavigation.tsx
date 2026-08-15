@@ -2,11 +2,8 @@
 
 import { KeyboardEvent, useRef } from 'react';
 import { motion, type PanInfo } from 'motion/react';
-import {
-  TODO_CATEGORY_NAV_META,
-  TODO_CATEGORY_ORDER,
-  type TodoCategory,
-} from '../category';
+import Button from '@/shared/components/input/Button';
+import { TODO_CATEGORY_NAV_META, TODO_CATEGORY_ORDER, type TodoCategory } from '../category';
 
 const SWIPE_THRESHOLD = 48;
 
@@ -16,7 +13,6 @@ interface CategoryNavigationProps {
 }
 
 export const CategoryNavigation = ({ value, onValueChange }: CategoryNavigationProps) => {
-  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const didDrag = useRef(false);
 
   const selectAt = (index: number) => {
@@ -24,7 +20,7 @@ export const CategoryNavigation = ({ value, onValueChange }: CategoryNavigationP
     if (!category) return;
 
     onValueChange(category);
-    tabRefs.current[index]?.focus();
+    document.getElementById(`todo-category-tab-${category.toLowerCase()}`)?.focus();
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -64,7 +60,7 @@ export const CategoryNavigation = ({ value, onValueChange }: CategoryNavigationP
     <motion.div
       role="tablist"
       aria-label="투두 카테고리"
-      className="grid h-10 w-[176px] grid-cols-4 overflow-hidden rounded-[24px] bg-[#171717] p-1"
+      className="grid h-10 w-[176px] touch-pan-y grid-cols-4 overflow-hidden rounded-[24px] bg-category-panel p-1"
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
       dragElastic={0}
@@ -73,39 +69,40 @@ export const CategoryNavigation = ({ value, onValueChange }: CategoryNavigationP
         didDrag.current = true;
       }}
       onDragEnd={handleDragEnd}
-      style={{ touchAction: 'pan-y' }}
     >
       {TODO_CATEGORY_ORDER.map((category, index) => {
         const isSelected = category === value;
         const meta = TODO_CATEGORY_NAV_META[category];
 
         return (
-          <button
+          <Button
             key={category}
-            ref={element => {
-              tabRefs.current[index] = element;
-            }}
+            size="sm"
+            layout="icon-only"
+            variant="tertiary"
             type="button"
             role="tab"
             id={`todo-category-tab-${category.toLowerCase()}`}
             aria-selected={isSelected}
-            aria-controls="todo-category-panel"
+            aria-controls={`todo-category-panel-${category.toLowerCase()}`}
             aria-label={meta.label}
             tabIndex={isSelected ? 0 : -1}
-            className="flex items-center justify-center rounded-[18px] transition-colors"
+            className="rounded-[18px] p-0 transition-colors"
             onClick={() => {
               if (!didDrag.current) onValueChange(category);
             }}
             onKeyDown={event => handleKeyDown(event, index)}
-          >
-            <span
-              aria-hidden="true"
-              className="size-3 rounded-[2px]"
-              style={{ backgroundColor: isSelected ? meta.activeColor : '#404040' }}
-            />
-          </button>
+            icon={
+              <span
+                aria-hidden="true"
+                className={`size-3 rounded-[2px] ${isSelected ? meta.activeClassName : 'bg-category-tab-inactive'}`}
+              />
+            }
+          />
         );
       })}
     </motion.div>
   );
 };
+
+export default CategoryNavigation;

@@ -114,6 +114,42 @@ dialog::backdrop {
 }
 
 @layer utilities {
+  .category-detail-overlay {
+    background: linear-gradient(180deg, #081c32 0%, rgba(64, 85, 115, 0.25) 100%);
+  }
+
+  .category-detail-bg-base-top {
+    background: url('/images/detail-bg-base.jpg') center top / cover no-repeat;
+  }
+
+  .category-detail-bg-mid-bottom {
+    background: url('/images/detail-bg-mid.jpg') center bottom / cover no-repeat;
+  }
+
+  .category-detail-bg-front-bottom {
+    background: url('/images/detail-bg-front.jpg') center bottom / cover no-repeat;
+  }
+
+  .category-detail-bg-steady-top {
+    background: url('/images/detail-bg-steady-1.jpg') center top / cover no-repeat;
+  }
+
+  .category-detail-bg-steady-bottom {
+    background: url('/images/detail-bg-steady-2.jpg') center bottom / cover no-repeat;
+  }
+
+  .category-detail-bg-skip-bottom {
+    background: url('/images/detail-bg-skip-1.jpg') center bottom / cover no-repeat;
+  }
+
+  .category-detail-bg-delete-first {
+    background: url('/images/detail-bg-delete-1.jpg') center bottom / cover no-repeat;
+  }
+
+  .category-detail-bg-delete-second {
+    background: url('/images/detail-bg-delete-2.jpg') center bottom / cover no-repeat;
+  }
+
   .scrollbar-hidden {
     -ms-overflow-style: none;
     scrollbar-width: none;
