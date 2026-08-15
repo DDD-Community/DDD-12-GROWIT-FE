@@ -6,8 +6,8 @@ import GoalProgressSheet from '@/composite/goal/progress';
 
 export default function GoalPageRoute() {
   return (
-    <div className="relative w-full h-full flex flex-col justify-between bg-normal">
-      <header className="w-full flex items-center justify-start px-5 pt-5">
+    <div className="relative flex h-full min-h-0 w-full flex-col bg-bg-default">
+      <header className="flex w-full shrink-0 items-center justify-start px-5 pt-5">
         <EndedGoalsNavButton />
       </header>
       <div className="absolute inset-0 w-full h-full opacity-[0.20] pointer-events-none">
@@ -17,12 +17,12 @@ export default function GoalPageRoute() {
 
       <GoalProvider>
         {/** 행성 swiper 섹션 */}
-        <section className="overflow-y-auto w-full h-full flex flex-col">
-          <div className="w-full my-auto">
+        <section className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
+          <div className="my-auto min-h-0 w-full flex-1">
             <GoalPlanetSection />
           </div>
         </section>
-        <footer className="w-full flex flex-col items-center justify-end">
+        <footer className="flex w-full shrink-0 flex-col items-center justify-end">
           <GoalProgressSheet />
         </footer>
       </GoalProvider>

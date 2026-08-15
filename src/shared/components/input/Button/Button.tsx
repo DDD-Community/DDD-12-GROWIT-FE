@@ -1,12 +1,12 @@
 'use client';
 
-import { ButtonHTMLAttributes, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, type HTMLMotionProps } from 'framer-motion';
 import FlexBox from '../../foundation/FlexBox';
 import type { ButtonVariants, ButtonLayouts, ButtonSize } from '@/shared/components/input/Button/utils/button';
 import { getButtonClasses } from '@/shared/components/input/Button/utils/button';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children' | 'layout' | 'size'> {
   variant?: ButtonVariants;
   layout?: ButtonLayouts;
   size: ButtonSize;
@@ -15,7 +15,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   className?: string;
 }
-const Button: React.FC<ButtonProps> = ({
+const Button = ({
   size,
   variant = 'primary',
   layout = 'normal',
@@ -27,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   type,
   ...props
-}) => {
+}: ButtonProps) => {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={e => onClick && onClick(e)}
       disabled={disabled}
       type={type}
-      {...(props as any)}
+      {...props}
     >
       {layout === 'normal' ? (
         <AnimatePresence mode="wait" initial={false}>

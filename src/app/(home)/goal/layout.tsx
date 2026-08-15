@@ -11,10 +11,11 @@ type GoalPageLayoutProps = {
 export default function GoalLayout({ children, stack }: GoalPageLayoutProps) {
   const stackSegment = useSelectedLayoutSegment('stack');
 
-  // 바텀 네비게이션 만큼 높이 빼기
   return (
     <>
-      <div className="flex flex-col h-[calc(100svh-70px)] relative overflow-hidden">{children}</div>
+      <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-bg-default">
+        {children}
+      </div>
       <AnimatedStack isActive={!!stackSegment}>{stack}</AnimatedStack>
     </>
   );

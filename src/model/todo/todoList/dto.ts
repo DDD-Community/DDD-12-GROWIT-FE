@@ -1,5 +1,5 @@
 import { CommonResponse } from '@/shared/type/response';
-import { GoalTodo, GoalTodoGoal } from '@/shared/type/GoalTodo';
+import { GoalTodo, GoalTodoGoal, type RepeatDay } from '@/shared/type/GoalTodo';
 
 export interface TodoByDateRequest {
   date: string; // YYYY-MM-DD 형식
@@ -17,7 +17,7 @@ export interface PatchTodoStatusRequest {
   isCompleted: boolean;
 }
 
-export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'YEARLY';
+export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY';
 
 /** 반복 투두 처리 타입 (공통) */
 export type RoutineActionType = 'SINGLE' | 'FROM_DATE' | 'ALL';
@@ -31,19 +31,38 @@ export interface TodoRoutine {
     endDate: string; // 'YYYY-MM-DD'
   };
   repeatType: RepeatType;
+  repeatDays?: RepeatDay[] | null;
 }
 
-export interface PutTodoRequest {
+interface PutTodoRequestBase {
   todoId: string; // URL 파라미터용
   goalId: string | null; // 목표 ID (기타일 경우 null)
   date: string; // 'YYYY-MM-DD'
   /** 투두 시간 (HH:mm, optional) */
   time?: string | null;
   content: string;
-  category: string;
-  routine?: TodoRoutine; // 루틴 설정 (옵셔널)
-  routineUpdateType?: RoutineUpdateType; // 반복 투두 수정 타입 (SINGLE, FROM_DATE, ALL)
+  category: TodoCategory;
 }
+
+export type PutTodoRequest = PutTodoRequestBase &
+  (
+    | { routine?: never; routineUpdateType?: never }
+    | { routine?: never; routineUpdateType: 'SINGLE' }
+    | { routine: TodoRoutine; routineUpdateType: 'FROM_DATE' | 'ALL' }
+  );
+
+export interface TodoDetail {
+  id: string;
+  goalId: string | null;
+  date: string;
+  time?: string | null;
+  content: string;
+  category: TodoCategory;
+  isCompleted: boolean;
+  routine?: TodoRoutine | null;
+}
+
+export interface TodoDetailResponse extends CommonResponse<TodoDetail> {}
 
 export interface PostAddTodoRequest {
   goalId: string | null; // 옵셔널 - 기타 일땐 null로 넣어주세요
@@ -51,7 +70,7 @@ export interface PostAddTodoRequest {
   /** 투두 시간 (HH:mm, optional) */
   time?: string | null;
   content: string;
-  category: string;
+  category: TodoCategory;
   routine?: TodoRoutine; // 루틴 설정 (옵셔널)
 }
 

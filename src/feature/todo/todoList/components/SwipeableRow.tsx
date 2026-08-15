@@ -55,7 +55,7 @@ export const SwipeableRow = ({ children, onComplete, onDelete, className }: Swip
   };
 
   return (
-    <div className={`relative ${className ?? ''}`}>
+    <div data-todo-swipe-row className={`relative ${className ?? ''}`}>
       {/* 좌측 영역 — 우측 스와이프 시 노출, Figma 196:1676 완료 버튼 */}
       {onComplete && (
         <button

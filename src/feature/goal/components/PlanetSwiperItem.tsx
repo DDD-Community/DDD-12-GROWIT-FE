@@ -63,8 +63,8 @@ export const PlanetSwiperItem = ({ goal }: { goal: Goal }) => {
   const status = getGoalStatus(goal);
 
   return (
-    <div className="gap-2 w-full h-full flex flex-col justify-center">
-      <header className="px-2.5 py-2.5 w-full flex flex-col items-center gap-y-2">
+    <div className="flex h-full min-h-0 w-full flex-col justify-center gap-2">
+      <header className="flex w-full shrink-0 flex-col items-center gap-y-2 px-2.5 py-2.5">
         <Badge
           type="default"
           size="md"
@@ -79,7 +79,7 @@ export const PlanetSwiperItem = ({ goal }: { goal: Goal }) => {
 
       {/* Planet Image */}
       <button
-        className="relative cursor-pointer transition-transform w-full flex items-center justify-center"
+        className="relative flex min-h-0 w-full flex-1 cursor-pointer items-center justify-center transition-transform"
         onClick={handlePlanetClick}
       >
         <Image
@@ -87,7 +87,7 @@ export const PlanetSwiperItem = ({ goal }: { goal: Goal }) => {
           width={200}
           height={200}
           alt={goal.name}
-          className="object-cover"
+          className="h-full max-h-[200px] w-auto max-w-full object-contain"
           priority
         />
         {isTooltipOpen && (
@@ -104,7 +104,7 @@ export const PlanetSwiperItem = ({ goal }: { goal: Goal }) => {
         )}
       </button>
 
-      <p className="caption-1-medium text-text-secondary text-center">{goal.planet.name}</p>
+      <p className="caption-1-medium shrink-0 text-center text-text-secondary">{goal.planet.name}</p>
     </div>
   );
 };

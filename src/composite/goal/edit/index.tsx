@@ -9,7 +9,6 @@ import Button from '@/shared/components/input/Button';
 import { GoalMutation } from '@/model/goal/queries';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter, notFound } from 'next/navigation';
-import { ROUTES } from '@/shared/constants/routes';
 import type { Goal } from '@/shared/type/goal';
 
 export default function GoalEditFormContent({ goalId }: { goalId: string }) {
@@ -24,7 +23,7 @@ export default function GoalEditFormContent({ goalId }: { goalId: string }) {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen bg-[#1B1C1E]">
+    <div className="flex min-h-screen flex-1 flex-col bg-bg-default">
       <GoalEditForm currentGoal={currentGoal} />
     </div>
   );

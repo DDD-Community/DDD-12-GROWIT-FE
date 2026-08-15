@@ -1,6 +1,6 @@
 import { GoalTodo } from '@/shared/type/GoalTodo';
 
-export type TodoCategory = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+export type { TodoCategory } from './category';
 
 export interface CategoryGroups {
   NOW: GoalTodo[];
@@ -14,6 +14,45 @@ export interface GoalGroup {
   goalName: string;
   todos: GoalTodo[];
 }
+
+const normalizeTodoTime = (time: GoalTodo['time']): string | null => {
+  if (typeof time !== 'string') return null;
+
+  const normalizedTime = time.trim();
+  return normalizedTime.length > 0 ? normalizedTime : null;
+};
+
+/**
+ * Todo 공통 정렬 정책
+ * 미완료 → 완료, 시간 있음 → 없음, 시간순 → 콘텐츠 가나다순 → 입력 순서를 따른다.
+ * 입력 배열은 변경하지 않는다.
+ */
+export const sortTodosByPolicy = (todos: GoalTodo[]): GoalTodo[] => {
+  return todos
+    .map((todo, originalIndex) => ({ todo, originalIndex }))
+    .sort((a, b) => {
+      if (a.todo.isCompleted !== b.todo.isCompleted) {
+        return a.todo.isCompleted ? 1 : -1;
+      }
+
+      const aTime = normalizeTodoTime(a.todo.time);
+      const bTime = normalizeTodoTime(b.todo.time);
+
+      if (aTime !== null && bTime === null) return -1;
+      if (aTime === null && bTime !== null) return 1;
+
+      if (aTime !== null && bTime !== null) {
+        const timeComparison = aTime.localeCompare(bTime);
+        if (timeComparison !== 0) return timeComparison;
+      }
+
+      const contentComparison = a.todo.content.localeCompare(b.todo.content, 'ko');
+      if (contentComparison !== 0) return contentComparison;
+
+      return a.originalIndex - b.originalIndex;
+    })
+    .map(({ todo }) => todo);
+};
 
 interface TodoDataItem {
   todo: GoalTodo;
@@ -36,7 +75,12 @@ export const groupTodosByCategory = (todos: GoalTodo[]): CategoryGroups => {
     }
   });
 
-  return groups;
+  return {
+    NOW: sortTodosByPolicy(groups.NOW),
+    STEADY: sortTodosByPolicy(groups.STEADY),
+    SKIP: sortTodosByPolicy(groups.SKIP),
+    DELETE: sortTodosByPolicy(groups.DELETE),
+  };
 };
 
 /**
@@ -57,16 +101,6 @@ export const transformTodosData = (todosData: TodoDataItem[] | undefined): GoalT
       };
     })
     .filter(todo => todo.goal);
-};
-
-/**
- * 그룹 내 todo 정렬: 미완료가 위, 완료가 아래
- */
-const sortTodosInGroup = (todos: GoalTodo[]): GoalTodo[] => {
-  return [...todos].sort((a, b) => {
-    if (a.isCompleted === b.isCompleted) return 0;
-    return a.isCompleted ? 1 : -1;
-  });
 };
 
 /**
@@ -107,7 +141,7 @@ export const groupAndSortTodos = (todos: GoalTodo[]): GoalGroup[] => {
   // 그룹 내 정렬 후 그룹 간 정렬
   const groupsWithSortedTodos = Array.from(groupMap.values()).map(group => ({
     ...group,
-    todos: sortTodosInGroup(group.todos),
+    todos: sortTodosByPolicy(group.todos),
   }));
 
   return sortGroups(groupsWithSortedTodos);
