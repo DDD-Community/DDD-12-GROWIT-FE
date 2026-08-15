@@ -12,7 +12,7 @@ import { WeeklyImportantStatusView } from './components/WeeklyImportantStatusVie
 import { useTodosByDate, usePatchTodoStatus, useDeleteTodo } from '@/model/todo/todoList/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
-import { transformTodosData, groupTodosByCategory } from './helper';
+import { transformTodosData, groupTodosByCategory, sortTodosByPolicy } from './helper';
 
 type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
 
@@ -33,9 +33,10 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
   const { data: todosData, isLoading, error } = useTodosByDate({ date: dateString });
 
   const todos = useMemo(() => transformTodosData(todosData), [todosData]);
-  const categoryGroups = useMemo(() => groupTodosByCategory(todos), [todos]);
+  const sortedTodos = useMemo(() => sortTodosByPolicy(todos), [todos]);
+  const categoryGroups = useMemo(() => groupTodosByCategory(sortedTodos), [sortedTodos]);
 
-  const hasAnyTodos = todos.length > 0;
+  const hasAnyTodos = sortedTodos.length > 0;
 
   const invalidateQueries = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(dateString) });
@@ -71,13 +72,13 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
 
   if (viewMode === 'list') {
     if (!hasAnyTodos) return <TodoListEmpty />;
-    return <ListView todos={todos} onToggle={handleToggle} onDelete={handleDelete} onEdit={onEdit} />;
+    return <ListView todos={sortedTodos} onToggle={handleToggle} onDelete={handleDelete} onEdit={onEdit} />;
   }
 
   if (viewMode === 'status') {
     return (
       <WeeklyImportantStatusView
-        todos={todos}
+        todos={sortedTodos}
         onToggle={handleToggle}
         onDelete={handleDelete}
         onEdit={onEdit}
