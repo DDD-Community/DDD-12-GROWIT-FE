@@ -27,19 +27,6 @@
   --fill-brand: #58cf04;
   --bg-elevated: #1b1c1e;
   --bg-default: #09090b;
-  --category-now: #ff6467;
-  --category-steady: #ff8904;
-  --category-skip: #51a2ff;
-  --category-delete: #abab9c;
-  --category-nav-steady: #ffb900;
-  --category-panel: #171717;
-  --category-control: #ebebec;
-  --category-control-icon: #27272a;
-  --category-muted: #a1a1a1;
-  --category-subtle: #737373;
-  --category-empty: #525252;
-  --category-tab-inactive: #404040;
-  --category-section-label: #f4f4f5;
 }
 
 @theme {
@@ -79,19 +66,4 @@
   /* Background Colors */
   --color-bg-elevated: var(--bg-elevated);
   --color-bg-default: var(--bg-default);
-
-  /* Todo Category Colors */
-  --color-category-now: var(--category-now);
-  --color-category-steady: var(--category-steady);
-  --color-category-skip: var(--category-skip);
-  --color-category-delete: var(--category-delete);
-  --color-category-nav-steady: var(--category-nav-steady);
-  --color-category-panel: var(--category-panel);
-  --color-category-control: var(--category-control);
-  --color-category-control-icon: var(--category-control-icon);
-  --color-category-muted: var(--category-muted);
-  --color-category-subtle: var(--category-subtle);
-  --color-category-empty: var(--category-empty);
-  --color-category-tab-inactive: var(--category-tab-inactive);
-  --color-category-section-label: var(--category-section-label);
 }
