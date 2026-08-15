@@ -25,7 +25,7 @@ export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps
     onClick={onClick}
     whileTap={{ scale: 0.94 }}
     className={`relative flex w-full min-w-0 items-center justify-center px-1 py-3 transition-colors duration-200 ${
-      active ? 'text-text-strong' : 'text-category-muted'
+      active ? 'text-[#FCFCFC]' : 'text-[#A1A1A1]'
     }`}
     aria-pressed={active}
   >
@@ -33,7 +33,7 @@ export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps
       <motion.span
         layoutId="bottom-navigation-active-pill"
         aria-hidden="true"
-        className="absolute inset-y-0 -left-1 -right-1 rounded-3xl bg-category-tab-inactive shadow-sm"
+        className="absolute inset-y-0 -left-1 -right-1 rounded-3xl bg-[#404040] shadow-[0px_2px_8px_rgba(0,0,0,0.06)]"
         transition={{ type: 'spring', stiffness: 420, damping: 34 }}
       />
     )}
@@ -52,7 +52,7 @@ export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps
           animate={{ width: 'auto', marginLeft: 12, opacity: 1, x: 0 }}
           exit={{ width: 0, marginLeft: 0, opacity: 0, x: -4 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="relative overflow-hidden whitespace-nowrap text-[14px] font-medium leading-[1.43] text-text-strong"
+          className="relative overflow-hidden whitespace-nowrap text-[14px] font-medium leading-[1.43] text-[#FCFCFC]"
         >
           {label}
         </motion.span>

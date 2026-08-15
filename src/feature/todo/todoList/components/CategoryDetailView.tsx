@@ -9,7 +9,6 @@ import { TodoItemCheckbox } from './TodoItemCheckbox';
 import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
 import { CategoryNavigation } from './CategoryNavigation';
 import { TODO_CATEGORY_ORDER, type TodoCategory } from '../category';
-import Button from '@/shared/components/input/Button';
 
 const SWIPE_START_THRESHOLD = 12;
 const SWIPE_COMPLETE_THRESHOLD = 96;
@@ -27,7 +26,9 @@ const formatTimeLabel = (time: string): string => {
 };
 
 interface BgLayer {
-  className: string;
+  src: string;
+  /** bg-position 앵커 — 캔버스 어디에 이미지를 붙일지 */
+  anchor: 'top' | 'bottom' | 'center';
 }
 
 /**
@@ -36,38 +37,55 @@ interface BgLayer {
  */
 const CATEGORY_BG_LAYERS: Record<TodoCategory, BgLayer[]> = {
   NOW: [
-    { className: 'category-detail-bg-base-top' },
-    { className: 'category-detail-bg-mid-bottom' },
-    { className: 'category-detail-bg-front-bottom' },
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
   ],
   STEADY: [
-    { className: 'category-detail-bg-base-top' },
-    { className: 'category-detail-bg-mid-bottom' },
-    { className: 'category-detail-bg-front-bottom' },
-    { className: 'category-detail-bg-steady-top' },
-    { className: 'category-detail-bg-steady-bottom' },
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
   ],
   SKIP: [
-    { className: 'category-detail-bg-base-top' },
-    { className: 'category-detail-bg-mid-bottom' },
-    { className: 'category-detail-bg-front-bottom' },
-    { className: 'category-detail-bg-steady-top' },
-    { className: 'category-detail-bg-steady-bottom' },
-    { className: 'category-detail-bg-skip-bottom' },
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-front.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-steady-1.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-steady-2.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-skip-1.jpg', anchor: 'bottom' },
   ],
   DELETE: [
-    { className: 'category-detail-bg-base-top' },
-    { className: 'category-detail-bg-delete-first' },
-    { className: 'category-detail-bg-delete-second' },
+    { src: '/images/detail-bg-base.jpg', anchor: 'top' },
+    { src: '/images/detail-bg-delete-1.jpg', anchor: 'bottom' },
+    { src: '/images/detail-bg-delete-2.jpg', anchor: 'bottom' },
   ],
 };
 
 const CategoryBackground = ({ category }: { category: TodoCategory }) => (
   <div className="absolute inset-0 overflow-hidden">
     {CATEGORY_BG_LAYERS[category].map((layer, index) => (
-      <div key={`${category}-${index}`} className={`absolute inset-0 ${layer.className}`} />
+      <div
+        key={`${category}-${index}`}
+        className="absolute inset-0 bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url(${layer.src})`,
+          backgroundPosition:
+            layer.anchor === 'top'
+              ? 'center top'
+              : layer.anchor === 'bottom'
+                ? 'center bottom'
+                : 'center',
+        }}
+      />
     ))}
-    <div className="category-detail-overlay absolute inset-0" />
+    <div
+      className="absolute inset-0"
+      style={{
+        background: 'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
+      }}
+    />
   </div>
 );
 
@@ -75,32 +93,32 @@ const CATEGORY_META: Record<
   TodoCategory,
   {
     title: string;
-    badge: { text: string; className: string };
+    badge: { text: string; color: string };
     subtitle: string;
     iconSrc: string;
   }
 > = {
   NOW: {
     title: '빨리 끝내기',
-    badge: { text: '중요 · 긴급', className: 'text-category-now' },
+    badge: { text: '긴급', color: '#FF383C' },
     subtitle: '컨디션이 가장 좋은 아침에 끝내세요.',
     iconSrc: '/icon/category-now.png',
   },
   STEADY: {
-    title: '천천히 끝내기',
-    badge: { text: '중요 · 천천히', className: 'text-category-steady' },
+    title: '꾸준히하기',
+    badge: { text: '꾸준히', color: '#FF8904' },
     subtitle: '여유를 갖고 차근차근 진행하세요.',
     iconSrc: '/icon/category-steady.png',
   },
   SKIP: {
-    title: '넘겨도',
-    badge: { text: '여유 · 긴급', className: 'text-category-skip' },
+    title: '여유롭게 끝내기',
+    badge: { text: '넘겨도', color: '#51A2FF' },
     subtitle: '오늘 못해도 괜찮아요.',
     iconSrc: '/icon/category-skip.png',
   },
   DELETE: {
-    title: '지워도',
-    badge: { text: '여유 · 천천히', className: 'text-category-delete' },
+    title: '천천히 끝내기',
+    badge: { text: '지워도', color: '#ABAB9C' },
     subtitle: '필요 없다면 과감히 지워도 돼요.',
     iconSrc: '/icon/category-delete.png',
   },
@@ -119,26 +137,21 @@ const RoutineTag = ({ routine }: { routine: GoalTodo['routine'] }) => {
   };
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-xl bg-category-tab-inactive px-1 py-0.5 text-category-muted">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-        <path
-          d="M1.5 6.5C1.5 4 3.5 2 6 2c1.7 0 3.1.9 3.9 2.3M10.5 5.5C10.5 8 8.5 10 6 10c-1.7 0-3.1-.9-3.9-2.3"
-          stroke="currentColor"
-          strokeWidth="0.8"
-          strokeLinecap="round"
-        />
-        <path d="M9 2v2.5h-2.5" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M3 10V7.5h2.5" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+    <span className="inline-flex items-center gap-1 bg-[#404040] rounded-xl px-1 py-0.5">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M1.5 6.5C1.5 4 3.5 2 6 2c1.7 0 3.1.9 3.9 2.3M10.5 5.5C10.5 8 8.5 10 6 10c-1.7 0-3.1-.9-3.9-2.3" stroke="#A1A1A1" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M9 2v2.5h-2.5" stroke="#A1A1A1" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M3 10V7.5h2.5" stroke="#A1A1A1" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span className="text-xs leading-[133%]">{labelMap[routine.repeatType] || routine.repeatType}</span>
+      <span className="text-xs leading-[133%] text-[#A1A1A1]">{labelMap[routine.repeatType] || routine.repeatType}</span>
     </span>
   );
 };
 
 /** 목표 태그 */
 const GoalTag = ({ name }: { name: string }) => (
-  <span className="inline-flex items-center gap-1 rounded-xl bg-category-tab-inactive px-1 py-0.5">
-    <span className="text-xs leading-[133%] text-category-muted">#{name}</span>
+  <span className="inline-flex items-center gap-1 bg-[#404040] rounded-xl px-1 py-0.5">
+    <span className="text-xs leading-[133%] text-[#A1A1A1]">#{name}</span>
   </span>
 );
 
@@ -182,7 +195,10 @@ const DetailTodoItem = ({
   const isMultiLine = hasTime || hasTags;
 
   return (
-    <SwipeableRow onComplete={handleCheck} onDelete={onDelete ? () => onDelete(todo.id) : undefined}>
+    <SwipeableRow
+      onComplete={handleCheck}
+      onDelete={onDelete ? () => onDelete(todo.id) : undefined}
+    >
       <div className={`flex gap-2 py-1.5 ${isMultiLine ? 'items-start' : 'items-center'}`}>
         <div className={isMultiLine ? 'pt-0.5' : ''}>
           <TodoItemCheckbox checked={checked} onClick={handleCheck} />
@@ -190,24 +206,30 @@ const DetailTodoItem = ({
         <div className="flex-1 min-w-0 flex flex-col gap-1">
           <span
             className={`text-sm leading-[142%] font-medium cursor-pointer ${
-              checked ? 'line-through text-category-muted' : 'text-text-strong'
+              checked ? 'line-through text-[#A1A1A1]' : 'text-white'
             }`}
             onClick={() => onEdit?.(todo)}
           >
             {todo.content}
           </span>
           {hasTime && (
-            <p className="text-[12px] leading-[1.33] text-category-subtle">{formatTimeLabel(todo.time as string)}</p>
+            <p className="text-[12px] leading-[1.33] text-[#737373]">
+              {formatTimeLabel(todo.time as string)}
+            </p>
           )}
           {hasTags && (
             <div className={`flex items-center gap-1 ${checked ? 'opacity-50' : ''}`}>
               {todo.routine && <RoutineTag routine={todo.routine} />}
-              {todo.goal?.name && todo.goal.name !== '미분류' && <GoalTag name={todo.goal.name} />}
+              {todo.goal?.name && todo.goal.name !== '미분류' && (
+                <GoalTag name={todo.goal.name} />
+              )}
             </div>
           )}
         </div>
         <div className={isMultiLine ? 'pt-0.5' : ''}>
-          <CategoryMatrixIcon category={(todo.category as MatrixCategory) || 'NOW'} />
+          <CategoryMatrixIcon
+            category={(todo.category as MatrixCategory) || 'NOW'}
+          />
         </div>
       </div>
     </SwipeableRow>
@@ -238,26 +260,38 @@ const CategoryPanelCard = ({
   return (
     <div
       aria-hidden={isPreview || undefined}
-      className="flex h-fit max-h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-category-panel shadow-sm"
+      className="flex h-fit max-h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]"
     >
       <div className="flex h-fit max-h-full min-h-0 flex-col gap-8 px-6 pb-8 pt-6">
         <div className="flex shrink-0 flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Image src={meta.iconSrc} alt="" width={24} height={24} className="shrink-0 select-none" priority />
-            <h2 className="truncate text-[20px] font-bold leading-[130%] text-white">{meta.title}</h2>
+            <Image
+              src={meta.iconSrc}
+              alt=""
+              width={24}
+              height={24}
+              className="shrink-0 select-none"
+              priority
+            />
+            <h2 className="truncate text-[20px] font-bold leading-[130%] text-white">
+              {meta.title}
+            </h2>
             <span
-              className={`shrink-0 whitespace-nowrap rounded-3xl px-2 py-1.5 text-xs font-medium leading-[134%] ${meta.badge.className}`}
+              className="shrink-0 whitespace-nowrap rounded-3xl px-2 py-1.5 text-xs font-medium leading-[134%]"
+              style={{ color: meta.badge.color }}
             >
               {meta.badge.text}
             </span>
           </div>
-          <p className="truncate text-xs leading-[133%] text-category-muted">{meta.subtitle}</p>
+          <p className="truncate text-xs leading-[133%] text-[#A1A1A1]">
+            {meta.subtitle}
+          </p>
         </div>
 
         <div
-          id={`todo-category-panel-${category.toLowerCase()}`}
-          role="tabpanel"
-          aria-labelledby={`todo-category-tab-${category.toLowerCase()}`}
+          id={isPreview ? undefined : 'todo-category-panel'}
+          role={isPreview ? undefined : 'tabpanel'}
+          aria-labelledby={isPreview ? undefined : `todo-category-tab-${category.toLowerCase()}`}
           className="flex h-fit max-h-full min-h-0 flex-[0_1_auto] flex-col gap-4 overflow-y-auto overscroll-contain"
         >
           {todos.length > 0 ? (
@@ -271,15 +305,14 @@ const CategoryPanelCard = ({
               />
             ))
           ) : (
-            <Button
-              size="sm"
-              variant="tertiary"
+            <button
               type="button"
               aria-label={`${CATEGORY_META[category].badge.text} 투두 추가`}
-              text="할 일이 없어요"
-              className="justify-start px-0 text-left text-sm text-category-subtle transition-colors hover:text-category-muted"
+              className="w-full cursor-pointer text-left text-sm text-[#737373] transition-colors hover:text-[#A1A1A1]"
               onClick={isPreview ? undefined : onAdd}
-            />
+            >
+              할 일이 없어요
+            </button>
           )}
         </div>
       </div>
@@ -487,6 +520,8 @@ export const CategoryDetailView = ({
     }, 180);
   };
 
+  const slideTransition = isSettling ? 'transform 180ms ease-out' : 'none';
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -516,48 +551,47 @@ export const CategoryDetailView = ({
         >
           {/* 상단 컨트롤은 화면에 하나만 고정 */}
           <div className="pointer-events-auto absolute inset-x-0 top-[50px] z-20 flex items-center justify-between px-5 [transform:translateZ(0)]">
-            <Button
-              size="sm"
-              layout="icon-only"
-              variant="tertiary"
+            <button
               onClick={onClose}
               aria-label="아래로 내리기"
-              className="h-10 w-10 rounded-[24px] bg-category-control p-0 text-category-control-icon"
-              icon={
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.333 6L8 10.667 12.667 6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              }
-            />
+              className="flex h-10 w-10 items-center justify-center rounded-[24px] bg-[#EBEBEC]"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M3.333 6L8 10.667 12.667 6"
+                  stroke="#27272A"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
 
             <CategoryNavigation value={category} onValueChange={handleCategorySelection} />
 
-            <Button
-              size="sm"
-              layout="icon-only"
-              variant="tertiary"
+            <button
               onClick={onAdd}
               aria-label="투두 추가"
-              className="h-10 w-10 rounded-[24px] bg-category-control p-0 text-category-control-icon"
-              icon={
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M8 3.33V12.67M3.33 8H12.67" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              }
-            />
+              className="flex h-10 w-10 items-center justify-center rounded-[24px] bg-[#EBEBEC]"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M8 3.33V12.67M3.33 8H12.67"
+                  stroke="#27272A"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           </div>
 
           {/* 배경·카드를 포함한 네 페이지를 하나의 가로 track으로 이동 */}
-          <motion.div
+          <div
             className="absolute inset-0 z-0 flex h-full w-full"
-            animate={{ x: `calc(-${currentIndex * 100}% + ${dragX}px)` }}
-            transition={{ duration: isSettling ? 0.18 : 0, ease: 'easeOut' }}
+            style={{
+              transform: `translateX(calc(-${currentIndex * 100}% + ${dragX}px))`,
+              transition: slideTransition,
+            }}
           >
             {TODO_CATEGORY_ORDER.map(panelCategory => {
               const isCurrentPage = panelCategory === category;
@@ -588,7 +622,7 @@ export const CategoryDetailView = ({
                 </div>
               );
             })}
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
