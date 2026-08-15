@@ -1,6 +1,7 @@
 'use client';
 
 import { ComponentType } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface NavTabButtonProps {
   Icon: ComponentType<{ className?: string }>;
@@ -19,25 +20,43 @@ interface NavTabButtonProps {
  * - icon: 20x20, color/inherit
  */
 export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps) => (
-  <button
+  <motion.button
     type="button"
     onClick={onClick}
-    className={`relative flex items-center justify-center gap-3 px-5 py-3 shrink-0 transition-colors ${
+    whileTap={{ scale: 0.94 }}
+    className={`relative flex w-full min-w-0 items-center justify-center px-1 py-3 transition-colors duration-200 ${
       active ? 'text-[#FCFCFC]' : 'text-[#A1A1A1]'
     }`}
     aria-pressed={active}
   >
     {active && (
-      <span
+      <motion.span
+        layoutId="bottom-navigation-active-pill"
         aria-hidden="true"
         className="absolute inset-y-0 -left-1 -right-1 rounded-3xl bg-[#404040] shadow-[0px_2px_8px_rgba(0,0,0,0.06)]"
+        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
       />
     )}
-    <Icon className="relative w-5 h-5" />
-    {active && (
-      <span className="relative text-[14px] font-medium leading-[1.43] text-[#FCFCFC] whitespace-nowrap">
-        {label}
-      </span>
-    )}
-  </button>
+    <motion.span
+      className="relative grid size-5 shrink-0 place-items-center"
+      animate={{ scale: active ? 1.08 : 1 }}
+      transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+    >
+      <Icon className="block size-5 place-self-center" />
+    </motion.span>
+    <AnimatePresence initial={false}>
+      {active && (
+        <motion.span
+          key="active-label"
+          initial={{ width: 0, marginLeft: 0, opacity: 0, x: -4 }}
+          animate={{ width: 'auto', marginLeft: 12, opacity: 1, x: 0 }}
+          exit={{ width: 0, marginLeft: 0, opacity: 0, x: -4 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="relative overflow-hidden whitespace-nowrap text-[14px] font-medium leading-[1.43] text-[#FCFCFC]"
+        >
+          {label}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  </motion.button>
 );
