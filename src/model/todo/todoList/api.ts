@@ -1,6 +1,6 @@
 import { apiClient } from '@/shared/lib/apiClient';
 import { CommonResponse } from '@/shared/type/response';
-import { DAY_OF_THE_WEEK, Todo, TodoResponse } from '@/shared/type/Todo';
+import { DAY_OF_THE_WEEK, Todo } from '@/shared/type/Todo';
 import qs from 'qs';
 import {
   TodoByDateRequest,
@@ -12,11 +12,17 @@ import {
   TodoCountByDateRequest,
   TodoCountByDateResponse,
   DeleteTodoRequest,
+  TodoDetailResponse,
 } from './dto';
 
 export const todoListApi = {
   getTodosByDate: async (req: TodoByDateRequest) => {
     const { data } = await apiClient.get<TodoByDateResponse>(`/todos?date=${req.date}`);
+    return data.data;
+  },
+
+  getTodoById: async (todoId: string) => {
+    const { data } = await apiClient.get<TodoDetailResponse>(`/todos/${todoId}`);
     return data.data;
   },
 
@@ -28,15 +34,14 @@ export const todoListApi = {
 
   putTodo: async (req: PutTodoRequest) => {
     const { todoId, ...putReq } = req;
-    const { data } = await apiClient.put<CommonResponse<TodoResponse>>(`/todos/${todoId}`, putReq);
-    return data.data;
+    await apiClient.put<void, typeof putReq>(`/todos/${todoId}`, putReq);
   },
 
   deleteTodo: async (req: DeleteTodoRequest) => {
     const { todoId, routineDeleteType } = req;
-    const { data } = await apiClient.delete<CommonResponse<string>>(
-      `/todos/${todoId}?routineDeleteType=${routineDeleteType}`
-    );
+    const { data } = await apiClient.delete<CommonResponse<string>>(`/todos/${todoId}`, {
+      params: { routineDeleteType },
+    });
     return data.data;
   },
 

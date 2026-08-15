@@ -21,12 +21,7 @@ const routineDurationSchema = z.object({
 export const todoFormSchema = z
   .object({
     /** 할 일 내용 */
-    content: z
-      .string()
-      .min(1, '할 일을 입력해주세요')
-      .max(34, '34자 이내로 입력해주세요')
-      .transform(v => v.trim())
-      .refine(v => v.length > 0, '할 일을 입력해주세요'),
+    content: z.string().trim().min(1, '할 일을 입력해주세요').max(30, '30자 이내로 입력해주세요'),
 
     /** 목표 ID (선택 사항) */
     goalId: z.string().nullable(),
@@ -38,7 +33,7 @@ export const todoFormSchema = z
     category: z.enum(['NOW', 'STEADY', 'SKIP', 'DELETE']),
 
     /** 투두 날짜 (YYYY-MM-DD 형식) */
-    date: z.string().min(1, '날짜를 선택해주세요'),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '날짜는 YYYY-MM-DD 형식이어야 합니다'),
 
     /**
      * 투두 시간 (HH:mm) — 선택. BE datetime 미지원이라 일단 폼 상태에만.

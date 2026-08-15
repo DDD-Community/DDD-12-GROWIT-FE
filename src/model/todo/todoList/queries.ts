@@ -18,6 +18,16 @@ export const useTodosByDate = (req: TodoByDateRequest) => {
   });
 };
 
+export const useTodoById = (todoId?: string, enabled = true) => {
+  return useQuery({
+    queryKey: todoListQueryKeys.detail(todoId ?? ''),
+    queryFn: () => todoListApi.getTodoById(todoId as string),
+    enabled: enabled && !!todoId,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+};
+
 export const useTodoCountByDate = (req: TodoCountByDateRequest) => {
   return useQuery({
     queryKey: todoListQueryKeys.getTodoCountByDate(req),

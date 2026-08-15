@@ -15,6 +15,8 @@ interface OptionCellProps<T extends string> {
   leftIcon?: React.ReactNode;
   /** 추가 className */
   className?: string;
+  /** 선택 비활성화 */
+  disabled?: boolean;
 }
 
 /**
@@ -30,16 +32,19 @@ export function OptionCell<T extends string>({
   onClick,
   leftIcon,
   className,
+  disabled = false,
 }: OptionCellProps<T>) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={() => onClick(value)}
       className={cn(
         'w-full flex items-center',
         isSelected ? 'justify-between' : 'justify-start',
         'px-[14px] py-[8px] rounded-[8px]',
         'transition-colors',
+        'disabled:cursor-not-allowed disabled:opacity-40',
         className
       )}
     >
@@ -51,7 +56,7 @@ export function OptionCell<T extends string>({
             isSelected ? 'font-bold text-white' : 'font-normal text-[#c2c4c8]'
           )}
         >
-        {label}
+          {label}
         </span>
       </span>
       {isSelected && <CheckIcon />}

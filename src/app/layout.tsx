@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0F0F10',
+  themeColor: '#09090B',
   viewportFit: 'cover',
   initialScale: 1,
 };
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-W8GCRPWX" />
-      <body className={`${pretendard.variable} flex h-svh font-pretendard pretendard bg-normal-alternative`}>
+      <body className={`${pretendard.variable} flex h-svh bg-bg-default font-pretendard pretendard`}>
         <MSWClientProvider>
           <TanstackQueryWrapper>
             <ToastProvider>{children}</ToastProvider>

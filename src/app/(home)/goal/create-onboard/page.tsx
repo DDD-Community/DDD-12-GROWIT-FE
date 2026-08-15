@@ -174,7 +174,7 @@ function GoalOnboardContent() {
 
   return (
     <FunnelHeaderProvider>
-      <main className={`flex flex-1 flex-col h-screen overflow-hidden bg-normal-alternative ${Z_INDEX.GOAL_ONBOARD}`}>
+      <main className={`flex h-screen flex-1 flex-col overflow-hidden bg-bg-default ${Z_INDEX.GOAL_ONBOARD}`}>
         {currentStep > 1 && currentStep < 4 && (
           <FunnelHeader
             currentStep={currentStep - 1}

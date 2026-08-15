@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BottomSheet, useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { StackView, useStackNavigation } from './components/shared/stackView';
 import { UnsavedChangesModal } from './components/shared/unsavedChangesModal';
@@ -8,6 +8,8 @@ import { TodoBottomSheetContent } from './components/content';
 import { DeleteBottomSheet, EditBottomSheet } from './components/subBottomSheet';
 import { TodoFormProvider, useTodoFormContext } from './form';
 import { type TodoFormData, type TodoBottomSheetMode, type TodoBottomSheetView, type DateSelectTab } from './types';
+import { useTodoById } from '@/model/todo/todoList';
+import Button from '@/shared/components/input/Button';
 
 // BottomSheet wrapper 컴포넌트 (useTodoFormContext 사용을 위해 TodoFormProvider 내부에서 사용)
 interface TodoBottomSheetWrapperProps {
@@ -77,6 +79,7 @@ export const TodoBottomSheet = ({
   onClose,
   defaultCategory,
 }: TodoBottomSheetProps) => {
+  const todoDetailQuery = useTodoById(todoId, isOpen && mode === 'edit');
   const editSheet = useBottomSheet();
   const deleteSheet = useBottomSheet();
 
@@ -133,11 +136,53 @@ export const TodoBottomSheet = ({
   // 메인 BottomSheet는 삭제/수정 BottomSheet가 열려있지 않을 때만 표시
   const isMainSheetOpen = isOpen && !deleteSheet.isOpen && !editSheet.isOpen;
 
+  const editValues = useMemo<TodoFormData | undefined>(() => {
+    if (mode !== 'edit') return values;
+    if (!todoDetailQuery.data) return values;
+
+    return {
+      content: todoDetailQuery.data.content,
+      goalId: todoDetailQuery.data.goalId,
+      repeatType: todoDetailQuery.data.routine?.repeatType ?? 'none',
+      category: todoDetailQuery.data.category,
+      date: todoDetailQuery.data.date,
+      time: todoDetailQuery.data.time ?? undefined,
+      routineDuration: todoDetailQuery.data.routine?.duration,
+    };
+  }, [mode, todoDetailQuery.data, values]);
+
+  if (mode === 'edit' && isOpen && todoDetailQuery.isPending) {
+    return (
+      <BottomSheet isOpen showSheet={onOpen} closeSheet={onClose} height="auto">
+        <BottomSheet.Content>
+          <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-label-neutral">
+            <div className="size-8 animate-spin rounded-full border-2 border-label-assistive border-t-label-normal" />
+            <p className="body-2-normal">최신 투두 정보를 불러오고 있어요.</p>
+          </div>
+        </BottomSheet.Content>
+      </BottomSheet>
+    );
+  }
+
+  if (mode === 'edit' && isOpen && todoDetailQuery.isError) {
+    return (
+      <BottomSheet isOpen showSheet={onOpen} closeSheet={onClose} height="auto">
+        <BottomSheet.Content>
+          <div className="flex min-h-40 flex-col items-center justify-center gap-4 px-5 text-center">
+            <p className="body-2-normal text-label-neutral">최신 투두 정보를 불러오지 못했어요.</p>
+            <Button size="lg" variant="tertiary" text="다시 시도" onClick={() => todoDetailQuery.refetch()} />
+          </div>
+        </BottomSheet.Content>
+      </BottomSheet>
+    );
+  }
+
   return (
     <TodoFormProvider
       mode={mode}
       todoId={todoId}
-      values={values}
+      values={editValues}
+      originalTodo={todoDetailQuery.data}
       selectedDate={selectedDate}
       defaultCategory={defaultCategory}
       onClose={() => {
