@@ -28,7 +28,7 @@ export const BottomNavigation = () => {
 
   return (
     <nav
-      className={`relative w-full shrink-0 bg-[#09090B] px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
+      className={`relative w-full shrink-0 bg-transparent px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
       <div className="grid w-[236px] max-w-full grid-cols-3 items-center gap-[2px] rounded-[28px] bg-[#171717] px-2 py-1 backdrop-blur-[0px]">
         {NAV_ITEMS.map(item => (
