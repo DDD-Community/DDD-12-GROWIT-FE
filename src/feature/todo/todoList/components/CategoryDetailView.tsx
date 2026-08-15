@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
+import { CategoryNavigation } from './CategoryNavigation';
+import { type TodoCategory } from '../category';
 
 /** "HH:mm" → "오전/오후 h:mm" */
 const formatTimeLabel = (time: string): string => {
@@ -19,8 +21,6 @@ const formatTimeLabel = (time: string): string => {
   return `${isAM ? '오전' : '오후'} ${hour12}:${minute}`;
 };
 
-type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
-
 interface BgLayer {
   src: string;
   /** bg-position 앵커 — 캔버스 어디에 이미지를 붙일지 */
@@ -31,7 +31,7 @@ interface BgLayer {
  * Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 배경 레이어.
  * 위에서부터 아래 순으로 stacking 되며, 마지막은 dark gradient overlay 별도.
  */
-const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
+const CATEGORY_BG_LAYERS: Record<TodoCategory, BgLayer[]> = {
   NOW: [
     { src: '/images/detail-bg-base.jpg', anchor: 'top' },
     { src: '/images/detail-bg-mid.jpg', anchor: 'bottom' },
@@ -60,7 +60,7 @@ const CATEGORY_BG_LAYERS: Record<CategoryType, BgLayer[]> = {
 };
 
 const CATEGORY_META: Record<
-  CategoryType,
+  TodoCategory,
   {
     title: string;
     badge: { text: string; color: string };
@@ -126,10 +126,11 @@ const GoalTag = ({ name }: { name: string }) => (
 );
 
 interface CategoryDetailViewProps {
-  category: CategoryType;
+  category: TodoCategory;
   todos: GoalTodo[];
   isOpen: boolean;
   onClose: () => void;
+  onCategoryChange: (category: TodoCategory) => void;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
   onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
@@ -210,6 +211,7 @@ export const CategoryDetailView = ({
   todos,
   isOpen,
   onClose,
+  onCategoryChange,
   onToggle,
   onDelete,
   onEdit,
@@ -226,6 +228,9 @@ export const CategoryDetailView = ({
           exit={{ opacity: 0, y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
+          onPointerDown={event => event.stopPropagation()}
+          onPointerMove={event => event.stopPropagation()}
+          onPointerUp={event => event.stopPropagation()}
         >
           {/* Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 워크스페이스 레이어 + dark gradient overlay */}
           <div className="absolute inset-0 overflow-hidden">
@@ -273,7 +278,7 @@ export const CategoryDetailView = ({
                 </svg>
               </button>
 
-              <CategoryMatrixIcon category={category} size={40} />
+              <CategoryNavigation value={category} onValueChange={onCategoryChange} />
 
               <button
                 onClick={onAdd}
@@ -321,7 +326,12 @@ export const CategoryDetailView = ({
                 </div>
 
                 {/* Todo list */}
-                <div className="flex flex-col gap-4">
+                <div
+                  id="todo-category-panel"
+                  role="tabpanel"
+                  aria-labelledby={`todo-category-tab-${category.toLowerCase()}`}
+                  className="flex flex-col gap-4"
+                >
                   {todos.length > 0 ? (
                     todos.map(todo => (
                       <DetailTodoItem

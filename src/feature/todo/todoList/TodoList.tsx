@@ -13,8 +13,7 @@ import { useTodosByDate, usePatchTodoStatus, useDeleteTodo } from '@/model/todo/
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
 import { transformTodosData, groupTodosByCategory, sortTodosByPolicy } from './helper';
-
-type CategoryType = 'NOW' | 'STEADY' | 'SKIP' | 'DELETE';
+import { type TodoCategory } from './category';
 
 interface TodoListProps {
   selectedDate: Date;
@@ -27,7 +26,7 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
   const queryClient = useQueryClient();
   const patchTodoStatusMutation = usePatchTodoStatus();
   const deleteTodoMutation = useDeleteTodo();
-  const [detailCategory, setDetailCategory] = useState<CategoryType | null>(null);
+  const [detailCategory, setDetailCategory] = useState<TodoCategory | null>(null);
 
   const dateString = format(selectedDate, 'yyyy-MM-dd');
   const { data: todosData, isLoading, error } = useTodosByDate({ date: dateString });
@@ -103,12 +102,14 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
           todos={categoryGroups[detailCategory]}
           isOpen={!!detailCategory}
           onClose={() => setDetailCategory(null)}
+          onCategoryChange={setDetailCategory}
           onToggle={handleToggle}
           onDelete={handleDelete}
           onEdit={onEdit}
           onAdd={() => {
+            const selectedCategory = detailCategory;
             setDetailCategory(null);
-            onAdd?.(detailCategory);
+            onAdd?.(selectedCategory);
           }}
         />
       )}
