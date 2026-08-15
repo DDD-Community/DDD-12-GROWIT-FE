@@ -72,14 +72,14 @@ export const TodoListContainer = () => {
             <div
               className={`bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
-              <div className="flex flex-col h-screen">
+              <div className="flex min-h-svh flex-col pb-[60px]">
                 {/* Figma 196:1556 — iOS Safe Area (status bar) */}
                 <div
                   aria-hidden="true"
                   className="w-full shrink-0"
                   style={{ height: 'max(34px, env(safe-area-inset-top, 0px))' }}
                 />
-                <div className="flex flex-col flex-1 px-5 pt-3 gap-2 min-h-0">
+                <div className="flex flex-1 flex-col gap-2 px-5 pt-3">
                   <Calendar
                     view={calendarView}
                     selectedDate={selectedDate}
@@ -88,7 +88,7 @@ export const TodoListContainer = () => {
                   />
                   {/* Figma 196:1611 — 주뷰에서 매트릭스 영역 좌우 swipe → ±1일 이동 */}
                   <motion.div
-                    className="flex flex-1 min-h-0 flex-col"
+                    className="flex flex-1 flex-col"
                     style={{ x: swipeX, touchAction: 'pan-y' }}
                     drag={!isMonthlyView ? 'x' : false}
                     dragConstraints={{ left: 0, right: 0 }}
@@ -117,7 +117,11 @@ export const TodoListContainer = () => {
               </div>
             </div>
 
-            <FloatingButton onClick={() => handleAdd()} aria-label="투두 추가" />
+            <FloatingButton
+              onClick={() => handleAdd()}
+              aria-label="투두 추가"
+              className="bottom-[calc(105px+env(safe-area-inset-bottom,0px))]"
+            />
 
             {/* 추가용 TodoBottomSheet */}
             <TodoBottomSheet

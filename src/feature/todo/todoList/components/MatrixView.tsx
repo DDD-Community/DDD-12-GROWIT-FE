@@ -27,10 +27,10 @@ const CATEGORY_CONFIG = {
 
 export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardClick }: MatrixViewProps) => {
   return (
-    <div className="flex flex-col gap-4 mb-5 flex-1 min-h-0">
-      <div className="flex flex-col gap-2 flex-1 min-h-0">
+    <div className="mb-5 flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         <p className="text-[13px] font-medium text-[#F4F4F5]">중요</p>
-        <div className="flex flex-row gap-2 flex-1 min-h-0">
+        <div className="flex h-[295px] shrink-0 flex-row gap-2">
           <CategoryCard
             title={CATEGORY_CONFIG.NOW.title}
             iconSrc={CATEGORY_CONFIG.NOW.iconSrc}
@@ -58,9 +58,9 @@ export const MatrixView = ({ groups, onToggle, onDelete, onEdit, onAdd, onCardCl
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 flex-1 min-h-0">
+      <div className="flex flex-col gap-2">
         <p className="text-[13px] font-medium text-[#F4F4F5]">여유</p>
-        <div className="flex flex-row gap-2 flex-1 min-h-0">
+        <div className="flex h-[180px] shrink-0 flex-row gap-2">
           <CategoryCard
             title={CATEGORY_CONFIG.SKIP.title}
             iconSrc={CATEGORY_CONFIG.SKIP.iconSrc}

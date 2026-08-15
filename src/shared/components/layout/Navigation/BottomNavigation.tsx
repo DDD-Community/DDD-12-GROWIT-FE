@@ -28,7 +28,7 @@ export const BottomNavigation = () => {
 
   return (
     <nav
-      className={`fixed bottom-0 max-w-md mx-auto w-full px-[25px] pb-[25px] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
+      className={`fixed bottom-0 max-w-md mx-auto w-full px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
       <div className="flex items-center gap-[2px] bg-[#171717] rounded-[28px] px-2 py-1 backdrop-blur-[0px]">
         {NAV_ITEMS.map(item => (

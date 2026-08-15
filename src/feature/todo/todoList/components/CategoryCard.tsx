@@ -108,7 +108,7 @@ export const CategoryCard = ({
       onClick={onCardClick}
     >
       {/* Header: char icon + label + count + add (Figma 196:1618) */}
-      <div className="flex items-center gap-1 relative z-10">
+      <div className="relative z-10 flex shrink-0 items-center gap-1">
         <Image
           src={iconSrc}
           alt=""
@@ -155,7 +155,7 @@ export const CategoryCard = ({
       </div>
 
       {/* Todo items */}
-      <div className="flex flex-col gap-2 relative z-10">
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-1">
         {todos.length > 0 ? (
           todos.map(todo => (
             <TodoItem

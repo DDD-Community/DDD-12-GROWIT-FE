@@ -38,7 +38,7 @@ export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
         <div className="flex flex-1 max-sm:flex-col max-w-md w-full mx-auto h-full">
           <GoalOnboardRedirect />
           <div className="flex flex-1 flex-col overflow-hidden relative">
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pb-[calc(93px+env(safe-area-inset-bottom,0px))]">
               {children}
               <BottomNavigation />
             </div>
