@@ -99,7 +99,7 @@ export const TodoList = ({ selectedDate, viewMode = 'matrix', onEdit, onAdd }: T
       {detailCategory && (
         <CategoryDetailView
           category={detailCategory}
-          todos={categoryGroups[detailCategory]}
+          todosByCategory={categoryGroups}
           isOpen={!!detailCategory}
           onClose={() => setDetailCategory(null)}
           onCategoryChange={setDetailCategory}

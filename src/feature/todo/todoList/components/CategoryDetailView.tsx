@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, type PointerEvent as ReactPointerEvent } from 'react';
 import Image from 'next/image';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { motion, AnimatePresence } from 'motion/react';
@@ -8,7 +8,11 @@ import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
 import { CategoryMatrixIcon, MatrixCategory } from './CategoryMatrixIcon';
 import { CategoryNavigation } from './CategoryNavigation';
-import { type TodoCategory } from '../category';
+import { TODO_CATEGORY_ORDER, type TodoCategory } from '../category';
+
+const SWIPE_START_THRESHOLD = 12;
+const SWIPE_COMPLETE_THRESHOLD = 96;
+const SWIPE_EDGE_RESISTANCE = 0.2;
 
 /** "HH:mm" → "오전/오후 h:mm" */
 const formatTimeLabel = (time: string): string => {
@@ -58,6 +62,32 @@ const CATEGORY_BG_LAYERS: Record<TodoCategory, BgLayer[]> = {
     { src: '/images/detail-bg-delete-2.jpg', anchor: 'bottom' },
   ],
 };
+
+const CategoryBackground = ({ category }: { category: TodoCategory }) => (
+  <div className="absolute inset-0 overflow-hidden">
+    {CATEGORY_BG_LAYERS[category].map((layer, index) => (
+      <div
+        key={`${category}-${index}`}
+        className="absolute inset-0 bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url(${layer.src})`,
+          backgroundPosition:
+            layer.anchor === 'top'
+              ? 'center top'
+              : layer.anchor === 'bottom'
+                ? 'center bottom'
+                : 'center',
+        }}
+      />
+    ))}
+    <div
+      className="absolute inset-0"
+      style={{
+        background: 'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
+      }}
+    />
+  </div>
+);
 
 const CATEGORY_META: Record<
   TodoCategory,
@@ -127,7 +157,7 @@ const GoalTag = ({ name }: { name: string }) => (
 
 interface CategoryDetailViewProps {
   category: TodoCategory;
-  todos: GoalTodo[];
+  todosByCategory: Record<TodoCategory, GoalTodo[]>;
   isOpen: boolean;
   onClose: () => void;
   onCategoryChange: (category: TodoCategory) => void;
@@ -206,9 +236,84 @@ const DetailTodoItem = ({
   );
 };
 
-export const CategoryDetailView = ({
+interface CategoryPanelCardProps {
+  category: TodoCategory;
+  todos: GoalTodo[];
+  isPreview?: boolean;
+  onToggle?: (todoId: string, isCompleted: boolean) => void;
+  onDelete?: (todoId: string) => void;
+  onEdit?: (todo: GoalTodo) => void;
+}
+
+const CategoryPanelCard = ({
   category,
   todos,
+  isPreview = false,
+  onToggle,
+  onDelete,
+  onEdit,
+}: CategoryPanelCardProps) => {
+  const meta = CATEGORY_META[category];
+
+  return (
+    <div
+      aria-hidden={isPreview || undefined}
+      className="rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]"
+    >
+      <div className="flex flex-col gap-8 px-6 pb-8 pt-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Image
+              src={meta.iconSrc}
+              alt=""
+              width={24}
+              height={24}
+              className="shrink-0 select-none"
+              priority
+            />
+            <h2 className="truncate text-[20px] font-bold leading-[130%] text-white">
+              {meta.title}
+            </h2>
+            <span
+              className="shrink-0 whitespace-nowrap rounded-3xl px-2 py-1.5 text-xs font-medium leading-[134%]"
+              style={{ color: meta.badge.color }}
+            >
+              {meta.badge.text}
+            </span>
+          </div>
+          <p className="truncate text-xs leading-[133%] text-[#A1A1A1]">
+            {meta.subtitle}
+          </p>
+        </div>
+
+        <div
+          id={isPreview ? undefined : 'todo-category-panel'}
+          role={isPreview ? undefined : 'tabpanel'}
+          aria-labelledby={isPreview ? undefined : `todo-category-tab-${category.toLowerCase()}`}
+          className="flex flex-col gap-4"
+        >
+          {todos.length > 0 ? (
+            todos.map(todo => (
+              <DetailTodoItem
+                key={todo.id}
+                todo={todo}
+                onToggle={isPreview ? undefined : onToggle}
+                onDelete={isPreview ? undefined : onDelete}
+                onEdit={isPreview ? undefined : onEdit}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-[#737373]">할 일이 없어요</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CategoryDetailView = ({
+  category,
+  todosByCategory,
   isOpen,
   onClose,
   onCategoryChange,
@@ -217,137 +322,296 @@ export const CategoryDetailView = ({
   onEdit,
   onAdd,
 }: CategoryDetailViewProps) => {
-  const meta = CATEGORY_META[category];
+  const [dragX, setDragX] = useState(0);
+  const [isSettling, setIsSettling] = useState(false);
+  const detailViewportRef = useRef<HTMLDivElement | null>(null);
+  const touchDirectionRef = useRef<{
+    x: number;
+    y: number;
+    direction: 'pending' | 'horizontal' | 'vertical';
+  } | null>(null);
+  const pointerStartRef = useRef<{
+    pointerId: number;
+    x: number;
+    y: number;
+    isDragging: boolean;
+  } | null>(null);
+  const dragXRef = useRef(0);
+  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const currentIndex = TODO_CATEGORY_ORDER.indexOf(category);
+  const previousCategory = TODO_CATEGORY_ORDER[currentIndex - 1];
+  const nextCategory = TODO_CATEGORY_ORDER[currentIndex + 1];
+
+  useEffect(() => {
+    const viewport = detailViewportRef.current;
+    if (!viewport) return;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) {
+        touchDirectionRef.current = null;
+        return;
+      }
+
+      const touch = event.touches[0];
+      touchDirectionRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        direction: 'pending',
+      };
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const start = touchDirectionRef.current;
+      if (!start || event.touches.length !== 1) return;
+
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - start.x;
+      const deltaY = touch.clientY - start.y;
+
+      if (start.direction === 'pending') {
+        if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < SWIPE_START_THRESHOLD) return;
+        start.direction = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+      }
+
+      if (start.direction === 'horizontal') event.preventDefault();
+    };
+
+    const clearTouchDirection = () => {
+      touchDirectionRef.current = null;
+    };
+
+    viewport.addEventListener('touchstart', handleTouchStart, { passive: true });
+    viewport.addEventListener('touchmove', handleTouchMove, { passive: false });
+    viewport.addEventListener('touchend', clearTouchDirection, { passive: true });
+    viewport.addEventListener('touchcancel', clearTouchDirection, { passive: true });
+
+    return () => {
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      viewport.removeEventListener('touchstart', handleTouchStart);
+      viewport.removeEventListener('touchmove', handleTouchMove);
+      viewport.removeEventListener('touchend', clearTouchDirection);
+      viewport.removeEventListener('touchcancel', clearTouchDirection);
+    };
+  }, []);
+
+  const handlePanelPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (isSettling) return;
+
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('button, [role="tablist"], [data-todo-swipe-row]')) return;
+
+    pointerStartRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      isDragging: false,
+    };
+  };
+
+  const handlePanelPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = pointerStartRef.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+
+    if (!start.isDragging) {
+      if (Math.abs(deltaX) < SWIPE_START_THRESHOLD) return;
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) {
+        pointerStartRef.current = null;
+        return;
+      }
+
+      start.isDragging = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+
+    event.preventDefault();
+
+    const isBlockedDirection = (deltaX > 0 && !previousCategory) || (deltaX < 0 && !nextCategory);
+    const nextX = isBlockedDirection ? deltaX * SWIPE_EDGE_RESISTANCE : deltaX;
+
+    dragXRef.current = nextX;
+    setDragX(nextX);
+  };
+
+  const finishPanelSwipe = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = pointerStartRef.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+
+    const endDeltaX = event.clientX - start.x;
+    const effectiveDeltaX =
+      (endDeltaX > 0 && !previousCategory) || (endDeltaX < 0 && !nextCategory)
+        ? endDeltaX * SWIPE_EDGE_RESISTANCE
+        : endDeltaX;
+
+    const completedCategory =
+      effectiveDeltaX <= -SWIPE_COMPLETE_THRESHOLD
+        ? nextCategory
+        : effectiveDeltaX >= SWIPE_COMPLETE_THRESHOLD
+          ? previousCategory
+          : undefined;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    pointerStartRef.current = null;
+    setIsSettling(true);
+
+    if (completedCategory) {
+      const exitX = effectiveDeltaX < 0 ? -event.currentTarget.clientWidth : event.currentTarget.clientWidth;
+      dragXRef.current = exitX;
+      setDragX(exitX);
+      settleTimerRef.current = setTimeout(() => {
+        onCategoryChange(completedCategory);
+        dragXRef.current = 0;
+        setDragX(0);
+        setIsSettling(false);
+      }, 180);
+      return;
+    }
+
+    dragXRef.current = 0;
+    setDragX(0);
+    settleTimerRef.current = setTimeout(() => {
+      setIsSettling(false);
+    }, 180);
+  };
+
+  const cancelPanelSwipe = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = pointerStartRef.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    pointerStartRef.current = null;
+    dragXRef.current = 0;
+    setIsSettling(true);
+    setDragX(0);
+
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    settleTimerRef.current = setTimeout(() => {
+      setIsSettling(false);
+    }, 180);
+  };
+
+  const handleCategorySelection = (selectedCategory: TodoCategory) => {
+    if (selectedCategory === category || isSettling) return;
+
+    if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+    setIsSettling(true);
+    onCategoryChange(selectedCategory);
+    settleTimerRef.current = setTimeout(() => {
+      setIsSettling(false);
+    }, 180);
+  };
+
+  const slideTransition = isSettling ? 'transform 180ms ease-out' : 'none';
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={detailViewportRef}
           initial={{ opacity: 0, y: '100%' }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="fixed inset-0 z-[999] flex flex-col max-w-md mx-auto"
-          onPointerDown={event => event.stopPropagation()}
-          onPointerMove={event => event.stopPropagation()}
-          onPointerUp={event => event.stopPropagation()}
+          className="fixed inset-0 z-[999] mx-auto max-w-md overflow-hidden touch-pan-y overscroll-x-none"
+          onPointerDown={event => {
+            event.stopPropagation();
+            handlePanelPointerDown(event);
+          }}
+          onPointerMove={event => {
+            event.stopPropagation();
+            handlePanelPointerMove(event);
+          }}
+          onPointerUp={event => {
+            event.stopPropagation();
+            finishPanelSwipe(event);
+          }}
+          onPointerCancel={event => {
+            event.stopPropagation();
+            cancelPanelSwipe(event);
+          }}
         >
-          {/* Figma 107:1218 / 107:1279 / 115:929 / 116:929 — 카테고리별 워크스페이스 레이어 + dark gradient overlay */}
-          <div className="absolute inset-0 overflow-hidden">
-            {CATEGORY_BG_LAYERS[category].map((layer, i) => (
-              <div
-                key={`${category}-${i}`}
-                className="absolute inset-0 bg-cover bg-no-repeat"
-                style={{
-                  backgroundImage: `url(${layer.src})`,
-                  backgroundPosition:
-                    layer.anchor === 'top'
-                      ? 'center top'
-                      : layer.anchor === 'bottom'
-                      ? 'center bottom'
-                      : 'center',
-                }}
-              />
-            ))}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  'linear-gradient(180deg, #081C32 0%, rgba(64,85,115,0.25) 100%)',
-              }}
-            />
+          {/* 상단 컨트롤은 화면에 하나만 고정 */}
+          <div className="absolute inset-x-0 top-[50px] z-10 flex items-center justify-between px-5">
+            <button
+              onClick={onClose}
+              aria-label="아래로 내리기"
+              className="flex h-10 w-10 items-center justify-center rounded-[24px] bg-[#EBEBEC]"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M3.333 6L8 10.667 12.667 6"
+                  stroke="#27272A"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <CategoryNavigation value={category} onValueChange={handleCategorySelection} />
+
+            <button
+              onClick={onAdd}
+              aria-label="투두 추가"
+              className="flex h-10 w-10 items-center justify-center rounded-[24px] bg-[#EBEBEC]"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M8 3.33V12.67M3.33 8H12.67"
+                  stroke="#27272A"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           </div>
 
-          {/* Content */}
-          <div className="relative flex flex-col flex-1 pt-[50px] overflow-y-auto">
-            {/* Figma 107:1230 — back / IcMatrixRed / add (각 40x40 rounded-3xl) */}
-            <div className="flex items-center justify-between px-5 mb-6">
-              <button
-                onClick={onClose}
-                aria-label="아래로 내리기"
-                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.333 6L8 10.667 12.667 6"
-                    stroke="#27272A"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+          {/* 배경·카드를 포함한 네 페이지를 하나의 가로 track으로 이동 */}
+          <div
+            className="flex h-full w-full"
+            style={{
+              transform: `translateX(calc(-${currentIndex * 100}% + ${dragX}px))`,
+              transition: slideTransition,
+            }}
+          >
+            {TODO_CATEGORY_ORDER.map(panelCategory => {
+              const isCurrentPage = panelCategory === category;
 
-              <CategoryNavigation value={category} onValueChange={onCategoryChange} />
-
-              <button
-                onClick={onAdd}
-                aria-label="투두 추가"
-                className="w-10 h-10 rounded-[24px] bg-[#EBEBEC] flex items-center justify-center"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M8 3.33V12.67M3.33 8H12.67"
-                    stroke="#27272A"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Card - hug content, not flex-1 */}
-            <div className="mx-5 rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]">
-              <div className="px-6 pt-6 pb-8 flex flex-col gap-8">
-                {/* Figma 107:1249 — char icon + 타이틀 + 단일 배지 */}
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={meta.iconSrc}
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="shrink-0 select-none"
-                      priority
-                    />
-                    <h2 className="text-[20px] font-bold leading-[130%] text-white truncate">
-                      {meta.title}
-                    </h2>
-                    <span
-                      className="shrink-0 px-2 py-1.5 rounded-3xl text-xs font-medium leading-[134%] whitespace-nowrap"
-                      style={{ color: meta.badge.color }}
-                    >
-                      {meta.badge.text}
-                    </span>
-                  </div>
-                  <p className="text-xs leading-[133%] text-[#A1A1A1] truncate">
-                    {meta.subtitle}
-                  </p>
-                </div>
-
-                {/* Todo list */}
+              return (
                 <div
-                  id="todo-category-panel"
-                  role="tabpanel"
-                  aria-labelledby={`todo-category-tab-${category.toLowerCase()}`}
-                  className="flex flex-col gap-4"
+                  key={panelCategory}
+                  aria-hidden={!isCurrentPage}
+                  className={`relative h-full w-full shrink-0 overflow-y-auto pt-[114px] ${
+                    isCurrentPage ? '' : 'pointer-events-none'
+                  }`}
                 >
-                  {todos.length > 0 ? (
-                    todos.map(todo => (
-                      <DetailTodoItem
-                        key={todo.id}
-                        todo={todo}
+                  <CategoryBackground category={panelCategory} />
+
+                  <div className="relative flex min-h-full flex-col">
+                    <div className="mx-5">
+                      <CategoryPanelCard
+                        category={panelCategory}
+                        todos={todosByCategory[panelCategory]}
+                        isPreview={!isCurrentPage}
                         onToggle={onToggle}
                         onDelete={onDelete}
                         onEdit={onEdit}
                       />
-                    ))
-                  ) : (
-                    <p className="text-sm text-[#737373]">할 일이 없어요</p>
-                  )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </motion.div>
       )}
