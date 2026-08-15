@@ -1,4 +1,5 @@
-export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'YEARLY';
+export type RepeatType = 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY';
+export type RepeatDay = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
 export interface GoalTodoRoutine {
   duration: {
@@ -6,6 +7,7 @@ export interface GoalTodoRoutine {
     endDate: string;
   };
   repeatType: RepeatType;
+  repeatDays?: RepeatDay[] | null;
 }
 
 export interface GoalTodoGoal {

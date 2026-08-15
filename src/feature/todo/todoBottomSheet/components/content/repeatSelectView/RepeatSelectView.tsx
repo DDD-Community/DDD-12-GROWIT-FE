@@ -6,6 +6,7 @@ import { BottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import { ChevronLeftIcon } from '../../shared/icons';
 import { OptionCell } from '../../shared/optionCell';
 import type { TodoFormData, FormRepeatType, REPEAT_TYPE_LABELS } from '../../../types';
+import { useTodoFormContext } from '../../../form';
 
 interface RepeatSelectViewProps {
   /** 뒤로가기 클릭 핸들러 */
@@ -24,6 +25,7 @@ export const RepeatSelectView = ({
   repeatLabels = { none: '없음', DAILY: '매일', WEEKLY: '매주', BIWEEKLY: '격주', MONTHLY: '매월' },
 }: RepeatSelectViewProps) => {
   const { watch, setValue } = useFormContext<TodoFormData>();
+  const { hasOriginalRepeat } = useTodoFormContext();
   const currentRepeatType = watch('repeatType');
 
   // 로컬 상태로 임시 선택값 관리 (완료 버튼 클릭 시에만 form에 적용)
@@ -31,6 +33,7 @@ export const RepeatSelectView = ({
 
   // 반복 타입 선택 (로컬 상태만 변경)
   const handleSelect = (type: FormRepeatType) => {
+    if (hasOriginalRepeat && type === 'none') return;
     setTempRepeatType(type);
   };
 
@@ -71,6 +74,7 @@ export const RepeatSelectView = ({
               label={repeatLabels[type]}
               isSelected={tempRepeatType === type}
               onClick={handleSelect}
+              disabled={hasOriginalRepeat && type === 'none'}
             />
           ))}
         </div>

@@ -9,16 +9,17 @@ import { TodoFormData, TODO_DEFAULT_VALUES, TodoBottomSheetMode } from '../types
 import { todoFormSchema } from './todoFormSchema';
 import { usePutTodo, useDeleteTodo, usePostAddTodo } from '@/model/todo/todoList/queries';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
+import type { RoutineUpdateType, TodoDetail, TodoRoutine } from '@/model/todo/todoList/dto';
+import { useToast } from '@/shared/components/feedBack/toast';
+import axios from 'axios';
 
 interface TodoFormContextType {
   /** form methods */
   methods: UseFormReturn<TodoFormData>;
   /** 제출 핸들러 */
   handleSubmit: () => void;
-  /** 해당 투두만 수정 핸들러 (반복 투두) */
-  handleEditSingle: () => void;
-  /** 전체 반복 투두 수정 핸들러 */
-  handleEditAll?: () => void;
+  /** 반복 투두 범위 수정 핸들러 */
+  handleEdit: (scope: RoutineUpdateType) => Promise<boolean>;
   /** 삭제 핸들러 (해당 투두만 삭제) */
   handleDelete: () => void;
   /** 전체 반복 투두 삭제 핸들러 */
@@ -33,15 +34,46 @@ interface TodoFormContextType {
   submitLabel: string;
   /** 삭제 버튼 표시 여부 */
   showDeleteButton: boolean;
+  /** 수정 요청 진행 상태 */
+  isSubmitting: boolean;
+  /** 편집 시작 시 서버에서 조회한 원본 반복 여부 */
+  hasOriginalRepeat: boolean;
 }
 
 const TodoFormContext = createContext<TodoFormContextType | null>(null);
+
+const getMutationErrorMessage = (error: unknown, fallback: string) => {
+  if (axios.isAxiosError<{ message?: string }>(error)) {
+    return error.response?.data?.message ?? fallback;
+  }
+  return fallback;
+};
+
+const buildRoutine = (
+  data: TodoFormData,
+  scope: Exclude<RoutineUpdateType, 'SINGLE'>,
+  originalTodo?: TodoDetail
+): TodoRoutine | undefined => {
+  if (data.repeatType === 'none' || !data.routineDuration) return undefined;
+
+  const isNewRoutine = !originalTodo?.routine;
+  return {
+    repeatType: data.repeatType,
+    duration: {
+      startDate: isNewRoutine && scope === 'ALL' ? data.date : (originalTodo?.routine?.duration.startDate ?? data.date),
+      endDate: data.routineDuration.endDate,
+    },
+    repeatDays: originalTodo?.routine?.repeatDays ?? null,
+  };
+};
 
 interface TodoFormProviderProps {
   /** 바텀시트 모드 */
   mode: TodoBottomSheetMode;
   /** 폼 값 (편집 모드일 때 외부에서 전달) */
   values?: TodoFormData;
+  /** 편집 직전 조회한 최신 투두 상세 */
+  originalTodo?: TodoDetail;
   /** 선택된 날짜 */
   selectedDate: Date;
   /** 편집 모드일 때 Todo ID */
@@ -54,7 +86,16 @@ interface TodoFormProviderProps {
   children: React.ReactNode;
 }
 
-export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, defaultCategory, children }: TodoFormProviderProps) => {
+export const TodoFormProvider = ({
+  mode,
+  values,
+  originalTodo,
+  selectedDate,
+  todoId,
+  onClose,
+  defaultCategory,
+  children,
+}: TodoFormProviderProps) => {
   // 선택된 날짜를 YYYY-MM-DD 형식으로 변환
   const initialDateString = format(selectedDate, 'yyyy-MM-dd');
 
@@ -92,6 +133,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
   const deleteTodoMutation = useDeleteTodo();
   const postAddTodoMutation = usePostAddTodo();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   // 폼 초기화
   const resetForm = useCallback(() => {
@@ -112,25 +154,42 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     onClose();
   }, [resetForm, onClose]);
 
-  // 쿼리 무효화 + 폼 리셋 + 닫기 (공통 완료 로직)
-  const invalidateAndClose = useCallback(
-    (date: string) => {
-      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.getTodosByDate(date) });
-      queryClient.invalidateQueries({ queryKey: [...todoListQueryKeys.all, 'getTodoCountByDate'] });
+  const refreshAndClose = useCallback(
+    async (scope: RoutineUpdateType | 'CREATE', nextDate: string) => {
+      const originalDate = originalTodo?.date ?? nextDate;
+
+      if (scope === 'FROM_DATE' || scope === 'ALL') {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: todoListQueryKeys.lists(), refetchType: 'all' }),
+          queryClient.invalidateQueries({ queryKey: todoListQueryKeys.counts(), refetchType: 'all' }),
+        ]);
+      } else {
+        const dates = [...new Set([originalDate, nextDate])];
+        await Promise.all([
+          ...dates.map(date =>
+            queryClient.invalidateQueries({
+              queryKey: todoListQueryKeys.getTodosByDate(date),
+              refetchType: 'all',
+            })
+          ),
+          queryClient.invalidateQueries({ queryKey: todoListQueryKeys.counts(), refetchType: 'all' }),
+        ]);
+      }
+
+      if (todoId) queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(todoId) });
       resetForm();
       onClose();
     },
-    [queryClient, resetForm, onClose]
+    [originalTodo?.date, onClose, queryClient, resetForm, todoId]
   );
 
-  // 제출 핸들러 (react-hook-form의 handleSubmit 사용)
+  const hasOriginalRepeat = !!originalTodo?.routine;
+
   const handleSubmit = useCallback(() => {
     methods.handleSubmit(
-      // 유효성 검증 성공 시
       async (data: TodoFormData) => {
         try {
           if (mode === 'add') {
-            // 신규 Todo 추가
             await postAddTodoMutation.mutateAsync({
               goalId: data.goalId ?? null,
               date: data.date,
@@ -149,37 +208,58 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
                   : undefined,
             });
           } else if (mode === 'edit' && todoId) {
-            // Todo 수정
-            await putTodoMutation.mutateAsync({
-              todoId,
-              goalId: data.goalId ?? null,
-              date: data.date,
-              time: data.time || null,
-              content: data.content,
-              category: data.category,
-              routine:
-                data.repeatType !== 'none' && data.routineDuration
-                  ? {
-                      repeatType: data.repeatType,
-                      duration: {
-                        startDate: data.routineDuration.startDate,
-                        endDate: data.routineDuration.endDate,
-                      },
-                    }
-                  : undefined,
-            });
+            if (hasOriginalRepeat && data.repeatType === 'none') {
+              showToast('기존 반복 투두의 반복 해제는 아직 지원하지 않아요.', 'warning');
+              return;
+            }
+
+            if (data.repeatType !== 'none') {
+              const routine = buildRoutine(data, 'ALL', originalTodo);
+              if (!routine) return;
+              await putTodoMutation.mutateAsync({
+                todoId,
+                goalId: data.goalId ?? null,
+                date: data.date,
+                time: data.time || null,
+                content: data.content,
+                category: data.category,
+                routine,
+                routineUpdateType: 'ALL',
+              });
+            } else {
+              await putTodoMutation.mutateAsync({
+                todoId,
+                goalId: data.goalId ?? null,
+                date: data.date,
+                time: data.time || null,
+                content: data.content,
+                category: data.category,
+              });
+            }
           }
-          invalidateAndClose(data.date);
+          await refreshAndClose(mode === 'add' ? 'CREATE' : data.repeatType === 'none' ? 'SINGLE' : 'ALL', data.date);
         } catch (error) {
-          console.error(mode === 'add' ? 'Todo 추가 실패:' : 'Todo 수정 실패:', error);
+          showToast(
+            getMutationErrorMessage(error, mode === 'add' ? '투두 추가에 실패했습니다.' : '투두 수정에 실패했습니다.'),
+            'error'
+          );
         }
       },
-      // 유효성 검증 실패 시 (에러는 formState.errors에 자동 저장)
       errors => {
         console.log('Validation errors:', errors);
       }
     )();
-  }, [methods, mode, todoId, postAddTodoMutation, putTodoMutation, invalidateAndClose]);
+  }, [
+    hasOriginalRepeat,
+    methods,
+    mode,
+    originalTodo,
+    postAddTodoMutation,
+    putTodoMutation,
+    refreshAndClose,
+    showToast,
+    todoId,
+  ]);
 
   // 삭제 핸들러 (해당 투두만 삭제)
   const handleDelete = useCallback(async () => {
@@ -188,11 +268,11 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     const currentDate = methods.getValues('date');
     try {
       await deleteTodoMutation.mutateAsync({ todoId, routineDeleteType: 'SINGLE' });
-      invalidateAndClose(currentDate);
+      await refreshAndClose('SINGLE', currentDate);
     } catch (error) {
-      console.error('Todo 삭제 실패:', error);
+      showToast(getMutationErrorMessage(error, '투두 삭제에 실패했습니다.'), 'error');
     }
-  }, [todoId, deleteTodoMutation, methods, invalidateAndClose]);
+  }, [todoId, deleteTodoMutation, methods, refreshAndClose, showToast]);
 
   // 전체 반복 투두 삭제 핸들러
   const handleDeleteAllRepeats = useCallback(async () => {
@@ -201,83 +281,65 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
     const currentDate = methods.getValues('date');
     try {
       await deleteTodoMutation.mutateAsync({ todoId, routineDeleteType: 'ALL' });
-      invalidateAndClose(currentDate);
+      await refreshAndClose('ALL', currentDate);
     } catch (error) {
-      console.error('반복 투두 삭제 실패:', error);
+      showToast(getMutationErrorMessage(error, '반복 투두 삭제에 실패했습니다.'), 'error');
     }
-  }, [todoId, deleteTodoMutation, methods, invalidateAndClose]);
+  }, [todoId, deleteTodoMutation, methods, refreshAndClose, showToast]);
 
-  // 해당 투두만 수정 핸들러 (반복 투두) - routineUpdateType: SINGLE
-  const handleEditSingle = useCallback(() => {
-    methods.handleSubmit(
-      async (data: TodoFormData) => {
-        if (!todoId) return;
+  const handleEdit = useCallback(
+    async (scope: RoutineUpdateType): Promise<boolean> => {
+      let succeeded = false;
+      await methods.handleSubmit(
+        async (data: TodoFormData) => {
+          if (!todoId) return;
 
-        try {
-          await putTodoMutation.mutateAsync({
-            todoId,
-            goalId: data.goalId ?? null,
-            date: data.date,
-            content: data.content,
-            category: data.category,
-            routine:
-              data.repeatType !== 'none' && data.routineDuration
-                ? {
-                    repeatType: data.repeatType,
-                    duration: {
-                      startDate: data.routineDuration.startDate,
-                      endDate: data.routineDuration.endDate,
-                    },
-                  }
-                : undefined,
-            routineUpdateType: 'SINGLE',
-          });
-          invalidateAndClose(data.date);
-        } catch (error) {
-          console.error('Todo 수정 실패:', error);
-        }
-      },
-      errors => {
-        console.log('Validation errors:', errors);
-      }
-    )();
-  }, [methods, todoId, putTodoMutation, invalidateAndClose]);
-
-  // 전체 반복 투두 수정 핸들러 - routineUpdateType: ALL
-  const handleEditAll = useCallback(() => {
-    methods.handleSubmit(
-      async (data: TodoFormData) => {
-        if (!todoId) return;
-
-        try {
-          await putTodoMutation.mutateAsync({
-            todoId,
-            goalId: data.goalId ?? null,
-            date: data.date,
-            content: data.content,
-            category: data.category,
-            routine:
-              data.repeatType !== 'none' && data.routineDuration
-                ? {
-                    repeatType: data.repeatType,
-                    duration: {
-                      startDate: data.routineDuration.startDate,
-                      endDate: data.routineDuration.endDate,
-                    },
-                  }
-                : undefined,
-            routineUpdateType: 'ALL',
-          });
-          invalidateAndClose(data.date);
-        } catch (error) {
-          console.error('반복 투두 수정 실패:', error);
-        }
-      },
-      errors => {
-        console.log('Validation errors:', errors);
-      }
-    )();
-  }, [methods, todoId, putTodoMutation, invalidateAndClose]);
+          try {
+            if (scope === 'SINGLE') {
+              await putTodoMutation.mutateAsync({
+                todoId,
+                goalId: data.goalId ?? null,
+                date: data.date,
+                time: data.time || null,
+                content: data.content,
+                category: data.category,
+                routineUpdateType: 'SINGLE',
+              });
+            } else {
+              const routine = buildRoutine(data, scope, originalTodo);
+              if (!routine || (scope === 'FROM_DATE' && !originalTodo?.routine)) {
+                showToast('최신 반복 정보를 확인할 수 없습니다. 다시 열어주세요.', 'error');
+                return;
+              }
+              if (scope === 'FROM_DATE' && originalTodo && routine.duration.endDate < originalTodo.date) {
+                methods.setError('routineDuration', {
+                  message: '반복 종료일은 수정 기준일보다 앞설 수 없습니다.',
+                });
+                return;
+              }
+              await putTodoMutation.mutateAsync({
+                todoId,
+                goalId: data.goalId ?? null,
+                date: data.date,
+                time: data.time || null,
+                content: data.content,
+                category: data.category,
+                routine,
+                routineUpdateType: scope,
+              });
+            }
+            await refreshAndClose(scope, data.date);
+            succeeded = true;
+          } catch (error) {
+            showToast(getMutationErrorMessage(error, '반복 투두 수정에 실패했습니다.'), 'error');
+          }
+        },
+        () => undefined
+      )();
+      return succeeded;
+    },
+    [methods, originalTodo, putTodoMutation, refreshAndClose, showToast, todoId]
+  );
 
   const submitLabel = mode === 'add' ? '완료' : '수정';
   const showDeleteButton = mode === 'edit';
@@ -287,8 +349,7 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
       value={{
         methods,
         handleSubmit,
-        handleEditSingle,
-        handleEditAll,
+        handleEdit,
         handleDelete,
         handleDeleteAllRepeats,
         resetForm,
@@ -296,6 +357,8 @@ export const TodoFormProvider = ({ mode, values, selectedDate, todoId, onClose, 
         closeWithReset,
         submitLabel,
         showDeleteButton,
+        isSubmitting: putTodoMutation.isPending || deleteTodoMutation.isPending,
+        hasOriginalRepeat,
       }}
     >
       <FormProvider {...methods}>{children}</FormProvider>
