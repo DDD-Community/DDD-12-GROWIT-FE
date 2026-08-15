@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { SwipeableRow } from './SwipeableRow';
 import { TodoItemCheckbox } from './TodoItemCheckbox';
-import Button from '@/shared/components/input/Button';
 
 /** "HH:mm" → "오전/오후 h:mm" */
 const formatTimeLabel = (time: string): string => {
@@ -21,7 +20,7 @@ const formatTimeLabel = (time: string): string => {
 interface CategoryCardProps {
   title: string;
   iconSrc: string;
-  accentClassName: string;
+  accentColor: string;
   bgStyle?: string;
   todos: GoalTodo[];
   onToggle?: (todoId: string, isCompleted: boolean) => void;
@@ -65,13 +64,11 @@ const TodoItem = ({
         </div>
         <div className="flex flex-col flex-1 min-w-0 cursor-pointer" onClick={() => onEdit?.(todo)}>
           <p
-            className={`text-[14px] leading-[1.42] truncate ${
-              checked ? 'line-through text-category-muted' : 'text-text-strong'
-            }`}
+            className={`text-[14px] leading-[1.42] truncate ${checked ? 'line-through text-[#A1A1A1]' : 'text-white'}`}
           >
             {todo.content}
           </p>
-          {todo.time && <p className="text-[10px] leading-[1.33] text-category-subtle">{formatTimeLabel(todo.time)}</p>}
+          {todo.time && <p className="text-[10px] leading-[1.33] text-[#737373]">{formatTimeLabel(todo.time)}</p>}
         </div>
       </div>
     </SwipeableRow>
@@ -81,7 +78,7 @@ const TodoItem = ({
 export const CategoryCard = ({
   title,
   iconSrc,
-  accentClassName,
+  accentColor,
   bgStyle,
   todos,
   onToggle,
@@ -95,41 +92,39 @@ export const CategoryCard = ({
 
   return (
     <div
-      className={`relative flex-1 h-full rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] cursor-pointer overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)] drop-shadow-[0px_1px_1px_rgba(10,13,18,0.05)] ${bgStyle ?? 'bg-[rgba(53,83,14,0.16)]'}`}
+      className={`relative flex-1 h-full rounded-[24px] flex flex-col gap-3 px-4 py-3 min-w-[calc(50%-4px)] cursor-pointer overflow-hidden shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)] drop-shadow-[0px_1px_1px_rgba(10,13,18,0.05)] ${bgStyle ?? 'bg-[#35530E29]'}`}
       onClick={onCardClick}
     >
       {/* Header: char icon + label + count + add (Figma 196:1618) */}
       <div className="relative z-10 flex shrink-0 items-center gap-1">
         <Image src={iconSrc} alt="" width={24} height={24} className="shrink-0 select-none" priority />
         <div className="flex items-center gap-1.5 flex-1 min-w-0 text-[12px] leading-[1.33]">
-          <span className={`truncate font-semibold ${accentClassName}`}>{title}</span>
-          <span className="shrink-0 font-normal text-category-subtle">
+          <span className="font-semibold truncate" style={{ color: accentColor }}>
+            {title}
+          </span>
+          <span className="font-normal text-[#737373] shrink-0">
             {completed}/{total}
           </span>
         </div>
-        <Button
-          size="sm"
-          layout="icon-only"
-          variant="tertiary"
+        <button
           onClick={e => {
             e.stopPropagation();
             onAdd?.();
           }}
-          className="h-8 w-8 shrink-0 rounded-2xl p-2 text-category-muted transition-colors hover:text-text-strong"
+          className="flex items-center justify-center w-8 h-8 p-2 rounded-2xl text-[#A1A1A1] hover:text-white transition-colors shrink-0"
           aria-label={`${title} 투두 추가`}
-          icon={
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path d="M8 3.33V12.67M3.33 8H12.67" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" />
-            </svg>
-          }
-        />
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M8 3.33V12.67M3.33 8H12.67" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
 
       {/* Todo items */}
@@ -139,7 +134,7 @@ export const CategoryCard = ({
             <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} onEdit={onEdit} />
           ))
         ) : (
-          <p className="w-full text-center text-[14px] leading-[1.42] text-category-empty">등록된 투두가 없어요</p>
+          <p className="text-[14px] leading-[1.42] text-[#525252] w-full text-center">등록된 투두가 없어요</p>
         )}
       </div>
     </div>
