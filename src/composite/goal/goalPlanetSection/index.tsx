@@ -15,7 +15,7 @@ export function GoalPlanetSection() {
 
   if (isLoadingGoals) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-bg-default">
+      <div className="flex h-full min-h-0 w-full flex-col items-center justify-center bg-bg-default">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
         <p className="text-gray-100 text-sm font-medium">진행중인 목표를 불러오는 중입니다...</p>
       </div>
@@ -27,10 +27,10 @@ export function GoalPlanetSection() {
   }
 
   return (
-    <>
+    <div className="h-full min-h-0">
       <PlanetSwiperSection />
       <GoalEndedSheet isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet} />
-    </>
+    </div>
   );
 }
 

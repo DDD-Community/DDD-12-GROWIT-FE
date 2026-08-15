@@ -24,8 +24,9 @@ export const PlanetSwiperSection = () => {
   };
 
   return (
-    <section className="space-y-4">
+    <section className="flex h-full min-h-0 flex-col gap-4">
       <Swiper
+        className="min-h-0 w-full flex-1"
         initialSlide={0}
         pagination={{
           clickable: true,
@@ -40,7 +41,7 @@ export const PlanetSwiperSection = () => {
           if (goal === 'add-goal-section') {
             return (
               <SwiperSlide key="add-goal-section">
-                <div className="gap-5 w-full h-80 flex flex-col justify-center">
+                <div className="flex h-full min-h-0 w-full flex-col justify-center gap-5">
                   <div className="flex flex-col items-center justify-center gap-6 px-5">
                     <h2 className="body-2-normal text-label-neutral text-center">
                       새로운 목표를 정해
@@ -63,7 +64,7 @@ export const PlanetSwiperSection = () => {
         })}
       </Swiper>
 
-      <div className="custom-pagination flex justify-center gap-x-2" />
+      <div className="custom-pagination flex shrink-0 justify-center gap-x-2" />
     </section>
   );
 };
