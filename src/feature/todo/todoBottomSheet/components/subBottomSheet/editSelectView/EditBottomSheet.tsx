@@ -77,22 +77,26 @@ export const EditBottomSheet = ({ isOpen, onClose }: EditBottomSheetProps) => {
 
         <BottomSheet.Content>
           <div className="flex flex-col">
-            <div className="border-b border-border-secondary py-2">
-              <EditButton
-                onClick={() => submitScope('SINGLE')}
-                text="해당 투두만 수정"
-                variant="danger"
-                disabled={isSubmitting || !hasOriginalRepeat}
-              />
-            </div>
-            <div className="border-b border-border-secondary py-2">
-              <EditButton
-                onClick={() => setConfirmScope('FROM_DATE')}
-                text="해당 날짜 이후 수정"
-                variant="default"
-                disabled={isSubmitting || !hasOriginalRepeat}
-              />
-            </div>
+            {hasOriginalRepeat && (
+              <>
+                <div className="border-b border-border-secondary py-2">
+                  <EditButton
+                    onClick={() => submitScope('SINGLE')}
+                    text="해당 투두만 수정"
+                    variant="danger"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <div className="border-b border-border-secondary py-2">
+                  <EditButton
+                    onClick={() => setConfirmScope('FROM_DATE')}
+                    text="해당 날짜 이후 수정"
+                    variant="default"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </>
+            )}
             <div className="py-2">
               <EditButton
                 onClick={() => setConfirmScope('ALL')}

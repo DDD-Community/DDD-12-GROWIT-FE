@@ -63,7 +63,7 @@ export const TodoListContainer = () => {
         return (
           <div className="relative min-h-full w-full">
             <div
-              className={`min-h-full bg-[#09090B] shadow-xl transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
+              className={`min-h-full transition-all duration-300 ease-in-out ${Z_INDEX.CONTENT}`}
             >
               <div className="flex min-h-full flex-col">
                 {/* Figma 196:1556 — iOS Safe Area (status bar) */}
