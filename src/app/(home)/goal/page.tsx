@@ -6,7 +6,7 @@ import GoalProgressSheet from '@/composite/goal/progress';
 
 export default function GoalPageRoute() {
   return (
-    <div className="relative w-full h-full flex flex-col justify-between bg-normal">
+    <div className="relative flex h-full w-full flex-col justify-between bg-bg-default">
       <header className="w-full flex items-center justify-start px-5 pt-5">
         <EndedGoalsNavButton />
       </header>
