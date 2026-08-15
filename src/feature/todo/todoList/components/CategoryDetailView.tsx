@@ -240,6 +240,7 @@ interface CategoryPanelCardProps {
   category: TodoCategory;
   todos: GoalTodo[];
   isPreview?: boolean;
+  onAdd?: () => void;
   onToggle?: (todoId: string, isCompleted: boolean) => void;
   onDelete?: (todoId: string) => void;
   onEdit?: (todo: GoalTodo) => void;
@@ -249,6 +250,7 @@ const CategoryPanelCard = ({
   category,
   todos,
   isPreview = false,
+  onAdd,
   onToggle,
   onDelete,
   onEdit,
@@ -258,10 +260,10 @@ const CategoryPanelCard = ({
   return (
     <div
       aria-hidden={isPreview || undefined}
-      className="rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]"
+      className="flex h-fit max-h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-[#171717] shadow-[0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_rgba(0,0,0,0.06),0px_2px_4px_rgba(0,0,0,0.04)]"
     >
-      <div className="flex flex-col gap-8 px-6 pb-8 pt-6">
-        <div className="flex flex-col gap-3">
+      <div className="flex h-fit max-h-full min-h-0 flex-col gap-8 px-6 pb-8 pt-6">
+        <div className="flex shrink-0 flex-col gap-3">
           <div className="flex items-center gap-2">
             <Image
               src={meta.iconSrc}
@@ -290,7 +292,7 @@ const CategoryPanelCard = ({
           id={isPreview ? undefined : 'todo-category-panel'}
           role={isPreview ? undefined : 'tabpanel'}
           aria-labelledby={isPreview ? undefined : `todo-category-tab-${category.toLowerCase()}`}
-          className="flex flex-col gap-4"
+          className="flex h-fit max-h-full min-h-0 flex-[0_1_auto] flex-col gap-4 overflow-y-auto overscroll-contain"
         >
           {todos.length > 0 ? (
             todos.map(todo => (
@@ -303,7 +305,14 @@ const CategoryPanelCard = ({
               />
             ))
           ) : (
-            <p className="text-sm text-[#737373]">할 일이 없어요</p>
+            <button
+              type="button"
+              aria-label={`${CATEGORY_META[category].badge.text} 투두 추가`}
+              className="w-full cursor-pointer text-left text-sm text-[#737373] transition-colors hover:text-[#A1A1A1]"
+              onClick={isPreview ? undefined : onAdd}
+            >
+              할 일이 없어요
+            </button>
           )}
         </div>
       </div>
@@ -522,7 +531,7 @@ export const CategoryDetailView = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="fixed inset-0 z-[999] mx-auto max-w-md overflow-hidden touch-pan-y overscroll-x-none"
+          className="fixed inset-0 z-[999] isolate mx-auto max-w-md overflow-hidden touch-pan-y overscroll-x-none"
           onPointerDown={event => {
             event.stopPropagation();
             handlePanelPointerDown(event);
@@ -541,7 +550,7 @@ export const CategoryDetailView = ({
           }}
         >
           {/* 상단 컨트롤은 화면에 하나만 고정 */}
-          <div className="absolute inset-x-0 top-[50px] z-10 flex items-center justify-between px-5">
+          <div className="pointer-events-auto absolute inset-x-0 top-[50px] z-20 flex items-center justify-between px-5 [transform:translateZ(0)]">
             <button
               onClick={onClose}
               aria-label="아래로 내리기"
@@ -578,7 +587,7 @@ export const CategoryDetailView = ({
 
           {/* 배경·카드를 포함한 네 페이지를 하나의 가로 track으로 이동 */}
           <div
-            className="flex h-full w-full"
+            className="absolute inset-0 z-0 flex h-full w-full"
             style={{
               transform: `translateX(calc(-${currentIndex * 100}% + ${dragX}px))`,
               transition: slideTransition,
@@ -591,18 +600,19 @@ export const CategoryDetailView = ({
                 <div
                   key={panelCategory}
                   aria-hidden={!isCurrentPage}
-                  className={`relative h-full w-full shrink-0 overflow-y-auto pt-[114px] ${
+                  className={`relative h-full w-full shrink-0 overflow-hidden pt-[114px] ${
                     isCurrentPage ? '' : 'pointer-events-none'
                   }`}
                 >
                   <CategoryBackground category={panelCategory} />
 
-                  <div className="relative flex min-h-full flex-col">
-                    <div className="mx-5">
+                  <div className="relative flex h-full min-h-0 flex-col pb-5">
+                    <div className="mx-5 min-h-0 flex-1">
                       <CategoryPanelCard
                         category={panelCategory}
                         todos={todosByCategory[panelCategory]}
                         isPreview={!isCurrentPage}
+                        onAdd={isCurrentPage ? onAdd : undefined}
                         onToggle={onToggle}
                         onDelete={onDelete}
                         onEdit={onEdit}
