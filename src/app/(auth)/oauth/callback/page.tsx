@@ -20,21 +20,25 @@ export default function OAuthCallbackPage() {
         const url = new URLSearchParams(hashed);
         const accessToken = url.get('accessToken');
         const refreshToken = url.get('refreshToken');
+        const registrationToken = url.get('registrationToken');
 
-        if (!accessToken || !refreshToken) {
-          setIsLoading(false);
-          router.replace('/login');
-          return;
-        }
         if (accessToken && refreshToken) {
           setHasTokens(true);
           authService.login({ accessToken, refreshToken });
           // Oauth 로그인 성공 시 마지막 로그인 수단 저장
           setLastLoginMethod('KAKAO');
           router.replace('/home');
-        } else {
-          setHasTokens(false);
+          return;
         }
+
+        // 신규 카카오 사용자는 토큰 대신 registrationToken을 받아
+        // 아래 회원가입 폼을 완료해야 한다.
+        if (registrationToken) {
+          setHasTokens(false);
+          return;
+        }
+
+        router.replace('/login');
       } catch (error: unknown) {
         console.error('토큰 처리 중 오류:', error);
         setHasTokens(false);
