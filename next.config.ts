@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'growit-images.s3.ap-northeast-2.amazonaws.com',
+        hostname: 'growit-images-009075573241.s3.ap-northeast-2.amazonaws.com',
         port: '',
         pathname: '/**',
       },
