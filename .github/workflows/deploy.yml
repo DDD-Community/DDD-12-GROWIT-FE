@@ -11,8 +11,11 @@ concurrency:
 
 env:
   AWS_REGION: ap-northeast-2
-  S3_BUCKET: growit-web-009075573241-ap-northeast-2
-  CLOUDFRONT_DISTRIBUTION_ID: E6XPMI8BM9WB8
+  S3_BUCKET: ${{ github.ref_name == 'main' && vars.PROD_S3_BUCKET || vars.DEV_S3_BUCKET }}
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ github.ref_name == 'main' && vars.PROD_CLOUDFRONT_DISTRIBUTION_ID || vars.DEV_CLOUDFRONT_DISTRIBUTION_ID }}
+  DEPLOY_API_URL: ${{ github.ref_name == 'main' && vars.PROD_API_URL || vars.DEV_API_URL }}
+  DEPLOY_REDIRECT_URL: ${{ github.ref_name == 'main' && vars.PROD_REDIRECT_URL || vars.DEV_REDIRECT_URL }}
+  DEPLOY_FRONTEND_URL: ${{ github.ref_name == 'main' && vars.PROD_FRONTEND_URL || vars.DEV_FRONTEND_URL }}
 
 jobs:
   build-and-deploy:
@@ -32,8 +35,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build static site
         env:
-          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_REDIRECT_URL: ${{ vars.NEXT_PUBLIC_REDIRECT_URL }}
+          NEXT_PUBLIC_API_URL: ${{ env.DEPLOY_API_URL }}
+          NEXT_PUBLIC_REDIRECT_URL: ${{ env.DEPLOY_REDIRECT_URL }}
           NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL: ${{ vars.NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL }}
         run: yarn build
       - name: Configure AWS credentials
@@ -52,4 +55,4 @@ jobs:
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
       - name: Verify frontend
-        run: curl --fail --retry 5 --retry-delay 10 "${{ vars.FRONTEND_URL }}/login/"
+        run: curl --fail --retry 5 --retry-delay 10 "$DEPLOY_FRONTEND_URL/login/"
