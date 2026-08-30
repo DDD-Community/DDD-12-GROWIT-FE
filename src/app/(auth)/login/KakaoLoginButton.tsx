@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { kakaoLoginAction } from './actions';
 import { useGTMActions } from '@/shared/hooks/useGTM';
 import { GTM_BUTTON_NAME, GTM_EVENTS } from '@/shared/constants/gtm-events';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
@@ -17,12 +16,15 @@ export const KakaoLoginButton = () => {
       eventName: GTM_EVENTS.LOGIN_CLICK,
       buttonName: GTM_BUTTON_NAME.KAKAO_LOGIN,
     });
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const redirectUrl = process.env.NEXT_PUBLIC_REDIRECT_URL;
+    window.location.assign(`${apiUrl}/auth/signin/kakao?redirect-uri=${encodeURIComponent(redirectUrl ?? '')}`);
   };
 
   return (
-    <form action={kakaoLoginAction} className="w-full relative">
+    <div className="w-full relative">
       <button
-        type="submit"
+        type="button"
         className="w-full flex items-center justify-center relative cursor-pointer gap-3 bg-[#FEE500] hover:bg-[#FDD835] disabled:bg-gray-300 disabled:cursor-not-allowed py-3 px-4 rounded-lg text-[15px] text-black font-medium"
         onClick={handleClick}
       >
@@ -30,6 +32,6 @@ export const KakaoLoginButton = () => {
         카카오 로그인
       </button>
       {lastLoginMethod === 'KAKAO' && <ToolTip text="최근 로그인" position="top-center" tailPosition="top-center" />}
-    </form>
+    </div>
   );
 };

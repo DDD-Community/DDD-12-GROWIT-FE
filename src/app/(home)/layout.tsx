@@ -14,8 +14,6 @@ interface HomeLayoutProps {
   stack?: React.ReactNode;
 }
 
-export const dynamic = 'force-dynamic';
-
 export default function HomePageLayout({ children, stack }: HomeLayoutProps) {
   useAutoLogout();
   const stackSegment = useSelectedLayoutSegment('stack');

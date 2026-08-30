@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  output: 'export',
+  trailingSlash: true,
   eslint: {
     // 프로덕션 빌드 시 ESLint 에러 무시
     ignoreDuringBuilds: true,
@@ -10,6 +12,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   images: {
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {

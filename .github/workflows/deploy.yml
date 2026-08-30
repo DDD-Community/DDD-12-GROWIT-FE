@@ -1,128 +1,55 @@
-name: Deploy Next.js to ECS
+name: Deploy frontend to S3 and CloudFront
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: growit-frontend-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: growit-fe
+  S3_BUCKET: growit-web-009075573241-ap-northeast-2
+  CLOUDFRONT_DISTRIBUTION_ID: E6XPMI8BM9WB8
 
 jobs:
-  # 1. 환경 결정
-  setup:
-    name: Determine Environment
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      environment: ${{ steps.set-env.outputs.environment }}
-      image_tag: ${{ steps.set-env.outputs.image_tag }}
-    steps:
-      - name: Set environment based on branch
-        id: set-env
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "environment=production" >> $GITHUB_OUTPUT
-            echo "image_tag=prod-${{ github.sha }}" >> $GITHUB_OUTPUT
-          else
-            echo "environment=development" >> $GITHUB_OUTPUT
-            echo "image_tag=dev-${{ github.sha }}" >> $GITHUB_OUTPUT
-          fi
-
-  # 2. Docker 이미지 빌드 및 ECR 푸시
-  build-and-push:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-    needs: setup
-    environment: ${{ needs.setup.outputs.environment }}
-    outputs:
-      image: ${{ steps.build-image.outputs.image }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          ref: ${{ github.ref }}
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ env.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Create .env file
-        run: |
-          cat <<EOF > .env
-          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_REDIRECT_URL=${{ vars.NEXT_PUBLIC_REDIRECT_URL }}
-          NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL=${{ vars.NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL }}
-          EOF
-
-      - name: Build, tag, and push image
-        id: build-image
+          node-version: '20'
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build static site
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ needs.setup.outputs.image_tag }}
-        run: |
-          IMAGE="$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
-          echo "Building $IMAGE for ${{ needs.setup.outputs.environment }}"
-          docker build -t "$IMAGE" .
-          docker push "$IMAGE"
-          echo "image=$IMAGE" >> $GITHUB_OUTPUT
-
-  # 3. ECS 배포
-  deploy:
-    name: Deploy to ECS (${{ needs.setup.outputs.environment }})
-    runs-on: ubuntu-latest
-    needs: [setup, build-and-push]
-    environment: ${{ needs.setup.outputs.environment }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_REDIRECT_URL: ${{ vars.NEXT_PUBLIC_REDIRECT_URL }}
+          NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL: ${{ vars.NEXT_PUBLIC_CLOUDFRONT_VIDEO_URL }}
+        run: yarn build
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          role-to-assume: arn:aws:iam::009075573241:role/growit-github-frontend-deploy
           aws-region: ${{ env.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Download task definition
+      - name: Upload immutable assets
         run: |
-          aws ecs describe-task-definition \
-            --task-definition "${{ vars.ECS_TASK_DEFINITION }}" \
-            --query taskDefinition > task-definition.json
-
-      - name: Render task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ vars.ECS_CONTAINER_NAME }}
-          image: ${{ needs.build-and-push.outputs.image }}
-
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ vars.ECS_SERVICE }}
-          cluster: growit-fe-cluster
-          wait-for-service-stability: false
-
-      - name: Deployment Summary
+          aws s3 sync out/_next/ "s3://$S3_BUCKET/_next/" --delete \
+            --cache-control "public,max-age=31536000,immutable"
+      - name: Upload pages
         run: |
-          echo "## 🚀 배포 완료" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| 항목 | 값 |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| **환경** | ${{ needs.setup.outputs.environment }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **브랜치** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **커밋** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **이미지** | ${{ needs.build-and-push.outputs.image }} |" >> $GITHUB_STEP_SUMMARY
+          aws s3 sync out/ "s3://$S3_BUCKET/" --delete --exclude "_next/*" \
+            --cache-control "public,max-age=0,must-revalidate"
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
+      - name: Verify frontend
+        run: curl --fail --retry 5 --retry-delay 10 "${{ vars.FRONTEND_URL }}/login/"

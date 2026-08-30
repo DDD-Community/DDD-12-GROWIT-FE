@@ -1,15 +1,9 @@
-import GoalEditFormContent from '@/composite/goal/edit';
-import { notFound } from 'next/navigation';
+import GoalEditRouteClient from './route-client';
 
-type GoalEditPageProps = {
-  params: Promise<{ goalId: string }>;
-};
+export function generateStaticParams() {
+  return [{ goalId: '_' }];
+}
 
-export default async function GoalEditPage({ params }: GoalEditPageProps) {
-  const resolvedParams = await params;
-  const goalId = resolvedParams.goalId;
-
-  if (!goalId || goalId === 'null' || goalId === undefined) notFound();
-
-  return <GoalEditFormContent goalId={goalId} />;
+export default function GoalEditPage() {
+  return <GoalEditRouteClient />;
 }
