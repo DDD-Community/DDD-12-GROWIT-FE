@@ -21,14 +21,19 @@ export function AnimatedStack({ children, basePath = '/', isActive, excludePaths
   const pathname = usePathname();
   const variants = getVariants();
 
-  const isExcluded = excludePaths.some(path => pathname.startsWith(path));
+  const normalizePath = (path: string) => (path === '/' ? path : path.replace(/\/+$/, ''));
+  const normalizedPathname = normalizePath(pathname);
+  const normalizedBasePath = normalizePath(basePath);
+  const nestedPathPrefix = normalizedBasePath === '/' ? '/' : `${normalizedBasePath}/`;
+
+  const isExcluded = excludePaths.some(path => normalizedPathname.startsWith(normalizePath(path)));
 
   // isActive가 명시적으로 전달되면 우선 사용, 없으면 basePath 기반으로 판단
   const isStackRoute = isExcluded
     ? false
     : isActive !== undefined
       ? isActive
-      : pathname !== basePath && pathname.startsWith(basePath);
+      : normalizedPathname !== normalizedBasePath && normalizedPathname.startsWith(nestedPathPrefix);
 
   return (
     <AnimatePresence mode="wait">
