@@ -1,33 +1,11 @@
-import { WeeklyRetrospectPage } from '@/composite/retrospect/weeklyRetrospect/component';
+import RetrospectRouteClient from './route-client';
 
-interface WeeklyRetrospectPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-  searchParams: Promise<{
-    goalId?: string;
-    planId?: string;
-    weekIndex?: string;
-  }>;
+export function generateStaticParams() {
+  return [{ id: '_' }];
 }
 
-const WeeklyRetrospectPageRoute = async ({ params, searchParams }: WeeklyRetrospectPageProps) => {
-  const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
-  const isNewRetrospect = resolvedParams.id === 'new-retrospect';
-
-  if (isNewRetrospect) {
-    return (
-      <WeeklyRetrospectPage
-        retrospectId="new"
-        goalId={resolvedSearchParams.goalId}
-        planId={resolvedSearchParams.planId}
-        weekIndex={resolvedSearchParams.weekIndex}
-      />
-    );
-  }
-
-  return <WeeklyRetrospectPage retrospectId={resolvedParams.id} weekIndex={resolvedSearchParams.weekIndex} />;
+const WeeklyRetrospectPageRoute = () => {
+  return <RetrospectRouteClient />;
 };
 
 export default WeeklyRetrospectPageRoute;

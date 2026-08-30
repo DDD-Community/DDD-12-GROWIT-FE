@@ -1,5 +1,5 @@
 import { EditProfile } from '@/composite/mypage/editProfile/component';
 
-export default function EditProfileInterceptPage() {
+export default function EditProfilePage() {
   return <EditProfile />;
 }
