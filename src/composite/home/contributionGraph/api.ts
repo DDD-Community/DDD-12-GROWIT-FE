@@ -14,7 +14,7 @@ export async function getContributionList(req: ContributionListRequest) {
   return data.data;
 }
 
-export const getContribution = http.get('https://api.grow-it.me/mock/todos', () => {
+export const getContribution = http.get(`${process.env.NEXT_PUBLIC_API_URL}/mock/todos`, () => {
   return HttpResponse.json({
     data: [
       'COMPLETED',
