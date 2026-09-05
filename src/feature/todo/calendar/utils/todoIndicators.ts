@@ -3,12 +3,11 @@ import { TodoCategory, TodoCountByDateItem } from '@/model/todo/todoList/dto';
 type Indicators = Record<string, (string | null | undefined)[] | undefined>;
 
 /**
- * Figma 196:1610 calendar-day DS 주석:
- *   - 인디케이터 2개만 노출: 긴급(NOW), 꾸준히(STEADY)
+ * 캘린더 날짜별 Todo 카테고리 인디케이터:
+ *   - 해당 날짜에 존재하는 모든 카테고리를 정해진 순서로 노출
  *   - 모두 완료 시 opacity 100%, 미완료 항목 있으면 opacity 40%
- *   - SKIP/DELETE는 인디케이터 없음
  */
-const INDICATOR_CATEGORIES: TodoCategory[] = ['NOW', 'STEADY'];
+const INDICATOR_CATEGORIES: TodoCategory[] = ['NOW', 'STEADY', 'SKIP', 'DELETE'];
 
 // Figma 196:1605 calendar Indicators — color/red/500, color/amber/500
 const CATEGORY_BASE_COLOR: Record<TodoCategory, string> = {
