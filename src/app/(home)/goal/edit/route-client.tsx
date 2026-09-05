@@ -1,9 +1,9 @@
 'use client';
 
 import GoalEditFormContent from '@/composite/goal/edit';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export default function GoalEditRouteClient() {
-  const { goalId } = useParams<{ goalId: string }>();
+  const goalId = useSearchParams().get('goalId') ?? '';
   return <GoalEditFormContent goalId={goalId} />;
 }

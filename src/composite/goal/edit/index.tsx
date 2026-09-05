@@ -12,13 +12,25 @@ import { useRouter, notFound } from 'next/navigation';
 import type { Goal } from '@/shared/type/goal';
 
 export default function GoalEditFormContent({ goalId }: { goalId: string }) {
-  const { data: currentGoal, isError } = useQuery(
+  const { data: currentGoal, isError, isPending } = useQuery(
     GoalQuery.getGoalById(goalId, {
       enabled: !!goalId,
     })
   );
 
-  if (!goalId || isError || !currentGoal) {
+  if (!goalId) {
+    notFound();
+  }
+
+  if (isPending) {
+    return (
+      <div className="flex min-h-screen flex-1 items-center justify-center bg-bg-default">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (isError || !currentGoal) {
     notFound();
   }
 
