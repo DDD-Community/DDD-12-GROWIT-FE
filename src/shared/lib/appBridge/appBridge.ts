@@ -53,10 +53,17 @@ export const appBridge = {
       }
     };
 
+    const documentHandler = (event: Event) => {
+      handler(event as MessageEvent);
+    };
+
     window.addEventListener('message', handler);
+    // Android React Native WebView는 document에 message 이벤트를 전달한다.
+    document.addEventListener('message', documentHandler);
 
     return () => {
       window.removeEventListener('message', handler);
+      document.removeEventListener('message', documentHandler);
     };
   },
 
@@ -66,16 +73,30 @@ export const appBridge = {
    */
   waitForAppToken(timeout: number = 5000): Promise<AppTokenPayload> {
     return new Promise((resolve, reject) => {
+      let isSettled = false;
+      let unsubscribe = () => {};
+
+      const finish = (callback: () => void) => {
+        if (isSettled) return;
+
+        isSettled = true;
+        clearTimeout(timeoutId);
+        clearInterval(readyIntervalId);
+        unsubscribe();
+        callback();
+      };
+
       const timeoutId = setTimeout(() => {
-        cleanup();
-        reject(new Error(`토큰 수신 타임아웃 (${timeout}ms)`));
+        finish(() => reject(new Error(`토큰 수신 타임아웃 (${timeout}ms)`)));
       }, timeout);
 
-      const cleanup = this.onAppMessage<AppTokenPayload>((message) => {
+      const readyIntervalId = setInterval(() => {
+        this.sendToApp('READY');
+      }, 1000);
+
+      unsubscribe = this.onAppMessage<AppTokenPayload>((message) => {
         if (message.type === 'SYNC_TOKEN_TO_WEB' && message.payload) {
-          clearTimeout(timeoutId);
-          cleanup();
-          resolve(message.payload);
+          finish(() => resolve(message.payload!));
         }
       });
 
