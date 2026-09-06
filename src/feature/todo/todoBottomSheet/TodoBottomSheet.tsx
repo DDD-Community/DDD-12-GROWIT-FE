@@ -84,7 +84,7 @@ export const TodoBottomSheet = ({
   const deleteSheet = useBottomSheet();
 
   // 스택 네비게이션 훅 사용
-  const { currentView, direction, navigateTo, goBack, goToMain, reset } = useStackNavigation<TodoBottomSheetView>({
+  const { currentView, navigateTo, goBack, goToMain, reset } = useStackNavigation<TodoBottomSheetView>({
     initialView: 'main',
   });
 
@@ -192,7 +192,7 @@ export const TodoBottomSheet = ({
     >
       {/* 메인 BottomSheet - 삭제/수정 모드가 아닐 때만 표시 */}
       <TodoBottomSheetWrapper isOpen={isMainSheetOpen} onOpen={onOpen}>
-        <StackView viewKey={currentView} direction={direction}>
+        <StackView viewKey={currentView}>
           <TodoBottomSheetContent
             selectedDate={selectedDate}
             isOpen={isOpen}
