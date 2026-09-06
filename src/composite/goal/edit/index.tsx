@@ -10,6 +10,7 @@ import { GoalMutation } from '@/model/goal/queries';
 import { useToast } from '@/shared/components/feedBack/toast';
 import { useRouter, notFound } from 'next/navigation';
 import type { Goal } from '@/shared/type/goal';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function GoalEditFormContent({ goalId }: { goalId: string }) {
   const { data: currentGoal, isError, isPending } = useQuery(
@@ -48,11 +49,19 @@ export const GoalEditForm = ({ currentGoal }: { currentGoal: Goal }) => {
 
   const { mutate: editGoal } = useMutation(
     GoalMutation.editGoal({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress() });
-        queryClient.invalidateQueries({ queryKey: GoalQueryKeys.byId(currentGoal.id) });
+      onSuccess: async (_data, updatedGoal) => {
+        queryClient.setQueryData<Goal[]>(GoalQueryKeys.progress(), previousGoals =>
+          previousGoals?.map(goal => (goal.id === updatedGoal.id ? updatedGoal : goal))
+        );
+        queryClient.setQueryData(GoalQueryKeys.byId(updatedGoal.id), updatedGoal);
+
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: GoalQueryKeys.progress(), refetchType: 'all' }),
+          queryClient.invalidateQueries({ queryKey: GoalQueryKeys.all(), refetchType: 'all' }),
+        ]);
+
         showToast('수정이 완료되었습니다.', 'success');
-        router.back();
+        router.replace(ROUTES.GOAL);
       },
       onError: () => {
         showToast('수정에 실패했습니다.', 'error');
