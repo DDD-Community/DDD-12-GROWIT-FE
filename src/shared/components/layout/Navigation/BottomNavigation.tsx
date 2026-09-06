@@ -27,7 +27,7 @@ export const BottomNavigation = () => {
     <nav
       className={`pointer-events-none absolute inset-x-0 bottom-0 flex w-full items-center justify-between bg-transparent px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
-      <div className="pointer-events-auto grid w-[236px] max-w-full grid-cols-3 items-center gap-[2px] bg-transparent px-2 py-1">
+      <div className="pointer-events-auto grid w-[236px] max-w-full grid-cols-3 items-center gap-[2px] rounded-[28px] bg-[#171717] px-2 py-1">
         {NAV_ITEMS.map(item => (
           <NavTabButton
             key={item.path}
