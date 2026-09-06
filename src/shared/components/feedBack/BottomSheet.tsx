@@ -218,15 +218,21 @@ const BottomSheetProvider = ({
 };
 
 // Root 컴포넌트 (오버레이 + 시트 컨테이너)
-const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
+const BottomSheetRoot = ({ children, animateHeight }: { children: React.ReactNode; animateHeight: boolean }) => {
   const { isOpen, closeSheet, springHeight, snapPoints, heightMode, contentHeight, autoSpringHeight } =
     useBottomSheetContext();
 
   const isAutoHeight = heightMode === 'auto';
   const isMeasured = contentHeight > 0;
 
-  // auto 모드: 측정 전에는 'auto', 측정 후에는 스프링 애니메이션 적용
-  const resolvedHeight = isAutoHeight ? (isMeasured ? autoSpringHeight : 'auto') : springHeight;
+  // auto 모드: 측정 전에는 'auto', 측정 후에는 설정에 따라 즉시 또는 스프링으로 높이 반영
+  const resolvedHeight = isAutoHeight
+    ? isMeasured
+      ? animateHeight
+        ? autoSpringHeight
+        : contentHeight
+      : 'auto'
+    : springHeight;
 
   return (
     <AnimatePresence>
@@ -254,9 +260,13 @@ const BottomSheetRoot = ({ children }: { children: React.ReactNode }) => {
               overflow: 'hidden',
               paddingBottom: 'env(safe-area-inset-bottom)',
             }}
-            initial={{ height: 0 }}
-            animate={{ height: isAutoHeight ? (isMeasured ? contentHeight : 'auto') : snapPoints.half }}
-            exit={{ height: 0 }}
+            initial={animateHeight ? { height: 0 } : false}
+            animate={
+              animateHeight
+                ? { height: isAutoHeight ? (isMeasured ? contentHeight : 'auto') : snapPoints.half }
+                : undefined
+            }
+            exit={animateHeight ? { height: 0 } : undefined}
             className={`fixed bottom-0 left-1/2 -translate-x-1/2 bg-bg-elevated max-w-md w-full rounded-t-lg ${Z_INDEX.SHEET}`}
           >
             <AutoHeightContent>{children}</AutoHeightContent>
@@ -359,6 +369,7 @@ export const BottomSheet = ({
   showSheet,
   closeSheet,
   height,
+  animateHeight = true,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
@@ -366,10 +377,12 @@ export const BottomSheet = ({
   closeSheet: () => void;
   /** 높이 설정: 'auto' | '{x}px' | '{x}%' (기본값: '55%') */
   height?: BottomSheetHeight;
+  /** 열림 및 콘텐츠 높이 변경 시 높이 애니메이션 적용 여부 */
+  animateHeight?: boolean;
 }) => {
   return (
     <BottomSheetProvider isOpen={isOpen} showSheet={showSheet} closeSheet={closeSheet} heightMode={height}>
-      <BottomSheetRoot>{children}</BottomSheetRoot>
+      <BottomSheetRoot animateHeight={animateHeight}>{children}</BottomSheetRoot>
     </BottomSheetProvider>
   );
 };

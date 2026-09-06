@@ -16,7 +16,7 @@ interface StackViewProps {
  * 바텀시트 내부 화면을 즉시 전환합니다.
  */
 export const StackView = ({ viewKey, children, className }: StackViewProps) => (
-  <div key={viewKey} className={cn('h-full', className)}>
+  <div data-view={viewKey} className={cn('h-full transform-none transition-none animate-none', className)}>
     {children}
   </div>
 );
