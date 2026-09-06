@@ -14,8 +14,8 @@ const NAV_ITEMS = [
 
 /**
  * Figma 196:1709 Tabs container
- * - bg #171717 (color/neutral/900), rounded-[28px]
- * - gap-[2px], px-2 py-1
+ * - 콘텐츠 위에 떠 있는 투명 오버레이
+ * - 아이콘 영역 밖의 스크롤/터치 입력은 아래 콘텐츠로 전달
  */
 export const BottomNavigation = () => {
   const router = useRouter();
@@ -25,9 +25,9 @@ export const BottomNavigation = () => {
 
   return (
     <nav
-      className={`relative w-full shrink-0 bg-transparent px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 flex items-center justify-between ${Z_INDEX.BOTTOM_NAVIGATION}`}
+      className={`pointer-events-none absolute inset-x-0 bottom-0 flex w-full items-center justify-between bg-transparent px-[25px] pb-[calc(25px+env(safe-area-inset-bottom,0px))] pt-4 ${Z_INDEX.BOTTOM_NAVIGATION}`}
     >
-      <div className="grid w-[236px] max-w-full grid-cols-3 items-center gap-[2px] rounded-[28px] bg-[#171717] px-2 py-1 backdrop-blur-[0px]">
+      <div className="pointer-events-auto grid w-[236px] max-w-full grid-cols-3 items-center gap-[2px] bg-transparent px-2 py-1">
         {NAV_ITEMS.map(item => (
           <NavTabButton
             key={item.path}
