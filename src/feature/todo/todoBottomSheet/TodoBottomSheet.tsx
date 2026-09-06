@@ -37,7 +37,7 @@ const TodoBottomSheetWrapper = ({ isOpen, onOpen, children }: TodoBottomSheetWra
 
   return (
     <>
-      <BottomSheet isOpen={isOpen} showSheet={onOpen} closeSheet={handleCloseSheet} height="auto" animateHeight={false}>
+      <BottomSheet isOpen={isOpen} showSheet={onOpen} closeSheet={handleCloseSheet}>
         {children}
       </BottomSheet>
 
