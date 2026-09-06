@@ -1,21 +1,38 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { isSameDay } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
-import { useBottomSheet } from '@/shared/components/feedBack/BottomSheet';
 import FloatingButton from '@/shared/components/input/FloatingButton';
 import { Z_INDEX } from '@/shared/lib/z-index';
 import { TodoList } from '@/feature/todo/todoList';
-import { TodoBottomSheet } from '@/feature/todo/todoBottomSheet';
 import { Calendar } from '@/feature/todo/calendar';
 import { TodoListContainerFormProvider } from './form';
 import { convertToFormData, getEditingTodoDefault } from './helper';
 import type { TodoFormData } from '@/feature/todo/todoBottomSheet/types';
 
+const TodoBottomSheet = dynamic(() => import('@/feature/todo/todoBottomSheet').then(module => module.TodoBottomSheet), {
+  ssr: false,
+});
+
+const useLazyBottomSheet = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
+
+  const showSheet = () => {
+    setHasOpened(true);
+    setIsOpen(true);
+  };
+
+  const closeSheet = () => setIsOpen(false);
+
+  return { isOpen, hasOpened, showSheet, closeSheet };
+};
+
 export const TodoListContainer = () => {
-  const addSheet = useBottomSheet();
-  const editSheet = useBottomSheet();
+  const addSheet = useLazyBottomSheet();
+  const editSheet = useLazyBottomSheet();
   const [addDefaultCategory, setAddDefaultCategory] = useState<TodoFormData['category']>('NOW');
   // Figma 169:1559 — 선택된 날짜 재클릭 시 "중요 태스크 현황" 뷰로 토글
   const [showStatus, setShowStatus] = useState(false);
@@ -98,25 +115,29 @@ export const TodoListContainer = () => {
             />
 
             {/* 추가용 TodoBottomSheet */}
-            <TodoBottomSheet
-              mode="add"
-              isOpen={addSheet.isOpen}
-              onOpen={addSheet.showSheet}
-              onClose={addSheet.closeSheet}
-              selectedDate={selectedDate}
-              defaultCategory={addDefaultCategory}
-            />
+            {addSheet.hasOpened && (
+              <TodoBottomSheet
+                mode="add"
+                isOpen={addSheet.isOpen}
+                onOpen={addSheet.showSheet}
+                onClose={addSheet.closeSheet}
+                selectedDate={selectedDate}
+                defaultCategory={addDefaultCategory}
+              />
+            )}
 
             {/* 편집용 TodoBottomSheet */}
-            <TodoBottomSheet
-              mode="edit"
-              isOpen={editSheet.isOpen}
-              onOpen={editSheet.showSheet}
-              onClose={handleCloseEditSheet}
-              selectedDate={new Date(editingTodo.date)}
-              values={convertToFormData(editingTodo)}
-              todoId={editingTodo.id}
-            />
+            {editSheet.hasOpened && (
+              <TodoBottomSheet
+                mode="edit"
+                isOpen={editSheet.isOpen}
+                onOpen={editSheet.showSheet}
+                onClose={handleCloseEditSheet}
+                selectedDate={new Date(editingTodo.date)}
+                values={convertToFormData(editingTodo)}
+                todoId={editingTodo.id}
+              />
+            )}
           </div>
         );
       }}

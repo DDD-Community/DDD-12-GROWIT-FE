@@ -15,6 +15,7 @@ export const useTodosByDate = (req: TodoByDateRequest) => {
     queryKey: todoListQueryKeys.getTodosByDate(req.date),
     queryFn: () => todoListApi.getTodosByDate(req),
     enabled: !!req.date,
+    staleTime: 30_000,
   });
 };
 
@@ -33,6 +34,7 @@ export const useTodoCountByDate = (req: TodoCountByDateRequest) => {
     queryKey: todoListQueryKeys.getTodoCountByDate(req),
     queryFn: () => todoListApi.getTodoCountByDate(req),
     enabled: !!req.from && !!req.to,
+    staleTime: 30_000,
   });
 };
 

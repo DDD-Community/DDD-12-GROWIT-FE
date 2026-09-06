@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { CalendarProps, CalendarView } from './types';
 import { WeekView } from './components/weekly';
-import { MonthView } from './components/monthly';
 import {
   getWeekDates,
   getWeekRange,
@@ -12,10 +12,11 @@ import {
   getNextWeek,
   getPreviousMonth,
   getNextMonth,
-  getKoreanHolidaysInRange,
 } from './utils';
 import { startOfWeek, startOfMonth, isWithinInterval } from 'date-fns';
 import { WEEKDAY } from './utils/constants';
+
+const MonthView = dynamic(() => import('./components/monthly').then(module => module.MonthView), { ssr: false });
 
 /**
  * 통합 캘린더 컴포넌트
@@ -44,18 +45,31 @@ export const Calendar: React.FC<CalendarProps> = ({
   const isControlled = controlledView !== undefined;
   const [internalView, setInternalView] = useState<CalendarView>(defaultView);
   const [internalCurrentDate, setInternalCurrentDate] = useState(currentDate);
+  const [loadedHolidays, setLoadedHolidays] = useState<Record<string, string>>({});
 
   const activeView = isControlled ? controlledView : internalView;
   const activeCurrentDate = internalCurrentDate;
 
-  const resolvedHolidays = useMemo(() => {
-    if (holidays) {
-      return holidays;
-    }
+  // 전 세계 공휴일 데이터가 초기 홈 번들을 막지 않도록 첫 화면이 그려진 뒤 불러온다.
+  useEffect(() => {
+    if (holidays) return;
 
+    let cancelled = false;
+    setLoadedHolidays({});
     const [rangeStart, rangeEnd] = getMonthRange(activeCurrentDate);
-    return getKoreanHolidaysInRange(rangeStart, rangeEnd);
+
+    void import('./utils/holidays').then(({ getKoreanHolidaysInRange }) => {
+      if (!cancelled) {
+        setLoadedHolidays(getKoreanHolidaysInRange(rangeStart, rangeEnd));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [holidays, activeCurrentDate]);
+
+  const resolvedHolidays = holidays ?? loadedHolidays;
 
   // 뷰 변경 핸들러
   const handleViewChange = useCallback(
@@ -92,7 +106,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   // 오늘 버튼 클릭 핸들러
   const handleTodayClick = useCallback(() => {
     const today = new Date();
-    
+
     if (activeView === 'weekly') {
       // 주간 뷰: 오늘 날짜가 포함된 주의 일요일로 이동
       const weekStart = startOfWeek(today, { weekStartsOn: WEEKDAY.SUNDAY });

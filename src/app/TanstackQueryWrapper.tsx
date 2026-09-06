@@ -1,8 +1,13 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
+
+const ReactQueryDevtools = dynamic(
+  () => import('@tanstack/react-query-devtools').then(module => module.ReactQueryDevtools),
+  { ssr: false }
+);
 
 export default function TanstackQueryWrapper({ children }: { children: React.ReactNode }) {
   // Suspense 사용 시 매 렌더마다 QueryClient가 새로 생성되면
@@ -11,7 +16,7 @@ export default function TanstackQueryWrapper({ children }: { children: React.Rea
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

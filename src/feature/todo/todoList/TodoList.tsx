@@ -1,19 +1,31 @@
 'use client';
 
 import { useMemo, useCallback, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { format } from 'date-fns';
 import { GoalTodo } from '@/shared/type/GoalTodo';
 import { TodoListEmpty } from './components/TodoListEmpty';
 import { TodoListLoading, TodoListError } from './components';
 import { MatrixView } from './components/MatrixView';
-import { ListView } from './components/ListView';
-import { CategoryDetailView } from './components/CategoryDetailView';
-import { WeeklyImportantStatusView } from './components/WeeklyImportantStatusView';
 import { useTodosByDate, usePatchTodoStatus, useDeleteTodo } from '@/model/todo/todoList/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { todoListQueryKeys } from '@/model/todo/todoList/queryKeys';
 import { transformTodosData, groupTodosByCategory, sortTodosByPolicy } from './helper';
 import { type TodoCategory } from './category';
+
+const CategoryDetailView = dynamic(
+  () => import('./components/CategoryDetailView').then(module => module.CategoryDetailView),
+  { ssr: false }
+);
+
+const ListView = dynamic(() => import('./components/ListView').then(module => module.ListView), {
+  ssr: false,
+});
+
+const WeeklyImportantStatusView = dynamic(
+  () => import('./components/WeeklyImportantStatusView').then(module => module.WeeklyImportantStatusView),
+  { ssr: false }
+);
 
 interface TodoListProps {
   selectedDate: Date;
