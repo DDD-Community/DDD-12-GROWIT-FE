@@ -1,7 +1,11 @@
 'use client';
 
-import { TodoListContainer } from '@/composite/home';
+import { HomeBootstrapGate, TodoListContainer } from '@/composite/home';
 
 export default function MainPage() {
-  return <TodoListContainer />;
+  return (
+    <HomeBootstrapGate>
+      <TodoListContainer />
+    </HomeBootstrapGate>
+  );
 }
