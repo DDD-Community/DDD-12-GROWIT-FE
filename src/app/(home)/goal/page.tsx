@@ -6,7 +6,7 @@ import GoalProgressSheet from '@/composite/goal/progress';
 
 export default function GoalPageRoute() {
   return (
-    <div className="relative flex h-full min-h-0 w-full flex-col bg-bg-default">
+    <div className="relative flex h-full min-h-0 w-full flex-col bg-bg-default pb-[calc(93px+env(safe-area-inset-bottom,0px))]">
       <header className="flex w-full shrink-0 items-center justify-start px-5 pt-5">
         <EndedGoalsNavButton />
       </header>
@@ -22,7 +22,7 @@ export default function GoalPageRoute() {
             <GoalPlanetSection />
           </div>
         </section>
-        <footer className="flex w-full shrink-0 flex-col items-center justify-end">
+        <footer className="flex w-full shrink-0 flex-col items-center justify-end pt-5">
           <GoalProgressSheet />
         </footer>
       </GoalProvider>
