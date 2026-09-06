@@ -4,7 +4,7 @@ import { ComponentType } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface NavTabButtonProps {
-  Icon: ComponentType<{ className?: string }>;
+  Icon: ComponentType<{ className?: string; filled?: boolean }>;
   label: string;
   active: boolean;
   onClick: () => void;
@@ -42,7 +42,7 @@ export const NavTabButton = ({ Icon, label, active, onClick }: NavTabButtonProps
       animate={{ scale: active ? 1.08 : 1 }}
       transition={{ type: 'spring', stiffness: 420, damping: 28 }}
     >
-      <Icon className="block size-5 place-self-center" />
+      <Icon className="block size-5 place-self-center" filled={active} />
     </motion.span>
     <AnimatePresence initial={false}>
       {active && (

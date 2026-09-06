@@ -1,9 +1,10 @@
 interface IconProps {
   className?: string;
+  filled?: boolean;
 }
 
 /** Figma 195:1848 — Home Icon (filled) */
-export const NavHomeFilledIcon = ({ className }: IconProps) => (
+export const NavHomeFilledIcon = ({ className, filled = false }: IconProps) => (
   <svg
     width="24"
     height="24"
@@ -12,12 +13,16 @@ export const NavHomeFilledIcon = ({ className }: IconProps) => (
     className={className}
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
+    data-filled={filled}
   >
     <path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M9.56167 1.94845C9.44657 1.98497 9.335 2.03183 9.22833 2.08845C9.13 2.14178 7.43333 3.44261 5.45833 4.97928C1.44167 8.10261 1.68333 7.88928 1.68333 8.31761C1.68333 8.60845 1.78667 8.83178 1.99417 8.99011C2.19167 9.14095 2.3175 9.16678 2.85833 9.16678H3.33333V12.5609C3.33333 14.8543 3.345 16.0184 3.36917 16.1526C3.48667 16.7926 4.04083 17.3468 4.68083 17.4643C4.95833 17.5143 15.0417 17.5143 15.3192 17.4643C15.9592 17.3468 16.5133 16.7926 16.6308 16.1526C16.655 16.0184 16.6667 14.8543 16.6667 12.5609V9.16678H17.1417C17.6825 9.16678 17.8092 9.14095 18.0042 8.99011C18.2117 8.83011 18.3167 8.60428 18.3167 8.31678C18.3167 7.88928 18.5567 8.10178 14.5458 4.98178C12.5725 3.44678 10.8958 2.15595 10.8208 2.11178C10.4767 1.91428 9.94083 1.84428 9.56167 1.94845Z"
-      fill="currentColor"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'}
+      strokeWidth="1.5"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -25,7 +30,7 @@ export const NavHomeFilledIcon = ({ className }: IconProps) => (
 /**
  * Figma 196:1718 — Planet Icon (DS instance, 20x20)
  */
-export const NavGoalIcon = ({ className }: IconProps) => (
+export const NavGoalIcon = ({ className, filled = false }: IconProps) => (
   <svg
     width="20"
     height="20"
@@ -35,7 +40,9 @@ export const NavGoalIcon = ({ className }: IconProps) => (
     className={className}
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
+    data-filled={filled}
   >
+    {filled && <circle cx="10" cy="10" r="5.9" fill="currentColor" />}
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -48,7 +55,7 @@ export const NavGoalIcon = ({ className }: IconProps) => (
 /**
  * Figma 196:1724 — User Icon (DS instance, 20x20)
  */
-export const NavProfileIcon = ({ className }: IconProps) => (
+export const NavProfileIcon = ({ className, filled = false }: IconProps) => (
   <svg
     width="20"
     height="20"
@@ -58,7 +65,14 @@ export const NavProfileIcon = ({ className }: IconProps) => (
     className={className}
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
+    data-filled={filled}
   >
+    {filled && (
+      <>
+        <circle cx="10" cy="5.83" r="2.5" fill="currentColor" />
+        <ellipse cx="10" cy="15.15" rx="5.75" ry="1.9" fill="currentColor" />
+      </>
+    )}
     <path
       fillRule="evenodd"
       clipRule="evenodd"

@@ -21,10 +21,7 @@ export const BottomNavigation = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isActive = (path: string) => {
-    if (path === ROUTES.RETROSPECT) return pathname.startsWith(path);
-    return pathname === path;
-  };
+  const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
   return (
     <nav
